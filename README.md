@@ -1,2 +1,1 @@
-# ACTS
-Autism Children Technical System
+# Autism Children Technical System (ACTS)
