@@ -4,7 +4,7 @@
  - ## Angular project as frontend. Debug will be in localhost of angular (it is a server but temporary).
  - ## NestJS project as backend. Debug will be in localhost of nestJs (it is another and main server).
  - ## These two projects will be in the same repository; to share common files (e.g., datatype).
- - ## To debug Angular with NestJs api we need to run both servers. Then, solve Cross-Origin problem. After that, in angular we use Nest api by addressing full path (e.g., `localhost:NestPort/api/...`).
+ - ## To debug Angular with NestJs api we need to run both servers. Then, solve Cross-Origin problem. After that, in Angular we use Nest api by addressing full path (e.g., `localhost:NestPort/api/...`).
  - ## When finish debugging we will build the Angular project, take resulting files. After that, it will be hosing in NestJs. Then deploy NestJs.
 
 # Convention:
@@ -47,7 +47,7 @@
   > Table `goal(id, performanceId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, performanceId:9,...}, ...]`
   
   ### **3.** Each request should provide a token in the request header. And authorization of user privilege should be in the server before any respond.
-  > `Authorization: a876d8a5dd79a79f6f`
+  > `headers:{'Authorization': 'Bearer a876d8a5dd79a79f6f'}`
   
   ### **4.** Some API path will combine two or more table names. That mean there is join query. These paths only has GET operation. First table name is the main table left joined with following table names.
   > `.../api/goalPerformance/[id]` will return the goal with id specified and left joined with performance. Object structure will be `{id, performanceId,...goal, performance}` where performance is an object containing all performance columns as properties.
