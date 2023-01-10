@@ -52,4 +52,12 @@
   ### **4.** Some API path will combine two or more table names. That mean there is join query. These paths only has GET operation. First table name is the main table left joined with following table names.
   > `.../api/goalPerformance/[id]` will return the goal with id specified and left joined with performance. Object structure will be `{id, performanceId,...goal, performance}` where performance is an object containing all performance columns as properties.
   
-  
+<br/>
+
+# Versions:
+<table>
+<tr><th>Package<th/><th>Version<th/><tr/>
+<tr><td>NodeJs<td/><td>18.13.0<td/><tr/>
+<tr><td>Package Manager (npm)<td/>       <td> 8.19.3<td/><tr/>
+<tr><td>Angular CLI               <td/>   <td>15.0.5<td/><tr/>
+</table>
