@@ -1,1 +1,4 @@
-export class Field {}
+export class Field {
+    name:string;
+    
+}
