@@ -63,7 +63,7 @@
       ```
 
       So that all dependencies in `package.json` will be downloaded and installed.
-      >See `README.md` file in `frontend-angular` folder for more information of how to run the application.
+      >See `README.md` file in `backend-nest` folder for more information of how to run the application.
 
 ## Debug process
 
