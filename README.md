@@ -146,7 +146,7 @@
   Version</th></tr>
   <tr><td>NodeJs</td><td>18.13.0</td></tr>
   <tr><td>npm (Package Manager)</td><td>8.19.3</td></tr>
-  <tr><td>yarn(Package Manager)</td><td>3.3.1</td></tr>
+  <tr><td>MySQL Workbench</td><td>8.0 CE</td></tr>
   <tr><td>Angular CLI</td><td>15.0.5</td></tr>
   <tr><td>@anSet-ExecutionPolicy -ExecutionPolicy RemoteSignedgular-devkit/architect</td><td>0.1500.5 (cli-only)</td></tr>
   <tr><td>@angular-devkit/core</td><td>15.0.4</td></tr>
