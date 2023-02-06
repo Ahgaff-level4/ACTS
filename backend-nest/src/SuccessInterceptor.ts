@@ -9,7 +9,7 @@ export class SuccessInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        map(data=>({success:true,data,timestamp:new Date().toISOString()}))
+        map(data=>({success:true,data}))
       );
   }
 }

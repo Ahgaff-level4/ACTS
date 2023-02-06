@@ -113,7 +113,7 @@ INSERT INTO teacher_child(teacherId,childId) VALUES (2,2);
 
 CREATE TABLE program( -- 8
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-    `name` NVARCHAR(50) NOT NULL,
+  `name` NVARCHAR(50) NOT NULL UNIQUE,
 	createdDatetime	DATETIME DEFAULT NOW()
 );
 INSERT INTO program(name) values ('Portage');
@@ -121,7 +121,7 @@ INSERT INTO program(name) values ('Other Program');
 
 CREATE TABLE field( -- 9
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	`name` NVARCHAR(50)	NOT NULL,
+	`name` NVARCHAR(50)	NOT NULL UNIQUE,
 	createdDatetime	DATETIME DEFAULT NOW()
 );
 INSERT INTO field(name) values ('Social');
@@ -131,7 +131,7 @@ INSERT INTO field(name) values ('Speaking');
 
 CREATE TABLE performance( -- 10
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	`name` NVARCHAR(512) NOT NULL,
+	`name` NVARCHAR(512) NOT NULL UNIQUE,
 	minAge TINYINT UNSIGNED,
 	maxAge TINYINT UNSIGNED, CONSTRAINT CH_performance_minAgeLessThanMaxAge CHECK(minAge <= maxAge and maxAge < 50),
 	createdDatetime DATETIME DEFAULT NOW(),
@@ -180,6 +180,12 @@ INSERT INTO evaluation(description,evaluationDatetime,goalId,teacherId) values (
 INSERT INTO evaluation(description,goalId,teacherId) values ('I told her if so',5,1);
 INSERT INTO evaluation(description,goalId,teacherId) values ('I told the child to say: la la la',4,1);
 
+
+CREATE VIEW fieldView AS
+	SELECT field.id,field.name,field.createdDatetime,COUNT(performance.fieldId) AS performanceCount
+    FROM field LEFT JOIN performance ON performance.fieldId=field.id GROUP BY field.id;
+
+
 -- select * from evaluation left join goal on evaluation.goalId = goal.id join performance on performance.id = goal.performanceId;
 DROP USER IF EXISTS 'nodejs'@'localhost';
 CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
@@ -189,11 +195,6 @@ CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
 -- UPDATE          Update table rows
 GRANT DELETE, INSERT, SELECT, UPDATE ON acts.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
-
-
-CREATE VIEW fieldView AS
-	SELECT field.id,field.name,field.createdDatetime,COUNT(performance.fieldId) AS performanceCount
-    FROM field LEFT JOIN performance ON performance.fieldId=field.id GROUP BY field.id;
 
 
 

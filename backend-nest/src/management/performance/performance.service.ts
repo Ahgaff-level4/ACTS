@@ -20,7 +20,7 @@ export class PerformanceService {
         var res:PerformanceEntity[];
         if (fk)
             res = await this.db.selectJoin(['performance', 'fieldView', 'program']) as PerformanceEntity[];
-        else res = await this.db.select('*', 'performance');
+        else res = await this.db.select('*', 'performance') as PerformanceEntity[];
         return res;
     }
 

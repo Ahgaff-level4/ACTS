@@ -15,7 +15,8 @@ async function bootstrap() {
     forbidUnknownValues:true,
     forbidNonWhitelisted:true,
     whitelist:true,
-    transform:true
+    transform:true,
+    validationError:{target:true,value:true}
   }));
   await app.listen(3000);
 }

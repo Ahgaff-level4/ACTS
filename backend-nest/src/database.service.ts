@@ -1,6 +1,6 @@
 import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { STATUS_CODES } from 'http';
-import { Pool, createPool } from 'mysql2';
+import { FieldPacket, OkPacket, Pool, QueryError, ResultSetHeader, RowDataPacket, createPool } from 'mysql2';
 import { CreateField, FieldEntity, UpdateField } from 'src/management/field/field.entity';
 import { CreatePerformance, PerformanceEntity, UpdatePerformance } from 'src/management/performance/performance.entity';
 import { CreateProgram, ProgramEntity, UpdateProgram } from 'src/management/program/program.entity';
@@ -48,8 +48,13 @@ export class DatabaseService {
         let command = '';
         for (let i = 0; i < tables.length; i++)
             command += `SELECT ${(select && select[i]) || '*'} FROM ${tables[i]} ${(other && other[i]) || ''}; `;
-        const tablesRes: Entities[]/*: [[Table0 result],[Table1 result], ...] */ = await this.exec(command, values);
-        return this.relational2Object(tablesRes, tables.map((v) => v.includes('View') ? v.substring(0, v.indexOf('View')) as TableName : v));
+        const tablesRes: RowDataPacket[][]/*: [[Table0 result],[Table1 result], ...] */ = await this.exec(command, values) as RowDataPacket[][];
+        if (typeof tablesRes === 'object' &&
+            typeof tablesRes.length === 'number' &&
+            typeof tablesRes[0] === 'object' &&
+            typeof tablesRes[0][0].length === 'number')
+            return this.relational2Object(tablesRes, tables.map((v) => v.includes('View') ? v.substring(0, v.indexOf('View')) as TableName : v));
+        else throw new BadRequestException('Expected multi RowDataPacket but got:' + tablesRes);
     }
 
 
@@ -67,7 +72,7 @@ export class DatabaseService {
     }
 
     public delete(table: TableName, id: number) {
-        return this.exec(`DELETE FROM ${table} WHERE id=?`,[id]);
+        return this.exec(`DELETE FROM ${table} WHERE id=?`, [id]);
     }
 
     /**
@@ -76,7 +81,7 @@ export class DatabaseService {
      * @param resultsTables array of table name correspond to results so in prev. ex. ['performance','field',...]
      * @returns one dimension array of first results array. con. of prev. ex. [{performance obj. with correspond field:{obj.}}] if exist dah
      */
-    private relational2Object(results: Entities[], resultsTables: TableName[]): Entity[] {
+    private relational2Object(results: RowDataPacket[][], resultsTables: TableName[]): RowDataPacket[] {
         //let's say we have tables=['book','author'] we need array of book with book.author is Author obj correspond to book.authorId
         // var authorMap = {};
         // authors.forEach(function(author) {authorMap[author.id] = author;});
@@ -91,21 +96,23 @@ export class DatabaseService {
         }
         return results[0];
     }
-    private exec(sql: string, values?: (number | string)[]): Promise<any> {
-        return new Promise((res, rej) => {
-            let callback = (e, result) => {
-                if (e) return rej(e);
-                else return res(result);
+    private exec(sql: string, values?: (number | string)[]): Promise<DbResult> {
+        return new Promise((resolve, reject) => {
+            let callback = (e: QueryError, result: DbResult) => {
+                if (e) return reject(new BadRequestException('SQL query error!', { cause: e }));
+                else return resolve(result);
             };
+            if (values?.length == 0)
+                throw new BadRequestException('expected values array got:' + values);
             if (values != null)
-                this.db.query(sql, values, callback);
-            else this.db.query(sql, callback);
+                this.db.query<DbResult>(sql, values, callback);
+            else this.db.query<DbResult>(sql, callback);
         });
     }
 
     private extractValues(obj: object): (string | number)[] {
         let values: (number | string)[] = [];
-        if(typeof obj != 'object')
+        if (typeof obj != 'object')
             throw new BadRequestException('Expected request body to be object!')
         for (let v of Object.values(obj)) {
             if (typeof v === 'number')
@@ -120,7 +127,8 @@ export class DatabaseService {
     }
 }
 
-export type TableName = 'person' | 'account' | 'parent' | 'teacher' | 'hd' | 'child' | 'teacher_child' | 'program' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
+export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
+export type TableName = 'person' | 'account' | 'parent' | 'teacher' | 'hd' | 'child' | 'teacher_child' | 'program' | 'programView' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
 export type Entity = PerformanceEntity | FieldEntity | ProgramEntity;//todo...
 export type CreateEntity = CreatePerformance | CreateField | CreateProgram;//todo...
 export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram;//todo...

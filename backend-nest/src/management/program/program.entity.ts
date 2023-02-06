@@ -1,12 +1,15 @@
 import { PartialType } from "@nestjs/mapped-types";
+import { IsDateString, IsNotEmpty, IsOptional } from "class-validator";
 
 export class CreateProgram{
-    name:string
+    @IsNotEmpty()
+    name:string;
+    @IsDateString() @IsOptional()
+    createdDatetime?:Date;
 }
 
 export class ProgramEntity extends CreateProgram{
     id:number;
-    createdDatetime:Date;
 }
 
 export class UpdateProgram extends PartialType(CreateProgram){}
