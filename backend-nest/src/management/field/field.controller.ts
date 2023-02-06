@@ -1,34 +1,34 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { FieldService } from './field.service';
-import { CreateFieldDto } from './create-field.dto';
-import { UpdateFieldDto } from './dto/update-field.dto';
-
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
+import { CreateField,UpdateField } from './field.entity';
+import { DatabaseService } from 'src/database.service';
+import { SuccessInterceptor } from 'src/SuccessInterceptor';
+@UseInterceptors(SuccessInterceptor)
 @Controller('api/field')
 export class FieldController {
-  constructor(private readonly fieldService: FieldService) {}
+  constructor(private readonly db: DatabaseService) {}
 
   @Post()
-  create(@Body() createFieldDto: CreateFieldDto) {
-    return this.fieldService.create(createFieldDto);
+  create(@Body() createField: CreateField) {
+    return this.db.create('field',createField);
   }
 
   @Get()
   findAll() {
-    return this.fieldService.findAll();
+    return this.db.select('*','fieldView');
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.fieldService.findOne(+id);
+  findOne(@Param('id',ParseIntPipe) id: number) {
+    return this.db.select('*','fieldView','id=?',[id]);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateFieldDto: UpdateFieldDto) {
-    return this.fieldService.update(+id, updateFieldDto);
+  update(@Param('id',ParseIntPipe) id: string, @Body() updateField: UpdateField) {
+    return this.db.update('field',+id, updateField);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.fieldService.remove(+id);
+  remove(@Param('id',ParseIntPipe) id: string) {
+    return this.db.delete('field',+id);
   }
 }

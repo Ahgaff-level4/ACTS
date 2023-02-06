@@ -6,5 +6,11 @@ import { Component } from '@angular/core';
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-
+  public title:string= "Hello"
+  
+  changeTitle() {
+    if (this.title == 'Hello')
+      this.title = 'Hi'
+    else this.title = "Hello";
+  }
 }

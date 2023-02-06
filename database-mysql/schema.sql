@@ -5,9 +5,9 @@ USE acts;
 CREATE TABLE person (-- 1
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
-    birthday DATE check(birthday>'1900-1-1'),
+    birthday DATE,CONSTRAINT CH_person_birthdayLimit CHECK(birthday>'1900-1-1'),
     isMale BIT(1),
-    createdDate DATETIME DEFAULT NOW() 
+    createdDatetime DATETIME DEFAULT NOW() 
 );
 INSERT INTO person(`name`,birthday,isMale) VALUES ('احمد الكاف', '2000-1-24', TRUE);
 INSERT INTO person(`name`,birthday,isMale) VALUES ('Ali', '1995-1-24', TRUE);
@@ -33,7 +33,7 @@ INSERT INTO `account`(username,`password`,personId) values ('salem-11','$2a$10$k
 INSERT INTO `account`(username,`password`,personId) values ('hammody','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',5);
 INSERT INTO `account`(username,`password`,personId) values ('sara','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',6);
 INSERT INTO `account`(username,`password`,personId) values ('aboody','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',7);
-INSERT INTO `account`(username,`password`,personId) values ('asdf','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',10);
+INSERT INTO `account`(username,`password`,personId) values ('asdf','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',10);-- person id 8 and 9 are children that why they don't have account
 
 CREATE TABLE parent( -- 3
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -42,6 +42,11 @@ CREATE TABLE parent( -- 3
     phone3 VARCHAR(15),
     phone4 VARCHAR(15),
     phone5 VARCHAR(15),
+    phone6 VARCHAR(15),
+    phone7 VARCHAR(15),
+    phone8 VARCHAR(15),
+    phone9 VARCHAR(15),
+    phone10 VARCHAR(15),
 	address	NVARCHAR(64),
 	accountId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_parent_accountId FOREIGN KEY (accountId) REFERENCES account(id) ON DELETE CASCADE
 );
@@ -54,7 +59,7 @@ CREATE TABLE teacher( -- 4
 );
 INSERT INTO teacher(accountId) values (3);
 INSERT INTO teacher(accountId) values (4);
-INSERT INTO teacher(accountId) values (7); -- accountId 7 and 10 are admin by insert them in teacher and head of department tables
+INSERT INTO teacher(accountId) values (7); -- accountId 7 and 8 are admin by insert them in teacher and head of department tables
 INSERT INTO teacher(accountId) values (8);
 
 CREATE TABLE hd( -- 5
@@ -71,23 +76,124 @@ CREATE TABLE child( -- 6
 	femaleFamilyMembers	TINYINT,
 	maleFamilyMembers TINYINT,
 	birthOrder TINYINT,
-	parentsKinship NVARCHAR(256),
-	registerDate DATE default now(),
+	parentsKinship NVARCHAR(512),
+	registerDate DATE DEFAULT (curdate()),
 	diagnosticDate DATE,
-	pregnancyState NVARCHAR(256),
-	birthState NVARCHAR(256),
-	growthState	NVARCHAR(256),
-	diagnostic	NVARCHAR(256),
-	medicine NVARCHAR(256),
+	pregnancyState NVARCHAR(512),
+	birthState NVARCHAR(512),
+	growthState	NVARCHAR(512),
+	diagnostic	NVARCHAR(512),
+	medicine NVARCHAR(512),
 	behaviors NVARCHAR(512),
 	prioritySkills	NVARCHAR(512),
-	parentId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_child_parentId FOREIGN KEY (parentId) REFERENCES parent(id) ON DELETE NO ACTION, -- if parent deleted don't delete the child
+	parentId INT UNSIGNED UNIQUE, CONSTRAINT FK_child_parentId FOREIGN KEY (parentId) REFERENCES parent(id) ON DELETE SET NULL, -- if parent deleted don't delete the child
 	personId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_child_personId FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
 );
-INSERT INTO child(accountId) values (8);
-INSERT INTO child(accountId) values (9);
+INSERT INTO child(femaleFamilyMembers,maleFamilyMembers,birthOrder,parentsKinship,
+	diagnosticDate,pregnancyState,birthState,growthState,diagnostic,medicine,
+    behaviors,prioritySkills,parentId,personId) values (2,2,3,'they are cousin','2018-5-2',
+    'normal pregnancy','born in the seventh month','grow normal','diagnostied with autism',
+    'Antibiotic','very quite','learn speaking and social intraction',1,8);
+INSERT INTO child(personId) values (9);
+
+CREATE TABLE teacher_child( -- 7
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	assignDatetime DATETIME DEFAULT NOW(),
+	teacherId INT UNSIGNED NOT NULL, CONSTRAINT FK_teacherChild_teacherId FOREIGN KEY (teacherId) REFERENCES teacher(id) ON DELETE CASCADE,
+	childId INT UNSIGNED NOT NULL, CONSTRAINT FK_teacherChild_childId FOREIGN KEY (childId) REFERENCES child(id) ON DELETE CASCADE
+);
+INSERT INTO teacher_child(teacherId,childId) VALUES (1,1);
+INSERT INTO teacher_child(teacherId,childId) VALUES (1,2);
+INSERT INTO teacher_child(teacherId,childId) VALUES (2,2);
+
+-- select * from teacher 
+-- join teacher_child on teacher_child.teacherId = teacher.id
+-- join child on teacher_child.childId = child.id; -- teacher *--many-to-many--* child
 
 
+CREATE TABLE program( -- 8
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+    `name` NVARCHAR(50) NOT NULL,
+	createdDatetime	DATETIME DEFAULT NOW()
+);
+INSERT INTO program(name) values ('Portage');
+INSERT INTO program(name) values ('Other Program');
+
+CREATE TABLE field( -- 9
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	`name` NVARCHAR(50)	NOT NULL,
+	createdDatetime	DATETIME DEFAULT NOW()
+);
+INSERT INTO field(name) values ('Social');
+INSERT INTO field(name) values ('Knowledge');
+INSERT INTO field(name) values ('Self-care');
+INSERT INTO field(name) values ('Speaking');
+
+CREATE TABLE performance( -- 10
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	`name` NVARCHAR(512) NOT NULL,
+	minAge TINYINT UNSIGNED,
+	maxAge TINYINT UNSIGNED, CONSTRAINT CH_performance_minAgeLessThanMaxAge CHECK(minAge <= maxAge and maxAge < 50),
+	createdDatetime DATETIME DEFAULT NOW(),
+	fieldId	INT UNSIGNED, CONSTRAINT FK_performance_fieldId FOREIGN KEY (fieldId) REFERENCES field(id) ON DELETE SET NULL,
+	programId INT UNSIGNED, CONSTRAINT FK_performance_programId FOREIGN KEY (programId) REFERENCES program(id) ON DELETE CASCADE -- deleting program with performances that not assigned is valid. But if there is goal depend on a performance it won't delete because goal has constraint with performance of NO ACTION
+);
+INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('Count to ten',5,7,2,1);
+INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('Count to five',2,5,2,2);
+INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('say la la la',4,6,4,1);
+INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('hold the bottle',2,4,2,1);
+INSERT INTO performance(name,fieldId) values ('go to the bathroom by himself',3);
+INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('Response to greeting',7,9,1,1);
+
+CREATE TABLE goal( -- 11
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	note NVARCHAR(512),
+	assignDatetime DATETIME DEFAULT NOW(),
+	state ENUM('continuous','strength','completed') NOT NULL,
+	performanceId INT UNSIGNED NOT NULL, CONSTRAINT FK_goal_performanceId FOREIGN KEY (performanceId) REFERENCES performance(id) ON DELETE NO ACTION, -- prevent deleting performance, if there is a goal depends on it.
+	childId INT UNSIGNED NOT NULL, CONSTRAINT FK_goal_childId FOREIGN KEY (childId) REFERENCES child(id) ON DELETE CASCADE
+);
+INSERT INTO goal(note, state, performanceId,childId) values ('Evalute the child in the public','continuous',1,1);
+INSERT INTO goal(state, performanceId,childId) values ('strength',2,1);
+INSERT INTO goal(note, state, performanceId,childId) values ('perform publicly','completed',3,2);
+INSERT INTO goal(note, state, performanceId,childId) values ('privately','continuous',3,1);
+INSERT INTO goal(note, state, performanceId,childId) values ('With help','continuous',5,1);
+
+-- select * from goal join performance on goal.performanceId = performance.id;
+
+-- delete from goal where id = 2;
+-- DELETE FROM program where id =2;
+
+CREATE TABLE evaluation( -- 12
+	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+	`description` NVARCHAR(512),
+    mainstream NVARCHAR(512),
+	note NVARCHAR(512),
+	evaluationDatetime DATETIME DEFAULT NOW(),
+	goalId INT UNSIGNED NOT NULL, CONSTRAINT FK_evaluation_goalId FOREIGN KEY (goalId) REFERENCES goal(id) ON DELETE CASCADE,
+	teacherId INT UNSIGNED, CONSTRAINT FK_evaluation_teacherId FOREIGN KEY (teacherId) REFERENCES teacher(id) ON DELETE SET NULL
+);
+INSERT INTO evaluation(description,mainstream,note,evaluationDatetime,goalId,teacherId) 
+	values ('show the child ten numbers','numbers are written in a paper','child struggle with number 8','2022-12-30',1,1);
+INSERT INTO evaluation(mainstream,note,goalId,teacherId) values ('objects numbers','child struggle at number 9',1,2);
+INSERT INTO evaluation(description,evaluationDatetime,goalId,teacherId) values ('ask the child to say after me: la la la','2022-12-29',3,2);
+INSERT INTO evaluation(description,goalId,teacherId) values ('I told her if so',5,1);
+INSERT INTO evaluation(description,goalId,teacherId) values ('I told the child to say: la la la',4,1);
+
+-- select * from evaluation left join goal on evaluation.goalId = goal.id join performance on performance.id = goal.performanceId;
+DROP USER IF EXISTS 'nodejs'@'localhost';
+CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
+-- DELETE          Delete rows from a specific table
+-- INSERT          Insert rows into a specific table
+-- SELECT          Read a database
+-- UPDATE          Update table rows
+GRANT DELETE, INSERT, SELECT, UPDATE ON acts.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+
+
+CREATE VIEW fieldView AS
+	SELECT field.id,field.name,field.createdDatetime,COUNT(performance.fieldId) AS performanceCount
+    FROM field LEFT JOIN performance ON performance.fieldId=field.id GROUP BY field.id;
 
 
 
