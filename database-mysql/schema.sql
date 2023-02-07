@@ -2,23 +2,27 @@ DROP DATABASE IF EXISTS acts;
 CREATE DATABASE acts;
 USE acts;
 
+/******************************************* TABLE *********************************************/
+
 CREATE TABLE person (-- 1
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
-    birthday DATE,CONSTRAINT CH_person_birthdayLimit CHECK(birthday>'1900-1-1'),
+    birthDate DATE,CONSTRAINT CH_person_birthdayLimit CHECK(birthDate>'1900-1-1'),
     isMale BIT(1),
     createdDatetime DATETIME DEFAULT NOW() 
 );
-INSERT INTO person(`name`,birthday,isMale) VALUES ('احمد الكاف', '2000-1-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Ali', '1995-1-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Hdar', '2000-3-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Salem', '1995-1-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Mohammed', '2001-9-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Sara', '1995-1-24', FALSE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Abdullah', '2002-5-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Noor', '2008-1-24', FALSE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Omer', '2009-1-24', TRUE);
-INSERT INTO person(`name`,birthday,isMale) VALUES ('Khaled', '1999-6-3', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('احمد الكاف', '2000-1-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Ali', '1995-1-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Hdar', '2000-3-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Salem', '1995-1-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Mohammed', '2001-9-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Sara', '1995-1-24', FALSE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Abdullah', '2002-5-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Noor', '2008-1-24', FALSE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Omer', '2009-1-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale) VALUES ('Khaled', '1999-6-3', TRUE);
+INSERT INTO person(`name`) VALUES ('Nothing');
+
 
 CREATE TABLE `account`( -- 2
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -34,6 +38,7 @@ INSERT INTO `account`(username,`password`,personId) values ('hammody','$2a$10$ks
 INSERT INTO `account`(username,`password`,personId) values ('sara','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',6);
 INSERT INTO `account`(username,`password`,personId) values ('aboody','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',7);
 INSERT INTO `account`(username,`password`,personId) values ('asdf','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',10);-- person id 8 and 9 are children that why they don't have account
+
 
 CREATE TABLE parent( -- 3
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -53,6 +58,7 @@ CREATE TABLE parent( -- 3
 INSERT INTO parent(phone1,phone2,address,accountId) values ('775544489','735487872','Bin sena',1);
 INSERT INTO parent(phone1,address,accountId) values ('78454456','Masakin',2);
 
+
 CREATE TABLE teacher( -- 4
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     accountId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_teacher_accountId FOREIGN KEY (accountId) REFERENCES account(id) ON DELETE CASCADE
@@ -61,6 +67,7 @@ INSERT INTO teacher(accountId) values (3);
 INSERT INTO teacher(accountId) values (4);
 INSERT INTO teacher(accountId) values (7); -- accountId 7 and 8 are admin by insert them in teacher and head of department tables
 INSERT INTO teacher(accountId) values (8);
+
 
 CREATE TABLE hd( -- 5
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -71,13 +78,14 @@ INSERT INTO hd(accountId) values (6);
 INSERT INTO hd(accountId) values (7);
 INSERT INTO hd(accountId) values (8);
 
+
 CREATE TABLE child( -- 6
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	femaleFamilyMembers	TINYINT,
 	maleFamilyMembers TINYINT,
 	birthOrder TINYINT,
 	parentsKinship NVARCHAR(512),
-	registerDate DATE DEFAULT (curdate()),
+-- registerDate DATE DEFAULT (curdate()), You can drive this from person.createdDatetime
 	diagnosticDate DATE,
 	pregnancyState NVARCHAR(512),
 	birthState NVARCHAR(512),
@@ -86,7 +94,7 @@ CREATE TABLE child( -- 6
 	medicine NVARCHAR(512),
 	behaviors NVARCHAR(512),
 	prioritySkills	NVARCHAR(512),
-	parentId INT UNSIGNED UNIQUE, CONSTRAINT FK_child_parentId FOREIGN KEY (parentId) REFERENCES parent(id) ON DELETE SET NULL, -- if parent deleted don't delete the child
+	parentId INT UNSIGNED, CONSTRAINT FK_child_parentId FOREIGN KEY (parentId) REFERENCES parent(id) ON DELETE SET NULL, -- if parent deleted don't delete the child
 	personId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_child_personId FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
 );
 INSERT INTO child(femaleFamilyMembers,maleFamilyMembers,birthOrder,parentsKinship,
@@ -95,6 +103,7 @@ INSERT INTO child(femaleFamilyMembers,maleFamilyMembers,birthOrder,parentsKinshi
     'normal pregnancy','born in the seventh month','grow normal','diagnostied with autism',
     'Antibiotic','very quite','learn speaking and social intraction',1,8);
 INSERT INTO child(personId) values (9);
+
 
 CREATE TABLE teacher_child( -- 7
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -119,15 +128,17 @@ CREATE TABLE program( -- 8
 INSERT INTO program(name) values ('Portage');
 INSERT INTO program(name) values ('Other Program');
 
-CREATE TABLE field( -- 9
+
+CREATE TABLE `field`( -- 9
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	`name` NVARCHAR(50)	NOT NULL UNIQUE,
 	createdDatetime	DATETIME DEFAULT NOW()
 );
-INSERT INTO field(name) values ('Social');
-INSERT INTO field(name) values ('Knowledge');
-INSERT INTO field(name) values ('Self-care');
-INSERT INTO field(name) values ('Speaking');
+INSERT INTO `field`(name) values ('Social');
+INSERT INTO `field`(name) values ('Knowledge');
+INSERT INTO `field`(name) values ('Self-care');
+INSERT INTO `field`(name) values ('Speaking');
+
 
 CREATE TABLE performance( -- 10
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -144,6 +155,7 @@ INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('say la la
 INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('hold the bottle',2,4,2,1);
 INSERT INTO performance(name,fieldId) values ('go to the bathroom by himself',3);
 INSERT INTO performance(name,minAge,maxAge,fieldId,programId) values ('Response to greeting',7,9,1,1);
+
 
 CREATE TABLE goal( -- 11
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -180,13 +192,46 @@ INSERT INTO evaluation(description,evaluationDatetime,goalId,teacherId) values (
 INSERT INTO evaluation(description,goalId,teacherId) values ('I told her if so',5,1);
 INSERT INTO evaluation(description,goalId,teacherId) values ('I told the child to say: la la la',4,1);
 
+/******************************************* VIEW *********************************************/
 
 CREATE VIEW fieldView AS
 	SELECT field.id,field.name,field.createdDatetime,COUNT(performance.fieldId) AS performanceCount
     FROM field LEFT JOIN performance ON performance.fieldId=field.id GROUP BY field.id;
 
+CREATE VIEW programView AS
+	SELECT program.id,program.name,program.createdDatetime,COUNT(performance.fieldId) AS performanceCount
+    FROM program LEFT JOIN performance ON performance.programId=program.id GROUP BY program.id;
 
--- select * from evaluation left join goal on evaluation.goalId = goal.id join performance on performance.id = goal.performanceId;
+
+CREATE VIEW personView AS
+	SELECT id,
+    `name`,
+    birthDate,
+	(case isMale when 0 then false when 1 then true else null end) AS isMale,
+    createdDatetime,
+    TIMESTAMPDIFF(YEAR,birthDate,CURDATE()) AS age FROM person;-- int numbers
+
+
+CREATE VIEW childView AS 
+	SELECT child.id,
+	child.femaleFamilyMembers,
+	child.maleFamilyMembers,
+	child.birthOrder,
+	child.parentsKinship,
+	child.diagnosticDate,
+	child.pregnancyState,
+	child.birthState,
+	child.growthState,
+	child.diagnostic,
+	child.medicine,
+	child.behaviors,
+	child.prioritySkills,
+	child.parentId,
+	child.personId,
+    person.createdDatetime AS registerDate FROM child LEFT JOIN person on child.personId = person.id;
+
+/******************************************* USER *********************************************/
+
 DROP USER IF EXISTS 'nodejs'@'localhost';
 CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
 -- DELETE          Delete rows from a specific table

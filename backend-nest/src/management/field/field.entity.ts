@@ -5,7 +5,7 @@ export class CreateField{
     @IsNotEmpty()
     name:string;
     @IsDateString() @IsOptional()
-    createdDatetime?:Date;
+    createdDatetime:Date|string;
 }
 
 export class FieldEntity extends CreateField {

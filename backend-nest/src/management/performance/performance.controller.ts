@@ -14,8 +14,8 @@ export class PerformanceController {
     }
 
     @Get()
-    async findAll(@Query('FK',ParseBoolPipe) fk: boolean) {
-        return this.performanceService.findAll(fk);
+    async findAll() {
+        return this.performanceService.findAll();
     }
 
     @Get(':id')

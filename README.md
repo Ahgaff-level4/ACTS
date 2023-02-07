@@ -98,9 +98,18 @@
 
   > Table `Performance(ID, Name, FieldId)` will be `performance(id, name, fieldId)`
 
-  #### **6. Foreign key name is the refereed table name with suffix of `id` .**
+  #### **6. Foreign key name is the refereed table name with suffix of `id`.**
 
-    > `performance(..., fieldId)`
+  > `performance(..., fieldId)`
+
+  #### **7. Foreign key attribute have its object with same attribute name subtract `Id`.**
+
+  > `goal(..., performanceId)` Will has `goal(..., performanceId, performance)` where `performance` is object of type Performance, correspond of performanceId. This is true only by retrieving data from the server. And the child attribute `performance` in our example has nothing to do in deleting or updating. Its job only to show the `performanceId` information. We will let the frontend developer solve this issue as a homework 🙂
+
+  #### **8. Any attribute of type `Date` -in javascript- its name should contains `Date`, or `Datetime` if time is concerned.**
+
+  Because JSON format dose not has type `Date`. But the database has different types for `DATE` and `DATETIME`.
+  > `person(..., birthDate, createdDatetime)` Here we can know `birthDate` is type of `Date` -in javascript- and time is NOT concerned. `createdDatetime` is also type of `Date` but time is concerned.
 
 - ### **API**
 
@@ -118,21 +127,19 @@
   - Read, with `GET` operation optionally passing id as param if not passed will return all.
     > `http.get("domain.com/api/field")` will return all fields
 
-    > `http.get("domain.com/api/field/1")` will return the field with `id == 1`
+    > `http.get("domain.com/api/field/1")` will return array of length one -if exist or zero- of the field with `id == 1`
 
-  #### **2. Request a path with table name (e.g., `.../api/field/1` ) will return an object its properties is exactly its columns.**
+  #### **2. GET request of path with table name (e.g., `.../api/field` or `.../api/field/1`) will return an object its properties is exactly its columns. And properties with derived attribute. And foreign key will be as said in (`Convention` > `Naming` > `7`)**
 
-    This is not practical when dealing with object that has foreign key because we won't have data. (e.g., `goal(..., performanceId)` ) but we want to show the performance name! We will let the frontend developer solve this problem as a homework 🙂 (See: number 4)
-
-  > Table `goal(id, performanceId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, performanceId:9,...}, ...]`
+  > Table `goal(id, performanceId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, performanceId:9, performance:{...,minAge:4,maxAge:6}...}, ...]`
 
   #### **3. Each request should provide a token in the request header. And authorization of user privilege should be in the server before any respond.**
-  
+
   > `headers:{'Authorization': 'Bearer a876d8a5dd79a79f6f'}`
 
-  #### **4. Some API path will combine two or more table names. That mean there is join query. These paths only has GET operation. First table name is the main table left joined with following table names.**
-  
-  > `.../api/goalPerformance/[id]` will return the goal with id specified and left joined with performance. Object structure will be `{id, performanceId,...goal, performance}` where performance is an object containing all performance columns as properties.
+  #### **4. Properties of type `Date` should send to the server with type string and its value is in ISO format.**
+
+  > `Person(..., birthDate)` to create person. We will convert attribute createdDatetime to ISO string as `person.birthDate = person.birthDate.toISOString()`
 
 <br/>
 

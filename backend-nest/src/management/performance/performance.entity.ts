@@ -15,7 +15,7 @@ export class CreatePerformance {
 	@IsNumber() @IsOptional()
 	programId?: number;
 	@IsDateString() @IsOptional()
-	createdDatetime?: string;
+	createdDatetime: Date|string;
 }
 
 export class PerformanceEntity extends CreatePerformance {

@@ -5,7 +5,7 @@ export class CreateProgram{
     @IsNotEmpty()
     name:string;
     @IsDateString() @IsOptional()
-    createdDatetime?:Date;
+    createdDatetime?:Date|string;
 }
 
 export class ProgramEntity extends CreateProgram{

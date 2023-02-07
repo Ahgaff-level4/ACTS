@@ -10,18 +10,9 @@ export class PerformanceService {
         return this.db.create('performance',createPerformance);
     }
 
-    /**
-     * 
-     * @param fk foreignKey is boolean determine weather the array of return object should get FK objects. Ex: if FK=false. getAll performances will return [{...,fieldId=2,field=null},...]. True will be [{...,fieldId=2,field={...}},...]. Default is True
-     * @returns 
-     */
-    async findAll(fk: boolean) {
+    async findAll() {
         // field query= select field.id,field.name,field.createdDatetime, count(performance.fieldId) AS performanceCount from field left join performance on field.id = performance.fieldId group by field.id;
-        var res:PerformanceEntity[];
-        if (fk)
-            res = await this.db.selectJoin(['performance', 'fieldView', 'program']) as PerformanceEntity[];
-        else res = await this.db.select('*', 'performance') as PerformanceEntity[];
-        return res;
+        return await this.db.selectJoin(['performance', 'fieldView', 'program']) as PerformanceEntity[];
     }
 
     findOne(id: number) {

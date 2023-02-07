@@ -4,6 +4,9 @@ import { FieldPacket, OkPacket, Pool, QueryError, ResultSetHeader, RowDataPacket
 import { CreateField, FieldEntity, UpdateField } from 'src/management/field/field.entity';
 import { CreatePerformance, PerformanceEntity, UpdatePerformance } from 'src/management/performance/performance.entity';
 import { CreateProgram, ProgramEntity, UpdateProgram } from 'src/management/program/program.entity';
+import { CreatePerson, PersonEntity, UpdatePerson } from './management/person/person.entity';
+import { ChildEntity, CreateChild, UpdateChild } from './management/child/child.entity';
+import { CreateParent, ParentEntity, UpdateParent } from './management/parent/parent.entity';
 
 
 @Injectable()
@@ -110,16 +113,27 @@ export class DatabaseService {
         });
     }
 
+    /**
+     * Used because mysql2 use question marks to prevent sql injection. But to insert values instead of question marks mysql2 needs array of values of type either Number or String.
+     * @param obj any Entity
+     * @returns array of values of type String or Number
+     */
     private extractValues(obj: object): (string | number)[] {
         let values: (number | string)[] = [];
         if (typeof obj != 'object')
             throw new BadRequestException('Expected request body to be object!')
-        for (let v of Object.values(obj)) {
-            if (typeof v === 'number')
-                values.push(v)
-            else if (v.length <= 24 && v.includes('T') && v.indexOf('Z') + 1 == v.length)//if date (e.g., '2023-02-03T16:18:58.880Z')
-                values.push(new Date(v).toISOString().slice(0, 19).replace('T', ' '))
-            else values.push(v.toString());
+        for (let k in obj) {
+            if (typeof obj[k] === 'number')
+                values.push(obj[k]);
+            else if (typeof obj[k] === 'boolean')
+                values.push(obj[k] == true ? 1 : 0);
+            else if (obj[k] instanceof Date)//won't be true. But just relief
+                values.push(obj[k].toISOString())
+            else if (k.includes('Datetime'))//
+                values.push(new Date(obj[k]).toISOString().slice(0, 19).replace('T', ' '));// convert date (e.g., '2023-02-03T16:18:58.880Z') to date and time '2023-02-03 16:18:58' the acceptable format to mysql
+            else if (k.includes('Date'))
+                values.push(new Date(obj[k]).toISOString().slice(0, 10));// convert date (e.g., '2023-02-03T16:18:58.880Z') to only date '2023-02-03' the acceptable format to mysql
+            else values.push(obj[k].toString());//if 
         }
         if (values.length == 0)
             throw new BadRequestException('No property in the body object!');
@@ -128,10 +142,13 @@ export class DatabaseService {
 }
 
 export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
-export type TableName = 'person' | 'account' | 'parent' | 'teacher' | 'hd' | 'child' | 'teacher_child' | 'program' | 'programView' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
-export type Entity = PerformanceEntity | FieldEntity | ProgramEntity;//todo...
-export type CreateEntity = CreatePerformance | CreateField | CreateProgram;//todo...
-export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram;//todo...
-export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[];//todo...
+export type TableName = 'person' | 'personView' | 'account' | 'parent' | 'teacher' |
+    'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
+    'programView' | 'field' | 'fieldView' | 'performance' |
+    'goal' | 'evaluation';
+export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity;//todo...
+export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent;//todo...
+export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent;//todo...
+export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[];//todo...
 
 
