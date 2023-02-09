@@ -4,6 +4,6 @@ import { DatabaseService } from "src/database.service";
 
 @Module({
   controllers: [ProgramController],
-  providers: [DatabaseService]
+  providers:[DatabaseService]
 })
 export class ProgramModule { }

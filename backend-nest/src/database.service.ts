@@ -7,6 +7,7 @@ import { CreateProgram, ProgramEntity, UpdateProgram } from 'src/management/prog
 import { CreatePerson, PersonEntity, UpdatePerson } from './management/person/person.entity';
 import { ChildEntity, CreateChild, UpdateChild } from './management/child/child.entity';
 import { CreateParent, ParentEntity, UpdateParent } from './management/parent/parent.entity';
+import { CreateHd, HdEntity, UpdateHd } from './management/hd/Hd.entity';
 
 
 @Injectable()
@@ -167,13 +168,13 @@ export class DatabaseService {
 }
 
 export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
-export type TableName = 'person' | 'personView' | 'account' | 'parent' | 'teacher' |
+export type TableName = 'person' | 'personView' | 'account'|'accountView' | 'parent' | 'teacher' |
     'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
     'programView' | 'field' | 'fieldView' | 'performance' |
     'goal' | 'evaluation';
-export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity;//todo...
-export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent;//todo...
-export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent;//todo...
-export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[];//todo...
+export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity|HdEntity;//todo...
+export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent|CreateHd;//todo...
+export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent|UpdateHd;//todo...
+export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[]|HdEntity[];//todo...
 
 

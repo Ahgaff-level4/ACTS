@@ -21,6 +21,8 @@ INSERT INTO person(`name`,birthDate,isMale) VALUES ('Abdullah', '2002-5-24', TRU
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Noor', '2008-1-24', FALSE);
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Omer', '2009-1-24', TRUE);
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Khaled', '1999-6-3', TRUE);
+INSERT INTO person(`name`,isMale) VALUES ('Omar', TRUE);
+INSERT INTO person(`name`,birthDate) VALUES ('Mansour', '1999-6-3');
 INSERT INTO person(`name`) VALUES ('Nothing');
 
 
@@ -38,7 +40,8 @@ INSERT INTO `account`(username,`password`,personId) values ('hammody','$2a$10$ks
 INSERT INTO `account`(username,`password`,personId) values ('sara','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',6);
 INSERT INTO `account`(username,`password`,personId) values ('aboody','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',7);
 INSERT INTO `account`(username,`password`,personId) values ('asdf','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',10);-- person id 8 and 9 are children that why they don't have account
-
+INSERT INTO `account`(username,`password`,personId) values ('qwer','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',11);
+INSERT INTO `account`(username,`password`,personId) values ('zxcv','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',12);
 
 CREATE TABLE parent( -- 3
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -230,6 +233,12 @@ CREATE VIEW childView AS
 	child.personId,
     person.createdDatetime AS registerDate FROM child LEFT JOIN person on child.personId = person.id;
 
+
+CREATE VIEW accountView AS -- Without passowrd
+	SELECT id,
+	username,
+	personId FROM account;
+    
 /******************************************* USER *********************************************/
 
 DROP USER IF EXISTS 'nodejs'@'localhost';
@@ -241,6 +250,5 @@ CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
 GRANT DELETE, INSERT, SELECT, UPDATE ON acts.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
-
-
-
+-- select *,@var_person := personId as personId from account where id =8;
+-- select * from personView where  id = @var_person;

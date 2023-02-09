@@ -17,12 +17,12 @@ export class AccountService {
 
     findAll(fk: boolean) {
         if (fk)
-            return this.db.selectJoin(['account', 'personView'])
-        else return this.db.select('*', 'account');
+            return this.db.selectJoin(['accountView', 'personView'])
+        else return this.db.select('*', 'accountView');
     }
 
     findOne(id: number) {
-        return this.db.selectJoinOne(['account', 'personView'], id);
+        return this.db.selectJoinOne(['accountView', 'personView'], id);
     }
 
     /**

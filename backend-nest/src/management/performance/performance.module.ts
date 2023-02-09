@@ -4,7 +4,7 @@ import { PerformanceController } from './performance.controller';
 import { DatabaseService } from 'src/database.service';
 
 @Module({
-  providers: [PerformanceService, DatabaseService],
+  providers: [PerformanceService,DatabaseService],
   controllers: [PerformanceController]
 })
 export class PerformanceModule {}

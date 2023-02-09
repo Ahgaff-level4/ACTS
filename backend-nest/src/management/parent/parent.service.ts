@@ -17,7 +17,7 @@ export class ParentService {
   }
 
   async findOne(id: number) {
-    return (await this.db.selectJoin(['parent', 'account'], null, ['WHERE id=?'], [id])).map(this.ut.phoneN2array);
+    return (await this.db.selectJoinOne(['parent', 'account'],id)).map(this.ut.phoneN2array);
   }
 
   update(id: number, updateParent: UpdateParent) {

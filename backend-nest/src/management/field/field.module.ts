@@ -4,6 +4,6 @@ import { DatabaseService } from "src/database.service";
 
 @Module({
   controllers: [FieldController],
-  providers: [DatabaseService]
+  providers:[DatabaseService]
 })
 export class FieldModule { }
