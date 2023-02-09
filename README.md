@@ -125,9 +125,12 @@
     > `http.delete("domain.com/api/field/"+fieldObject.id)`
 
   - Read, with `GET` operation optionally passing id as param if not passed will return all.
-    > `http.get("domain.com/api/field")` will return all fields
-
+    > `http.get("domain.com/api/field")` will return all fields.
+    
     > `http.get("domain.com/api/field/1")` will return array of length one -if exist or zero- of the field with `id == 1`
+
+    Tables may have foreign key so to get an object instead only foreign key id. We pass true to `FK` query
+    > `http.get("domain.com/api/child?FK=true")` will return all children with `person` property has person object that correspond to `personId`.
 
   #### **2. GET request of path with table name (e.g., `.../api/field` or `.../api/field/1`) will return an object its properties is exactly its columns. And properties with derived attribute. And foreign key will be as said in (`Convention` > `Naming` > `7`)**
 

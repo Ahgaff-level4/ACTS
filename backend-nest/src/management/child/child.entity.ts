@@ -1,5 +1,5 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsNumber,IsOptional, IsDate, IsString} from "class-validator";
+import { IsNumber,IsOptional, IsDateString, IsString} from "class-validator";
 import { PersonEntity } from "../person/person.entity";
 import { ParentEntity } from "../parent/parent.entity";
 
@@ -12,7 +12,7 @@ export class CreateChild {
 	birthOrder?:number;
 	@IsString() @IsOptional()
 	parentsKinship?:string;
-	@IsDate() @IsOptional()
+	@IsDateString() @IsOptional()
 	diagnosticDate?:Date|string;
 	@IsString() @IsOptional()
 	pregnancyState?:string;

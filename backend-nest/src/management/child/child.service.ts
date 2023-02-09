@@ -1,23 +1,24 @@
 import { Injectable } from '@nestjs/common';
-import { CreateChild, UpdateChild } from './child.entity';
+import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
 import { DatabaseService } from 'src/database.service';
+import { UtilityService } from 'src/utility.service';
 
 @Injectable()
 export class ChildService {
-  constructor(private db: DatabaseService) { }
+  constructor(private db: DatabaseService, private ut: UtilityService) { }
 
   create(createChild: CreateChild) {
     return this.db.create('child', createChild)
   }
 
-  findAll(fk: boolean) {
+  async findAll(fk: boolean) {
     if (fk)
-      return this.db.selectJoin(['childView', 'personView', 'parent'])
+      return (await this.db.selectJoin(['childView', 'personView', 'parent'])).map(this.ut.phoneN2array)
     else return this.db.select('*', 'childView')
   }
 
-  findOne(id: number) {
-    return this.db.selectJoinOne(['childView', 'personView', 'parent'], id);
+  async findOne(id: number) {
+    return (await this.db.selectJoinOne(['childView', 'personView', 'parent'], id)).map(this.ut.phoneN2array);
   }
 
   update(id: number, updateChild: UpdateChild) {
@@ -27,5 +28,4 @@ export class ChildService {
   remove(id: number) {
     return this.db.delete('child', id);
   }
-  
 }

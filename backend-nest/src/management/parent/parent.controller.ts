@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Query } from '@nestjs/common';
 import { ParentService } from './parent.service';
-import { ParseIntPipe } from '@nestjs/common/pipes';
+import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateParent, UpdateParent } from './parent.entity';
 import { SuccessInterceptor } from 'src/SuccessInterceptor';
 
@@ -15,8 +15,8 @@ export class ParentController {
   }
 
   @Get()
-  findAll() {
-    return this.parentService.findAll();
+  findAll(@Query('FK',ParseBoolPipe) fk:boolean) {
+    return this.parentService.findAll(fk);
   }
 
   @Get(':id')

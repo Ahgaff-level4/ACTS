@@ -1,14 +1,18 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsArray, IsNumber, IsOptional, IsString, Validate, validate } from "class-validator";
+import { ArrayMaxSize, IsArray, IsNumber, IsOptional, IsString, Validate, ValidateNested, validate } from "class-validator";
 import { AccountEntity } from "../account/account.entity";
+import { Type } from "class-transformer";
 
 export class CreateParent{
-	@Validate((v:number[])=>v && typeof v.length == 'number'&& v.length <= 10)
+	@IsOptional()
+	@IsArray()
+	@ArrayMaxSize(10)
+	@IsString({each:true})
 	phone:number[];
 	@IsString() @IsOptional()
 	address?:string;
 	@IsNumber()
-	accountId:number;
+	accountId!:number;
 }
 export class ParentEntity extends CreateParent {
 	id:number;

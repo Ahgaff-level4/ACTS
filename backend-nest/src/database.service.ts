@@ -27,7 +27,7 @@ export class DatabaseService {
        * example: select('*','field',"field.name like ?;",['%hi'])
        * => query("SELECT * FROM field WHERE field.name like ?",['%hi'])
        */
-    public select(select: string, from: TableName, where?: string, values?: (string | number)[]) {
+    public select(select: string, from: TableName, where?: string, values?: (string | number)[]): Promise<RowDataPacket[]> {
         let command = '';
         if (select && from)
             command = `SELECT ${select} FROM ${from}`;
@@ -35,8 +35,8 @@ export class DatabaseService {
         if (where)
             command += ` WHERE ${where}`;
         if (values)
-            return this.exec(command, values);
-        else return this.exec(command);
+            return this.exec(command, values) as Promise<RowDataPacket[]>;
+        else return this.exec(command) as Promise<RowDataPacket[]>;
     }
 
     /**
@@ -146,10 +146,12 @@ export class DatabaseService {
         if (typeof obj != 'object')
             throw new BadRequestException('Expected request body to be object!')
         for (let k in obj) {
-            if (typeof obj[k] === 'number')
+            if (obj[k] === null || typeof obj[k] === 'undefined')
+                values.push(null);
+            else if (typeof obj[k] === 'number')
                 values.push(obj[k]);
             else if (typeof obj[k] === 'boolean')
-                values.push(obj[k] == true ? 1 : 0);
+                values.push(obj[k] === true ? 1 : 0);
             else if (obj[k] instanceof Date)//won't be true. But just relief
                 values.push(obj[k].toISOString())
             else if (k.includes('Datetime'))//
