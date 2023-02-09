@@ -181,16 +181,16 @@ INSERT INTO goal(note, state, performanceId,childId) values ('With help','contin
 
 CREATE TABLE evaluation( -- 12
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-	`description` NVARCHAR(512),
+	`description` NVARCHAR(512) NOT NULL,
     mainstream NVARCHAR(512),
 	note NVARCHAR(512),
 	evaluationDatetime DATETIME DEFAULT NOW(),
 	goalId INT UNSIGNED NOT NULL, CONSTRAINT FK_evaluation_goalId FOREIGN KEY (goalId) REFERENCES goal(id) ON DELETE CASCADE,
-	teacherId INT UNSIGNED, CONSTRAINT FK_evaluation_teacherId FOREIGN KEY (teacherId) REFERENCES teacher(id) ON DELETE SET NULL
+	teacherId INT UNSIGNED NOT NULL, CONSTRAINT FK_evaluation_teacherId FOREIGN KEY (teacherId) REFERENCES teacher(id) ON DELETE NO ACTION
 );
 INSERT INTO evaluation(description,mainstream,note,evaluationDatetime,goalId,teacherId) 
 	values ('show the child ten numbers','numbers are written in a paper','child struggle with number 8','2022-12-30',1,1);
-INSERT INTO evaluation(mainstream,note,goalId,teacherId) values ('objects numbers','child struggle at number 9',1,2);
+INSERT INTO evaluation(description,note,goalId,teacherId) values ('desc','child struggle at number 9',1,2);
 INSERT INTO evaluation(description,evaluationDatetime,goalId,teacherId) values ('ask the child to say after me: la la la','2022-12-29',3,2);
 INSERT INTO evaluation(description,goalId,teacherId) values ('I told her if so',5,1);
 INSERT INTO evaluation(description,goalId,teacherId) values ('I told the child to say: la la la',4,1);
@@ -215,7 +215,7 @@ CREATE VIEW personView AS
     TIMESTAMPDIFF(YEAR,birthDate,CURDATE()) AS age FROM person;-- int numbers
 
 
-CREATE VIEW childView AS 
+CREATE VIEW childView AS  -- To add registerDate
 	SELECT child.id,
 	child.femaleFamilyMembers,
 	child.maleFamilyMembers,
@@ -238,7 +238,8 @@ CREATE VIEW accountView AS -- Without passowrd
 	SELECT id,
 	username,
 	personId FROM account;
-    
+
+
 /******************************************* USER *********************************************/
 
 DROP USER IF EXISTS 'nodejs'@'localhost';
@@ -252,3 +253,8 @@ FLUSH PRIVILEGES;
 
 -- select *,@var_person := personId as personId from account where id =8;
 -- select * from personView where  id = @var_person;
+
+
+
+
+
