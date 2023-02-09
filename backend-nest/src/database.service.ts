@@ -8,6 +8,8 @@ import { ChildEntity, CreateChild, UpdateChild } from './management/child/child.
 import { CreateParent, ParentEntity, UpdateParent } from './management/parent/parent.entity';
 import { CreateHd, HdEntity, UpdateHd } from './management/hd/Hd.entity';
 import { CreateTeacher, TeacherEntity, UpdateTeacher } from './management/teacher/teacher.entity';
+import { CreateGoal, GoalEntity, UpdateGoal } from './management/goal/Goal.entity';
+import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './management/evaluation/evaluation.entity';
 
 @Injectable()
 export class DatabaseService {
@@ -170,9 +172,9 @@ export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket
 export type TableName = 'person' | 'personView' | 'account' | 'accountView' | 'parent' | 'teacher' |
     'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
     'programView' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
-export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity;//todo...
-export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent | CreateHd | CreateTeacher;//todo...
-export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent | UpdateHd | UpdateTeacher;//todo...
-export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[] | HdEntity[] | TeacherEntity[];//todo...
+export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity|GoalEntity|EvaluationEntity;
+export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent | CreateHd | CreateTeacher|CreateGoal|CreateEvaluation;
+export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent | UpdateHd | UpdateTeacher|UpdateGoal|UpdateEvaluation;
+export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[] | HdEntity[] | TeacherEntity[]|GoalEntity[]|EvaluationEntity[];
 
 

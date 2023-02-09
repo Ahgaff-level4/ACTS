@@ -10,11 +10,14 @@ import { PersonModule } from './management/person/person.module';
 import { ParentModule } from './management/parent/parent.module';
 import { HdModule } from './management/hd/hd.module';
 import { TeacherModule } from './management/teacher/teacher.module';
+import { GoalModule } from './management/goal/goal.module';
+import { EvaluationModule } from './management/evaluation/evaluation.module';
 
 @Module({
   imports: [FieldModule, LoginModule, AccountModule, 
     PerformanceModule, ProgramModule, ChildModule, 
-    PersonModule, ParentModule, HdModule, TeacherModule],
+    PersonModule, ParentModule, HdModule, TeacherModule,
+    GoalModule, EvaluationModule],
   controllers: [],
 })
 export class AppModule { }
