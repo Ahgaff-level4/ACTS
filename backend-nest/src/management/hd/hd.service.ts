@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { CreateHd, HdEntity, UpdateHd } from './Hd.entity';
+import { CreateHd, UpdateHd } from './hd.entity';
 import { DatabaseService } from 'src/database.service';
 
 @Injectable()

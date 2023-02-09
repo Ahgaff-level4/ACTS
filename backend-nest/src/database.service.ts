@@ -1,6 +1,5 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
-import { STATUS_CODES } from 'http';
-import { FieldPacket, OkPacket, Pool, QueryError, ResultSetHeader, RowDataPacket, createPool } from 'mysql2';
+import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import { OkPacket, Pool, QueryError, ResultSetHeader, RowDataPacket, createPool } from 'mysql2';
 import { CreateField, FieldEntity, UpdateField } from 'src/management/field/field.entity';
 import { CreatePerformance, PerformanceEntity, UpdatePerformance } from 'src/management/performance/performance.entity';
 import { CreateProgram, ProgramEntity, UpdateProgram } from 'src/management/program/program.entity';
@@ -8,7 +7,7 @@ import { CreatePerson, PersonEntity, UpdatePerson } from './management/person/pe
 import { ChildEntity, CreateChild, UpdateChild } from './management/child/child.entity';
 import { CreateParent, ParentEntity, UpdateParent } from './management/parent/parent.entity';
 import { CreateHd, HdEntity, UpdateHd } from './management/hd/Hd.entity';
-
+import { CreateTeacher, TeacherEntity, UpdateTeacher } from './management/teacher/teacher.entity';
 
 @Injectable()
 export class DatabaseService {
@@ -168,13 +167,12 @@ export class DatabaseService {
 }
 
 export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
-export type TableName = 'person' | 'personView' | 'account'|'accountView' | 'parent' | 'teacher' |
+export type TableName = 'person' | 'personView' | 'account' | 'accountView' | 'parent' | 'teacher' |
     'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
-    'programView' | 'field' | 'fieldView' | 'performance' |
-    'goal' | 'evaluation';
-export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity|HdEntity;//todo...
-export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent|CreateHd;//todo...
-export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent|UpdateHd;//todo...
-export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[]|HdEntity[];//todo...
+    'programView' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
+export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity;//todo...
+export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent | CreateHd | CreateTeacher;//todo...
+export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent | UpdateHd | UpdateTeacher;//todo...
+export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[] | HdEntity[] | TeacherEntity[];//todo...
 
 
