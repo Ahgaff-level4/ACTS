@@ -1,4 +1,4 @@
-import { BadRequestException, HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { BadRequestException, HttpException, HttpStatus, Injectable, InternalServerErrorException } from '@nestjs/common';
 import { STATUS_CODES } from 'http';
 import { FieldPacket, OkPacket, Pool, QueryError, ResultSetHeader, RowDataPacket, createPool } from 'mysql2';
 import { CreateField, FieldEntity, UpdateField } from 'src/management/field/field.entity';
@@ -55,9 +55,32 @@ export class DatabaseService {
         if (typeof tablesRes === 'object' &&
             typeof tablesRes.length === 'number' &&
             typeof tablesRes[0] === 'object' &&
-            typeof tablesRes[0][0].length === 'number')
+            typeof tablesRes[0].length === 'number')
             return this.relational2Object(tablesRes, tables.map((v) => v.includes('View') ? v.substring(0, v.indexOf('View')) as TableName : v));
-        else throw new BadRequestException('Expected multi RowDataPacket but got:' + tablesRes);
+        else throw new InternalServerErrorException('Expected multi RowDataPacket but got', JSON.stringify(tablesRes));
+    }
+
+    /**
+     * @param tables array of tables to join on `foreignKeyId = id` with first table will be the result array.
+     * @param id the id of the first table 
+     * @param select default: ['*','*',... for all tables]
+     * @returns array length zero -not found- or one of first type object, in the ex. performanceEntity[] with each attribute (e.g., field and program) is an object. So example type: {...,field:Field,program:Program}[]
+     */
+    public selectJoinOne(tables: TableName[], id: number, select?: string[]) {
+        //select *,@person := personId as personId from account where id =8;
+        //select * from personView where  id = @person; 
+        if (typeof select === 'undefined')
+            select = [];
+        if (typeof select[0] === 'undefined')
+            select[0] = '*';
+
+        let wheres = [];
+        for (let i = 1; i < tables.length; i++) {
+            var table = tables[i].includes('View') ? tables[i].substring(0, tables[i].indexOf('View')) as TableName : tables[i];
+            select[0] += `, @var_${table}:=${table}Id AS ${table}Id`;
+            wheres.push(`WHERE id=@var_${table}`);
+        }
+        return this.selectJoin(tables, select, ['WHERE id=?', ...wheres], [id]);
     }
 
 

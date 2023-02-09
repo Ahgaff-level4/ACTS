@@ -1,11 +1,8 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Put, Query, UseInterceptors } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { SuccessInterceptor } from 'src/SuccessInterceptor';
-import { CreateAccount, UpdateAccount } from './account.entity';
-export class LoginInfo {
-    username: string;
-    password: string;
-}
+import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
+
 
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/account')
@@ -18,8 +15,8 @@ export class AccountController {
     }
 
     @Get()
-    findAll() {
-        return this.accountService.findAll();
+    findAll(@Query('FK',ParseBoolPipe) fk:boolean) {
+        return this.accountService.findAll(fk);
     }
 
     @Get(':id')
@@ -28,13 +25,17 @@ export class AccountController {
     }
 
     @Patch(':id')
-    update(@Param('id', ParseIntPipe) id: number, @Body() updateAccount: UpdateAccount) {
-        return this.accountService.update(+id, updateAccount);
+    updateOldPassword(@Param('id', ParseIntPipe) id: number, @Body() updateAccount: UpdateAccountOldPassword) {
+        return this.accountService.updateOldPassword(+id, updateAccount);
+    }
+    
+    @Put(':id')
+    update(@Param('id',ParseIntPipe) id:number, @Body() updateAccount:UpdateAccount){
+        return this.accountService.update(id,updateAccount);
     }
 
     @Delete(':id')
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.accountService.remove(+id);
     }
-
 }

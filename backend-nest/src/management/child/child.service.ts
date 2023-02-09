@@ -4,25 +4,28 @@ import { DatabaseService } from 'src/database.service';
 
 @Injectable()
 export class ChildService {
-  constructor(private db:DatabaseService){}
-  
+  constructor(private db: DatabaseService) { }
+
   create(createChild: CreateChild) {
-    return this.db.create('child',createChild)
+    return this.db.create('child', createChild)
   }
 
-  findAll() {
-    return this.db.selectJoin(['childView','person'])
+  findAll(fk: boolean) {
+    if (fk)
+      return this.db.selectJoin(['childView', 'personView', 'parent'])
+    else return this.db.select('*', 'childView')
   }
 
   findOne(id: number) {
-    return this.db.selectJoin(['childView','person'],null,['WHERE id=?'],[id]);
+    return this.db.selectJoinOne(['childView', 'personView', 'parent'], id);
   }
 
   update(id: number, updateChild: UpdateChild) {
-    return this.db.update('child',id,updateChild);
+    return this.db.update('child', id, updateChild);
   }
 
   remove(id: number) {
-    return this.db.delete('child',id);
+    return this.db.delete('child', id);
   }
+  
 }

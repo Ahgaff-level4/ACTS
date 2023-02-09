@@ -1,12 +1,12 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseIntPipe } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseIntPipe, Query, ParseBoolPipe } from '@nestjs/common';
 import { ChildService } from './child.service';
 import { SuccessInterceptor } from 'src/SuccessInterceptor';
-import { CreateChild, UpdateChild } from './child.entity';
+import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
 
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/child')
 export class ChildController {
-  constructor(private readonly childService: ChildService) {}
+  constructor(private readonly childService: ChildService) { }
 
   @Post()
   create(@Body() createChild: CreateChild) {
@@ -14,22 +14,22 @@ export class ChildController {
   }
 
   @Get()
-  findAll() {
-    return this.childService.findAll();
+  findAll(@Query('FK', ParseBoolPipe) fk: boolean) {
+    return this.childService.findAll(fk);
   }
 
   @Get(':id')
-  findOne(@Param('id',ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.childService.findOne(+id);
   }
 
   @Patch(':id')
-  update(@Param('id',ParseIntPipe) id: number, @Body() updateChild: UpdateChild) {
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateChild: UpdateChild) {
     return this.childService.update(+id, updateChild);
   }
 
   @Delete(':id')
-  remove(@Param('id',ParseIntPipe) id: number) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.childService.remove(+id);
   }
 }

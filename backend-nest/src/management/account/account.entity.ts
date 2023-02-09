@@ -1,19 +1,25 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsNumber,IsString} from "class-validator";
+import { IsNumber, IsString } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
 
 export class CreateAccount {
 	@IsString()
-	username:string;
+	username: string;
 	@IsString()
-	password:string;
+	password: string;
 	@IsNumber()
-	personId:number;
+	personId: number;
 }
 
 export class AccountEntity extends CreateAccount {
 	id: number;
-	person:PersonEntity;
+	person: PersonEntity;
 }
 
-export class UpdateAccount extends PartialType(CreateAccount) { }
+export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
+	@IsString()
+	oldPassword:string;
+}
+
+export class UpdateAccount extends PartialType(CreateAccount) {
+}

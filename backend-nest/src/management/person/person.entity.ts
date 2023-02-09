@@ -7,7 +7,7 @@ export class CreatePerson{
 	@IsDateString() @IsOptional()
 	birthDate?:Date|string;
 	@IsBoolean()
-	isMale:boolean;
+	isMale:boolean|0|1;
 	@IsDateString() @IsOptional()
 	createdDatetime:Date|string;
 }
