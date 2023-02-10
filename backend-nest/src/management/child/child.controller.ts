@@ -1,6 +1,6 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseIntPipe, Query, ParseBoolPipe } from '@nestjs/common';
 import { ChildService } from './child.service';
-import { SuccessInterceptor } from 'src/SuccessInterceptor';
+import { SuccessInterceptor } from 'src/Success.interceptor';
 import { CreateChild, UpdateChild } from './child.entity';
 
 @UseInterceptors(SuccessInterceptor)

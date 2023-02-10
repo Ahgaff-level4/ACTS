@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Que
 import { HdService } from './hd.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateHd, UpdateHd } from './hd.entity';
-import { SuccessInterceptor } from 'src/SuccessInterceptor';
+import { SuccessInterceptor } from 'src/Success.interceptor';
 
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/hd')

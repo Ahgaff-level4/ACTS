@@ -1,7 +1,5 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsDateString, IsEnum, IsNumber, IsOptional, IsString } from "class-validator";
-import { PerformanceEntity } from "../performance/performance.entity";
-import { ChildEntity } from "../child/child.entity";
+import { IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
 import { GoalEntity } from "../goal/Goal.entity";
 import { TeacherEntity } from "../teacher/teacher.entity";
 

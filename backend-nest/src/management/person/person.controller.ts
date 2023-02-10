@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
 import { DatabaseService } from 'src/database.service';
 import { CreatePerson, PersonEntity, UpdatePerson } from './person.entity';
-import { SuccessInterceptor } from 'src/SuccessInterceptor';
+import { SuccessInterceptor } from 'src/Success.interceptor';
 import { RowDataPacket } from 'mysql2';
 
 @UseInterceptors(SuccessInterceptor)

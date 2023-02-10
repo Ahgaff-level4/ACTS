@@ -3,7 +3,7 @@ import * as bcrypt from 'bcrypt'
 import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
 import { DatabaseService, DbResult } from 'src/database.service';
 import { RowDataPacket } from 'mysql2';
-import { HttpExceptionFilter } from 'src/MyExceptionFilter';
+import { HttpExceptionFilter } from 'src/MyException.filter';
 import { HttpCode } from '@nestjs/common/decorators/http/http-code.decorator';
 import { STATUS_CODES } from 'http';
 @Injectable()

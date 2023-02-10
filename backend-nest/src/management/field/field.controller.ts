@@ -1,7 +1,7 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
 import { CreateField,UpdateField } from './field.entity';
 import { DatabaseService } from 'src/database.service';
-import { SuccessInterceptor } from 'src/SuccessInterceptor';
+import { SuccessInterceptor } from 'src/Success.interceptor';
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/field')
 export class FieldController {

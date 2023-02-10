@@ -1,6 +1,6 @@
 import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Put, Query, UseInterceptors } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { SuccessInterceptor } from 'src/SuccessInterceptor';
+import { SuccessInterceptor } from 'src/Success.interceptor';
 import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
 
 

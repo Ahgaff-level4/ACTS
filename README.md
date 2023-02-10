@@ -142,7 +142,7 @@
 
   #### **4. Properties of type `Date` should send to the server with type string and its value is in ISO format.**
 
-  > `Person(..., birthDate)` to create person. We will convert attribute createdDatetime to ISO string as `person.birthDate = person.birthDate.toISOString()`
+  > we can easily convert variable of type `Date` to string of ISO format by `new Date().toISOString()`
 
 <br/>
 
