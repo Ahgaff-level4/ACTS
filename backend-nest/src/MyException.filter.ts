@@ -13,6 +13,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       .status(status)
       .json({
         success: false,
+        message:exception.message||'Something went wrong!',
         error: {
           statusCode: status,
           exception,

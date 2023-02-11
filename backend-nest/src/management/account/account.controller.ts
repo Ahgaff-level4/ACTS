@@ -1,7 +1,8 @@
 import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Put, Query, UseInterceptors } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { SuccessInterceptor } from 'src/Success.interceptor';
+import { SuccessInterceptor } from 'src/success.interceptor';
 import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
+import { Role, Roles } from 'src/auth/Role';
 
 
 @UseInterceptors(SuccessInterceptor)
@@ -15,6 +16,7 @@ export class AccountController {
     }
 
     @Get()
+    // @Roles(Role.Admin)
     findAll(@Query('FK',ParseBoolPipe) fk:boolean) {
         return this.accountService.findAll(fk);
     }

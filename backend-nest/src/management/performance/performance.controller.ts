@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { PerformanceService } from './performance.service';
 import { CreatePerformance, UpdatePerformance } from './performance.entity';
-import { SuccessInterceptor } from 'src/Success.interceptor';
+import { SuccessInterceptor } from 'src/success.interceptor';
 
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/performance')

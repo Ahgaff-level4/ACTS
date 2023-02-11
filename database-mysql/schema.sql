@@ -39,8 +39,8 @@ INSERT INTO `account`(username,`password`,personId) values ('salem-11','$2a$10$k
 INSERT INTO `account`(username,`password`,personId) values ('hammody','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',5);
 INSERT INTO `account`(username,`password`,personId) values ('sara','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',6);
 INSERT INTO `account`(username,`password`,personId) values ('aboody','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',7);
-INSERT INTO `account`(username,`password`,personId) values ('asdf','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',10);-- person id 8 and 9 are children that why they don't have account
-INSERT INTO `account`(username,`password`,personId) values ('qwer','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',11);
+INSERT INTO `account`(username,`password`,personId) values ('asdf','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',10);-- person id 8 and 9 are children that why they don't have account
+INSERT INTO `account`(username,`password`,personId) values ('qwer','$2a$10$7zIdK8cdup.QYobNCMM9.OyQExUFPdwYzFW8vC8V34A0qqSr2daui',11);
 INSERT INTO `account`(username,`password`,personId) values ('zxcv','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',12);
 
 CREATE TABLE parent( -- 3

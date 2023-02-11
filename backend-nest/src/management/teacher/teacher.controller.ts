@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Que
 import { TeacherService } from './Teacher.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateTeacher, UpdateTeacher } from './Teacher.entity';
-import { SuccessInterceptor } from 'src/Success.interceptor';
+import { SuccessInterceptor } from 'src/success.interceptor';
 
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/teacher')

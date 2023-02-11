@@ -22,3 +22,5 @@
 .DS_Store
 Thumbs.db
 backend-nest/.env
+/backend-nest/.env
+./backend-nest/.env

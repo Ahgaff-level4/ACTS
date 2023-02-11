@@ -1,5 +1,5 @@
 
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler } from '@nestjs/common';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, ArgumentsHost } from '@nestjs/common';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 
@@ -9,7 +9,7 @@ export class SuccessInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        map(data=>({success:true,data}))
+        map(data => (data?.message ? { success: true, message: data.message, data } : { success: true, data }))
       );
   }
 }
