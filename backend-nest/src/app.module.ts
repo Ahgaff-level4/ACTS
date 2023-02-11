@@ -11,7 +11,7 @@ import { TeacherModule } from './management/teacher/teacher.module';
 import { GoalModule } from './management/goal/goal.module';
 import { EvaluationModule } from './management/evaluation/evaluation.module';
 import { APP_GUARD } from '@nestjs/core';
-import { RolesGuard } from './auth/Role';
+import { RolesGuard } from './auth/Role.guard';
 import { AuthModule } from './auth/auth.module';
 
 @Module({

@@ -38,10 +38,10 @@ export class RolesGuard implements CanActivate {
     if (!requiredRoles)
       return true;
     
-    const { body: user } = context.switchToHttp().getRequest();
-    if (user && user.roles && requiredRoles.some((role) => user.roles?.includes(role)))
+    const { session } = context.switchToHttp().getRequest();
+    if (session && session.roles && requiredRoles.some((role) => session?.roles?.includes(role)))
       return true;
-    else throw new UnauthorizedException(`You don't have sufficient privilege!\n You need "${requiredRoles.toString()}" privilege. But your privilege is "${user?.roles?.toString()}".`);
+    else throw new UnauthorizedException(`You don't have sufficient privilege!\n You need "${requiredRoles.toString()}" privilege. But your privilege is "${session?.roles?.toString()}".`);
   }
 }
 

@@ -2,7 +2,7 @@ import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patc
 import { AccountService } from './account.service';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
-import { Role, Roles } from 'src/auth/Role';
+import { Role, Roles } from 'src/auth/Role.guard';
 
 
 @UseInterceptors(SuccessInterceptor)
@@ -16,7 +16,7 @@ export class AccountController {
     }
 
     @Get()
-    // @Roles(Role.Admin)
+    @Roles(Role.Admin)
     findAll(@Query('FK',ParseBoolPipe) fk:boolean) {
         return this.accountService.findAll(fk);
     }

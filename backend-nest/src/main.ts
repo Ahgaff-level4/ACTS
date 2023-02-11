@@ -19,8 +19,8 @@ const VALIDATION_PIPE_OPTIONS:ValidationPipeOptions = {
 
 const SESSION_OPTIONS:SessionOptions = {
   secret: process.env.SESSION_SECRET??'lkvnippoqSFweuroivc1mxnvlsPa4353',
-  resave: true,
-  saveUninitialized: true,
+  resave: false,
+  saveUninitialized: false,
   cookie:{
     maxAge:Number(process.env.SESSION_AGE_MILLISECOND)||7*24*60*60*1000,//default 7 days
     secure:'auto',
@@ -32,9 +32,9 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(helmet())
   app.use(session(SESSION_OPTIONS));
-  // app.enableCors();
-  app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new AuthenticationInterceptor())
+  app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
+  // app.enableCors();
   await app.listen(3000);
 }
 bootstrap();
