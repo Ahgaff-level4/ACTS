@@ -2,7 +2,8 @@ import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patc
 import { PerformanceService } from './performance.service';
 import { CreatePerformance, UpdatePerformance } from './performance.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
-
+import { Role, Roles } from 'src/auth/Role.guard';
+@Roles(Role.Admin,Role.HeadOfDepartment)
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/performance')
 export class PerformanceController {
@@ -14,11 +15,13 @@ export class PerformanceController {
     }
 
     @Get()
+    @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
     async findAll(@Query('FK',ParseBoolPipe) fk:boolean) {
         return this.performanceService.findAll(fk);
     }
 
     @Get(':id')
+    @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
     async findOne(@Param('id',ParseIntPipe) id: number) {
         return this.performanceService.findOne(+id);
     }

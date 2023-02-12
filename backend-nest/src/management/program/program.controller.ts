@@ -2,6 +2,8 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInt
 import { CreateProgram,UpdateProgram } from './program.entity';
 import { DatabaseService } from 'src/database.service';
 import { SuccessInterceptor } from 'src/success.interceptor';
+import { Role, Roles } from 'src/auth/Role.guard';
+@Roles(Role.Admin,Role.HeadOfDepartment)
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/program')
 export class ProgramController {
@@ -13,11 +15,13 @@ export class ProgramController {
   }
 
   @Get()
+  @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
   findAll() {
     return this.db.select('*','programView');
   }
 
   @Get(':id')
+  @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
   findOne(@Param('id',ParseIntPipe) id: number) {
     return this.db.select('*','programView','id=?',[id]);
   }

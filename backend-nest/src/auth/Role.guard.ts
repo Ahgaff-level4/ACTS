@@ -45,7 +45,7 @@ export class RolesGuard implements CanActivate {
 
     if (user?.roles && requiredRoles.some((role) => user?.roles?.includes(role)))
       return true;
-    else throw new UnauthorizedException({ message: R.string.insufficientPrivilege, requiredPrivileges: requiredRoles, yourPrivileges: user?.roles,action:'privilege' });
+    else throw new UnauthorizedException({ message: R.string.insufficientPrivilege, requiredPrivilege: requiredRoles, yourPrivileges: user?.roles,action:'privilege' });
   }
 }
 

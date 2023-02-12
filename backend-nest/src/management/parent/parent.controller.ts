@@ -3,7 +3,9 @@ import { ParentService } from './parent.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateParent, UpdateParent } from './parent.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
+import { Role, Roles } from 'src/auth/Role.guard';
 
+@Roles(Role.Admin)
 @UseInterceptors(SuccessInterceptor)
 @Controller('api/parent')
 export class ParentController {
