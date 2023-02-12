@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { ParentEntity } from './management/parent/parent.entity';
-import { ChildEntity } from './management/child/child.entity';
+import { ExecutionContext, HttpException, Injectable, UnauthorizedException, createParamDecorator } from '@nestjs/common';
+import { Role } from './auth/Role.guard';
+import { Entity } from './database.service';
 
 export interface MyResponse<T> {
     success: boolean;
@@ -20,10 +20,10 @@ export class UtilityService {
         let parent;
         if (typeof hasIsParent.phone1 === 'object' || typeof hasIsParent.phone1 === 'string')
             parent = hasIsParent;
-        else if(typeof hasIsParent.parent === 'object')
+        else if (typeof hasIsParent.parent === 'object')
             parent = hasIsParent.parent;
         else return hasIsParent;
-        
+
         let phones = [];
         for (let i = 1; i <= 10; i++) {
             if (parent['phone' + i])
@@ -54,3 +54,88 @@ export class UtilityService {
         return parent;
     }
 }
+
+/**
+ * Resources used instead of plain string; todo add languages
+ */
+export const R = {
+    string: {
+        somethingWentWrong: 'Something went wrong!',
+        insufficientPrivilege: `You don't have sufficient privilege!`,
+        loggedInSuccessfully: 'Logged in successfully',
+        loggedOutSuccessfully: 'Logged out successfully',
+        invalidUsernameOrPassword: 'Invalid username or password!',
+        onlyAdminTeacher: 'Only Admin and Teacher are authorized!',
+        mustLogin:'You must login!',
+    }
+
+}
+
+/**
+ * Used to check in the frontend. Ex: if action is `login` then open login form.
+ * Reason: Error message may change. Action is static.
+ */
+export type Action = '' | 'login' | 'privilege';
+
+/**
+ * User object that stored in request.session.user
+ */
+export interface User {
+    loggedIn: boolean;
+    accountId: number;
+    roles: Role[];
+    parentId?: number;
+    teacherId?: number;
+    hdId?: number
+}
+
+
+export interface GeneralResponse {
+    success: boolean;
+    data: any;
+}
+export interface ErrorResponse {
+    /** false dah */
+    success: boolean;
+    message: string;
+    action: Action;
+    error: {
+        statusCode: number;
+        exception: HttpException;
+        /** ISO date string */
+        timestamp: string;
+    }
+}
+export interface SuccessResponse {
+    /** true dah */
+    success: boolean;
+    data: any;
+}
+/** success response of findOne/findAll request */
+export interface SucResFind {
+    success: boolean;
+    /** for findOne by id then max length is one. Or zero -empty array- for not found*/
+    data: Entity[]
+}
+
+/**
+ * Used to extract `User` object from `req.session.user` or set user param to undefined
+ */
+export const UserSession = createParamDecorator(
+    (data: unknown, ctx: ExecutionContext): User | undefined => {
+        const request = ctx.switchToHttp().getRequest();
+        if (request.session && request.session.user)
+            return request.session.user;
+        return undefined;
+    },
+);
+
+/**
+ * Used to extract `User` object from `req.session.user` if not found will throw UnauthorizedException with 'must login' message
+ */
+export const UserMust = createParamDecorator((data: unknown, ctx: ExecutionContext): User => {
+    const req = ctx.switchToHttp().getRequest();
+    if (req && req.session && req.session.user)
+        return req.session.user;
+    throw new UnauthorizedException(R.string.mustLogin)
+})

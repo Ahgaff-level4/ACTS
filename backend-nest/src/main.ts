@@ -6,7 +6,6 @@ import { SessionOptions } from 'express-session';
 import { HttpExceptionFilter } from './MyException.filter';
 import { config } from 'dotenv';
 import { ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
-import { AuthenticationInterceptor } from './auth/authentication.interceptor';
 config();//to load environment variables from (.env) file. it called by global object process.env."variable name"
 
 const VALIDATION_PIPE_OPTIONS:ValidationPipeOptions = {
@@ -18,7 +17,7 @@ const VALIDATION_PIPE_OPTIONS:ValidationPipeOptions = {
 };
 
 const SESSION_OPTIONS:SessionOptions = {
-  secret: process.env.SESSION_SECRET??'lkvnippoqSFweuroivc1mxnvlsPa4353',
+  secret: process.env.SESSION_SECRET||'lkvnippoqSFweuroivc1mxnvlsPa4353',
   resave: false,
   saveUninitialized: false,
   cookie:{
@@ -32,7 +31,6 @@ async function bootstrap() {
   app.useGlobalFilters(new HttpExceptionFilter());
   app.use(helmet())
   app.use(session(SESSION_OPTIONS));
-  app.useGlobalInterceptors(new AuthenticationInterceptor())
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   // app.enableCors();
   await app.listen(3000);

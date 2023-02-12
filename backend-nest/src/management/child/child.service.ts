@@ -28,4 +28,8 @@ export class ChildService {
   remove(id: number) {
     return this.db.delete('child', id);
   }
+  
+  async findChildrenOfParent(parentId:number){
+    return (await this.db.selectJoin(['childView','personView', 'parent'],null,['WHERE childView.parentId=?'],[parentId])).map(this.ut.phoneN2array);
+  }
 }

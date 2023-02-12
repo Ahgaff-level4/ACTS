@@ -11,6 +11,7 @@ export class AccountController {
     constructor(private readonly accountService: AccountService) { }
 
     @Post()
+    @Roles(Role.Admin)
     create(@Body() createAccount: CreateAccount) {
         return this.accountService.create(createAccount);
     }
@@ -32,11 +33,13 @@ export class AccountController {
     }
     
     @Put(':id')
+    @Roles(Role.Admin)
     update(@Param('id',ParseIntPipe) id:number, @Body() updateAccount:UpdateAccount){
         return this.accountService.update(id,updateAccount);
     }
 
     @Delete(':id')
+    @Roles(Role.Admin)
     remove(@Param('id', ParseIntPipe) id: number) {
         return this.accountService.remove(+id);
     }

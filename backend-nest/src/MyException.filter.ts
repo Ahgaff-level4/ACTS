@@ -1,6 +1,7 @@
 
 import { ExceptionFilter, Catch, ArgumentsHost, HttpException } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { R } from './utility.service';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -13,17 +14,21 @@ export class HttpExceptionFilter implements ExceptionFilter {
       .status(status)
       .json({
         success: false,
-        message:exception.message||'Something went wrong!',
+        message: exception?.getResponse()['message'] || R.string.somethingWentWrong,
+        action: exception?.getResponse()['action'] || '',
         error: {
           statusCode: status,
           exception,
-          request:{
-            body:request.body,
-            params:request.params,
-            query:request.query,
+          request: {
+            body: request.body,
+            params: request.params,
+            query: request.query,
           },
           timestamp: new Date().toISOString(),
         }
       });
   }
 }
+
+
+

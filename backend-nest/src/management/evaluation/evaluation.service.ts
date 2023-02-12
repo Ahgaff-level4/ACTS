@@ -10,6 +10,12 @@ export class EvaluationService {
     return this.db.create('evaluation', createEvaluation);
   }
 
+  async findAllOfGoal(fk: boolean, goalId: number) {
+    if (fk)
+      return this.db.selectJoin(['evaluation', 'teacher', 'goal'], null, ['WHERE evaluation.goalId=?'], [goalId])
+    else return this.db.select('*', 'evaluation', 'goalId=?', [goalId])
+  }
+
   async findAll(fk: boolean) {
     if (fk)
       return this.db.selectJoin(['evaluation', 'teacher', 'goal'])

@@ -2,10 +2,10 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 
 import { AppRoutingModule } from './app-routing.module';
-import { AppComponent } from './app.component';
-import { MainComponent } from './pages/main/main.component';
-import { FieldComponent } from './pages/field/field.component';
-import { NavBarComponent } from './nav-bar/nav-bar.component';
+import { AppComponent } from './components/app/app.component';
+import { MainComponent } from './components/pages/main/main.component';
+import { FieldComponent } from './components/pages/field/field.component';
+import { NavBarComponent } from './components/nav-bar/nav-bar.component';
 
 @NgModule({
   declarations: [
@@ -18,7 +18,6 @@ import { NavBarComponent } from './nav-bar/nav-bar.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
