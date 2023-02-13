@@ -6,17 +6,21 @@ import { AppComponent } from './components/app/app.component';
 import { MainComponent } from './components/pages/main/main.component';
 import { FieldComponent } from './components/pages/field/field.component';
 import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { LoginComponent } from './components/pages/login/login.component';
+import { ReactiveFormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     MainComponent,
     FieldComponent,
-    NavBarComponent
+    NavBarComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule
   ],
   bootstrap: [AppComponent]
 })

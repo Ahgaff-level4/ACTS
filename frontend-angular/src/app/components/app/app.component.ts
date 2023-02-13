@@ -8,8 +8,4 @@ import { Component, Input } from '@angular/core';
 export class AppComponent {
   @Input() id: any;
   title = 'frontend-angular';
-  constructor() {
-    console.log('hi');
-
-  }
 }

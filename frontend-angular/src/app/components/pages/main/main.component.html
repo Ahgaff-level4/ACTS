@@ -1,3 +1,14 @@
+<p>main page</p>
 <h1>advanced angular tutorial!</h1>
 <h1>{{title}}</h1>
 <button (click)="changeTitle()">Click me!</button>
+<br>
+
+<form [formGroup]="myFormGroup">
+	<label for="name">Name:</label>
+	<input id="name" type="text" formControlName="name" />
+	<p>Name value: {{ myFormGroup.controls.name.value }}</p>
+	<label for="age">Age:</label>
+	<input id="age" type="text" [formControl]="myFormGroup.controls.age" />
+	<p>Age value: {{myFormGroup.controls.age.value}}</p>
+</form>
