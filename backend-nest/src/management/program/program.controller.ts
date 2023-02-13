@@ -4,7 +4,6 @@ import { DatabaseService } from 'src/database.service';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { Role, Roles } from 'src/auth/Role.guard';
 @Roles(Role.Admin,Role.HeadOfDepartment)
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/program')
 export class ProgramController {
   constructor(private readonly db: DatabaseService) {}

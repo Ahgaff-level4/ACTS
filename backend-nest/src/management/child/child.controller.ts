@@ -8,7 +8,6 @@ import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.ex
 import { User } from 'src/utility.service';
 import { Session as ExpressSession } from 'express-session';
 
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/child')
 export class ChildController {
   constructor(private readonly childService: ChildService) { }

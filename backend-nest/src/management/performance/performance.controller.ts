@@ -4,7 +4,6 @@ import { CreatePerformance, UpdatePerformance } from './performance.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { Role, Roles } from 'src/auth/Role.guard';
 @Roles(Role.Admin,Role.HeadOfDepartment)
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/performance')
 export class PerformanceController {
     constructor(private performanceService: PerformanceService) { }

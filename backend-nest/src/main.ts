@@ -6,6 +6,7 @@ import { SessionOptions } from 'express-session';
 import { HttpExceptionFilter } from './MyException.filter';
 import { config } from 'dotenv';
 import { ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
+import { SuccessInterceptor } from './success.interceptor';
 config();//to load environment variables from (.env) file. it called by global object process.env."variable name"
 
 const VALIDATION_PIPE_OPTIONS:ValidationPipeOptions = {
@@ -32,6 +33,7 @@ async function bootstrap() {
   app.use(helmet())
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
+  app.useGlobalInterceptors(new SuccessInterceptor())
   // app.enableCors();
   await app.listen(3000);
 }

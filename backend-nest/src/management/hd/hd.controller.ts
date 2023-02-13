@@ -5,7 +5,6 @@ import { CreateHd, UpdateHd } from './hd.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { Role, Roles } from 'src/auth/Role.guard';
 @Roles(Role.Admin)
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/hd')
 export class HdController {
   constructor(private readonly hdService: HdService) {}

@@ -4,7 +4,6 @@ import { CreatePerson, PersonEntity, UpdatePerson } from './person.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { RowDataPacket } from 'mysql2';
 import { Role, Roles } from 'src/auth/Role.guard';
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/person')
 export class PersonController {
   constructor(private readonly db: DatabaseService) { }

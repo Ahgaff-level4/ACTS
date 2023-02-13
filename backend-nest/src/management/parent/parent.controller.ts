@@ -6,7 +6,6 @@ import { SuccessInterceptor } from 'src/success.interceptor';
 import { Role, Roles } from 'src/auth/Role.guard';
 
 @Roles(Role.Admin)
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/parent')
 export class ParentController {
   constructor(private readonly parentService: ParentService) {}

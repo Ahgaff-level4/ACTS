@@ -5,7 +5,6 @@ import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './accoun
 import { Role, Roles } from 'src/auth/Role.guard';
 
 
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/account')
 export class AccountController {
     constructor(private readonly accountService: AccountService) { }

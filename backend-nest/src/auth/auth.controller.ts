@@ -15,7 +15,6 @@ export class LoginInfo {
 	password: string;
 }
 
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/auth')
 export class AuthController {
 	constructor(private db: DatabaseService, private authService: AuthService) { }

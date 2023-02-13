@@ -5,7 +5,6 @@ import { CreateGoal, UpdateGoal } from './goal.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { Role, Roles } from 'src/auth/Role.guard';
 
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/goal')
 export class GoalController {
   constructor(private goalService: GoalService) {}

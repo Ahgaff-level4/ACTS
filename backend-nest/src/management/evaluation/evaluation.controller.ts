@@ -9,7 +9,6 @@ import { Session } from '@nestjs/common/decorators';
 import { R, User, UserMust, UserSession } from 'src/utility.service';
 import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
 
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/evaluation')
 export class EvaluationController {
   constructor(private evaluationService: EvaluationService) { }

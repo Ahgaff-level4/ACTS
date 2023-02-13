@@ -3,7 +3,6 @@ import { CreateField,UpdateField } from './field.entity';
 import { DatabaseService } from 'src/database.service';
 import { SuccessInterceptor } from 'src/success.interceptor';
 import { Role, Roles } from 'src/auth/Role.guard';
-@UseInterceptors(SuccessInterceptor)
 @Controller('api/field')
 export class FieldController {
   constructor(private readonly db: DatabaseService) {}
