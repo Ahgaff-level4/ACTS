@@ -249,6 +249,7 @@ CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
 -- SELECT          Read a database
 -- UPDATE          Update table rows
 GRANT DELETE, INSERT, SELECT, UPDATE ON acts.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
+GRANT DELETE, INSERT, SELECT, UPDATE, CREATE ON acts_typeorm.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 -- select *,@var_person := personId as personId from account where id =8;

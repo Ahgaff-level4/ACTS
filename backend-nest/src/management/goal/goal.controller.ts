@@ -3,37 +3,37 @@ import { GoalService } from './goal.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateGoal, UpdateGoal } from './goal.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
-import { Role, Roles } from 'src/auth/Role.guard';
+import { Roles } from 'src/auth/Role.guard';
 
 @Controller('api/goal')
 export class GoalController {
-  constructor(private goalService: GoalService) {}
+  constructor(private goalService: GoalService) { }
 
   @Post()
-  @Roles(Role.Admin,Role.Teacher)
+  @Roles('Admin', 'Teacher')
   create(@Body() createGoal: CreateGoal) {
     return this.goalService.create(createGoal);
   }
 
   @Get()
-  findAll(@Query('FK',ParseBoolPipe) fk:boolean) {
+  findAll(@Query('FK', ParseBoolPipe) fk: boolean) {
     return this.goalService.findAll(fk);
   }
 
   @Get(':id')
-  findOne(@Param('id',ParseIntPipe) id: number) {
+  findOne(@Param('id', ParseIntPipe) id: number) {
     return this.goalService.findOne(+id);
   }
 
   @Patch(':id')
-  @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
-  update(@Param('id',ParseIntPipe) id: number, @Body() updateGoal: UpdateGoal) {
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  update(@Param('id', ParseIntPipe) id: number, @Body() updateGoal: UpdateGoal) {
     return this.goalService.update(+id, updateGoal);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
-  remove(@Param('id',ParseIntPipe) id: number) {
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.goalService.remove(+id);
   }
 }

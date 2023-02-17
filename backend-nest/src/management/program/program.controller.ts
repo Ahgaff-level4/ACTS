@@ -1,37 +1,46 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
-import { CreateProgram,UpdateProgram } from './program.entity';
+import { CreateProgram, ProgramTable, UpdateProgram } from './program.entity';
 import { DatabaseService } from 'src/database.service';
 import { SuccessInterceptor } from 'src/success.interceptor';
-import { Role, Roles } from 'src/auth/Role.guard';
-@Roles(Role.Admin,Role.HeadOfDepartment)
+import { Roles } from 'src/auth/Role.guard';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+@Roles('Admin', 'HeadOfDepartment')
 @Controller('api/program')
 export class ProgramController {
-  constructor(private readonly db: DatabaseService) {}
+  constructor(@InjectRepository(ProgramTable)
+  private rep: Repository<ProgramTable>){}
+  // constructor(private readonly db: DatabaseService) { }
 
   @Post()
   create(@Body() createProgram: CreateProgram) {
-    return this.db.create('program',createProgram);
+    return this.rep.create(createProgram)
   }
 
-  @Get()
-  @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
-  findAll() {
-    return this.db.select('*','programView');
-  }
+  // @Post()
+  // create(@Body() createProgram: CreateProgram) {
+  //   return this.db.create('program', createProgram);
+  // }
 
-  @Get(':id')
-  @Roles(Role.Admin,Role.HeadOfDepartment,Role.Teacher)
-  findOne(@Param('id',ParseIntPipe) id: number) {
-    return this.db.select('*','programView','id=?',[id]);
-  }
+  // @Get()
+  // @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  // findAll() {
+  //   return this.db.select('*', 'programView');
+  // }
 
-  @Patch(':id')
-  update(@Param('id',ParseIntPipe) id: string, @Body() updateProgram: UpdateProgram) {
-    return this.db.update('program',+id, updateProgram);
-  }
+  // @Get(':id')
+  // @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  // findOne(@Param('id', ParseIntPipe) id: number) {
+  //   return this.db.select('*', 'programView', 'id=?', [id]);
+  // }
 
-  @Delete(':id')
-  remove(@Param('id',ParseIntPipe) id: string) {
-    return this.db.delete('program',+id);
-  }
+  // @Patch(':id')
+  // update(@Param('id', ParseIntPipe) id: string, @Body() updateProgram: UpdateProgram) {
+  //   return this.db.update('program', +id, updateProgram);
+  // }
+
+  // @Delete(':id')
+  // remove(@Param('id', ParseIntPipe) id: string) {
+  //   return this.db.delete('program', +id);
+  // }
 }

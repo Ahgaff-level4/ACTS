@@ -3,9 +3,10 @@ import { TeacherService } from './Teacher.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateTeacher, UpdateTeacher } from './Teacher.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
-import { Role, Roles } from 'src/auth/Role.guard';
+import { Roles } from 'src/auth/Role.guard';
 
-@Roles(Role.Admin)
+
+@Roles('Admin')
 @Controller('api/teacher')
 export class TeacherController {
   constructor(private teacherService: TeacherService) {}

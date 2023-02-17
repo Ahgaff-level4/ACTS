@@ -2,10 +2,9 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Que
 import { ParentService } from './parent.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateParent, UpdateParent } from './parent.entity';
-import { SuccessInterceptor } from 'src/success.interceptor';
-import { Role, Roles } from 'src/auth/Role.guard';
+import { Roles } from 'src/auth/Role.guard';
 
-@Roles(Role.Admin)
+@Roles('Admin')
 @Controller('api/parent')
 export class ParentController {
   constructor(private readonly parentService: ParentService) {}

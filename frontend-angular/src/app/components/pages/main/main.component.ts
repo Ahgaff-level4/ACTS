@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-main',
@@ -9,8 +9,8 @@ import { FormControl, FormGroup } from '@angular/forms';
 export class MainComponent {
   public title:string= "Hello";
   public myFormGroup = new FormGroup({
-    name:new FormControl('None'),
-    age:new FormControl('0')
+    name:new FormControl('None',[Validators.required,Validators.maxLength(10)]),
+    age:new FormControl('0',Validators.max(100))
   });
   
   changeTitle() {

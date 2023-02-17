@@ -3,8 +3,8 @@ import { HdService } from './hd.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateHd, UpdateHd } from './hd.entity';
 import { SuccessInterceptor } from 'src/success.interceptor';
-import { Role, Roles } from 'src/auth/Role.guard';
-@Roles(Role.Admin)
+import { Roles } from 'src/auth/Role.guard';
+@Roles('Admin')
 @Controller('api/hd')
 export class HdController {
   constructor(private readonly hdService: HdService) {}

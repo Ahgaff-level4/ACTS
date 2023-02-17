@@ -2,8 +2,8 @@ import { PartialType } from "@nestjs/mapped-types";
 import { IsNumber,IsOptional, IsDateString, IsString} from "class-validator";
 import { PersonEntity } from "../person/person.entity";
 import { ParentEntity } from "../parent/parent.entity";
-
-export class CreateChild {
+import { IChildEntity, ICreateChild } from './../../../../interfaces.d'
+export class CreateChild implements ICreateChild {
 	@IsNumber() @IsOptional()
 	femaleFamilyMembers?:number;
 	@IsNumber() @IsOptional()
@@ -34,7 +34,7 @@ export class CreateChild {
 	personId:number;
 }
 
-export class ChildEntity extends CreateChild {
+export class ChildEntity extends CreateChild implements IChildEntity {
 	id: number;
 	parent?:ParentEntity;
 	person:PersonEntity;

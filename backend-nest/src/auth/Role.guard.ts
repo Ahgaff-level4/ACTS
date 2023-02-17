@@ -3,13 +3,8 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Reflector } from "@nestjs/core";
 import { R, User } from "src/utility.service";
+import {Role} from './../../../interfaces.d';
 
-export enum Role {
-  Admin = 'Admin',
-  HeadOfDepartment = 'HeadOfDepartment',
-  Teacher = 'Teacher',
-  Parent = 'Parent'
-};
 
 const ROLES_KEY = 'rolesDecorator';
 

@@ -1,8 +1,9 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsNumber, IsString } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
+import {IAccountEntity, ICreateAccount} from './../../../../interfaces.d';
 
-export class CreateAccount {
+export class CreateAccount implements ICreateAccount {
 	@IsString()
 	username: string;
 	@IsString()
@@ -11,7 +12,7 @@ export class CreateAccount {
 	personId: number;
 }
 
-export class AccountEntity extends CreateAccount {
+export class AccountEntity extends CreateAccount implements IAccountEntity {
 	id: number;
 	person: PersonEntity;
 }

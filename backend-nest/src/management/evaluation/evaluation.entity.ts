@@ -2,8 +2,9 @@ import { PartialType } from "@nestjs/mapped-types";
 import { IsDateString, IsNumber, IsOptional, IsString } from "class-validator";
 import { GoalEntity } from "../goal/Goal.entity";
 import { TeacherEntity } from "../teacher/teacher.entity";
+import { ICreateEvaluation, IEvaluationEntity } from "../../../../interfaces";
 
-export class CreateEvaluation {
+export class CreateEvaluation implements ICreateEvaluation {
 	@IsString()
 	description!: string;
 	@IsString() @IsOptional()
@@ -17,7 +18,7 @@ export class CreateEvaluation {
 	@IsNumber() @IsOptional()
 	teacherId:number;
 }
-export class EvaluationEntity extends CreateEvaluation {
+export class EvaluationEntity extends CreateEvaluation implements IEvaluationEntity {
 	id: number;
 	goal:GoalEntity;
 	teacher?:TeacherEntity;

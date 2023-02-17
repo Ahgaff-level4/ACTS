@@ -2,8 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Que
 import { EvaluationService } from './evaluation.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './evaluation.entity';
-import { SuccessInterceptor } from 'src/success.interceptor';
-import { Role, Roles } from 'src/auth/Role.guard';
+import { Roles } from 'src/auth/Role.guard';
 import { BadRequestException } from '@nestjs/common/exceptions/bad-request.exception';
 import { Session } from '@nestjs/common/decorators';
 import { R, User, UserMust, UserSession } from 'src/utility.service';
@@ -14,7 +13,7 @@ export class EvaluationController {
   constructor(private evaluationService: EvaluationService) { }
 
   @Post()
-  @Roles(Role.Admin, Role.Teacher)
+  @Roles('Admin', 'Teacher')
   create(@Body() createEvaluation: CreateEvaluation, @Session() session) {
     if (createEvaluation.teacherId)
       return this.evaluationService.create(createEvaluation);
@@ -35,7 +34,7 @@ export class EvaluationController {
         throw new BadRequestException();
       return this.evaluationService.findAllOfGoal(fk, goalId);//! anyone loggedin can access any goal
     }
-    if (session && session['user'] && (session['user'] as User).roles.includes(Role.Admin))
+    if (session && session['user'] && (session['user'] as User).roles.includes('Admin'))
       return this.evaluationService.findAll(fk);
     throw new UnauthorizedException(R.string.insufficientPrivilege);
   }
@@ -46,25 +45,25 @@ export class EvaluationController {
   }
 
   @Patch(':id')
-  @Roles(Role.Admin, Role.Teacher, Role.HeadOfDepartment)
+  @Roles('Admin', 'Teacher', 'HeadOfDepartment')
   async update(@Param('id', ParseIntPipe) id: number, @Body() updateEvaluation: UpdateEvaluation, @UserMust() user: User) {
-    if (user.roles.length == 2 || user.roles.includes(Role.HeadOfDepartment))//only admin and hd can update any evaluation
+    if (user.roles.length == 2 || user.roles.includes('HeadOfDepartment'))//only admin and hd can update any evaluation
       return this.evaluationService.update(+id, updateEvaluation);
     const evaluation = await this.evaluationService.findOne(id);
 
-    if (user.roles.includes(Role.Teacher) && evaluation && evaluation[0] && evaluation[0].teacherId == user.teacherId)//teacher can only update his/her evaluation
+    if (user.roles.includes('Teacher') && evaluation && evaluation[0] && evaluation[0].teacherId == user.teacherId)//teacher can only update his/her evaluation
       return this.evaluationService.update(+id, updateEvaluation);
     throw new UnauthorizedException(R.string.insufficientPrivilege);
   }
 
   @Delete(':id')
-  @Roles(Role.Admin, Role.Teacher, Role.HeadOfDepartment)
+  @Roles('Admin', 'Teacher', 'HeadOfDepartment')
   async remove(@Param('id', ParseIntPipe) id: number, @UserMust() user: User) {
-    if (user.roles.length == 2 || user.roles.includes(Role.HeadOfDepartment))//only admin and hd can update any evaluation
+    if (user.roles.length == 2 || user.roles.includes('HeadOfDepartment'))//only admin and hd can update any evaluation
       return this.evaluationService.remove(+id);
     const evaluation = await this.evaluationService.findOne(id);
 
-    if (user.roles.includes(Role.Teacher) && evaluation && evaluation[0] && (evaluation[0] as EvaluationEntity).teacherId == user.teacherId)//teacher can only update his/her evaluation
+    if (user.roles.includes('Teacher') && evaluation && evaluation[0] && (evaluation[0] as EvaluationEntity).teacherId == user.teacherId)//teacher can only update his/her evaluation
       return this.evaluationService.remove(+id);
     throw new UnauthorizedException(R.string.insufficientPrivilege);
   }

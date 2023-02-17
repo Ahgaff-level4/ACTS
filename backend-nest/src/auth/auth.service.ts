@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from 'src/database.service';
-import { Role } from './Role.guard';
-import { Session, SessionData } from 'express-session';
+import {Role} from './../../../interfaces.d';
 
 @Injectable()
 export class AuthService {
@@ -17,18 +16,18 @@ export class AuthService {
 
 		const parent = await this.db.select('id', 'parent', 'accountId=?', [accountId]);
 		if (parent.length > 0)
-			roles.push(Role.Parent);
+			roles.push('Parent');
 		const teacher = await this.db.select('id', 'teacher', 'accountId=?', [accountId])
 		if (teacher.length > 0)
-			roles.push(Role.Teacher);
+			roles.push('Teacher');
 		const hd = await this.db.select('id', 'hd', 'accountId=?', [accountId]);
 		if (hd.length > 0)
-			roles.push(Role.HeadOfDepartment);
+			roles.push('HeadOfDepartment');
 
-		if (roles.includes(Role.Teacher) && roles.includes(Role.HeadOfDepartment)) {
-			roles.splice(roles.indexOf(Role.Teacher), 1)
-			roles.splice(roles.indexOf(Role.HeadOfDepartment), 1)
-			roles.push(Role.Admin)
+		if (roles.includes('Teacher') && roles.includes('HeadOfDepartment')) {
+			roles.splice(roles.indexOf('Teacher'), 1)
+			roles.splice(roles.indexOf('HeadOfDepartment'), 1)
+			roles.push('Admin')
 		}
 		return { roles, parentId: parent[0]?.id, teacherId: teacher[0]?.id, hdId: hd[0]?.id }
 	}

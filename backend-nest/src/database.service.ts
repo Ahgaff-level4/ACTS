@@ -10,19 +10,21 @@ import { CreateHd, HdEntity, UpdateHd } from './management/hd/Hd.entity';
 import { CreateTeacher, TeacherEntity, UpdateTeacher } from './management/teacher/teacher.entity';
 import { CreateGoal, GoalEntity, UpdateGoal } from './management/goal/Goal.entity';
 import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './management/evaluation/evaluation.entity';
+import {TableName} from './../../interfaces.d';
+
 
 @Injectable()
 export class DatabaseService {
     private readonly db: Pool;
     constructor() {
-        this.db = createPool({
-            host: process.env.HOST_DB,
-            port: Number(process.env.PORT_DB),
-            user: process.env.USER_DB,
-            password: process.env.PASSWORD_DB,
-            database: process.env.DATABASE,
-            multipleStatements: true,
-        });
+        // this.db = createPool({
+        //     host: process.env.HOST_DB,
+        //     port: +process.env.PORT_DB,
+        //     user: process.env.USER_DB,
+        //     password: process.env.PASSWORD_DB,
+        //     database: process.env.DATABASE,
+        //     multipleStatements: true,
+        // });
     }
 
     /**
@@ -169,12 +171,9 @@ export class DatabaseService {
 }
 
 export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
-export type TableName = 'person' | 'personView' | 'account' | 'accountView' | 'parent' | 'teacher' |
-    'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
-    'programView' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
-export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity|GoalEntity|EvaluationEntity;
 export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent | CreateHd | CreateTeacher|CreateGoal|CreateEvaluation;
 export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent | UpdateHd | UpdateTeacher|UpdateGoal|UpdateEvaluation;
+export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity|GoalEntity|EvaluationEntity;
 export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[] | HdEntity[] | TeacherEntity[]|GoalEntity[]|EvaluationEntity[];
 
 

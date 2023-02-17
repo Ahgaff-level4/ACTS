@@ -1,12 +1,8 @@
-import { ExecutionContext, HttpException, Injectable, UnauthorizedException, createParamDecorator } from '@nestjs/common';
-import { Role } from './auth/Role.guard';
-import { Entity } from './database.service';
-
+import { ExecutionContext, Injectable, UnauthorizedException, createParamDecorator } from '@nestjs/common';
 export interface MyResponse<T> {
     success: boolean;
     data?: T;
     error?: any;
-
 }
 
 @Injectable()
@@ -70,53 +66,18 @@ export const R = {
     }
 
 }
-
-/**
- * Used to check in the frontend. Ex: if action is `login` then open login form.
- * Reason: Error message may change. Action is static.
- */
-export type Action = '' | 'login' | 'privilege';
-
 /**
  * User object that stored in request.session.user
  */
 export interface User {
-    loggedIn: boolean;
-    accountId: number;
-    roles: Role[];
-    parentId?: number;
-    teacherId?: number;
-    hdId?: number
+	loggedIn: boolean;
+	accountId: number;
+	roles: string[];//Role
+	parentId?: number;
+	teacherId?: number;
+	hdId?: number
 }
 
-
-export interface GeneralResponse {
-    success: boolean;
-    data: any;
-}
-export interface ErrorResponse {
-    /** false dah */
-    success: boolean;
-    message: string;
-    action: Action;
-    error: {
-        statusCode: number;
-        exception: HttpException;
-        /** ISO date string */
-        timestamp: string;
-    }
-}
-export interface SuccessResponse {
-    /** true dah */
-    success: boolean;
-    data: any;
-}
-/** success response of findOne/findAll request */
-export interface SucResFind {
-    success: boolean;
-    /** for findOne by id then max length is one. Or zero -empty array- for not found*/
-    data: Entity[]
-}
 
 /**
  * Used to extract `User` object from `req.session.user` or set user param to undefined

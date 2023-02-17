@@ -13,15 +13,32 @@ import { EvaluationModule } from './management/evaluation/evaluation.module';
 import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/Role.guard';
 import { AuthModule } from './auth/auth.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
+import { ProgramTable } from './management/program/program.entity';
 
 @Module({
-  imports: [FieldModule, AccountModule, 
-    PerformanceModule, ProgramModule, ChildModule, 
+  imports: [
+    TypeOrmModule.forRoot({
+      type: 'mysql',
+      host: 'localhost',
+      port: 2048,
+      username: 'root',
+      password: '32185279',
+      database: 'acts_typeorm',
+      entities: [ProgramTable],
+      synchronize: true,
+      retryAttempts:2
+    }),
+    FieldModule, AccountModule,
+    PerformanceModule, ProgramModule, ChildModule,
     PersonModule, ParentModule, HdModule, TeacherModule,
-    GoalModule, EvaluationModule,AuthModule],
-  providers:[{
+    GoalModule, EvaluationModule, AuthModule],
+  providers: [{
     provide: APP_GUARD,
     useClass: RolesGuard,
   },]
 })
-export class AppModule { }
+export class AppModule {
+  constructor(private dataSource: DataSource) { }
+}
