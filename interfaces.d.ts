@@ -48,12 +48,11 @@ export type Role = 'Admin' | 'HeadOfDepartment' | 'Teacher' | 'Parent';
 export interface ICreateAccount {
 	username: string;
 	password: string;
-	personId: number;
+	person: PersonEntity;
 }
-
 export interface IAccountEntity extends ICreateAccount {
 	id: number;
-	person: PersonEntity;
+	personId:number;
 }
 
 export interface ICreateChild {
@@ -97,10 +96,22 @@ export interface IEvaluationEntity extends ICreateEvaluation {
 
 export interface ICreateField{
 	name:string;
-	createdDatetime:Date|string;
+	createdDatetime:Date;
 }
 
 export interface IFieldEntity extends ICreateField {
 	id:number;
 	performanceCount:number;
+}
+
+export interface ICreatePerson{
+	name:string;
+	birthDate?:string;
+	isMale:boolean|0|1;
+	createdDatetime:Date;
+}
+
+export interface IPersonEntity extends ICreatePerson {
+    id:number;
+    age:number;
 }

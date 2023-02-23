@@ -63,6 +63,7 @@ export const R = {
         invalidUsernameOrPassword: 'Invalid username or password!',
         onlyAdminTeacher: 'Only Admin and Teacher are authorized!',
         mustLogin:'You must login!',
+        duplicateEntry:`There is duplicated value should be unique!`,
     }
 
 }

@@ -10,13 +10,16 @@ import { CreateHd, HdEntity, UpdateHd } from './management/hd/Hd.entity';
 import { CreateTeacher, TeacherEntity, UpdateTeacher } from './management/teacher/teacher.entity';
 import { CreateGoal, GoalEntity, UpdateGoal } from './management/goal/Goal.entity';
 import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './management/evaluation/evaluation.entity';
-import {TableName} from './../../interfaces.d';
+import { TableName } from './../../interfaces.d';
+import { DataSource, DeepPartial, EntityManager, EntityTarget, SaveOptions } from 'typeorm';
 
 
 @Injectable()
 export class DatabaseService {
     private readonly db: Pool;
-    constructor() {
+    public readonly manager:EntityManager;
+    constructor(private dataSource: DataSource) {
+        this.manager = this.dataSource.manager;
         // this.db = createPool({
         //     host: process.env.HOST_DB,
         //     port: +process.env.PORT_DB,
@@ -88,10 +91,10 @@ export class DatabaseService {
     }
 
 
-    public create(table: TableName, obj: CreateEntity) {
-        const values = this.extractValues(obj);
-        return this.exec(`INSERT INTO ${table}(${Object.keys(obj).toString()}) VALUES (${',?'.repeat(values.length).substring(1)})`, values);
-    }
+    // public create(table: TableName, obj: CreateEntity) {
+    //     const values = this.extractValues(obj);
+    //     return this.exec(`INSERT INTO ${table}(${Object.keys(obj).toString()}) VALUES (${',?'.repeat(values.length).substring(1)})`, values);
+    // }
 
     public update(table: TableName, id: number, obj: UpdateEntity) {
         var command = `UPDATE ${table} SET `;
@@ -168,12 +171,28 @@ export class DatabaseService {
             throw new BadRequestException('No property in the body object!');
         return values;
     }
+
+    public async create<Entity, T extends DeepPartial<Entity>>(targetOrEntity: EntityTarget<Entity>, entity: T, options?: SaveOptions): Promise<T & Entity> {
+        const runner = this.dataSource.createQueryRunner();
+        await runner.connect();
+        await runner.startTransaction();
+        try {
+            const result = await runner.manager.save(targetOrEntity, entity, options);
+            await runner.commitTransaction();
+            return result;
+        } catch (e) {
+            await runner.rollbackTransaction();
+            throw e;
+        } finally {
+            await runner.release();
+        }
+    }
 }
 
 export type DbResult = RowDataPacket[] | RowDataPacket[][] | OkPacket | OkPacket[] | ResultSetHeader;
-export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent | CreateHd | CreateTeacher|CreateGoal|CreateEvaluation;
-export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent | UpdateHd | UpdateTeacher|UpdateGoal|UpdateEvaluation;
-export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity|GoalEntity|EvaluationEntity;
-export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[] | HdEntity[] | TeacherEntity[]|GoalEntity[]|EvaluationEntity[];
+export type CreateEntity = CreatePerformance | CreateField | CreateProgram | CreatePerson | CreateChild | CreateParent | CreateHd | CreateTeacher | CreateGoal | CreateEvaluation;
+export type UpdateEntity = UpdatePerformance | UpdateField | UpdateProgram | UpdatePerson | UpdateChild | UpdateParent | UpdateHd | UpdateTeacher | UpdateGoal | UpdateEvaluation;
+export type Entity = PerformanceEntity | FieldEntity | ProgramEntity | PersonEntity | ChildEntity | ParentEntity | HdEntity | TeacherEntity | GoalEntity | EvaluationEntity;
+export type Entities = PerformanceEntity[] | FieldEntity[] | ProgramEntity[] | PersonEntity[] | ChildEntity[] | ParentEntity[] | HdEntity[] | TeacherEntity[] | GoalEntity[] | EvaluationEntity[];
 
 

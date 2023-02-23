@@ -2,7 +2,7 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, Que
 import { GoalService } from './goal.service';
 import { ParseBoolPipe, ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateGoal, UpdateGoal } from './goal.entity';
-import { SuccessInterceptor } from 'src/success.interceptor';
+import { SuccessInterceptor } from 'src/interceptor';
 import { Roles } from 'src/auth/Role.guard';
 
 @Controller('api/goal')

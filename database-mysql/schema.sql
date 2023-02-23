@@ -125,7 +125,7 @@ INSERT INTO teacher_child(teacherId,childId) VALUES (2,2);
 
 CREATE TABLE program( -- 8
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
-  `name` NVARCHAR(50) NOT NULL UNIQUE,
+    `name` NVARCHAR(50) NOT NULL UNIQUE,
 	createdDatetime	DATETIME DEFAULT NOW()
 );
 INSERT INTO program(name) values ('Portage');
@@ -147,7 +147,9 @@ CREATE TABLE performance( -- 10
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	`name` NVARCHAR(512) NOT NULL UNIQUE,
 	minAge TINYINT UNSIGNED,
-	maxAge TINYINT UNSIGNED, CONSTRAINT CH_performance_minAgeLessThanMaxAge CHECK(minAge <= maxAge and maxAge < 50),
+	maxAge TINYINT UNSIGNED, CONSTRAINT CH_performance_minAgeLessThanMaxAge CHECK(minAge <= maxAge),
+    CONSTRAINT CH_performance_minAgeMaxAgeAreNullOrNot CHECK((minAge IS NULL AND maxAge IS NULL)||(minAge IS NOT NULL AND maxAge IS NOT NULL)),
+	CONSTRAINT CH_performance_maxAgeLessThan100 CHECK( maxAge < 100),
 	createdDatetime DATETIME DEFAULT NOW(),
 	fieldId	INT UNSIGNED, CONSTRAINT FK_performance_fieldId FOREIGN KEY (fieldId) REFERENCES field(id) ON DELETE SET NULL,
 	programId INT UNSIGNED, CONSTRAINT FK_performance_programId FOREIGN KEY (programId) REFERENCES program(id) ON DELETE CASCADE -- deleting program with performances that not assigned is valid. But if there is goal depend on a performance it won't delete because goal has constraint with performance of NO ACTION
@@ -198,7 +200,7 @@ INSERT INTO evaluation(description,goalId,teacherId) values ('I told the child t
 /******************************************* VIEW *********************************************/
 
 CREATE VIEW fieldView AS
-	SELECT field.id,field.name,field.createdDatetime,COUNT(performance.fieldId) AS performanceCount
+	SELECT `field`.`id`,field.name,field.createdDatetime,COUNT(performance.fieldId) AS performanceCount
     FROM field LEFT JOIN performance ON performance.fieldId=field.id GROUP BY field.id;
 
 CREATE VIEW programView AS
@@ -207,13 +209,9 @@ CREATE VIEW programView AS
 
 
 CREATE VIEW personView AS
-	SELECT id,
-    `name`,
-    birthDate,
-	(case isMale when 0 then false when 1 then true else null end) AS isMale,
-    createdDatetime,
-    TIMESTAMPDIFF(YEAR,birthDate,CURDATE()) AS age FROM person;-- int numbers
-
+	SELECT id, name, birthDate, createdDatetime,
+	(CASE isMale WHEN 0 THEN false WHEN 1 THEN true ELSE null END) AS isMale,
+	TIMESTAMPDIFF(YEAR,birthDate,CURDATE()) AS age FROM person;
 
 CREATE VIEW childView AS  -- To add registerDate
 	SELECT child.id,
@@ -249,7 +247,7 @@ CREATE USER 'nodejs'@'localhost' IDENTIFIED BY '12354678';
 -- SELECT          Read a database
 -- UPDATE          Update table rows
 GRANT DELETE, INSERT, SELECT, UPDATE ON acts.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
-GRANT DELETE, INSERT, SELECT, UPDATE, CREATE ON acts_typeorm.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
+GRANT all ON acts_typeorm.* TO 'nodejs'@'localhost' WITH GRANT OPTION;
 FLUSH PRIVILEGES;
 
 -- select *,@var_person := personId as personId from account where id =8;

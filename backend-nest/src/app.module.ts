@@ -15,20 +15,25 @@ import { RolesGuard } from './auth/Role.guard';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { ProgramTable } from './management/program/program.entity';
-
+// import { ProgramTable } from './management/program/program.entity';
+import {config} from 'dotenv'
+import { FieldEntity } from './management/field/field.entity';
+import { PersonEntity, PersonView } from './management/person/person.entity';
+import { AccountEntity } from './management/account/account.entity';
+// import { PerformanceTable } from './management/performance/performance.entity';
+config();
 @Module({
   imports: [
     TypeOrmModule.forRoot({
       type: 'mysql',
-      host: 'localhost',
-      port: 2048,
-      username: 'root',
-      password: '32185279',
-      database: 'acts_typeorm',
-      entities: [ProgramTable],
+      host: process.env.HOST_DB,
+      port: +process.env.PORT_DB,
+      username: process.env.USER_DB,
+      password: process.env.PASSWORD_DB,
+      database: process.env.DATABASE,
+      entities: [PersonEntity,PersonView,AccountEntity],
       synchronize: true,
-      retryAttempts:2
+      retryAttempts:1
     }),
     FieldModule, AccountModule,
     PerformanceModule, ProgramModule, ChildModule,

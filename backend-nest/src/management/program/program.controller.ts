@@ -1,21 +1,21 @@
 import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
-import { CreateProgram, ProgramTable, UpdateProgram } from './program.entity';
+// import { CreateProgram, ProgramTable, UpdateProgram } from './program.entity';
 import { DatabaseService } from 'src/database.service';
-import { SuccessInterceptor } from 'src/success.interceptor';
 import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/program')
 export class ProgramController {
-  constructor(@InjectRepository(ProgramTable)
-  private rep: Repository<ProgramTable>){}
-  // constructor(private readonly db: DatabaseService) { }
+  // constructor(@InjectRepository(ProgramTable)
+  // private rep: Repository<ProgramTable>) { }
+  // // constructor(private readonly db: DatabaseService) { }
 
-  @Post()
-  create(@Body() createProgram: CreateProgram) {
-    return this.rep.create(createProgram)
-  }
+  // @Post()
+  // create(@Body() createProgram: CreateProgram) {
+  //   const program = this.rep.create(createProgram);
+  //   return this.rep.save(program);
+  // }
 
   // @Post()
   // create(@Body() createProgram: CreateProgram) {

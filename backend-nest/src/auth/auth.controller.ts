@@ -1,5 +1,5 @@
 import { Body, Controller, Get, Post, Req, UseInterceptors } from '@nestjs/common';
-import { SuccessInterceptor } from 'src/success.interceptor';
+import { SuccessInterceptor } from 'src/interceptor';
 import { Request } from 'express';
 import { DatabaseService } from 'src/database.service';
 import { IsString } from 'class-validator';

@@ -27,7 +27,7 @@ export class AccountController {
 
     @Patch(':id')
     updateOldPassword(@Param('id', ParseIntPipe) id: number, @Body() updateAccount: UpdateAccountOldPassword) {
-        return this.accountService.updateOldPassword(+id, updateAccount);
+        // return this.accountService.updateOldPassword(+id, updateAccount);
     }
 
     @Put(':id')

@@ -20,6 +20,7 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
+    return true;//for debugging
     //first: check login
     const req = context.switchToHttp().getRequest();
     if (req.path === '/api/auth/login' && req.method === 'POST')//user can only login without authentication
