@@ -11,20 +11,20 @@ export class GoalService {
   }
 
   async findAll(fk: boolean) {
-    if (fk)
-      return this.db.selectJoin(['goal', 'childView','performance'])
-    else return this.db.select('*', 'goal')
+    // if (fk)
+    //   return this.db.selectJoin(['goal', 'childView','performance'])
+    // else return this.db.select('*', 'goal')
   }
 
   async findOne(id: number) {
-    return this.db.selectJoinOne(['goal', 'childView','performance'], id)
+    // return this.db.selectJoinOne(['goal', 'childView','performance'], id)
   }
 
   update(id: number, updateGoal: UpdateGoal) {
-    return this.db.update('goal', id, updateGoal);
+    // return this.db.update('goal', id, updateGoal);
   }
 
   remove(id: number) {
-    return this.db.delete('goal',id);
+    // return this.db.delete('goal',id);
   }
 }

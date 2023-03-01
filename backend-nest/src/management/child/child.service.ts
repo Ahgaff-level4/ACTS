@@ -1,35 +1,37 @@
 import { Injectable } from '@nestjs/common';
-import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
-import { DatabaseService } from 'src/database.service';
-import { UtilityService } from 'src/utility.service';
+import { ChildEntity, ChildView, CreateChild, UpdateChild } from './child.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ChildService {
-  constructor(private db: DatabaseService, private ut: UtilityService) { }
+  constructor(@InjectRepository(ChildEntity) private repo:Repository<ChildEntity>,
+    @InjectRepository(ChildView) private view:Repository<ChildView>) { }
 
   create(createChild: CreateChild) {
-    return this.db.create('child', createChild)
+    return this.repo.save(this.repo.create(createChild))
   }
 
   async findAll(fk: boolean) {
-    if (fk)
-      return (await this.db.selectJoin(['childView', 'personView', 'parent'])).map(this.ut.phoneN2array)
-    else return this.db.select('*', 'childView')
+    // if (fk)
+    //   return (await this.db.selectJoin(['childView', 'personView', 'parent'])).map(this.ut.phoneN2array)
+    // else 
+    return this.view.find()
   }
 
   async findOne(id: number) {
-    return (await this.db.selectJoinOne(['childView', 'personView', 'parent'], id)).map(this.ut.phoneN2array);
+    return this.view.findBy({id});
   }
 
   update(id: number, updateChild: UpdateChild) {
-    return this.db.update('child', id, updateChild);
+    return this.repo.update(id,updateChild);
   }
 
   remove(id: number) {
-    return this.db.delete('child', id);
+    return this.repo.delete(id);
   }
-  
+
   async findChildrenOfParent(parentId:number){
-    return (await this.db.selectJoin(['childView','personView', 'parent'],null,['WHERE childView.parentId=?'],[parentId])).map(this.ut.phoneN2array);
+    return this.view.findBy({parentId});
   }
 }

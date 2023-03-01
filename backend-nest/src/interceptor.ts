@@ -15,12 +15,13 @@ export class SuccessInterceptor implements NestInterceptor {
         catchError(error => {
           if (error instanceof QueryFailedError){
             const code = error.driverError.code;
+            const sqlMessage = error?.driverError?.sqlMessage;
             var message:string|undefined;
             if(code === 'ER_DUP_ENTRY')
               message = R.string.duplicateEntry;
               //else for other sql error code. Check the docs for code error values
             
-            throw new BadRequestException({ msg:'SQL query failed!', message, error });
+            throw new BadRequestException({ msg:'SQL query failed!',sqlMessage, message, error });
           }
           else if (error && error.status)
             throw error;

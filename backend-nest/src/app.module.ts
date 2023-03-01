@@ -1,10 +1,9 @@
 import { Module } from '@nestjs/common';
 import { FieldModule } from './management/field/field.module';
 import { AccountModule } from './management/account/account.module';
-import { PerformanceModule } from './management/performance/performance.module';
+import { PerformanceModule } from './management/activity/activity.module';
 import { ProgramModule } from './management/program/program.module';
 import { ChildModule } from './management/child/child.module';
-import { PersonModule } from './management/person/person.module';
 import { ParentModule } from './management/parent/parent.module';
 import { HdModule } from './management/hd/hd.module';
 import { TeacherModule } from './management/teacher/teacher.module';
@@ -19,7 +18,8 @@ import { DataSource } from 'typeorm';
 import {config} from 'dotenv'
 import { FieldEntity } from './management/field/field.entity';
 import { PersonEntity, PersonView } from './management/person/person.entity';
-import { AccountEntity } from './management/account/account.entity';
+import { AccountEntity, AccountView } from './management/account/account.entity';
+import { PersonModule } from './management/person/person.module';
 // import { PerformanceTable } from './management/performance/performance.entity';
 config();
 @Module({
@@ -31,13 +31,14 @@ config();
       username: process.env.USER_DB,
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE,
-      entities: [PersonEntity,PersonView,AccountEntity],
+      entities: [PersonEntity,PersonView,AccountEntity,AccountView],
       synchronize: true,
+      autoLoadEntities:true,
       retryAttempts:1
     }),
-    FieldModule, AccountModule,
+    FieldModule, AccountModule, PersonModule,
     PerformanceModule, ProgramModule, ChildModule,
-    PersonModule, ParentModule, HdModule, TeacherModule,
+    ParentModule, HdModule, TeacherModule,
     GoalModule, EvaluationModule, AuthModule],
   providers: [{
     provide: APP_GUARD,

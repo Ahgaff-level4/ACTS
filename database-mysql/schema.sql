@@ -19,7 +19,7 @@ INSERT INTO person(`name`,birthDate,isMale) VALUES ('Mohammed', '2001-9-24', TRU
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Sara', '1995-1-24', FALSE);
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Abdullah', '2002-5-24', TRUE);
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Noor', '2008-1-24', FALSE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Omer', '2009-1-24', TRUE);
+INSERT INTO person(`name`,birthDate,isMale,createdDatetime) VALUES ('Omer', '2009-1-24', TRUE, '2022-1-1');
 INSERT INTO person(`name`,birthDate,isMale) VALUES ('Khaled', '1999-6-3', TRUE);
 INSERT INTO person(`name`,isMale) VALUES ('Omar', TRUE);
 INSERT INTO person(`name`,birthDate) VALUES ('Mansour', '1999-6-3');
@@ -97,6 +97,7 @@ CREATE TABLE child( -- 6
 	medicine NVARCHAR(512),
 	behaviors NVARCHAR(512),
 	prioritySkills	NVARCHAR(512),
+    isArchive BOOL DEFAULT FALSE,
 	parentId INT UNSIGNED, CONSTRAINT FK_child_parentId FOREIGN KEY (parentId) REFERENCES parent(id) ON DELETE SET NULL, -- if parent deleted don't delete the child
 	personId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_child_personId FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
 );
@@ -106,6 +107,8 @@ INSERT INTO child(femaleFamilyMembers,maleFamilyMembers,birthOrder,parentsKinshi
     'normal pregnancy','born in the seventh month','grow normal','diagnostied with autism',
     'Antibiotic','very quite','learn speaking and social intraction',2,8);
 INSERT INTO child(personId) values (9);
+INSERT INTO child(isArchive,personId) values (true, 13);
+
 
 
 CREATE TABLE teacher_child( -- 7
@@ -166,20 +169,17 @@ CREATE TABLE goal( -- 11
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 	note NVARCHAR(512),
 	assignDatetime DATETIME DEFAULT NOW(),
-	state ENUM('continuous','strength','completed') NOT NULL,
+	state ENUM('continual','strength','completed') NOT NULL,
 	performanceId INT UNSIGNED NOT NULL, CONSTRAINT FK_goal_performanceId FOREIGN KEY (performanceId) REFERENCES performance(id) ON DELETE NO ACTION, -- prevent deleting performance, if there is a goal depends on it.
-	childId INT UNSIGNED NOT NULL, CONSTRAINT FK_goal_childId FOREIGN KEY (childId) REFERENCES child(id) ON DELETE CASCADE
+	childId INT UNSIGNED NOT NULL, CONSTRAINT FK_goal_childId FOREIGN KEY (childId) REFERENCES child(id) ON DELETE CASCADE,
+    teacherId INT UNSIGNED NOT NULL, CONSTRAINT FK_goal_teacherId FOREIGN KEY (teacherId) REFERENCES teacher(id) ON DELETE NO ACTION
 );
-INSERT INTO goal(note, state, performanceId,childId) values ('Evalute the child in the public','continuous',1,1);
-INSERT INTO goal(state, performanceId,childId) values ('strength',2,1);
-INSERT INTO goal(note, state, performanceId,childId) values ('perform publicly','completed',3,2);
-INSERT INTO goal(note, state, performanceId,childId) values ('privately','continuous',3,1);
-INSERT INTO goal(note, state, performanceId,childId) values ('With help','continuous',5,1);
+INSERT INTO goal(note, state, performanceId,childId,teacherId) values ('Evalute the child in the public','continual',1,1,1);
+INSERT INTO goal(state, performanceId,childId,teacherId) values ('strength',2,1,2);
+INSERT INTO goal(note, state, performanceId,childId,teacherId) values ('perform publicly','continual',3,2,3);
+INSERT INTO goal(note, state, performanceId,childId,teacherId) values ('privately','continual',3,1,1);
+INSERT INTO goal(note, state, performanceId,childId,teacherId) values ('With help','continual',5,1,1);
 
--- select * from goal join performance on goal.performanceId = performance.id;
-
--- delete from goal where id = 2;
--- DELETE FROM program where id =2;
 
 CREATE TABLE evaluation( -- 12
 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
@@ -187,6 +187,7 @@ CREATE TABLE evaluation( -- 12
     mainstream NVARCHAR(512),
 	note NVARCHAR(512),
 	evaluationDatetime DATETIME DEFAULT NOW(),
+    rate ENUM('continual','excellent'),
 	goalId INT UNSIGNED NOT NULL, CONSTRAINT FK_evaluation_goalId FOREIGN KEY (goalId) REFERENCES goal(id) ON DELETE CASCADE,
 	teacherId INT UNSIGNED NOT NULL, CONSTRAINT FK_evaluation_teacherId FOREIGN KEY (teacherId) REFERENCES teacher(id) ON DELETE NO ACTION
 );
@@ -229,7 +230,10 @@ CREATE VIEW childView AS  -- To add registerDate
 	child.prioritySkills,
 	child.parentId,
 	child.personId,
-    person.createdDatetime AS registerDate FROM child LEFT JOIN person on child.personId = person.id;
+	(child.femaleFamilyMembers + child.maleFamilyMembers) AS familyMembers,
+    person.createdDatetime AS registerDate,
+    TIMESTAMPDIFF(minute,person.createdDatetime,CURDATE()) AS durationSpent
+    FROM child LEFT JOIN person on child.personId = person.id WHERE isArchive=false;
 
 
 CREATE VIEW accountView AS -- Without passowrd

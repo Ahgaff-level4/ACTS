@@ -1,30 +1,29 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsInstance, IsInt, IsLowercase, IsNotEmpty, IsNumber, IsObject, IsOptional, IsPositive, IsString, Length, MaxLength, MinLength, ValidateIf, ValidateNested } from "class-validator";
-import { CreatePerson, PersonEntity, UpdatePerson } from "../person/person.entity";
+import { IsInt, IsLowercase, IsNumber, IsPositive, IsString, Length, NotContains } from "class-validator";
+import { PersonEntity } from "../person/person.entity";
 import { IAccountEntity, ICreateAccount } from './../../../../interfaces.d';
-import { Transform, TransformPlainToInstance, Type } from "class-transformer";
+import { Transform } from "class-transformer";
 import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 
 export class CreateAccount implements ICreateAccount {
-	@IsString()
-	@Length(4, 32)
-	@Transform(({ value }) => (value as string).toLowerCase())
-	@IsLowercase()
+	@IsString() @NotContains(' ')
+	@Length(4, 32) @IsLowercase()
+	@Transform(({ value }) => (value as string).toString().toLowerCase())
 	@ViewColumn()
-	@Column({ length: 32,unique:true,nullable:false })
+	@Column({ length: 32, unique: true, nullable: false })
 	public username: string;
 
 	@IsString()
 	@Length(4)
 	@ViewColumn()
-	@Column({ length: 60, type: 'char',unique:false,nullable:false })
+	@Column({ length: 60, type: 'char', unique: false, nullable: false })
 	public password: string;
 
-	//'create' should provide 'person object'. You can insert or update person by assigning person property
-	@IsObject() @ValidateNested() @Type(()=>CreatePerson)
-	@OneToOne(() => PersonEntity, { nullable: false, onDelete: 'CASCADE', cascade: ['insert', 'update'],eager:true })
-	@JoinColumn()
-	public person: PersonEntity;
+	//'create' should provide 'personId'. You can insert or update person by assigning person property
+	@IsInt() @IsNumber() @IsPositive() 
+	@ViewColumn()
+	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
+	public personId: number;
 }
 
 @Entity()
@@ -33,8 +32,9 @@ export class AccountEntity extends CreateAccount implements IAccountEntity {
 	@PrimaryGeneratedColumn({ type: 'int', unsigned: true })
 	public id: number;
 
-	@Column({ type: 'int', unsigned: true,unique:true,nullable:false })
-	public personId: number;
+	@OneToOne(() => PersonEntity, { nullable: false, onDelete: 'CASCADE'})
+	@JoinColumn()
+	public person: PersonEntity;
 }
 
 export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
@@ -45,4 +45,22 @@ export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
 export class UpdateAccount extends PartialType(CreateAccount) {
 }
 
+@ViewEntity({
+	expression: (connection) => connection.createQueryBuilder()
+		.select('account.id', 'id')
+		.addSelect('account.username', 'username')
+		.addSelect('account.personId', 'personId')
+		.from(AccountEntity, 'account')
+})
+/** hide password property */
+export class AccountView {
+	@ViewColumn()
+	public id: number;
+	
+	@ViewColumn()
+	public username: string;
+
+	@ViewColumn()
+	public personId: number;
+}
 

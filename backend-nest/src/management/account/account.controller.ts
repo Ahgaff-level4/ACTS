@@ -16,8 +16,8 @@ export class AccountController {
 
     @Get()
     @Roles('Admin')
-    findAll(@Query('FK', ParseBoolPipe) fk: boolean) {
-        return this.accountService.findAll(fk);
+    findAll() {
+        return this.accountService.findAll();
     }
 
     @Get(':id')

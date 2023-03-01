@@ -11,26 +11,26 @@ export class EvaluationService {
   }
 
   async findAllOfGoal(fk: boolean, goalId: number) {
-    if (fk)
-      return this.db.selectJoin(['evaluation', 'teacher', 'goal'], null, ['WHERE evaluation.goalId=?'], [goalId])
-    else return this.db.select('*', 'evaluation', 'goalId=?', [goalId])
+    // if (fk)
+    //   return this.db.selectJoin(['evaluation', 'teacher', 'goal'], null, ['WHERE evaluation.goalId=?'], [goalId])
+    // else return this.db.select('*', 'evaluation', 'goalId=?', [goalId])
   }
 
   async findAll(fk: boolean) {
-    if (fk)
-      return this.db.selectJoin(['evaluation', 'teacher', 'goal'])
-    else return this.db.select('*', 'evaluation')
+    // if (fk)
+    //   return this.db.selectJoin(['evaluation', 'teacher', 'goal'])
+    // else return this.db.select('*', 'evaluation')
   }
 
   async findOne(id: number) {
-    return this.db.selectJoinOne(['evaluation', 'teacher', 'goal'], id)
+    // return this.db.selectJoinOne(['evaluation', 'teacher', 'goal'], id)
   }
 
   update(id: number, updateEvaluation: UpdateEvaluation) {
-    return this.db.update('evaluation', id, updateEvaluation);
+    // return this.db.update('evaluation', id, updateEvaluation);
   }
 
   remove(id: number) {
-    return this.db.delete('evaluation', id);
+    // return this.db.delete('evaluation', id);
   }
 }

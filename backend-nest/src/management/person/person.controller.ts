@@ -1,5 +1,5 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
-import { CreatePerson, PersonEntity, PersonView } from './person.entity';
+import { Controller, Get, Post, Body, Param, ParseIntPipe, Patch, Delete } from '@nestjs/common';
+import { CreatePerson, PersonEntity, PersonView, UpdatePerson } from './person.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { Repository } from 'typeorm';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -7,40 +7,35 @@ import { InjectRepository } from '@nestjs/typeorm';
 @Controller('api/person')
 export class PersonController {
   constructor(@InjectRepository(PersonEntity)
-  private rep: Repository<PersonEntity>,@InjectRepository(PersonView) private view:Repository<PersonView>) { }
+  private repo: Repository<PersonEntity>, @InjectRepository(PersonView) private view:Repository<PersonView>) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
   create(@Body() createPerson: CreatePerson) {
-    const person = this.rep.create(createPerson);
-    return this.rep.save(person);
+    return this.repo.save(this.repo.create(createPerson));
   }
 
   @Get()
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
   async findAll() {
-    return this.view.find();
+    return this.view.find()
   }
 
-  // @Get(':id')
-  // @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  // async findOne(@Param('id', ParseIntPipe) id: number) {
-  //   return (await this.db.select('*', 'personView', 'id=?', [id]) as RowDataPacket[]).map((v) => {
-  //     if (v.isMale != null)
-  //       v.isMale = v.isMale == 0 ? false : true;
-  //     return v;
-  //   });
-  // }
+  @Get(':id')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  async findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.view.findBy({id});
+  }
 
-  // @Patch(':id')
-  // @Roles('Admin', 'HeadOfDepartment')
-  // update(@Param('id', ParseIntPipe) id: number, @Body() updatePerson: UpdatePerson) {
-  //   return this.db.update('person', +id, updatePerson);
-  // }
+  @Patch(':id')
+  @Roles('Admin', 'HeadOfDepartment')
+  update(@Param('id', ParseIntPipe) id: number, @Body() updatePerson: UpdatePerson) {
+    return this.repo.update(id,updatePerson);
+  }
 
-  // @Delete(':id')
-  // @Roles('Admin', 'HeadOfDepartment')
-  // remove(@Param('id', ParseIntPipe) id: number) {
-  //   return this.db.delete('person', +id);
-  // }
+  @Delete(':id')
+  @Roles('Admin', 'HeadOfDepartment')
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.repo.delete(id);
+  }
 }

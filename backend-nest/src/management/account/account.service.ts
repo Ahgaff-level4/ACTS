@@ -1,31 +1,32 @@
-import { BadRequestException, HttpStatus, Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
-import { AccountEntity, CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
-import { DatabaseService, DbResult } from 'src/database.service';
-import { RowDataPacket } from 'mysql2';
-import { HttpExceptionFilter } from 'src/MyException.filter';
-import { HttpCode } from '@nestjs/common/decorators/http/http-code.decorator';
-import { STATUS_CODES } from 'http';
+import { AccountEntity, AccountView, CreateAccount, UpdateAccount } from './account.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { PersonEntity } from '../person/person.entity';
+import { Repository } from 'typeorm';
+import { PersonView } from '../person/person.entity';
 @Injectable()
 export class AccountService {
-    constructor(private db:DatabaseService) { }
+    constructor(@InjectRepository(AccountEntity) private repo: Repository<AccountEntity>,
+        @InjectRepository(AccountView) private view:Repository<AccountView>) { }
 
     async create(createAccount: CreateAccount) {
         createAccount.password = await this.generateHashSalt(createAccount.password);
-        return this.db.create(AccountEntity, createAccount);
+        return this.repo.save(this.repo.create(createAccount));
     }
 
-    findAll(fk: boolean) {
-        if (fk)
-            return this.db.manager.find(AccountEntity,{ relations: { person: true }, select: { password: false } });
-        else return this.db.manager.find(AccountEntity,{ select: { password: false } });
+    findAll() {
+        return this.view
+            .createQueryBuilder('account')
+            .leftJoinAndMapOne('account.person', PersonView, 'person', 'account.personId=person.id')
+            .getMany()
     }
 
     findOne(id: number) {
-        return this.db.manager.findOneBy(AccountEntity,{id})
+        return this.repo
+            .createQueryBuilder('account')
+            .leftJoinAndMapOne('account.person', PersonView, 'person', 'account.personId=person.id')
+            .where('account.id=:id', { id })
+            .getMany()
     }
 
     /**
@@ -48,23 +49,16 @@ export class AccountService {
     // }
 
     /**
-     * Same as update(...) BUT no need for oldPassword. Must authorized only by admin
+     * Same as update(...) BUT no need for oldPassword. Must be authorized only by admin
      */
     async update(id: number, updateAccount: UpdateAccount) {
-        // if (updateAccount.password)
-        //     updateAccount.password = await this.generateHashSalt(updateAccount.password);
-        // const runner = this.dataSource.createQueryRunner();
-        // await runner.connect();
-        // await runner.startTransaction();
-        // const result = [
-        // await runner.manager.update(PersonEntity,updateAccount.person.id,updateAccount.person),
-        // await runner.manager.update(AccountEntity,id,updateAccount)];
-        // runner.commitTransaction();
-        // return result;
+        if (updateAccount.password)
+            updateAccount.password = await this.generateHashSalt(updateAccount.password);
+        return this.repo.update(id, updateAccount);
     }
 
     remove(id: number) {
-        // return this.db.delete('account', id);
+        return this.repo.delete(id);
     }
 
 

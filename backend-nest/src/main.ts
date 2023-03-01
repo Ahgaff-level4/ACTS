@@ -5,23 +5,45 @@ import * as session from 'express-session'
 import { SessionOptions } from 'express-session';
 import { HttpExceptionFilter } from './MyException.filter';
 import { config } from 'dotenv';
-import { BadRequestException, ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
+import { BadRequestException, ValidationError, ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
 import { SuccessInterceptor } from './interceptor';
 config();//to load environment variables from (.env) file. it called by global object process.env."variable name"
 
 const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
   forbidUnknownValues: true,
   forbidNonWhitelisted: true,
-  whitelist: false,
+  whitelist: true,
   transform: true,
   validationError: { target: true, value: true },
   exceptionFactory(error) {
-    throw new BadRequestException({msg:'Invalid object structure!',error})
+    const recursion = (e: ValidationError[]) => {//return all constrains error messages into array of string messages
+      let arr = [];
+      for (let o of e)
+        if (o.constraints)
+          for (let keyCon in o.constraints)
+            arr.push(o.constraints[keyCon]);
+        else if (o.children?.length > 0)//children force us to use recursion
+          arr.push(...recursion(o.children))
+      return arr;
+    }
+    const constrains = recursion(error);
+    
+    //beautify the message
+    var message = '';
+    if (constrains.length <= 1)
+      message = constrains[0];
+    else {
+      for (let i = 0; i < constrains.length; i++)
+        message += `${i + 1}- ${constrains[i]}.\n`;
+    }
+    message = message.trim();
+    
+    throw new BadRequestException({ msg: 'Invalid object structure/values !', message, error })
   },
 };
 
 const SESSION_OPTIONS: SessionOptions = {
-  secret: process.env.SESSION_SECRET || 'lkvnippoqSFweuroivc1mxnvlsPa4353',
+  secret: process.env.SESSION_SECRET || 'lkv4nippoqSFweuroivc1mxnvlsPa4353',
   resave: false,
   saveUninitialized: false,
   cookie: {

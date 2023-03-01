@@ -1,29 +1,39 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsDateString, IsNotEmpty, IsOptional } from "class-validator";
-// import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
-// import { PerformanceTable } from "../performance/performance.entity";
+import { IsDate, IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
+import { IActivityEntity, ICreateProgram, IProgramEntity } from "../../../../interfaces";
+import { Type } from "class-transformer";
+import { ActivityEntity } from "../activity/activity.entity";
 
-export class CreateProgram {
-    @IsNotEmpty()
-    name: string;
-    @IsDateString() @IsOptional()
-    createdDatetime?: Date | string;
+export class CreateProgram implements ICreateProgram {
+    @IsString() @MaxLength(50)
+    @ViewColumn()
+    @Column({type:'nvarchar',unique:true,length:50,nullable:false})
+    public name: string;
+    
+    @Type(()=>Date) @IsDate() @IsOptional()
+    @ViewColumn()
+    @CreateDateColumn({type:'datetime'})
+    public createdDatetime?: Date;
 }
 
+@Entity()
 export class ProgramEntity extends CreateProgram {
-    id: number;
+    @ViewColumn()
+    @PrimaryGeneratedColumn({type:'int',unsigned:true})
+    public id: number;
+    
+    @OneToMany(() => ActivityEntity, (activity) => activity.program)
+    public activities: IActivityEntity[];
 }
 
 export class UpdateProgram extends PartialType(CreateProgram) { }
 
-// @Entity()
-// export class ProgramTable {
-//     @PrimaryGeneratedColumn({unsigned:true,type:'int'})
-//     id: number;
-//     @Column({length:50,type:'nvarchar',unique:true})
-//     name: string;
-//     @OneToMany(()=>PerformanceTable,(performance)=>performance?.program)
-//     performances:PerformanceTable[];
-//     @CreateDateColumn({type:'datetime'})
-//     createdDatetime: Date;
-// }
+
+@ViewEntity({
+    //todo
+})
+export class ProgramView extends ProgramEntity implements IProgramEntity{
+    @ViewColumn()
+    public activityCount:number;
+}

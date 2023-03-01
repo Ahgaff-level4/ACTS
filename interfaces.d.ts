@@ -1,10 +1,14 @@
 
 
 
-export type TableName = 'person' | 'personView' | 'account' | 'accountView' | 'parent' | 'teacher' |
-	'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
-	'programView' | 'field' | 'fieldView' | 'performance' | 'goal' | 'evaluation';
-
+// export type TableName = 'person' | 'personView' | 'account' | 'accountView' | 'parent' | 'teacher' |
+// 	'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
+// 	'programView' | 'field' | 'fieldView' | 'activity' | 'goal' | 'evaluation';
+/**
+ * evaluation's rate won't change GoalState. It's another rate/evaluation
+ */
+export type EvaluationRate = 'continual' | 'excellent';
+export type GoalState = 'continual' | "strength" | "completed";
 
 /**
  * Used to check in the frontend. Ex: if action is `login` then open login form.
@@ -48,11 +52,11 @@ export type Role = 'Admin' | 'HeadOfDepartment' | 'Teacher' | 'Parent';
 export interface ICreateAccount {
 	username: string;
 	password: string;
-	person: PersonEntity;
+	personId: number;
 }
 export interface IAccountEntity extends ICreateAccount {
 	id: number;
-	personId:number;
+	person: PersonEntity;
 }
 
 export interface ICreateChild {
@@ -68,6 +72,8 @@ export interface ICreateChild {
 	medicine?: string;
 	behaviors?: string;
 	prioritySkills?: string;
+	/** Default is false (NOT archive) */
+	isArchive?:boolean;
 	parentId?: number;
 	personId: number;
 }
@@ -75,43 +81,133 @@ export interface ICreateChild {
 export interface IChildEntity extends ICreateChild {
 	id: number;
 	parent?: ParentEntity;
-	person: PersonEntity;
+	person: IPersonEntity;
+	goals: IGoalEntity[];
+	familyMembers?: number;
+	durationSpent: number;
 	/** registerDate is person.createdDatetime */
-	registerDate: Date | string;
+	registerDate: Date;
 }
 
 export interface ICreateEvaluation {
 	description: string;
 	mainstream?: string;
 	note?: string;
-	evaluationDatetime: Date | string;
+	evaluationDatetime?: Date;
+	rate: EvaluationRate;
 	goalId: number;
 	teacherId: number;
 }
 export interface IEvaluationEntity extends ICreateEvaluation {
 	id: number;
-	goal: GoalEntity;
-	teacher?: TeacherEntity;
+	goal: IGoalEntity;
+	teacher: ITeacherEntity;
 }
 
-export interface ICreateField{
-	name:string;
-	createdDatetime:Date;
+export interface ICreateField {
+	name: string;
+	createdDatetime: Date;
 }
 
 export interface IFieldEntity extends ICreateField {
-	id:number;
-	performanceCount:number;
+	id: number;
+	activityCount: number;
 }
 
-export interface ICreatePerson{
-	name:string;
-	birthDate?:string;
-	isMale:boolean|0|1;
-	createdDatetime:Date;
+export interface ICreatePerson {
+	name: string;
+	birthDate?: string;
+	isMale: boolean;
+	createdDatetime: Date;
 }
 
 export interface IPersonEntity extends ICreatePerson {
-    id:number;
-    age:number;
+	id: number;
+	age: number;
+}
+
+export interface ICreateParent {
+	phone: string[];
+	address?: string;
+	accountId: number;
+}
+
+export interface IParentEntity extends ICreateParent {
+	id: number;
+	account: IAccountEntity;
+	children: IChildEntity[];
+}
+
+export interface ICreateGoal {
+	public note?: string;
+	public assignDatetime?: Date;
+	public state: GoalState;
+	public activityId: number;
+	public childId: number;
+	public teacherId:number;
+}
+
+export interface IGoalEntity extends ICreateGoal {
+	public id: number;
+	public activity: IActivityEntity;
+	public child: IChildEntity;
+	public evaluations: IEvaluationEntity[];
+	public teacher:ITeacherEntity;
+}
+
+export interface ICreateTeacher {
+	public accountId: number;
+}
+export interface ITeacherEntity extends ICreateTeacher {
+	public id: number;
+	public account: IAccountEntity;
+	public evaluations: IEvaluationEntity[];
+	public goals:IGoalEntity[];
+}
+
+export interface ICreateActivity {
+	public name: string;
+	public minAge?: number;
+	public maxAge?: number;
+	public fieldId?: number;
+	public programId?: number;
+	public createdDatetime?: Date;
+}
+
+export interface IActivityEntity extends ICreateActivity {
+	public id: number;
+	public program?: IProgramEntity;
+	public field?: IFieldEntity;
+	public goals:IGoalEntity[];
+}
+
+
+export interface ICreateField {
+	name: string;
+	createdDatetime?: Date;
+}
+
+export interface IFieldEntity extends ICreateField {
+	id: number;
+	activities: IActivityEntity[];
+	activityCount: number;
+}
+
+export interface ICreateProgram {
+	name: string;
+	createdDatetime?: Date;
+}
+
+export interface IProgramEntity extends ICreateProgram {
+	id: number;
+	activities:IActivityEntity[];
+	activityCount:number;
+}
+
+export interface ICreateHd {
+	accountId:number;
+}
+export interface IHdEntity extends ICreateHd{
+	id:number;
+	account:IAccountEntity;
 }
