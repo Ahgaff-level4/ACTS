@@ -26,7 +26,7 @@ export class AccountService {
             .createQueryBuilder('account')
             .leftJoinAndMapOne('account.person', PersonView, 'person', 'account.personId=person.id')
             .where('account.id=:id', { id })
-            .getMany()
+            .getMany();
     }
 
     /**

@@ -4,7 +4,7 @@ import { ProgramEntity } from "../program/program.entity";
 import { IsNotEmpty, IsNumber,IsDateString, IsOptional, IsDate, IsInt, IsPositive, IsString, MaxLength} from "class-validator";
 import { Check, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";
-import { IActivityEntity, ICreateActivity, IFieldEntity, IGoalEntity, IProgramEntity } from "../../../../interfaces";
+import { IActivityEntity, ICreateActivity, IFieldEntity, IGoalEntity, IProgramEntity } from "../../../../interfaces.d";
 import { GoalEntity } from "../goal/Goal.entity";
 
 export class CreateActivity implements ICreateActivity {
@@ -33,6 +33,7 @@ export class CreateActivity implements ICreateActivity {
 	public createdDatetime?: Date;
 }
 
+@Entity()
 export class ActivityEntity extends CreateActivity implements IActivityEntity {
 	@PrimaryGeneratedColumn({type:'int',unsigned:true})
 	public id: number;

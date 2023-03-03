@@ -1,8 +1,8 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsInt, IsNumber, IsPositive } from "class-validator";
 import { AccountEntity } from "../account/account.entity";
-import { Column, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
-import { IAccountEntity, ICreateHd, IHdEntity } from "../../../../interfaces";
+import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { IAccountEntity, ICreateHd, IHdEntity } from "../../../../interfaces.d";
 
 export class CreateHd implements ICreateHd{
 	@IsNumber() @IsInt() @IsPositive()
@@ -10,6 +10,7 @@ export class CreateHd implements ICreateHd{
 	public accountId:number;
 }
 
+@Entity()
 export class HdEntity extends CreateHd implements IHdEntity{
 	@PrimaryGeneratedColumn({type:'int',unsigned:true})
 	public id:number;

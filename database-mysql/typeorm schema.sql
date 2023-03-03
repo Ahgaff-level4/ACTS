@@ -1,4 +1,9 @@
--- You can't run this before running NestJs; so the schema build there.
+-- Run these two lines before running NestJs
+/*
+DROP DATABASE IF EXISTS acts_typeorm;
+CREATE DATABASE acts_typeorm;
+*/
+-- After running NestJs run all script
 USE acts_typeorm;
 
 /******************************************* TABLE *********************************************/
@@ -6,8 +11,8 @@ USE acts_typeorm;
 -- CREATE TABLE person (-- 1
 --     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
 --     `name` NVARCHAR(50) NOT NULL,
---     birthDate DATE,CONSTRAINT CH_person_birthdayLimit CHECK(birthDate>'1900-1-1'),
---     isMale BOOL,
+--     birthDate DATE,
+--     isMale BOOL NOT NULL,
 --     createdDatetime DATETIME DEFAULT NOW() 
 -- );
 INSERT INTO person_entity(`name`,birthDate,isMale) VALUES ('احمد الكاف', '2000-1-24', TRUE);
@@ -21,8 +26,8 @@ INSERT INTO person_entity(`name`,birthDate,isMale) VALUES ('Noor', '2008-1-24', 
 INSERT INTO person_entity(`name`,birthDate,isMale,createdDatetime) VALUES ('Omer', '2009-1-24', TRUE, '2022-1-1');
 INSERT INTO person_entity(`name`,birthDate,isMale) VALUES ('Khaled', '1999-6-3', TRUE);
 INSERT INTO person_entity(`name`,isMale) VALUES ('Omar', TRUE);
-INSERT INTO person_entity(`name`,birthDate) VALUES ('Mansour', '1999-6-3');
-INSERT INTO person_entity(`name`) VALUES ('Nothing');
+INSERT INTO person_entity(`name`,birthDate,isMale) VALUES ('Mansour', '1999-6-3',TRUE);
+INSERT INTO person_entity(`name`,isMale) VALUES ('Nothing',FALSE);
 
 
 -- CREATE TABLE `account`( -- 2
@@ -30,7 +35,7 @@ INSERT INTO person_entity(`name`) VALUES ('Nothing');
 -- 	username NVARCHAR(32) NOT NULL UNIQUE,
 -- 	`password` CHAR(60) NOT NULL, -- Hashed password and salt concatenated in base64 format
 -- 	personId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_account_personId FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
--- );
+-- );															-- if "Duplicate entry..." error then make sure to drop DB (Run first two lines)
 INSERT INTO account_entity(username,`password`,personId) values ('Alkaf-11','$2a$10$KssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',1);
 INSERT INTO account_entity(username,`password`,personId) values ('parent','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',2);
 INSERT INTO account_entity(username,`password`,personId) values ('hdar-11','$2a$10$KssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',3);
@@ -47,8 +52,8 @@ INSERT INTO account_entity(username,`password`,personId) values ('zxcv','$2a$10$
 -- 	address	NVARCHAR(64),
 -- 	accountId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_parent_accountId FOREIGN KEY (accountId) REFERENCES account(id) ON DELETE CASCADE
 -- );
-INSERT INTO parent_entity(phone1,phone2,address,accountId) values ('775544489','735487872','Bin sena',1);
-INSERT INTO parent_entity(phone1,address,accountId) values ('78454456','Masakin',2);
+INSERT INTO parent_entity(phone0,phone1,phone2,phone3,phone4,phone5,phone6,phone7,phone8,phone9,address,accountId) values ('775544489','735487872','+966548498149','+966599219279','739651919','785154875','712345678','789456123','701234567','79999999999','Bin sena',1);
+INSERT INTO parent_entity(phone0,address,accountId) values ('78454456','Masakin',2);
 
 
 -- CREATE TABLE teacher( -- 4
@@ -152,7 +157,7 @@ INSERT INTO activity_entity(name,minAge,maxAge,fieldId,programId) values ('say l
 INSERT INTO activity_entity(name,minAge,maxAge,fieldId,programId) values ('hold the bottle',2,4,2,1);
 INSERT INTO activity_entity(name,fieldId) values ('go to the bathroom by himself',3);
 INSERT INTO activity_entity(name,minAge,maxAge,fieldId,programId) values ('Response to greeting',7,9,1,1);
-INSERT INTO activity_entity(name,minAge,fieldId) values ('Response to greeting',7,1);
+INSERT INTO activity_entity(name,minAge,fieldId) values ('Response to "Peace upon you"',7,1);
 
 
 -- CREATE TABLE goal( -- 11

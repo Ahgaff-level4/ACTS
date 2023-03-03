@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateEvaluation, UpdateEvaluation } from './evaluation.entity';
-import { DatabaseService } from 'src/database.service';
+import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './evaluation.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { GoalEntity } from '../goal/Goal.entity';
+import { TeacherEntity } from '../teacher/teacher.entity';
 
 @Injectable()
 export class EvaluationService {
-  constructor(private db: DatabaseService) { }
+  constructor(@InjectRepository(EvaluationEntity) private repo:Repository<EvaluationEntity> ) { }
 
   create(createEvaluation: CreateEvaluation) {
-    return this.db.create('evaluation', createEvaluation);
+    this.repo.save(this.repo.create(createEvaluation));
   }
 
   async findAllOfGoal(fk: boolean, goalId: number) {
-    // if (fk)
-    //   return this.db.selectJoin(['evaluation', 'teacher', 'goal'], null, ['WHERE evaluation.goalId=?'], [goalId])
-    // else return this.db.select('*', 'evaluation', 'goalId=?', [goalId])
+    if (fk)
+      return this.repo
+      .createQueryBuilder('evaluation')
+      .leftJoinAndMapOne('evaluation.goal',GoalEntity,'goal','evaluation.goalId=goal.id')
+      .leftJoinAndMapOne('evaluation.teacher',TeacherEntity,'teacher','evaluation.teacherId=teacher.id')
+      .getMany();
+    else return this.repo.find();
   }
 
   async findAll(fk: boolean) {

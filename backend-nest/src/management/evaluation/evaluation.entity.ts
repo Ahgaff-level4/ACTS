@@ -2,7 +2,7 @@ import { PartialType } from "@nestjs/mapped-types";
 import { IsDate, IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
 import { GoalEntity } from "../goal/Goal.entity";
 import { TeacherEntity } from "../teacher/teacher.entity";
-import { EvaluationRate, ICreateEvaluation, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces";
+import { EvaluationRate, ICreateEvaluation, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces.d";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";
 
@@ -21,7 +21,7 @@ export class CreateEvaluation implements ICreateEvaluation {
 
 	@IsEnum({ "continual": "continual", "excellent": "excellent" }
 		, { message: `Rate must be a valid enum value. Enum values are (continual, excellent)` })
-	//todo column
+	@Column({type:'enum',enum:["continual","excellent"],nullable:false})
 	public rate: EvaluationRate;
 
 	@IsOptional() @Type(() => Date) @IsDate()

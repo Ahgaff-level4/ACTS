@@ -1,30 +1,39 @@
 import { Injectable } from '@nestjs/common';
-import { CreateTeacher, UpdateTeacher } from './teacher.entity';
-import { DatabaseService } from 'src/database.service';
+import { CreateTeacher, TeacherEntity, UpdateTeacher } from './teacher.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AccountView } from '../account/account.entity';
 
 @Injectable()
 export class TeacherService {
-  constructor(private db: DatabaseService) { }
+  constructor(@InjectRepository(TeacherEntity) private repo:Repository<TeacherEntity>) { }
 
   create(createTeacher: CreateTeacher) {
-    // return this.db.create('teacher', createTeacher);
+    return this.repo.save(this.repo.create(createTeacher))
   }
 
   async findAll(fk: boolean) {
-    // if (fk)
-      // return this.db.selectJoin(['teacher', 'accountView'])
-    // else return this.db.select('*', 'teacher')
+    if (fk)
+      return this.repo
+      .createQueryBuilder('teacher')
+      .leftJoinAndMapOne('teacher.account', AccountView, 'account', 'teacher.accountId=account.id')
+      .getMany();
+    else return this.repo.find();
   }
 
   async findOne(id: number) {
-    // return this.db.selectJoinOne(['teacher', 'accountView'], id)
+    return this.repo
+      .createQueryBuilder('teacher')
+      .leftJoinAndMapOne('teacher.account', AccountView, 'account', 'teacher.accountId=account.id')
+      .where('teacher.id=:id',{id})
+      .getMany();
   }
 
   update(id: number, updateTeacher: UpdateTeacher) {
-    // return this.db.update('teacher', id, updateTeacher);
+    return this.repo.update(id,updateTeacher);
   }
 
   remove(id: number) {
-    // return this.db.delete('teacher',id);
+    return this.repo.delete(id);
   }
 }

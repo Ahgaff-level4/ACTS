@@ -73,7 +73,7 @@ export interface ICreateChild {
 	behaviors?: string;
 	prioritySkills?: string;
 	/** Default is false (NOT archive) */
-	isArchive?:boolean;
+	isArchive?: boolean;
 	parentId?: number;
 	personId: number;
 }
@@ -118,7 +118,7 @@ export interface ICreatePerson {
 	name: string;
 	birthDate?: string;
 	isMale: boolean;
-	createdDatetime: Date;
+	createdDatetime?: Date;
 }
 
 export interface IPersonEntity extends ICreatePerson {
@@ -144,7 +144,7 @@ export interface ICreateGoal {
 	public state: GoalState;
 	public activityId: number;
 	public childId: number;
-	public teacherId:number;
+	public teacherId: number;
 }
 
 export interface IGoalEntity extends ICreateGoal {
@@ -152,7 +152,7 @@ export interface IGoalEntity extends ICreateGoal {
 	public activity: IActivityEntity;
 	public child: IChildEntity;
 	public evaluations: IEvaluationEntity[];
-	public teacher:ITeacherEntity;
+	public teacher: ITeacherEntity;
 }
 
 export interface ICreateTeacher {
@@ -162,7 +162,7 @@ export interface ITeacherEntity extends ICreateTeacher {
 	public id: number;
 	public account: IAccountEntity;
 	public evaluations: IEvaluationEntity[];
-	public goals:IGoalEntity[];
+	public goals: IGoalEntity[];
 }
 
 export interface ICreateActivity {
@@ -178,7 +178,7 @@ export interface IActivityEntity extends ICreateActivity {
 	public id: number;
 	public program?: IProgramEntity;
 	public field?: IFieldEntity;
-	public goals:IGoalEntity[];
+	public goals: IGoalEntity[];
 }
 
 
@@ -200,14 +200,14 @@ export interface ICreateProgram {
 
 export interface IProgramEntity extends ICreateProgram {
 	id: number;
-	activities:IActivityEntity[];
-	activityCount:number;
+	activities: IActivityEntity[];
+	activityCount: number;
 }
 
 export interface ICreateHd {
-	accountId:number;
+	accountId: number;
 }
-export interface IHdEntity extends ICreateHd{
-	id:number;
-	account:IAccountEntity;
+export interface IHdEntity extends ICreateHd {
+	id: number;
+	account: IAccountEntity;
 }

@@ -1,8 +1,8 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsInt, IsNumber, IsPositive } from "class-validator";
 import { AccountEntity } from "../account/account.entity";
-import { IAccountEntity, ICreateTeacher, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces";
-import { Column, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
+import { IAccountEntity, ICreateTeacher, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces.d";
+import { Column, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { EvaluationEntity } from "../evaluation/evaluation.entity";
 import { GoalEntity } from "../goal/Goal.entity";
 
@@ -12,6 +12,7 @@ export class CreateTeacher implements ICreateTeacher {
 	public accountId: number;
 }
 
+@Entity()
 export class TeacherEntity extends CreateTeacher implements ITeacherEntity {
 	@PrimaryGeneratedColumn({ type: 'int', unsigned: true })
 	public id: number;

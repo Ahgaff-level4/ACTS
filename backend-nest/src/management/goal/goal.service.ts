@@ -1,19 +1,26 @@
 import { Injectable } from '@nestjs/common';
-import { CreateGoal, UpdateGoal } from './Goal.entity';
-import { DatabaseService } from 'src/database.service';
+import { CreateGoal, GoalEntity, UpdateGoal } from './Goal.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { ActivityEntity } from '../activity/activity.entity';
+import { TeacherEntity } from '../teacher/teacher.entity';
 
 @Injectable()
 export class GoalService {
-  constructor(private db: DatabaseService) { }
+  constructor(@InjectRepository(GoalEntity) private repo:Repository<GoalEntity>) { }
 
   create(createGoal: CreateGoal) {
-    return this.db.create('goal', createGoal);
+    return this.repo.save(this.repo.create(createGoal))
   }
 
   async findAll(fk: boolean) {
-    // if (fk)
-    //   return this.db.selectJoin(['goal', 'childView','performance'])
-    // else return this.db.select('*', 'goal')
+    if (fk)
+      return this.repo
+      .createQueryBuilder('goal')
+      .leftJoinAndMapOne('goal.activity',ActivityEntity,'activity','goal.activityId=activity.id')
+      .leftJoinAndMapOne('goal.teacher',TeacherEntity,'teacher','goal.teacherId=teacher.id')
+      .getMany();
+    else return this.repo.find();
   }
 
   async findOne(id: number) {

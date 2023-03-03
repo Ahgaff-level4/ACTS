@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { IsDate, MaxDate, MaxLength, MinDate } from "class-validator";
 import { IsBoolean, IsOptional, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
-import { ICreatePerson, IPersonEntity } from "../../../../interfaces";
+import { ICreatePerson, IPersonEntity } from "../../../../interfaces.d";
 
 export class CreatePerson implements ICreatePerson {
 	@IsString() @MaxLength(50)
@@ -18,13 +18,13 @@ export class CreatePerson implements ICreatePerson {
 
 	@IsBoolean()
 	@ViewColumn()
-	@Column({ type: 'bool', width: 1, unique: false, nullable: false })
+	@Column({ type: 'bool', unique: false, nullable: false })
 	public isMale: boolean;
 
 	@Type(() => Date) @IsOptional() @IsDate()
 	@ViewColumn()
 	@CreateDateColumn({ type: 'datetime', unique: false })
-	public createdDatetime: Date;
+	public createdDatetime?: Date;
 }
 
 export class UpdatePerson extends PartialType(CreatePerson) { }
@@ -40,14 +40,11 @@ export class PersonEntity extends CreatePerson {
 
 
 @ViewEntity({
-	// expression: `SELECT id, name, birthDate, createdDatetime,isMale,
-	// TIMESTAMPDIFF(YEAR, birthDate, CURDATE()) AS age FROM person_entity;`
-	
 	expression: (connection) => connection.createQueryBuilder()
 		.select('person.id', 'id')
-		.addSelect('TIMESTAMPDIFF(YEAR, birthDate, CURDATE())', 'age')
 		.addSelect('person.name', 'name')
 		.addSelect('person.birthDate', 'birthDate')
+		.addSelect('TIMESTAMPDIFF(YEAR, birthDate, CURDATE())', 'age')
 		.addSelect('person.isMale', 'isMale')
 		.addSelect('person.createdDatetime', 'createdDatetime')
 		.from(PersonEntity, 'person')

@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { FieldModule } from './management/field/field.module';
 import { AccountModule } from './management/account/account.module';
-import { PerformanceModule } from './management/activity/activity.module';
+import { ActivityModule } from './management/activity/activity.module';
 import { ProgramModule } from './management/program/program.module';
 import { ChildModule } from './management/child/child.module';
 import { ParentModule } from './management/parent/parent.module';
@@ -14,14 +14,21 @@ import { RolesGuard } from './auth/Role.guard';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-// import { ProgramTable } from './management/program/program.entity';
-import {config} from 'dotenv'
-import { FieldEntity } from './management/field/field.entity';
+import { config } from 'dotenv'
+import { FieldEntity, FieldView } from './management/field/field.entity';
 import { PersonEntity, PersonView } from './management/person/person.entity';
 import { AccountEntity, AccountView } from './management/account/account.entity';
 import { PersonModule } from './management/person/person.module';
-// import { PerformanceTable } from './management/performance/performance.entity';
+import { ActivityEntity } from './management/activity/activity.entity';
+import { ChildEntity, ChildView } from './management/child/child.entity';
+import { EvaluationEntity } from './management/evaluation/evaluation.entity';
+import { GoalEntity } from './management/goal/Goal.entity';
+import { HdEntity } from './management/hd/hd.entity';
+import { ParentEntity } from './management/parent/parent.entity';
+import { ProgramEntity, ProgramView } from './management/program/program.entity';
+import { TeacherEntity } from './management/teacher/teacher.entity';
 config();
+
 @Module({
   imports: [
     TypeOrmModule.forRoot({
@@ -31,15 +38,19 @@ config();
       username: process.env.USER_DB,
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE,
-      entities: [PersonEntity,PersonView,AccountEntity,AccountView],
+      entities: [AccountEntity, AccountView, ActivityEntity,
+        ChildEntity, ChildView, EvaluationEntity, FieldEntity, FieldView,
+        GoalEntity, HdEntity, ParentEntity, PersonEntity, PersonView,
+        ProgramEntity, ProgramView, TeacherEntity],
       synchronize: true,
-      autoLoadEntities:true,
-      retryAttempts:1
+      autoLoadEntities: true,
+      retryAttempts: 1
     }),
-    FieldModule, AccountModule, PersonModule,
-    PerformanceModule, ProgramModule, ChildModule,
-    ParentModule, HdModule, TeacherModule,
-    GoalModule, EvaluationModule, AuthModule],
+    AccountModule, ActivityModule, ChildModule,
+    EvaluationModule, FieldModule, GoalModule,
+    HdModule, ParentModule, PersonModule,
+    ProgramModule, TeacherModule, AuthModule
+  ],
   providers: [{
     provide: APP_GUARD,
     useClass: RolesGuard,

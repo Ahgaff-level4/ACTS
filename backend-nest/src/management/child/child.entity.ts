@@ -3,7 +3,7 @@ import { IsNumber, IsOptional, IsDateString, IsString, Length, MaxLength, IsDate
 import { PersonEntity, PersonView } from "../person/person.entity";
 import { ParentEntity } from "../parent/parent.entity";
 import { IChildEntity, ICreateChild, IGoalEntity, IParentEntity, IPersonEntity } from './../../../../interfaces.d'
-import { Column, CreateDateColumn, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Type } from "class-transformer";
 import { GoalEntity } from "../goal/Goal.entity";
 export class CreateChild implements ICreateChild {
@@ -82,6 +82,7 @@ export class CreateChild implements ICreateChild {
 	@ViewColumn()
 	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
 	public personId: number;
+	//todo many-to-many with Teacher
 }
 
 @Entity()
@@ -122,12 +123,12 @@ export class UpdateChild extends PartialType(CreateChild) { }
 		.addSelect('child.isArchive', 'isArchive')
 		.addSelect('child.parentId', 'parentId')
 		.addSelect('child.personId', 'personId')
-		.addSelect('child.femaleFamilyMembers + child.maleFamilyMembers', 'familyMembers')
-		.addSelect('person.createdDatetime', 'registerDate')//todo fix durationSpent
+		.addSelect('(child.femaleFamilyMembers + child.maleFamilyMembers)', 'familyMembers')
+		// .addSelect('person.createdDatetime', 'registerDate')//todo fix durationSpent
 		.addSelect('TIMESTAMPDIFF(minute,person.createdDatetime,CURDATE())', 'durationSpent')
 		.from(ChildEntity, 'child')
-		.leftJoin(PersonView, 'person')
-		.leftJoin(ParentEntity,'parent')
+		.leftJoinAndMapOne('child.person',PersonView,'person','child.personId=person.id')
+		// .leftJoin(ParentEntity,'parent')
 })
 export class ChildView extends ChildEntity implements IChildEntity {
 	@ViewColumn()

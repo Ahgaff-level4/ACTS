@@ -1,31 +1,40 @@
 import { Injectable } from '@nestjs/common';
 import { CreateParent, ParentEntity, UpdateParent } from './parent.entity';
-import { DatabaseService } from 'src/database.service';
 import { UtilityService } from 'src/utility.service';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { AccountView } from '../account/account.entity';
 
 @Injectable()
 export class ParentService {
-  constructor(private db: DatabaseService, private ut:UtilityService) { }
+  constructor(@InjectRepository(ParentEntity) private repo:Repository<ParentEntity>) { }
   create(createParent: CreateParent) {
-    // return this.db.create('parent', this.ut.array2phoneN(createParent));
+    return this.repo.save(this.repo.create(createParent))
   }
 
   async findAll(fk: boolean) {
-    // if (fk)
-      // return (await this.db.selectJoin(['parent', 'account'])).map(this.ut.phoneN2array);
-    // else return (await this.db.select('*', 'parent')).map(this.ut.phoneN2array);
+    if (fk)
+      return this.repo
+      .createQueryBuilder('parent')
+      .leftJoinAndMapOne('parent.account',AccountView,'account','parent.accountId=account.id')
+      .getMany();
+    return this.repo.find();
   }
 
   async findOne(id: number) {
-    // return (await this.db.selectJoinOne(['parent', 'account'],id)).map(this.ut.phoneN2array);
+    return this.repo
+      .createQueryBuilder('parent')
+      .leftJoinAndMapOne('parent.account',AccountView,'account','parent.accountId=account.id')
+      .where('parent.id=:id',{id})
+      .getMany();
   }
 
   update(id: number, updateParent: UpdateParent) {
-    // return this.db.update('parent', id, this.ut.array2phoneN(updateParent));
+    return this.repo.update(+id,updateParent);
   }
 
   remove(id: number) {
-    // return this.db.delete('parent',id);
+    return this.repo.delete(+id);
   }
 
 

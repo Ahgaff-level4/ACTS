@@ -1,32 +1,42 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database.service';
-import { CreateActivity, UpdateActivity } from './activity.entity';
+import { ActivityEntity, CreateActivity, UpdateActivity } from './activity.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import { FieldView } from '../field/field.entity';
+import { ProgramView } from '../program/program.entity';
 
 @Injectable()
 export class ActivityService {
-    constructor(private db: DatabaseService) { }
+    constructor(@InjectRepository(ActivityEntity) private repo: Repository<ActivityEntity>) { }
 
-    create(createPerformance: CreateActivity) {
-        // return this.db.create('performance',createPerformance);
+    create(createActivity: CreateActivity) {
+        return this.repo.save(this.repo.create(createActivity))
     }
 
-    async findAll(fk:boolean) {
-        // field query= select field.id,field.name,field.createdDatetime, count(performance.fieldId) AS performanceCount from field left join performance on field.id = performance.fieldId group by field.id;
-        // if(fk)
-        // return await this.db.selectJoin(['performance', 'fieldView', 'program']) as PerformanceEntity[];
-        // else return this.db.select('*','performance')
+    async findAll(fk: boolean) {
+        if (fk)
+            return this.repo
+                .createQueryBuilder('activity')
+                .leftJoinAndMapOne('activity.field', FieldView, 'field', 'activity.fieldId=field.id')
+                .leftJoinAndMapOne('activity.program', ProgramView, 'program', 'activity.programId=program.id')
+                .getMany();
+        else return this.repo.find();
     }
 
     findOne(id: number) {
-        // return this.db.selectJoin(['performance', 'field','program'],['*'],['WHERE id=?'],[id])
-        // return this.db.selectJoinOne(['performance', 'field','program'],id);
+        return this.repo
+            .createQueryBuilder('activity')
+            .leftJoinAndMapOne('activity.field', FieldView, 'field', 'activity.fieldId=field.id')
+            .leftJoinAndMapOne('activity.program', ProgramView, 'program', 'activity.programId=program.id')
+            .where('activity.id=:id', { id })
+            .getMany();
     }
 
-    update(id: number, updatePerformance: UpdateActivity) {
-        // return this.db.update('performance',id,updatePerformance)
+    update(id: number, updateActivity: UpdateActivity) {
+        return this.repo.update(id, updateActivity)
     }
 
     remove(id: number) {
-        // return this.db.delete('performance',id);
+        return this.repo.delete(id);
     }
 }

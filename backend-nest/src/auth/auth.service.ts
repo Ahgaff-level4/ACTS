@@ -1,10 +1,11 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database.service';
 import {Role} from './../../../interfaces.d';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class AuthService {
-	constructor(private db: DatabaseService) { }
+	constructor(@InjectDataSource() private dataSource:DataSource) { }
 
 	/**
 	 * 

@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsDate, IsDateString, IsNotEmpty, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsDate, IsOptional, IsString, MaxLength } from "class-validator";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
-import { IActivityEntity, ICreateProgram, IProgramEntity } from "../../../../interfaces";
+import { IActivityEntity, ICreateProgram, IProgramEntity } from "../../../../interfaces.d";
 import { Type } from "class-transformer";
 import { ActivityEntity } from "../activity/activity.entity";
 
@@ -31,8 +31,15 @@ export class UpdateProgram extends PartialType(CreateProgram) { }
 
 
 @ViewEntity({
-    //todo
-})
+    expression:(connect)=>connect
+    .createQueryBuilder()
+    .select('program.id','id')
+    .addSelect('program.name','name')
+    .addSelect('program.createdDatetime','createdDatetime')
+    .addSelect('COUNT(activity.programId)','activityCount')
+    .from(ProgramEntity,'program')
+    .leftJoin(ActivityEntity,'activity','activity.programId=program.id')
+}) 
 export class ProgramView extends ProgramEntity implements IProgramEntity{
     @ViewColumn()
     public activityCount:number;
