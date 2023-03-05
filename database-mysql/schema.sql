@@ -8,20 +8,20 @@ CREATE TABLE person (-- 1
     id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
     `name` NVARCHAR(50) NOT NULL,
     birthDate DATE,CONSTRAINT CH_person_birthdayLimit CHECK(birthDate>'1900-1-1'),
-    isMale BIT(1),
+    gender enum('Male','Female'),
     createdDatetime DATETIME DEFAULT NOW() 
 );
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('احمد الكاف', '2000-1-24', TRUE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Ali', '1995-1-24', TRUE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Hdar', '2000-3-24', TRUE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Salem', '1995-1-24', TRUE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Mohammed', '2001-9-24', TRUE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Sara', '1995-1-24', FALSE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Abdullah', '2002-5-24', TRUE);
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Noor', '2008-1-24', FALSE);
-INSERT INTO person(`name`,birthDate,isMale,createdDatetime) VALUES ('Omer', '2009-1-24', TRUE, '2022-1-1');
-INSERT INTO person(`name`,birthDate,isMale) VALUES ('Khaled', '1999-6-3', TRUE);
-INSERT INTO person(`name`,isMale) VALUES ('Omar', TRUE);
+INSERT INTO person(`name`,birthDate,gender) VALUES ('احمد الكاف', '2000-1-24', 'Male');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Ali', '1995-1-24', 'Male');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Hdar', '2000-3-24', 'Male');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Salem', '1995-1-24', 'Male');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Mohammed', '2001-9-24', 'Male');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Sara', '1995-1-24', 'Female');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Abdullah', '2002-5-24', 'Male');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Noor', '2008-1-24', 'Female');
+INSERT INTO person(`name`,birthDate,gender,createdDatetime) VALUES ('Omer', '2009-1-24', 'Male', '2022-1-1');
+INSERT INTO person(`name`,birthDate,gender) VALUES ('Khaled', '1999-6-3', 'Male');
+INSERT INTO person(`name`,gender) VALUES ('Omar', 'Male');
 INSERT INTO person(`name`,birthDate) VALUES ('Mansour', '1999-6-3');
 INSERT INTO person(`name`) VALUES ('Nothing');
 
@@ -210,8 +210,7 @@ CREATE VIEW programView AS
 
 
 CREATE VIEW personView AS
-	SELECT id, name, birthDate, createdDatetime,
-	(CASE isMale WHEN 0 THEN false WHEN 1 THEN true ELSE null END) AS isMale,
+	SELECT id, name, birthDate, createdDatetime, gender,
 	TIMESTAMPDIFF(YEAR,birthDate,CURDATE()) AS age FROM person;
 
 CREATE VIEW childView AS  -- To add registerDate

@@ -1,11 +1,11 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsNumber, IsOptional, IsDateString, IsString, Length, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean } from "class-validator";
 import { PersonEntity, PersonView } from "../person/person.entity";
-import { ParentEntity } from "../parent/parent.entity";
 import { IChildEntity, ICreateChild, IGoalEntity, IParentEntity, IPersonEntity } from './../../../../interfaces.d'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Type } from "class-transformer";
 import { GoalEntity } from "../goal/Goal.entity";
+import { AccountEntity } from "../account/account.entity";
 export class CreateChild implements ICreateChild {
 	@IsNumber() @IsOptional()
 	@ViewColumn()
@@ -82,6 +82,7 @@ export class CreateChild implements ICreateChild {
 	@ViewColumn()
 	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
 	public personId: number;
+	
 	//todo many-to-many with Teacher
 }
 
@@ -91,7 +92,7 @@ export class ChildEntity extends CreateChild {
 	@PrimaryGeneratedColumn({ type: 'int', unsigned: true })
 	public id: number;
 
-	@ManyToOne(() => ParentEntity, (parent) => parent.children,{nullable:true, onDelete:'SET NULL'})
+	@ManyToOne(() => AccountEntity, (parent) => parent.children,{nullable:true, onDelete:'SET NULL'})
 	public parent?: IParentEntity;
 	
 	@OneToMany(()=>GoalEntity, (goal)=>goal.child)
@@ -124,8 +125,8 @@ export class UpdateChild extends PartialType(CreateChild) { }
 		.addSelect('child.parentId', 'parentId')
 		.addSelect('child.personId', 'personId')
 		.addSelect('(child.femaleFamilyMembers + child.maleFamilyMembers)', 'familyMembers')
-		// .addSelect('person.createdDatetime', 'registerDate')//todo fix durationSpent
-		.addSelect('TIMESTAMPDIFF(minute,person.createdDatetime,CURDATE())', 'durationSpent')
+		// .addSelect('person.createdDatetime', 'registerDate')//todo fix registerDate
+		.addSelect('DATEDIFF(CURDATE(),person.createdDatetime)', 'durationSpent')
 		.from(ChildEntity, 'child')
 		.leftJoinAndMapOne('child.person',PersonView,'person','child.personId=person.id')
 		// .leftJoin(ParentEntity,'parent')

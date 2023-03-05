@@ -1,40 +1,122 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsInt, IsLowercase, IsNumber, IsPositive, IsString, Length, NotContains } from "class-validator";
+import { IsInt, IsLowercase, IsNumber, IsOptional, IsPhoneNumber, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
-import { IAccountEntity, ICreateAccount } from './../../../../interfaces.d';
+import { IAccountEntity, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity } from './../../../../interfaces.d';
 import { Transform } from "class-transformer";
-import { Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
+import { RoleEntity } from "./role/role.entity";
+import { ChildEntity } from "../child/child.entity";
+import { EvaluationEntity } from "../evaluation/evaluation.entity";
+import { GoalEntity } from "../goal/Goal.entity";
 
 export class CreateAccount implements ICreateAccount {
-	@IsString() @NotContains(' ')
-	@Length(4, 32) @IsLowercase()
+	@IsString() @NotContains(' ') @Length(4, 32) @IsLowercase()
 	@Transform(({ value }) => (value as string).toString().toLowerCase())
 	@ViewColumn()
 	@Column({ length: 32, unique: true, nullable: false })
-	public username: string;
+	public username: string;//!Account
 
-	@IsString()
-	@Length(4)
+	@IsString() @Length(4)
 	@ViewColumn()
 	@Column({ length: 60, type: 'char', unique: false, nullable: false })
-	public password: string;
+	public password: string;//!Account
 
 	//'create' should provide 'personId'. You can insert or update person by assigning person property
 	@IsInt() @IsNumber() @IsPositive() 
 	@ViewColumn()
 	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
-	public personId: number;
+	public personId: number;//!Account
+	
+	@IsString() @IsOptional() @MaxLength(64)
+	@Column({ type: 'nvarchar', length: 64, nullable: true })
+	public address?: string;//!Parent
+
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone0: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone1: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone2: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone3: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone4: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone5: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone6: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone7: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone8: string;//!Parent
+	
+	@IsOptional() @IsString() @MaxLength(15)
+	@IsPhoneNumber("YE")
+	@NotContains(' ')
+	@Column({type:'varchar',nullable:true,length:15,})
+	public phone9: string;//!Parent
 }
 
 @Entity()
 export class AccountEntity extends CreateAccount implements IAccountEntity {
 	@ViewColumn()
 	@PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-	public id: number;
+	public id: number;//!Account
 
 	@OneToOne(() => PersonEntity, { nullable: false, onDelete: 'CASCADE'})
 	@JoinColumn()
-	public person: PersonEntity;
+	public person: PersonEntity;//!Account
+	
+	@ManyToMany(()=>RoleEntity,(role)=>role.accounts)
+	@JoinTable()
+	public roles:RoleEntity[];//!All roles
+	
+	
+	@OneToMany(() => ChildEntity, (child) => child.parent)
+	public children: IChildEntity[];//!Parent
+	
+	@OneToMany(() => EvaluationEntity, (evaluation) => evaluation.teacher)
+	public evaluations: IEvaluationEntity[];//!Teacher
+
+	@OneToMany(() => GoalEntity, (goal) => goal.teacher)
+	public goals: IGoalEntity[];//!Teacher
+	
+	//todo many-to-many with children. //!Teacher
 }
 
 export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
@@ -51,6 +133,7 @@ export class UpdateAccount extends PartialType(CreateAccount) {
 		.addSelect('account.username', 'username')
 		.addSelect('account.personId', 'personId')
 		.from(AccountEntity, 'account')
+		// .leftJoinAndMapMany('account.roles',RoleEntity,'role',)//if not working add @ViewColumn() in roles property
 })
 /** hide password property */
 export class AccountView {

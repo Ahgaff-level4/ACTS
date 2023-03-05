@@ -1,9 +1,9 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
-import { IsDate, MaxDate, MaxLength, MinDate } from "class-validator";
+import { IsDate, MaxLength } from "class-validator";
 import { IsBoolean, IsOptional, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
-import { ICreatePerson, IPersonEntity } from "../../../../interfaces.d";
+import { Gender, ICreatePerson, IPersonEntity } from "../../../../interfaces.d";
 
 export class CreatePerson implements ICreatePerson {
 	@IsString() @MaxLength(50)
@@ -18,8 +18,8 @@ export class CreatePerson implements ICreatePerson {
 
 	@IsBoolean()
 	@ViewColumn()
-	@Column({ type: 'bool', unique: false, nullable: false })
-	public isMale: boolean;
+	@Column({ type: 'enum',enum:['Male','Female'], unique: false, nullable: false })
+	public gender: Gender;
 
 	@Type(() => Date) @IsOptional() @IsDate()
 	@ViewColumn()
@@ -45,7 +45,7 @@ export class PersonEntity extends CreatePerson {
 		.addSelect('person.name', 'name')
 		.addSelect('person.birthDate', 'birthDate')
 		.addSelect('TIMESTAMPDIFF(YEAR, birthDate, CURDATE())', 'age')
-		.addSelect('person.isMale', 'isMale')
+		.addSelect('person.gender', 'gender')
 		.addSelect('person.createdDatetime', 'createdDatetime')
 		.from(PersonEntity, 'person')
 })
