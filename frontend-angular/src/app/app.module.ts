@@ -10,6 +10,7 @@ import { LoginComponent } from './components/pages/login/login.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {MatAutocompleteModule} from '@angular/material/autocomplete';
 
 @NgModule({
   declarations: [
@@ -26,6 +27,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
     HttpClientModule,
     RouterModule,
     BrowserAnimationsModule,
+    MatAutocompleteModule
   ],
   bootstrap: [AppComponent]
 })
