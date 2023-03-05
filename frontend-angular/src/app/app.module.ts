@@ -15,6 +15,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatInputModule} from '@angular/material/input';
 import {MatFormFieldModule} from '@angular/material/form-field';
 import { FormsModule } from '@angular/forms';
+import {MatToolbarModule} from '@angular/material/toolbar';
+import {MatIconModule} from '@angular/material/icon';
+import { FooterComponent } from './footer/footer.component';
 @NgModule({
   declarations: [
     AppComponent,
@@ -22,6 +25,7 @@ import { FormsModule } from '@angular/forms';
     FieldComponent,
     NavBarComponent,
     LoginComponent,
+    FooterComponent,
   ],
   imports: [
     BrowserModule,
@@ -34,7 +38,9 @@ import { FormsModule } from '@angular/forms';
     MatButtonModule,
     MatInputModule,
     MatFormFieldModule,
-    FormsModule
+    FormsModule,
+    MatToolbarModule,
+    MatIconModule
   ],
   bootstrap: [AppComponent]
 })

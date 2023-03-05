@@ -4,9 +4,6 @@ import { AccountModule } from './management/account/account.module';
 import { ActivityModule } from './management/activity/activity.module';
 import { ProgramModule } from './management/program/program.module';
 import { ChildModule } from './management/child/child.module';
-import { ParentModule } from './management/parent/parent.module';
-import { HdModule } from './management/hd/hd.module';
-import { TeacherModule } from './management/teacher/teacher.module';
 import { GoalModule } from './management/goal/goal.module';
 import { EvaluationModule } from './management/evaluation/evaluation.module';
 import { APP_GUARD } from '@nestjs/core';
@@ -23,10 +20,7 @@ import { ActivityEntity } from './management/activity/activity.entity';
 import { ChildEntity, ChildView } from './management/child/child.entity';
 import { EvaluationEntity } from './management/evaluation/evaluation.entity';
 import { GoalEntity } from './management/goal/Goal.entity';
-import { HdEntity } from './management/hd/hd.entity';
-import { ParentEntity } from './management/parent/parent.entity';
 import { ProgramEntity, ProgramView } from './management/program/program.entity';
-import { TeacherEntity } from './management/teacher/teacher.entity';
 config();
 
 @Module({
@@ -40,16 +34,16 @@ config();
       database: process.env.DATABASE,
       entities: [AccountEntity, AccountView, ActivityEntity,
         ChildEntity, ChildView, EvaluationEntity, FieldEntity, FieldView,
-        GoalEntity, HdEntity, ParentEntity, PersonEntity, PersonView,
-        ProgramEntity, ProgramView, TeacherEntity],
+        GoalEntity, PersonEntity, PersonView, ProgramEntity, ProgramView
+      ],
+
       synchronize: true,
       autoLoadEntities: true,
       retryAttempts: 1
     }),
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,
-    HdModule, ParentModule, PersonModule,
-    ProgramModule, TeacherModule, AuthModule
+    PersonModule, ProgramModule, AuthModule
   ],
   providers: [{
     provide: APP_GUARD,

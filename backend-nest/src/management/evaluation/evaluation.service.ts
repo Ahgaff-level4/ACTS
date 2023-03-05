@@ -3,11 +3,11 @@ import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './evaluati
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { GoalEntity } from '../goal/Goal.entity';
-import { TeacherEntity } from '../teacher/teacher.entity';
+import { AccountEntity } from '../account/account.entity';
 
 @Injectable()
 export class EvaluationService {
-  constructor(@InjectRepository(EvaluationEntity) private repo:Repository<EvaluationEntity> ) { }
+  constructor(@InjectRepository(EvaluationEntity) private repo: Repository<EvaluationEntity>) { }
 
   create(createEvaluation: CreateEvaluation) {
     this.repo.save(this.repo.create(createEvaluation));
@@ -16,10 +16,10 @@ export class EvaluationService {
   async findAllOfGoal(fk: boolean, goalId: number) {
     if (fk)
       return this.repo
-      .createQueryBuilder('evaluation')
-      .leftJoinAndMapOne('evaluation.goal',GoalEntity,'goal','evaluation.goalId=goal.id')
-      .leftJoinAndMapOne('evaluation.teacher',TeacherEntity,'teacher','evaluation.teacherId=teacher.id')
-      .getMany();
+        .createQueryBuilder('evaluation')
+        .leftJoinAndMapOne('evaluation.goal', GoalEntity, 'goal', 'evaluation.goalId=goal.id')
+        .leftJoinAndMapOne('evaluation.teacher', AccountEntity, 'teacher', 'evaluation.teacherId=teacher.id')
+        .getMany();
     else return this.repo.find();
   }
 
@@ -30,14 +30,19 @@ export class EvaluationService {
   }
 
   async findOne(id: number) {
-    // return this.db.selectJoinOne(['evaluation', 'teacher', 'goal'], id)
+    return this.repo
+      .createQueryBuilder('evaluation')
+      .leftJoinAndMapOne('evaluation.goal', GoalEntity, 'goal', 'evaluation.goalId=goal.id')
+      .leftJoinAndMapOne('evaluation.teacher', AccountEntity, 'teacher', 'evaluation.teacherId=teacher.id')
+      .where('evaluation.id=:id',{id})
+      .getMany();
   }
 
   update(id: number, updateEvaluation: UpdateEvaluation) {
-    // return this.db.update('evaluation', id, updateEvaluation);
+    return this.repo.update(+id,updateEvaluation);
   }
 
   remove(id: number) {
-    // return this.db.delete('evaluation', id);
+    return this.repo.delete(+id)
   }
 }

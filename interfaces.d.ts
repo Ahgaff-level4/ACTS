@@ -9,7 +9,7 @@
  */
 export type EvaluationRate = 'continual' | 'excellent';
 export type GoalState = 'continual' | "strength" | "completed";
-
+export type Gender = 'Male' | 'Female';
 /**
  * Used to check in the frontend. Ex: if action is `login` then open login form.
  * Reason: Error message may change. Action is static.
@@ -117,7 +117,7 @@ export interface IFieldEntity extends ICreateField {
 export interface ICreatePerson {
 	name: string;
 	birthDate?: string;
-	isMale: boolean;
+	gender:Gender;
 	createdDatetime?: Date;
 }
 

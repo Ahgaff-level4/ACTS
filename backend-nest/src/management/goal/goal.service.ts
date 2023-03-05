@@ -3,7 +3,7 @@ import { CreateGoal, GoalEntity, UpdateGoal } from './Goal.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ActivityEntity } from '../activity/activity.entity';
-import { TeacherEntity } from '../teacher/teacher.entity';
+import { AccountEntity } from '../account/account.entity';
 
 @Injectable()
 export class GoalService {
@@ -18,7 +18,7 @@ export class GoalService {
       return this.repo
       .createQueryBuilder('goal')
       .leftJoinAndMapOne('goal.activity',ActivityEntity,'activity','goal.activityId=activity.id')
-      .leftJoinAndMapOne('goal.teacher',TeacherEntity,'teacher','goal.teacherId=teacher.id')
+      .leftJoinAndMapOne('goal.teacher',AccountEntity,'teacher','goal.teacherId=teacher.id')
       .getMany();
     else return this.repo.find();
   }

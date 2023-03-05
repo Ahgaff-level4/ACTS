@@ -1,10 +1,10 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsDate, IsDateString, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
+import { IsDate, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
 import { GoalEntity } from "../goal/Goal.entity";
-import { TeacherEntity } from "../teacher/teacher.entity";
 import { EvaluationRate, ICreateEvaluation, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces.d";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";
+import { AccountEntity } from "../account/account.entity";
 
 export class CreateEvaluation implements ICreateEvaluation {
 	@IsString() @MaxLength(512)
@@ -45,7 +45,7 @@ export class EvaluationEntity extends CreateEvaluation implements IEvaluationEnt
 	@ManyToOne(() => GoalEntity, (goal) => goal.evaluations, { nullable: false, onDelete: 'CASCADE' })
 	public goal: IGoalEntity;
 
-	@ManyToOne(() => TeacherEntity, (teacher) => teacher.evaluations, { nullable: false, onDelete: 'NO ACTION' })
+	@ManyToOne(() => AccountEntity, (teacher) => teacher.evaluations, { nullable: false, onDelete: 'NO ACTION' })
 	public teacher: ITeacherEntity;
 }
 

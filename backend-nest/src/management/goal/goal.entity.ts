@@ -4,9 +4,9 @@ import { ActivityEntity } from "../activity/activity.entity";
 import { GoalState, IActivityEntity, IChildEntity, ICreateGoal, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces.d";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { EvaluationEntity } from "../evaluation/evaluation.entity";
-import { TeacherEntity } from "../teacher/teacher.entity";
 import { Type } from "class-transformer";
 import { ChildEntity } from "../child/child.entity";
+import { AccountEntity } from "../account/account.entity";
 
 export class CreateGoal implements ICreateGoal {
 	@IsString() @IsOptional() @MaxLength(512)
@@ -49,7 +49,7 @@ export class GoalEntity extends CreateGoal implements IGoalEntity {
 	@OneToMany(() => EvaluationEntity, (evaluation) => evaluation.goal)
 	public evaluations: IEvaluationEntity[];
 
-	@ManyToOne(() => TeacherEntity, (teacher) => teacher.goals, { onDelete: 'NO ACTION', nullable: false })
+	@ManyToOne(() => AccountEntity, (teacher) => teacher.goals, { onDelete: 'NO ACTION', nullable: false })
 	public teacher: ITeacherEntity;
 }
 
