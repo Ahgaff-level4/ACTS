@@ -8,8 +8,8 @@ import { Route } from '@angular/router';
 })
 export class LoginService {
 
-  constructor(private http:HttpClient,private ut:UtilityService,private route:Route) { }
-  
+  constructor(private http:HttpClient,private ut:UtilityService) { }
+
   login(username:string,password:string){
     return this.http.post(this.ut.API+'login',{username,password}).subscribe((data: any) => {
       console.log('header:',data.header);
