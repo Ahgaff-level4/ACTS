@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsDate, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
 import { ActivityEntity } from "../activity/activity.entity";
-import { GoalState, IActivityEntity, IChildEntity, ICreateGoal, IEvaluationEntity, IGoalEntity, ITeacherEntity } from "../../../../interfaces.d";
+import { GoalState, IAccountEntity, IActivityEntity, IChildEntity, ICreateGoal, IEvaluationEntity, IGoalEntity } from "../../../../interfaces.d";
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { EvaluationEntity } from "../evaluation/evaluation.entity";
 import { Type } from "class-transformer";
@@ -50,7 +50,7 @@ export class GoalEntity extends CreateGoal implements IGoalEntity {
 	public evaluations: IEvaluationEntity[];
 
 	@ManyToOne(() => AccountEntity, (teacher) => teacher.goals, { onDelete: 'NO ACTION', nullable: false })
-	public teacher: ITeacherEntity;
+	public teacher: IAccountEntity;
 }
 
 export class UpdateGoal extends PartialType(CreateGoal) {

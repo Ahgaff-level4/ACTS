@@ -1,6 +1,6 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { Type } from "class-transformer";
-import { IsDate, MaxLength } from "class-validator";
+import { IsDate, IsEnum, MaxLength } from "class-validator";
 import { IsBoolean, IsOptional, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Gender, ICreatePerson, IPersonEntity } from "../../../../interfaces.d";
@@ -16,7 +16,7 @@ export class CreatePerson implements ICreatePerson {
 	@Column({ type: 'date', unique: false, nullable: true })
 	public birthDate?: string;
 
-	@IsBoolean()
+	@IsEnum({"Male":"Male","Female":"Female"})
 	@ViewColumn()
 	@Column({ type: 'enum',enum:['Male','Female'], unique: false, nullable: false })
 	public gender: Gender;

@@ -1,4 +1,5 @@
 import { ExecutionContext, Injectable, UnauthorizedException, createParamDecorator } from '@nestjs/common';
+import { Role } from '../../interfaces';
 export interface MyResponse<T> {
     success: boolean;
     data?: T;
@@ -62,8 +63,10 @@ export const R = {
         loggedOutSuccessfully: 'Logged out successfully',
         invalidUsernameOrPassword: 'Invalid username or password!',
         onlyAdminTeacher: 'Only Admin and Teacher are authorized!',
+        onlyParent:'Only Parent is authorized!',
         mustLogin:'You must login!',
         duplicateEntry:`There is duplicated value should be unique!`,
+        invalidRole:(roleName:string)=>`Invalid role! Role ${roleName} dose not exist!`
     }
 
 }
@@ -71,12 +74,9 @@ export const R = {
  * User object that stored in request.session.user
  */
 export interface User {
-	loggedIn: boolean;
+	isLoggedIn: boolean;
 	accountId: number;
-	roles: string[];//Role
-	parentId?: number;
-	teacherId?: number;
-	hdId?: number
+	roles: Role[];
 }
 
 

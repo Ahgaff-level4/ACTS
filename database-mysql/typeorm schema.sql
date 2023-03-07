@@ -35,9 +35,12 @@ INSERT INTO person_entity(`name`,gender) VALUES ('Nothing','Female');
 -- 	username NVARCHAR(32) NOT NULL UNIQUE,
 -- 	`password` CHAR(60) NOT NULL, -- Hashed password and salt concatenated in base64 format
 -- 	personId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_account_personId FOREIGN KEY (personId) REFERENCES person(id) ON DELETE CASCADE
+
+--  phone0 VARCHAR(15),	phone1 VARCHAR(15),phone2 VARCHAR(15),phone3 VARCHAR(15),phone4 VARCHAR(15),phone5 VARCHAR(15),phone6 VARCHAR(15),phone7 VARCHAR(15),phone8 VARCHAR(15),phone9 VARCHAR(15),
+-- 	address	NVARCHAR(64),
 -- );															-- if "Duplicate entry..." error then make sure to drop DB (Run first two lines)
-INSERT INTO account_entity(username,`password`,personId) values ('Alkaf-11','$2a$10$KssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',1);
-INSERT INTO account_entity(username,`password`,personId) values ('parent','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',2);
+INSERT INTO account_entity(username,`password`,personId,phone0,phone1,phone2,phone3,phone4,phone5,phone6,phone7,phone8,phone9,address) values ('Alkaf-11','$2a$10$KssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',1,'775544489','735487872','+966548498149','+966599219279','739651919','785154875','712345678','789456123','701234567','79999999999','Bin sena');
+INSERT INTO account_entity(username,`password`,personId,phone0,address) values ('parent','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',2,'78454456','Masakin');
 INSERT INTO account_entity(username,`password`,personId) values ('hdar-11','$2a$10$KssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',3);
 INSERT INTO account_entity(username,`password`,personId) values ('teacher','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',4);
 INSERT INTO account_entity(username,`password`,personId) values ('hd','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',5);
@@ -46,34 +49,36 @@ INSERT INTO account_entity(username,`password`,personId) values ('admin','$2a$10
 INSERT INTO account_entity(username,`password`,personId) values ('asdf','$2a$10$gl0bK61ShEoBpYPXJ5yRauwbT53t23xPDpgwOfVH4L21Fe.vqDg4m',10);-- person id 8 and 9 are children that why they don't have account INSERT INTO account (username,`password`,personId) values ('qwer','$2a$10$7zIdK8cdup.QYobNCMM9.OyQExUFPdwYzFW8vC8V34A0qqSr2daui',11);
 INSERT INTO account_entity(username,`password`,personId) values ('zxcv','$2a$10$kssILxWNR6k62B7yiX0GAe2Q7wwHlrzhF3LqtVvpyvHZf0MwvNfVu',12);
 
--- CREATE TABLE parent( -- 3
--- 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
--- 	phone0 VARCHAR(15),	phone1 VARCHAR(15),phone2 VARCHAR(15),phone3 VARCHAR(15),phone4 VARCHAR(15),phone5 VARCHAR(15),phone6 VARCHAR(15),phone7 VARCHAR(15),phone8 VARCHAR(15),phone9 VARCHAR(15),
--- 	address	NVARCHAR(64),
--- 	accountId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_parent_accountId FOREIGN KEY (accountId) REFERENCES account(id) ON DELETE CASCADE
--- );
-INSERT INTO parent_entity(phone0,phone1,phone2,phone3,phone4,phone5,phone6,phone7,phone8,phone9,address,accountId) values ('775544489','735487872','+966548498149','+966599219279','739651919','785154875','712345678','789456123','701234567','79999999999','Bin sena',1);
-INSERT INTO parent_entity(phone0,address,accountId) values ('78454456','Masakin',2);
 
+-- export class RoleEntity {
+-- 	public id: number;
 
--- CREATE TABLE teacher( -- 4
--- 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
---     accountId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_teacher_accountId FOREIGN KEY (accountId) REFERENCES account(id) ON DELETE CASCADE
--- );
-INSERT INTO teacher_entity(accountId) values (3);
-INSERT INTO teacher_entity(accountId) values (4);
-INSERT INTO teacher_entity(accountId) values (7); -- accountId 7 and 8 are admin by insert them in teacher and head of department tables
-INSERT INTO teacher_entity(accountId) values (8);
+-- 	@Column({ type: 'enum', nullable: false, unique: true, enum: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] })
+-- 	public name: Role;
 
+-- 	@ManyToMany(() => AccountEntity, (account) => account.roles)
+-- 	public accounts: IAccountEntity
+-- }
+INSERT INTO role_entity(`name`) VALUES('Admin'); -- 1
+INSERT INTO role_entity(`name`) VALUES('HeadOfDepartment'); -- 2
+INSERT INTO role_entity(`name`) VALUES('Teacher'); -- 3
+INSERT INTO role_entity(`name`) VALUES('Parent'); -- 4
 
--- CREATE TABLE hd( -- 5
--- 	id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
--- 	accountId INT UNSIGNED NOT NULL UNIQUE, CONSTRAINT FK_headOfDepartment_accountId FOREIGN KEY (accountId) REFERENCES account(id) ON DELETE CASCADE
--- );
-INSERT INTO hd_entity(accountId) values (5);
-INSERT INTO hd_entity(accountId) values (6);
-INSERT INTO hd_entity(accountId) values (7);
-INSERT INTO hd_entity(accountId) values (8);
+-- Admin
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (7,1);
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (8,1);
+
+-- HeadOfDepartment
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (5,2);
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (6,2);
+
+-- Teacher
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (3,3);
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (4,3);
+
+-- Parent
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (1,4);
+INSERT INTO account_entity_roles_entities_role_entity(accountEntityId, roleEntityId) values (2,4);
 
 
 -- CREATE TABLE child( -- 6

@@ -26,7 +26,7 @@ export class RolesGuard implements CanActivate {
     if (req.path === '/api/auth/login' && req.method === 'POST')//user can only login without authentication
       return true;
     const user:User = req.session['user'];
-    if (user?.loggedIn !== true)
+    if (user?.isLoggedIn !== true)
       throw new UnauthorizedException({message:R.string.mustLogin,action:'login'});
 
 

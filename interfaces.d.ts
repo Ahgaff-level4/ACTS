@@ -126,18 +126,6 @@ export interface IPersonEntity extends ICreatePerson {
 	age: number;
 }
 
-export interface ICreateParent {
-	phone: string[];
-	address?: string;
-	accountId: number;
-}
-
-export interface IParentEntity extends ICreateParent {
-	id: number;
-	account: IAccountEntity;
-	children: IChildEntity[];
-}
-
 export interface ICreateGoal {
 	public note?: string;
 	public assignDatetime?: Date;
@@ -153,16 +141,6 @@ export interface IGoalEntity extends ICreateGoal {
 	public child: IChildEntity;
 	public evaluations: IEvaluationEntity[];
 	public teacher: ITeacherEntity;
-}
-
-export interface ICreateTeacher {
-	public accountId: number;
-}
-export interface ITeacherEntity extends ICreateTeacher {
-	public id: number;
-	public account: IAccountEntity;
-	public evaluations: IEvaluationEntity[];
-	public goals: IGoalEntity[];
 }
 
 export interface ICreateActivity {
@@ -204,10 +182,8 @@ export interface IProgramEntity extends ICreateProgram {
 	activityCount: number;
 }
 
-export interface ICreateHd {
-	accountId: number;
-}
-export interface IHdEntity extends ICreateHd {
-	id: number;
-	account: IAccountEntity;
+export interface IRoleEntity{
+	public id: number;
+	public name: Role;
+	public accounts: IAccountEntity[]
 }

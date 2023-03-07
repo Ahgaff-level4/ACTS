@@ -14,7 +14,7 @@ import { DataSource } from 'typeorm';
 import { config } from 'dotenv'
 import { FieldEntity, FieldView } from './management/field/field.entity';
 import { PersonEntity, PersonView } from './management/person/person.entity';
-import { AccountEntity, AccountView } from './management/account/account.entity';
+import { AccountEntity } from './management/account/account.entity';
 import { PersonModule } from './management/person/person.module';
 import { ActivityEntity } from './management/activity/activity.entity';
 import { ChildEntity, ChildView } from './management/child/child.entity';
@@ -32,11 +32,10 @@ config();
       username: process.env.USER_DB,
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE,
-      entities: [AccountEntity, AccountView, ActivityEntity,
+      entities: [AccountEntity, ActivityEntity,
         ChildEntity, ChildView, EvaluationEntity, FieldEntity, FieldView,
         GoalEntity, PersonEntity, PersonView, ProgramEntity, ProgramView
       ],
-
       synchronize: true,
       autoLoadEntities: true,
       retryAttempts: 1

@@ -19,8 +19,8 @@ export class EvaluationController {
       return this.evaluationService.create(createEvaluation);
     if (session && session['user']) {
       const user: User = session['user'];
-      if (user.teacherId)
-        createEvaluation.teacherId = user.teacherId;
+      if (user.roles.includes('Teacher')||user.roles.includes('Admin'))
+        createEvaluation.teacherId = user.accountId;
       else throw new UnauthorizedException(R.string.onlyAdminTeacher);
       return this.evaluationService.create(createEvaluation);
     }

@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsNumber, IsOptional, IsDateString, IsString, Length, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean } from "class-validator";
 import { PersonEntity, PersonView } from "../person/person.entity";
-import { IChildEntity, ICreateChild, IGoalEntity, IParentEntity, IPersonEntity } from './../../../../interfaces.d'
+import { IAccountEntity, IChildEntity, ICreateChild, IGoalEntity, IPersonEntity } from './../../../../interfaces.d'
 import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Type } from "class-transformer";
 import { GoalEntity } from "../goal/Goal.entity";
@@ -93,7 +93,7 @@ export class ChildEntity extends CreateChild {
 	public id: number;
 
 	@ManyToOne(() => AccountEntity, (parent) => parent.children,{nullable:true, onDelete:'SET NULL'})
-	public parent?: IParentEntity;
+	public parent?: IAccountEntity;
 	
 	@OneToMany(()=>GoalEntity, (goal)=>goal.child)
 	public goals:IGoalEntity[];

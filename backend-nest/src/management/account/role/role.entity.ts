@@ -1,15 +1,15 @@
 import { Column, Entity, ManyToMany, PrimaryGeneratedColumn } from "typeorm";
-import { IAccountEntity, Role } from "../../../../../interfaces";
+import { IAccountEntity, IRoleEntity, Role } from "../../../../../interfaces";
 import { AccountEntity } from "../account.entity";
 
 @Entity()
-export class RoleEntity {
+export class RoleEntity implements IRoleEntity {
 	@PrimaryGeneratedColumn({ type: 'int', unsigned: true })
 	public id: number;
-
-	@Column({ type: 'enum', nullable: false, unique: true, enum: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] })
+	
+	@Column({ type: 'nvarchar', nullable: false, unique: true, length:16 })
 	public name: Role;
-
-	@ManyToMany(() => AccountEntity, (account) => account.roles)
-	public accounts: IAccountEntity
+	
+	@ManyToMany(() => AccountEntity, (account) => account.rolesEntities)
+	public accounts: IAccountEntity[];
 }

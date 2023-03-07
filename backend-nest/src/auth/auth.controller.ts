@@ -23,20 +23,17 @@ export class AuthController {
 
 	@Post('login')
 	async login(@Req() req: Request, @Body() loginInfo: LoginInfo) {
-		// req.session['user'] = undefined;												//! use accountRepo
-		// const sel: { id: number, password: string }[] = (await this.db.select('id,password', 'account', 'BINARY username=?', [loginInfo.username])) as { id: number, password: string }[];
-		// if (sel.length == 0)
-		// 	throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
-		// const account = sel[0];
-		// if (!(await bcrypt.compare(loginInfo.password, account.password)))
-		// 	throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
-		// const roles = await this.authService.getAccountRoles(account.id);
-		// var user: User = { loggedIn: true, accountId: account.id, roles: roles.roles };
-		// user.parentId = roles.parentId;
-		// user.teacherId = roles.teacherId;
-		// user.hdId = roles.hdId;
-		// req.session['user'] = user;
-		// return { message: R.string.loggedInSuccessfully, roles };
+		req.session['user'] = undefined;			
+		const sel: AccountEntity[] = await this.authService.findAccountsBy(loginInfo.username);
+		console.log('AuthController : login : sel:', sel);
+		if (sel.length == 0)
+			throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
+		const account = sel[0];
+		if (!(await bcrypt.compare(loginInfo.password, account.password)))
+			throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
+		var user: User = { isLoggedIn: true, accountId: account.id, roles: account.roles };
+		req.session['user'] = user;
+		return { message: R.string.loggedInSuccessfully, roles:account.roles,accountId:account.id,name:account.person?.name };
 	}
 
 	@Get('logout')

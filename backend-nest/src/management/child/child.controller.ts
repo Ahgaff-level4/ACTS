@@ -3,7 +3,7 @@ import { ChildService } from './child.service';
 import { CreateChild, UpdateChild } from './child.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
-import { User } from 'src/utility.service';
+import { R, User } from 'src/utility.service';
 import { Session as ExpressSession } from 'express-session';
 
 @Controller('api/child')
@@ -25,11 +25,11 @@ export class ChildController {
   @Get('/parent')
   @Roles('Parent')
   findChildrenOfParent(@Session() session: ExpressSession) {
-    if (session && session['user'] && session['user'].parentId) {
-      const user: User = session['user'];
-      return this.childService.findChildrenOfParent(user.parentId)
+    const user: User = session && session['user'];
+    if (session['user'] && (session['user'] as User).roles.includes('Parent')) {
+      return this.childService.findChildrenOfParent(user.accountId)
     }
-    throw new UnauthorizedException('')
+    throw new UnauthorizedException(R.string.onlyParent)
   }
 
   @Get(':id')
