@@ -1,5 +1,5 @@
 import { ExecutionContext, Injectable, UnauthorizedException, createParamDecorator } from '@nestjs/common';
-import { Role } from '../../interfaces';
+import { Role, User } from '../../interfaces';
 export interface MyResponse<T> {
     success: boolean;
     data?: T;
@@ -70,14 +70,7 @@ export const R = {
     }
 
 }
-/**
- * User object that stored in request.session.user
- */
-export interface User {
-	isLoggedIn: boolean;
-	accountId: number;
-	roles: Role[];
-}
+
 
 
 /**

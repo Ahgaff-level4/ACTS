@@ -59,7 +59,7 @@ async function bootstrap() {
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor())
-  app.enableCors();
+  app.enableCors({origin:"http://localhost:4200",credentials:true});
   await app.listen(port);
 }
 const port = +process.env.PORT_SERVER || 3000;

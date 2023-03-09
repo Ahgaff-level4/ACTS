@@ -5,8 +5,9 @@ import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './evaluati
 import { Roles } from 'src/auth/Role.guard';
 import { BadRequestException } from '@nestjs/common/exceptions/bad-request.exception';
 import { Session } from '@nestjs/common/decorators';
-import { R, User, UserMust, UserSession } from 'src/utility.service';
+import { R, UserMust, UserSession } from 'src/utility.service';
 import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
+import { User } from '../../../../interfaces';
 
 @Controller('api/evaluation')
 export class EvaluationController {

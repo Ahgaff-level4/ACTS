@@ -3,8 +3,9 @@ import { ChildService } from './child.service';
 import { CreateChild, UpdateChild } from './child.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { UnauthorizedException } from '@nestjs/common/exceptions/unauthorized.exception';
-import { R, User } from 'src/utility.service';
+import { R } from 'src/utility.service';
 import { Session as ExpressSession } from 'express-session';
+import { User } from '../../../../interfaces';
 
 @Controller('api/child')
 export class ChildController {

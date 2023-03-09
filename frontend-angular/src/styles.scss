@@ -1,3 +1,19 @@
 /* You can add global styles to this file, and also import other style files */
-html, body {margin: 0; height: 100%; }
-body { font-family: Roboto, "Helvetica Neue", sans-serif; }
+:root {
+	--light-blue: rgb(173, 187, 226);
+	--myPrimary: rgb(28, 46, 120);
+}
+
+
+html,
+body {
+	height: 100%;
+}
+body {
+	margin: 0;
+	font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.bg-primary {
+	background-color: var(--myPrimary) !important;
+}

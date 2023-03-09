@@ -106,7 +106,9 @@ export class AccountEntity extends CreateAccount implements IAccountEntity {
 	@OneToMany(() => GoalEntity, (goal) => goal.teacher)
 	public goals: IGoalEntity[];//!Teacher
 
-	//todo many-to-many with children. //!Teacher
+	@ManyToMany(() => ChildEntity, (child) => child.teachers)
+	@JoinTable()
+	public teaches: IChildEntity[];//!Teacher
 }
 
 export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
@@ -116,27 +118,3 @@ export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
 
 export class UpdateAccount extends PartialType(CreateAccount) {
 }
-
-// @ViewEntity({
-// 	expression: (connection) => connection.createQueryBuilder()
-// 		.select('account.id', 'id')
-// 		.addSelect('account.username', 'username')
-// 		.addSelect('account.password', 'password')
-// 		.addSelect('account.personId', 'personId')
-// 		.addSelect('account.address', 'address')
-// 		.addSelect('account.phone0', 'phone0')
-// 		.addSelect('account.phone1', 'phone1')
-// 		.addSelect('account.phone2', 'phone2')
-// 		.addSelect('account.phone3', 'phone3')
-// 		.addSelect('account.phone4', 'phone4')
-// 		.addSelect('account.phone5', 'phone5')
-// 		.addSelect('account.phone6', 'phone6')
-// 		.addSelect('account.phone7', 'phone7')
-// 		.addSelect('account.phone8', 'phone8')
-// 		.addSelect('account.phone9', 'phone9')
-// 		.from(AccountEntity, 'account')
-// 	// .leftJoinAndMapMany('account.roles',RoleEntity,'role',)//if not working ad in roles property
-// })
-// export class AccountView extends AccountEntity {
-// }
-

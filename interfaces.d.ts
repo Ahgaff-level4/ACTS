@@ -48,15 +48,42 @@ export interface SucResFind {
 
 export type Role = 'Admin' | 'HeadOfDepartment' | 'Teacher' | 'Parent';
 
+/**
+ * User object that stored in request.session.user
+ */
+export interface User {
+	isLoggedIn: boolean;
+	accountId: number;
+	/** account.person.name */
+	name: string;
+	roles: Role[];
+}
 
 export interface ICreateAccount {
-	username: string;
-	password: string;
-	personId: number;
+	username: string;//!Account
+	password: string;//!Account
+	personId: number;//!Account
+	address?: string;//!Parent
+	phone0?: string;//!Parent
+	phone1?: string;//!Parent
+	phone2?: string;//!Parent
+	phone3?: string;//!Parent
+	phone4?: string;//!Parent
+	phone5?: string;//!Parent
+	phone6?: string;//!Parent
+	phone7?: string;//!Parent
+	phone8?: string;//!Parent
+	phone9?: string;//!Parent
+	roles: Role[];
 }
 export interface IAccountEntity extends ICreateAccount {
 	id: number;
-	person: PersonEntity;
+	person: IPersonEntity;//!Account
+	rolesEntities: IRoleEntity[];//!All roles
+	children: IChildEntity[];//!Parent
+	evaluations: IEvaluationEntity[];//!Teacher
+	goals: IGoalEntity[];//!Teacher
+	teaches: IChildEntity[];//!Teacher
 }
 
 export interface ICreateChild {
@@ -72,7 +99,7 @@ export interface ICreateChild {
 	medicine?: string;
 	behaviors?: string;
 	prioritySkills?: string;
-	/** Default is false (NOT archive) */
+	/** Default is false (i.e., NOT archive) */
 	isArchive?: boolean;
 	parentId?: number;
 	personId: number;
@@ -80,9 +107,10 @@ export interface ICreateChild {
 
 export interface IChildEntity extends ICreateChild {
 	id: number;
-	parent?: ParentEntity;
+	parent?: IAccountEntity;
 	person: IPersonEntity;
 	goals: IGoalEntity[];
+	teachers: IAccountEntity[];
 	familyMembers?: number;
 	durationSpent: number;
 	/** registerDate is person.createdDatetime */
@@ -101,12 +129,12 @@ export interface ICreateEvaluation {
 export interface IEvaluationEntity extends ICreateEvaluation {
 	id: number;
 	goal: IGoalEntity;
-	teacher: ITeacherEntity;
+	teacher: IAccountEntity;
 }
 
 export interface ICreateField {
 	name: string;
-	createdDatetime: Date;
+	createdDatetime?: Date;
 }
 
 export interface IFieldEntity extends ICreateField {
@@ -117,7 +145,7 @@ export interface IFieldEntity extends ICreateField {
 export interface ICreatePerson {
 	name: string;
 	birthDate?: string;
-	gender:Gender;
+	gender: Gender;
 	createdDatetime?: Date;
 }
 
@@ -127,36 +155,36 @@ export interface IPersonEntity extends ICreatePerson {
 }
 
 export interface ICreateGoal {
-	public note?: string;
-	public assignDatetime?: Date;
-	public state: GoalState;
-	public activityId: number;
-	public childId: number;
-	public teacherId: number;
+	note?: string;
+	assignDatetime?: Date;
+	state: GoalState;
+	activityId: number;
+	childId: number;
+	teacherId: number;
 }
 
 export interface IGoalEntity extends ICreateGoal {
-	public id: number;
-	public activity: IActivityEntity;
-	public child: IChildEntity;
-	public evaluations: IEvaluationEntity[];
-	public teacher: ITeacherEntity;
+	id: number;
+	activity: IActivityEntity;
+	child: IChildEntity;
+	evaluations: IEvaluationEntity[];
+	teacher: IAccountEntity;
 }
 
 export interface ICreateActivity {
-	public name: string;
-	public minAge?: number;
-	public maxAge?: number;
-	public fieldId?: number;
-	public programId?: number;
-	public createdDatetime?: Date;
+	name: string;
+	minAge?: number;
+	maxAge?: number;
+	fieldId?: number;
+	programId?: number;
+	createdDatetime?: Date;
 }
 
 export interface IActivityEntity extends ICreateActivity {
-	public id: number;
-	public program?: IProgramEntity;
-	public field?: IFieldEntity;
-	public goals: IGoalEntity[];
+	id: number;
+	program?: IProgramEntity;
+	field?: IFieldEntity;
+	goals: IGoalEntity[];
 }
 
 
@@ -182,8 +210,8 @@ export interface IProgramEntity extends ICreateProgram {
 	activityCount: number;
 }
 
-export interface IRoleEntity{
-	public id: number;
-	public name: Role;
-	public accounts: IAccountEntity[]
+export interface IRoleEntity {
+	id: number;
+	name: Role;
+	accounts: IAccountEntity[]
 }

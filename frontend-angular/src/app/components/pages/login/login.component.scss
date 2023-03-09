@@ -1,0 +1,25 @@
+.circle{
+	background-color: var(--light-blue);
+	z-index: -1;
+}
+.circle-1{
+	@extend .circle;
+	margin-top:50px;
+	margin-left:60px;
+	$radius:150px;
+	height: $radius;
+	width: $radius;
+}
+.circle-2{
+	@extend .circle;
+	right:0;
+	bottom:0;
+	$radius: 680px;
+	height: $radius;
+	width: $radius;
+	margin-right: -100px;
+	margin-bottom: -300px;
+}
+.radius{
+	border-radius: 15px!important;
+}

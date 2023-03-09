@@ -2,7 +2,7 @@ import { PartialType } from "@nestjs/mapped-types";
 import { IsNumber, IsOptional, IsDateString, IsString, Length, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean } from "class-validator";
 import { PersonEntity, PersonView } from "../person/person.entity";
 import { IAccountEntity, IChildEntity, ICreateChild, IGoalEntity, IPersonEntity } from './../../../../interfaces.d'
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
+import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Type } from "class-transformer";
 import { GoalEntity } from "../goal/Goal.entity";
 import { AccountEntity } from "../account/account.entity";
@@ -83,7 +83,7 @@ export class CreateChild implements ICreateChild {
 	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
 	public personId: number;
 	
-	//todo many-to-many with Teacher
+	
 }
 
 @Entity()
@@ -101,6 +101,9 @@ export class ChildEntity extends CreateChild {
 	@OneToOne(() => PersonEntity, { nullable: false, onDelete: 'CASCADE' })
 	@JoinColumn()
 	public person: IPersonEntity;
+	
+	@ManyToMany(()=>AccountEntity,(account)=>account.teaches)
+	public teachers:IAccountEntity[];
 }
 
 export class UpdateChild extends PartialType(CreateChild) { }

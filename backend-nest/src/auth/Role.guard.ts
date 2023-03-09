@@ -2,8 +2,8 @@ import { SetMetadata } from "@nestjs/common";
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Reflector } from "@nestjs/core";
-import { R, User } from "src/utility.service";
-import {Role} from './../../../interfaces.d';
+import { R } from "src/utility.service";
+import {Role, User} from './../../../interfaces.d';
 
 
 const ROLES_KEY = 'rolesDecorator';
@@ -20,7 +20,7 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
-    return true;//for debugging
+    return true;//todo delete me; for debugging
     //first: check login
     const req = context.switchToHttp().getRequest();
     if (req.path === '/api/auth/login' && req.method === 'POST')//user can only login without authentication
