@@ -1,15 +1,13 @@
 <div class="circle-1 rounded-circle position-fixed my-lightblue-bg"></div>
 <div class="circle-2 rounded-circle position-fixed my-lightblue-bg"></div>
-<div class="d-flex justify-content-center align-items-center radius">
-	<div class="container shadow border-0 w-75 mt-5 radius">
-<!-- todo checkbox text color -->
-<!-- todo radius -->
-		<div class="row radius">
+<div class="d-flex justify-content-center align-items-center">
+	<div class="container shadow border-0 w-75 mt-5 rounded-4 overflow-hidden">
+		<div class="row">
 			<div class="col-md-6 my-primary-bg">
 				<div class="pt-5 pb-4">
 					<h1 class="text-center text-white display-4">Welcome</h1>
 				</div>
-				<form class="p-4" [formGroup]="formGroup">
+				<form class="ps-md-5 pe-md-5 ps-1 pe-1 p-3" [formGroup]="formGroup">
 					<mat-form-field class="w-100" appearance="fill">
 						<mat-label>Username</mat-label>
 						<mat-icon matPrefix class="material-symbols-rounded">person</mat-icon>
@@ -26,7 +24,7 @@
 					</mat-form-field>
 					<div class="w-100 d-flex">
 						<mat-checkbox class="flex-fill text-white" [formControl]="formGroup.controls.isRememberMe">Remember Me</mat-checkbox>
-						<a class="flex-fill align-self-center text-end text-white-50" routerLink="#">Forget the password?</a>
+						<a class="flex-fill align-self-center text-end text-white" routerLink="#">Forget the password?</a>
 					</div>
 					<br>
 					<button class="w-100" mat-raised-button color="accent" type="submit" (click)="submit()">Login</button>

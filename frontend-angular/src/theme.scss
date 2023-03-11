@@ -2,15 +2,11 @@
 @import url("https://fonts.googleapis.com/css2?family=Work+Sans:wght@300;400;500&display=swap");
 
 // ? 1. Default theme
-$my-primary: mat-palette($mat-indigo,900);
+$my-primary: mat-palette($mat-indigo, 900);
 $my-accent: mat-palette($mat-pink, A200, A100, A400);
-$my-warn: mat-palette($mat-red);
+$my-warn: mat-palette($mat-red, 800);
 
-$my-theme: mat-light-theme(
-	$my-primary,
-	$my-accent,
-	$my-warn
-);
+$my-theme: mat-light-theme($my-primary, $my-accent, $my-warn);
 
 // ? 2. Define an alternate dark theme.
 $dark-primary: mat-palette($mat-blue-grey);
@@ -38,17 +34,23 @@ $typography: mat-typography-config(
 );
 
 .my-primary-text {
-    color: mat-color($my-primary);
+	color: mat-color($my-primary);
 }
 .my-accent-text {
-    color: mat-color($my-accent);
+	color: mat-color($my-accent);
 }
-.my-primary-bg{
+.my-warn-text {
+	color: mat-color($my-warn);
+}
+.my-primary-bg {
 	background-color: mat-color($my-primary);
 }
-.my-accent-bg{
+.my-accent-bg {
 	background-color: mat-color($my-accent);
 }
-.my-lightblue-bg{
+.my-warn-bg {
+	background-color: mat-color($my-warn);
+}
+.my-lightblue-bg {
 	background-color: rgb(173, 187, 226);
 }
