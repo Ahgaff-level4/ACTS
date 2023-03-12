@@ -6,21 +6,12 @@ $my-primary: mat-palette($mat-indigo, 900);
 $my-accent: mat-palette($mat-pink, A200, A100, A400);
 $my-warn: mat-palette($mat-red, 800);
 
-$my-theme: mat-light-theme($my-primary, $my-accent, $my-warn);
+
 
 // ? 2. Define an alternate dark theme.
 $dark-primary: mat-palette($mat-blue-grey);
 $dark-accent: mat-palette($mat-amber, A200, A100, A400);
 $dark-warn: mat-palette($mat-deep-orange);
-$dark-theme: mat-dark-theme(
-	(
-		color: (
-			primary: $dark-primary,
-			accent: $dark-accent,
-			warn: $dark-warn,
-		),
-	)
-);
 
 // ? 3. Define a custom heading typography config
 $heading-font-family: "'Work Sans', sans-serif";
@@ -31,6 +22,30 @@ $typography: mat-typography-config(
 	$display-1: mat-typography-level(34px, $font-family: $heading-font-family),
 	$headline: mat-typography-level(24px, $font-family: $heading-font-family),
 	$title: mat-typography-level(20px, $font-family: $heading-font-family),
+);
+
+$my-theme: mat-light-theme(
+	(
+		color: (
+			primary: $my-primary,
+			accent: $my-accent,
+			warn: $my-warn,
+		),
+		typography: $typography,
+		density: 0,
+	)
+);
+
+$dark-theme: mat-dark-theme(
+	(
+		color: (
+			primary: $dark-primary,
+			accent: $dark-accent,
+			warn: $dark-warn,
+		),
+		typography: $typography,
+		density: 0,
+	)
 );
 
 .my-primary-text {
