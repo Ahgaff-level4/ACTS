@@ -1,18 +1,9 @@
 <div class="circle-1 rounded-circle position-fixed my-lightblue-bg"></div>
 <div class="circle-2 rounded-circle position-fixed my-lightblue-bg"></div>
-<<<<<<< HEAD
 <div class="d-flex justify-content-center align-items-center">
-	<div class="container shadow border-0 w-75 mt-5 rounded-4 overflow-hidden">
+	<div class="container shadow border-0 w-75 rounded-4 overflow-hidden">
 		<div class="row">
 			<div class="col-md-6 my-primary-bg">
-=======
-<div class="d-flex justify-content-center align-items-center radius">
-	<div class="container shadow border-0 w-75 mt-5 radius">
-<!-- todo checkbox text color -->
-<!-- todo radius -->
-		<div class="row radius">
-			<div class="col-md-6 my-primary-bg" style=" border-radius: 15px 0px 0px 15px;">
->>>>>>> nav
 				<div class="pt-5 pb-4">
 					<h1 class="text-center text-white display-4">Welcome</h1>
 				</div>
@@ -32,17 +23,20 @@
 							<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
 					</mat-form-field>
 					<div class="w-100 d-flex">
-						<mat-checkbox class="flex-fill text-white" [formControl]="formGroup.controls.isRememberMe">Remember Me</mat-checkbox>
-						<a class="flex-fill align-self-center text-end text-white" routerLink="#">Forget the password?</a>
+						<mat-checkbox class="flex-fill text-white"
+							[formControl]="formGroup.controls.isRememberMe">Remember Me</mat-checkbox>
+						<a class="flex-fill align-self-center text-end text-white" routerLink="#">Forget the
+							password?</a>
 					</div>
 					<br>
-					<button class="w-100" mat-raised-button color="accent" type="submit" (click)="submit()">Login</button>
+					<button class="w-100 mb-3" mat-raised-button color="accent" type="submit"
+						(click)="submit()">Login</button>
 				</form>
 			</div>
 
-			<div class="col-md-6 bg-white p-3" style=" border-radius: 0px 15px 15px 0px;">
-				<img class="image" src="../../../assets/ribbon.png"alt="logo" />
-				<h1 class="text-center text-dark"><b>Autism Children Technical System</b></h1>
+			<div class="col-md-6 bg-white p-4 h-auto d-flex flex-column align-content-center justify-content-center">
+				<img class="mx-auto d-block image px-5 p img-fluid" src="../../../../assets/ribbon.png">
+				<h1 class="text-center text-dark mt-4"><b>Autism Children Technical System</b></h1>
 			</div>
 		</div>
 
