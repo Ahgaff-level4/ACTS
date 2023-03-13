@@ -1,3 +1,11 @@
 - fix <mat-icon> need internet!
 
 - make <title> in index.html as `ACTS - {{router page}}`
+
+- in setting page add:
+`
+//Switch language
+  translateLanguageTo(lang: string) {
+    this.translate.use(lang);//see AppComponent to know how to inject this.translate
+  }
+`
