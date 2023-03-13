@@ -17,7 +17,7 @@ export class LoginComponent {
   });
 
   submit() {
-    const { username, password } = this.formGroup.controls;
-    this.loginService.login(username.value, password.value)
+    const { username, password,isRememberMe } = this.formGroup.controls;
+    this.loginService.login(username.value, password.value,isRememberMe.value||true);
   }
 }

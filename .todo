@@ -1,3 +1,5 @@
 - fix <mat-icon> need internet!
 
 - make <title> in index.html as `ACTS - {{router page}}`
+
+- if user not login show don't and do show blah blah. Routers have guard and canActivate. Check how to implement it on user role and privilege

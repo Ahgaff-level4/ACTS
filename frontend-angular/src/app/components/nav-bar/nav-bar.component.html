@@ -11,6 +11,9 @@
     <span><a routerLink="/field" mat-button>Field </a></span>
   </div>
   <div class="spanc"></div>
-  <span><a routerLink="/login" mat-raised-button color="accent">Login </a></span>
+  <span>
+    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">Login</a>
+    <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">Logout</button>
+  </span>
 
 </mat-toolbar>

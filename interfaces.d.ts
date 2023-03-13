@@ -18,10 +18,6 @@ export type Action = '' | 'login' | 'privilege';
 
 
 
-export interface GeneralResponse {
-	success: boolean;
-	data: any;
-}
 export interface ErrorResponse {
 	/** false dah */
 	success: boolean;
@@ -34,16 +30,18 @@ export interface ErrorResponse {
 		timestamp: string;
 	}
 }
+
 export interface SuccessResponse {
 	/** true dah */
 	success: boolean;
 	data: any;
 }
+
 /** success response of findOne/findAll request */
 export interface SucResFind {
 	success: boolean;
 	/** for findOne by id then max length is one. Or zero -empty array- for not found*/
-	data: object[]//Entity
+	data: ITableEntity[]//Entity
 }
 
 export type Role = 'Admin' | 'HeadOfDepartment' | 'Teacher' | 'Parent';
@@ -57,6 +55,11 @@ export interface User {
 	/** account.person.name */
 	name: string;
 	roles: Role[];
+}
+
+export interface ILoginInfo{
+	username:string;
+	password:string;
 }
 
 export interface ICreateAccount {
@@ -132,15 +135,6 @@ export interface IEvaluationEntity extends ICreateEvaluation {
 	teacher: IAccountEntity;
 }
 
-export interface ICreateField {
-	name: string;
-	createdDatetime?: Date;
-}
-
-export interface IFieldEntity extends ICreateField {
-	id: number;
-	activityCount: number;
-}
 
 export interface ICreatePerson {
 	name: string;
@@ -215,3 +209,6 @@ export interface IRoleEntity {
 	name: Role;
 	accounts: IAccountEntity[]
 }
+
+export type ITableEntity = IProgramEntity | IFieldEntity | IActivityEntity
+	| IGoalEntity | IPersonEntity | IEvaluationEntity | IChildEntity | IAccountEntity;

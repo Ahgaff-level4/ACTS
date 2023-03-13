@@ -5,7 +5,9 @@ import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
 
 const routes: Routes = [
-  { path: '', component: MainComponent },
+  { path: '', component: MainComponent,title:'Home', },
+  { path: 'main', component: MainComponent },
+  { path: 'home', component: MainComponent },
   { path: 'field', component: FieldComponent },
   { path: 'login', component: LoginComponent },
 ];

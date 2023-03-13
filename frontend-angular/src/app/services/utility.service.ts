@@ -2,25 +2,17 @@ import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Role, SuccessResponse, User } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
+import { environment as env } from 'src/environment';
 @Injectable({
-  providedIn: HttpClientModule
+  providedIn: 'root'
 })
 export class UtilityService {
   constructor(private http: HttpClient) {
-    this.http.get(this.API + 'isLogin').subscribe((res: any) => {
+    this.http.get<SuccessResponse>(env.AUTH + 'isLogin').subscribe(res => {
       console.log('UtilityService : this.http.get : res:', res);
-      
-      if ((res as SuccessResponse).data) {
-        let data: User = res.data;
-        this.user.next({
-          ...data
-        })
-      } else this.user.next({ isLoggedIn: false, roles: [], accountId: -1, name: '' })
-    })
+      if (res.success && res.data) 
+        this.user.next(res.data);
+    });
   }
-  
-  public user!: BehaviorSubject<User>;
-
-  public readonly SERVER_URL = 'http://localhost:3000';
-  public readonly API = this.SERVER_URL + '/api/';
+  public user: BehaviorSubject<User|null> = new BehaviorSubject<User|null>(null);//null means not loggedIn and there is no user info
 }

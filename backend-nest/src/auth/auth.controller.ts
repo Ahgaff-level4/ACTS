@@ -1,22 +1,20 @@
 import { Body, Controller, Get, Post, Req, Session, UseInterceptors } from '@nestjs/common';
 import { SuccessInterceptor } from 'src/interceptor';
 import { Request } from 'express';
-import { IsString } from 'class-validator';
+import { IsBoolean, IsString, Length } from 'class-validator';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
 import { R } from 'src/utility.service';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AccountEntity } from 'src/management/account/account.entity';
-import { Repository } from 'typeorm';
-import {Session as Express_Session} from 'express-session';
-import { User } from '../../../interfaces';
+import { AccountEntity, CreateAccount } from 'src/management/account/account.entity';
+import { Session as Express_Session } from 'express-session';
+import { User, ILoginInfo } from '../../../interfaces';
+import { PickType } from '@nestjs/mapped-types';
 
-export class LoginInfo {
-	@IsString()
-	username: string;
-	@IsString()
-	password: string;
+export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
+	implements ILoginInfo {
+		@IsBoolean()
+		public isRememberMe:boolean;
 }
 
 @Controller('api/auth')
@@ -33,18 +31,18 @@ export class AuthController {
 		if (!(await bcrypt.compare(loginInfo.password, account.password)))
 			throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
 		var user: User = { isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name };
-		req.session['user'] = user;
-		user = { ...user };
-		delete user.isLoggedIn;
-		return { message: R.string.loggedInSuccessfully, ...user };
+		req.session['user'] = user;//todo specify session age base on loginInfo.isRememberMe user selection to be very short. Or do the right thing 🤷‍♂️
+		
+		return { message: R.string.loggedInSuccessfully, user:{...user} };
 	}
 
 	@Get('isLogin')
 	isLogin(@Session() session: Express_Session) {
 		var user: User = session['user'];
+		// console.log('AuthController : isLogin : user:', user);
+		
 		if (user && user.isLoggedIn) {
 			user = { ...user };
-			delete user.isLoggedIn;
 			return user;
 		}
 		throw new UnauthorizedException({ message: R.string.mustLogin });
