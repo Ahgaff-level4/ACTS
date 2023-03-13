@@ -1,3 +1,4 @@
+import { HttpException } from './backend-nest/node_modules/@nestjs/common';
 
 
 
@@ -21,20 +22,24 @@ export type Action = '' | 'login' | 'privilege';
 export interface ErrorResponse {
 	/** false dah */
 	success: boolean;
-	message: string;
-	action: string;//Action
+	message: any;
+	msg: any;
+	action: any;
+	sqlMessage: any;
 	error: {
 		statusCode: number;
-		exception: any;
-		/** ISO date string */
+		exception: HttpException;
 		timestamp: string;
-	}
+	};
+
 }
 
 export interface SuccessResponse {
 	/** true dah */
 	success: boolean;
 	data: any;
+	/** if success false there will be a message */
+	message?:string;
 }
 
 /** success response of findOne/findAll request */
@@ -57,9 +62,9 @@ export interface User {
 	roles: Role[];
 }
 
-export interface ILoginInfo{
-	username:string;
-	password:string;
+export interface ILoginInfo {
+	username: string;
+	password: string;
 }
 
 export interface ICreateAccount {

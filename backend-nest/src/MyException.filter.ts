@@ -10,26 +10,24 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
-    
-    response
-      .status(status)
-      .json({
-        success: false,
-        message: exception?.getResponse()['message'] || R.string.somethingWentWrong,
-        msg:exception?.getResponse()['msg']||undefined,
-        action: exception?.getResponse()['action'] || undefined,
-        sqlMessage:exception?.getResponse()['sqlMessage']||undefined,
-        error: {
-          statusCode: status,
-          exception,
-          request: {
-            body: request.body,
-            params: request.params,
-            query: request.query,
-          },
-          timestamp: new Date().toISOString(),
-        }
-      });
+    const res = {
+      success: false,
+      message: exception?.getResponse()['message'] || R.string.somethingWentWrong,
+      msg:exception?.getResponse()['msg']||undefined,
+      action: exception?.getResponse()['action'] || undefined,
+      sqlMessage:exception?.getResponse()['sqlMessage']||undefined,
+      error: {
+        statusCode: status,
+        exception,
+        request: {
+          body: request.body,
+          params: request.params,
+          query: request.query,
+        },
+        timestamp: new Date().toISOString(),
+      }
+    };
+    response.status(status).json(res);
   }
 }
 

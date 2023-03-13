@@ -17,27 +17,19 @@ export class LoginService {
         if (res.success && res.data.user) {
           this.ut.user.next(res.data.user);
           this.router.navigate(['main']);
-        } else alert(res.data);
-      }, error(e: HttpErrorResponse) {
-        let error: ErrorResponse = e.error;
-        alert(error?.message);
-      }
+        } else this.ut.errorDefaultDialog(res.message);
+      }, error: this.ut.errorDefaultDialog
     })
   }
 
   logout() {
     this.http.get<SuccessResponse>(env.AUTH + 'logout').subscribe({
       next: (res) => {
-        if (res.success){
+        if (res.success) {
           this.ut.user.next(null)
           this.router.navigate(['login']);
-        }
-        //else //todo How to call error function here
-      },error(e:HttpErrorResponse){
-        console.log('LoginService : logout : e:', e);
-        
-        alert(e?.error?.message);
-      }
+        } else this.ut.errorDefaultDialog(res);
+      }, error: this.ut.errorDefaultDialog
     })
   }
 }
