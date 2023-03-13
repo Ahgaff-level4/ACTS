@@ -2,4 +2,12 @@
 
 - make <title> in index.html as `ACTS - {{router page}}`
 
+- in setting page add:
+`
+//Switch language
+  translateLanguageTo(lang: string) {
+    this.translate.use(lang);//see AppComponent to know how to inject this.translate
+  }
+`
+
 - if user not login show don't and do show blah blah. Routers have guard and canActivate. Check how to implement it on user role and privilege

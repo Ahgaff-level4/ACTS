@@ -1,19 +1,16 @@
-<!-- <p>nav-bar works!</p>
-<p><a routerLink="/">main page</a></p>
-<p><a routerLink="/field">Field page</a></p>
-<p><a routerLink="/login">Login page</a></p>
- -->
 <mat-toolbar color="primary" class="mat-elevation-z3">
-
-  <span>My Application</span>
+  <img />
+  <img class="image" src="../../../assets/ribbon.png" alt="logo" />
+  <span class="icon-name">{{'ACTS'|translate}}</span>
   <div class="meddl">
-    <span><a routerLink="/" mat-button>main </a></span>
-    <span><a routerLink="/field" mat-button>Field </a></span>
+    <span><a routerLink="/" mat-button>{{'home'|translate}}</a></span>
+    <span><a routerLink="/field" mat-button>{{'field'|translate}} </a></span>
   </div>
   <div class="spanc"></div>
   <span>
-    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">Login</a>
-    <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">Logout</button>
+    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'login'|translate}}</a>
+    <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">{{'logout'|translate}}</button>
   </span>
+
 
 </mat-toolbar>
