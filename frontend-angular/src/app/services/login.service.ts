@@ -3,7 +3,8 @@ import { Injectable } from '@angular/core';
 import { UtilityService } from './utility.service';
 import { Router } from '@angular/router';
 import { environment as env } from 'src/environment';
-import { ErrorResponse, SuccessResponse } from '../../../../interfaces';
+import { ErrorResponse, SuccessResponse, User } from '../../../../interfaces';
+import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,13 +12,13 @@ export class LoginService {
   constructor(private http: HttpClient, private ut: UtilityService, private router: Router) { }
 
   login(username: string, password: string, isRememberMe: boolean) {
-    this.http.post<SuccessResponse>(env.AUTH + 'login', { username, password, isRememberMe }).subscribe({
+    this.http.post<User>(env.AUTH + 'login', { username, password, isRememberMe }).subscribe({
       next: (res) => {
         console.log('LoginService : login : this.http.post : res:', res);
-        if (res.success && res.data.user) {
-          this.ut.user.next(res.data.user);
+        if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
+          this.ut.user.next(res);
           this.router.navigate(['main']);
-        } else this.ut.errorDefaultDialog(res.message);
+        } else this.ut.errorDefaultDialog();
       }, error: this.ut.errorDefaultDialog
     })
   }

@@ -13,8 +13,8 @@ import { PickType } from '@nestjs/mapped-types';
 
 export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 	implements ILoginInfo {
-		@IsBoolean()
-		public isRememberMe:boolean;
+	@IsBoolean()
+	public isRememberMe: boolean;
 }
 
 @Controller('api/auth')
@@ -32,19 +32,18 @@ export class AuthController {
 			throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
 		var user: User = { isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name };
 		req.session['user'] = user;//todo specify session age base on loginInfo.isRememberMe user selection to be very short. Or do the right thing 🤷‍♂️
-		
-		return { message: R.string.loggedInSuccessfully, user:{...user} };
+
+		return { ...user };
 	}
 
 	@Get('isLogin')
 	isLogin(@Session() session: Express_Session) {
 		var user: User = session['user'];
 		// console.log('AuthController : isLogin : user:', user);
-		
-		if (user && user.isLoggedIn) {
-			user = { ...user };
-			return user;
-		}
+
+		if (user && user.isLoggedIn)
+			return { ...user };
+
 		throw new UnauthorizedException({ message: R.string.mustLogin });
 	}
 
@@ -54,9 +53,9 @@ export class AuthController {
 			req.session['user'] = undefined;
 			req.session.destroy((e) => {
 				if (e) rej(e);
-				res({ message: R.string.loggedOutSuccessfully });
+				res({ success:true, message: R.string.loggedOutSuccessfully });
 			});
-		})
+		});
 	}
 }
 

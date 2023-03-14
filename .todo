@@ -10,4 +10,4 @@
   }
 `
 
-- if user not login show don't and do show blah blah. Routers have guard and canActivate. Check how to implement it on user role and privilege
+- if user not login show blah blah else bla bla. Routers have guard and canActivate. Check how to implement it base on user role and privilege

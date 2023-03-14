@@ -9,5 +9,6 @@
 	"rememberMe":"Remember Me",
 	"forgetPassword?":"Forget the password?",
 	"autismChildrenTechnicalSystem":"Autism Children Technical System",
-	"logout":"Logout"
+	"logout":"Logout",
+	"somethingWentWrong":"Something went wrong!"
 }

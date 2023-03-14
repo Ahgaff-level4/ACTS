@@ -11,7 +11,7 @@ export class SuccessInterceptor implements NestInterceptor {
     return next
       .handle()
       .pipe(
-        map(data => (data?.message ? { success: true, message: data.message, data } : { success: true, data })),
+        // map(data => (data?.message ? { success: true, message: data.message, data } : { success: true, data })),
         catchError(error => {
           if (error instanceof QueryFailedError){
             const code = error.driverError.code;

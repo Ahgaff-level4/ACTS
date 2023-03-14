@@ -5,11 +5,11 @@ import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
 
 const routes: Routes = [
-  { path: '', component: MainComponent,title:'Home', },
-  { path: 'main', component: MainComponent },
-  { path: 'home', component: MainComponent },
-  { path: 'field', component: FieldComponent },
-  { path: 'login', component: LoginComponent },
+  { path: '', component: MainComponent,title:'ACTS - Home', },
+  { path: 'main', component: MainComponent,title:'ACTS - Home' },
+  { path: 'home', component: MainComponent,title:'ACTS - Home' },
+  { path: 'field', component: FieldComponent,title:'ACTS - Field' },
+  { path: 'login', component: LoginComponent,title:'ACTS - Login' },
 ];
 
 @NgModule({
