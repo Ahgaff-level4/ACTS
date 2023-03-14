@@ -1,14 +1,1 @@
-{
-	"login":"Login",
-	"ACTS":"ACTS",
-	"home":"Home",
-	"field":"Field",
-	"welcome":"Welcome",
-	"username":"Username",
-	"password":"Password",
-	"rememberMe":"Remember Me",
-	"forgetPassword?":"Forget the password?",
-	"autismChildrenTechnicalSystem":"Autism Children Technical System",
-	"logout":"Logout",
-	"somethingWentWrong":"Something went wrong!"
-}
+"if translate module dose not found the key-value in ar/en.json then it will show the key. So, we just need ar.json file and the keys of ar.json is the en.json values"

@@ -3,13 +3,13 @@
   <img class="image" src="../../../assets/ribbon.png" alt="logo" />
   <span class="icon-name">{{'ACTS'|translate}}</span>
   <div class="meddl">
-    <span><a routerLink="/" mat-button>{{'home'|translate}}</a></span>
-    <span><a routerLink="/field" mat-button>{{'field'|translate}} </a></span>
+    <span><a routerLink="/" mat-button>{{'Home'|translate}}</a></span>
+    <span><a routerLink="/field" mat-button>{{'Field'|translate}} </a></span>
   </div>
   <div class="spanc"></div>
   <span>
-    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'login'|translate}}</a>
-    <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">{{'logout'|translate}}</button>
+    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'Login'|translate}}</a>
+    <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">{{'Logout'|translate}}</button>
   </span>
 
 

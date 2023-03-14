@@ -1,13 +1,17 @@
 {
-	"login":"تسجيل دخول",
-	"ACTS":"ACTS",
-	"home":"الرئيسية",
-	"field":"المجالات",
-	"welcome":"مرحبًا",
-	"username":"اسم المستخدم",
-	"password":"كلمة المرور",
-	"rememberMe":"تذكرني",
-	"forgetPassword?":"هل نسيت كلمة المرور؟",
-	"autismChildrenTechnicalSystem":"النظام التقني للتوحد",
-	"somethingWentWrong":"حدثة مشكلة ما!"
+	"Login": "تسجيل دخول",
+	"Logout":"تسجيل خروج",
+	"ACTS": "ACTS",
+	"Home": "الرئيسية",
+	"Field": "المجالات",
+	"Welcome": "مرحبًا",
+	"Username": "اسم المستخدم",
+	"Password": "كلمة المرور",
+	"Remember Me": "تذكرني",
+	"Forget the password?": "هل نسيت كلمة المرور؟",
+	"Autism Children Technical System": "النظام التقني للتوحد",
+	"Something went wrong!": "حدثة مشكلة ما!",
+	"Error!": "خطأ!",
+	"Information": "معلومة",
+	"Success!": "نجح!"
 }
