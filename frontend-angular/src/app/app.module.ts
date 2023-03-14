@@ -15,6 +15,7 @@ import { FormsModule } from '@angular/forms';
 import { AppMaterialModule } from './app-material.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { ProgramComponent } from './components/pages/program/program.component';
 
 // Factory function required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -29,6 +30,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     NavBarComponent,
     LoginComponent,
     FooterComponent,
+    ProgramComponent
   ],
   imports: [
     BrowserModule,
