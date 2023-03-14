@@ -1,7 +1,5 @@
 - fix <mat-icon> need internet!
 
-- make <title> in index.html as `ACTS - {{router page}}`
-
 - in setting page add:
 `
 //Switch language

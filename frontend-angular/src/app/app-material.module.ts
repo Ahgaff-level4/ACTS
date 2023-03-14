@@ -6,6 +6,7 @@ import { MatInputModule } from '@angular/material/input'
 import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatIconModule } from '@angular/material/icon'
 import { MatCheckboxModule } from '@angular/material/checkbox'
+import {MatDialogModule} from '@angular/material/dialog'
 @NgModule({
   exports:[
     MatAutocompleteModule,
@@ -15,6 +16,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox'
     MatToolbarModule,
     MatIconModule,
     MatCheckboxModule,
+    MatDialogModule
   ]
 })
 export class AppMaterialModule { }
