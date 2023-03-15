@@ -40,7 +40,7 @@ export class UtilityService {
     else
       message = 'somethingWentWrong';
 
-    this.showMsgDialog({ title: 'error', content: message, type: 'error' })
+    this.showMsgDialog({ content: message, type: 'error' })
   }
 
   /**

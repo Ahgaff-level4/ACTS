@@ -1,3 +1,6 @@
 <h1 mat-dialog-title [ngClass]="{'text-danger':type==='error','text-warn':type==='info',
 'text-success':type==='success'}">{{title|translate}}</h1>
 <p mat-dialog-content>{{content|translate}}</p>
+<div mat-dialog-actions>
+	<button mat-button (click)="dialogRef.close()" color="warn">{{"Cancel"|translate}}</button>
+</div>
