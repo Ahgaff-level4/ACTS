@@ -19,7 +19,7 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children.component';
 import { MessageDialogComponent } from './components/dialogs/message/message.component';
-
+import { AddChildComponent } from './components/pages/add-child/add-child.component';
 // Factory function required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -35,7 +35,8 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     FooterComponent,
     ProgramComponent,
     ChildrenComponent,
-    MessageDialogComponent
+    MessageDialogComponent,
+    AddChildComponent
   ],
   imports: [
     BrowserModule,
