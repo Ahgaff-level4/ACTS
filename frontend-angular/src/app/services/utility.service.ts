@@ -38,7 +38,7 @@ export class UtilityService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else
-      message = 'somethingWentWrong';
+      message = 'Something went wrong!';
 
     this.showMsgDialog({ content: message, type: 'error' })
   }

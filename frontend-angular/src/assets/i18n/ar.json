@@ -1,7 +1,6 @@
 {
 	"Login": "تسجيل دخول",
 	"Logout":"تسجيل خروج",
-	"ACTS": "ACTS",
 	"Home": "الرئيسية",
 	"Field": "المجالات",
 	"Welcome": "مرحبًا",
@@ -9,7 +8,7 @@
 	"Password": "كلمة المرور",
 	"Remember Me": "تذكرني",
 	"Forget the password?": "هل نسيت كلمة المرور؟",
-	"Autism Children Technical System": "النظام التقني للتوحد",
+	"Autism Children Technical System": "النظام الفني لأطفال التوحد",
 	"Something went wrong!": "حدثة مشكلة ما!",
 	"Error!": "خطأ!",
 	"Information": "معلومة",
