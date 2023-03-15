@@ -1,0 +1,1435 @@
+{
+    "info": {
+        "name": "ACTS",
+        "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+        "description": ""
+    },
+    "item": [
+        {
+            "name": "Management",
+            "item": [
+                {
+                    "name": "Performance",
+                    "item": [
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/performance?FK=true",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "true"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "api",
+                                        "performance"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/performance/2",
+                                    "path": [
+                                        "api",
+                                        "performance",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/performance/17",
+                                    "path": [
+                                        "api",
+                                        "performance",
+                                        "17"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/performance/16",
+                                    "path": [
+                                        "api",
+                                        "performance",
+                                        "16"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n    \"minAge\":1,\n    \"fieldId\":1,\n    \"programId\":1,\n    \"createdDatetime\":\"2023-02-02T11:15:07.000Z\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/performance",
+                                    "path": [
+                                        "api",
+                                        "performance"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n    \"minAge\":1,\n    \"maxAge\":10,\n    \"fieldId\":1\n}"
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Evaluation",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/evaluation",
+                                    "path": [
+                                        "api",
+                                        "evaluation"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"description\": \"ask the child to say after me: la la la\",\n  \"mainstream\": \"null\",\n  \"note\": \"adsf\",\n  \"evaluationDatetime\": \"2022-12-28T21:00:00.000Z\",\n  \"goalId\": 3,\n  \"teacherId\": 2\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/evaluation?FK=true&goalId=1",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "true"
+                                        },
+                                        {
+                                            "key": "goalId",
+                                            "value": "1"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "api",
+                                        "evaluation"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/evaluation/2",
+                                    "path": [
+                                        "api",
+                                        "evaluation",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/evaluation/2",
+                                    "path": [
+                                        "api",
+                                        "evaluation",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"description\": \"update ask the child to say after me: la la la\",\n  \"mainstream\": \"update \",\n  \"note\": \"update asdf\",\n  \"evaluationDatetime\": \"2025-12-28T21:00:00.000Z\",\n  \"goalId\": 2,\"b\":4\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/evaluation/2",
+                                    "path": [
+                                        "api",
+                                        "evaluation",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Goal",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/goal",
+                                    "path": [
+                                        "api",
+                                        "goal"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"state\":\"strength\",\n  \"performanceId\": 2\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/goal?FK=true",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "true"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "api",
+                                        "goal"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/goal/11",
+                                    "path": [
+                                        "api",
+                                        "goal",
+                                        "11"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/goal/11",
+                                    "path": [
+                                        "api",
+                                        "goal",
+                                        "11"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"note\": \"note: blah\",\n  \"state\": \"strength\",\n  \"performanceId\": 2,\n  \"childId\": 2\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/goal/1",
+                                    "path": [
+                                        "api",
+                                        "goal",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Account",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account",
+                                    "path": [
+                                        "api",
+                                        "account"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"oneTwo\",\n  \"password\": \"zxcv\",\n  \"personId\":15\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account",
+                                    "path": [
+                                        "api",
+                                        "account"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account/3",
+                                    "path": [
+                                        "api",
+                                        "account",
+                                        "3"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PUT",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account/17",
+                                    "path": [
+                                        "api",
+                                        "account",
+                                        "17"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"username\": \"17NotLike\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "updateOldPassword",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account/1",
+                                    "path": [
+                                        "api",
+                                        "account",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"password\": \"qwer\",\n  \"oldPassword\":\"asdf\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account/8",
+                                    "path": [
+                                        "api",
+                                        "account",
+                                        "8"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Child",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/child",
+                                    "path": [
+                                        "api",
+                                        "child"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"femaleFamilyMembers\": 2,\n      \"maleFamilyMembers\": 2,\n      \"birthOrder\": 3,\n      \"parentsKinship\": \"they are cousin\",\n      \"diagnosticDate\": \"2018-04-30T21:00:00.000Z\",\n      \"pregnancyState\": \"normal pregnancy\",\n      \"birthState\": \"born in the seventh month\",\n      \"growthState\": \"grow normal\",\n      \"diagnostic\": \"diagnostied with autism\",\n      \"medicine\": \"Antibiotic\",\n      \"behaviors\": \"very quite\",\n      \"prioritySkills\": \"learn speaking and social intraction\",\n      \"parentId\": 3,\n      \"personId\": 10\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/child",
+                                    "path": [
+                                        "api",
+                                        "child"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/child/1",
+                                    "path": [
+                                        "api",
+                                        "child",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/child/1",
+                                    "path": [
+                                        "api",
+                                        "child",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"femaleFamilyMembers\": 2,\n      \"maleFamilyMembers\": 2,\n      \"birthOrder\": 3,\n      \"parentsKinship\": \"they are cousin\",\n      \"diagnosticDate\": \"2018-05-01T21:00:00.000Z\",\n      \"pregnancyState\": \"normal pregnancy\",\n      \"birthState\": \"born in the seventh month\",\n      \"growthState\": \"grow normal\",\n      \"diagnostic\": \"diagnostied with autism\",\n      \"medicine\": \"Antibiotic\",\n      \"behaviors\": \"very quite\",\n      \"prioritySkills\": \"learn speaking and social intraction\",\n      \"parentId\":null,\n      \"personId\": 8}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/child/2",
+                                    "path": [
+                                        "api",
+                                        "child",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Teacher",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher",
+                                    "path": [
+                                        "api",
+                                        "teacher"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"accountId\":2\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher?FK=tru",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "tru"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "api",
+                                        "teacher"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher/5",
+                                    "path": [
+                                        "api",
+                                        "teacher",
+                                        "5"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher/5",
+                                    "path": [
+                                        "api",
+                                        "teacher",
+                                        "5"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"accountId\":10\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher/1",
+                                    "path": [
+                                        "api",
+                                        "teacher",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Teacher Copy",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/account",
+                                    "path": [
+                                        "api",
+                                        "account"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"personId\":3,\n  \"username\":\"zxcv\",\n  \"password\":\"zxcv\",\n  \"roles\":[\"Parent\"]\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher?FK=tru",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "tru"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "api",
+                                        "teacher"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher/5",
+                                    "path": [
+                                        "api",
+                                        "teacher",
+                                        "5"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher/5",
+                                    "path": [
+                                        "api",
+                                        "teacher",
+                                        "5"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"accountId\":10\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/teacher/1",
+                                    "path": [
+                                        "api",
+                                        "teacher",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Head of Department (HD)",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/hd",
+                                    "path": [
+                                        "api",
+                                        "hd"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"accountId\":3\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/hd?FK=true",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "true"
+                                        }
+                                    ],
+                                    "variable": [],
+                                    "path": [
+                                        "api",
+                                        "hd"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/hd/1",
+                                    "path": [
+                                        "api",
+                                        "hd",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/hd/1",
+                                    "path": [
+                                        "api",
+                                        "hd",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"accountId\":10\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/hd/1",
+                                    "path": [
+                                        "api",
+                                        "hd",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Parent",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/parent",
+                                    "path": [
+                                        "api",
+                                        "parent"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n\t\"address\":\"Rey thaker\",\n\t\"accountId\":11,\n  \"phone0\":\"739651918\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/parent",
+                                    "path": [
+                                        "api",
+                                        "parent"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/parent/2",
+                                    "path": [
+                                        "api",
+                                        "parent",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/parent/1",
+                                    "path": [
+                                        "api",
+                                        "parent",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"address\":\"Rey thaker\",\n  \"accountId\":10,\n  \"phone\":[]\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/hd/1",
+                                    "path": [
+                                        "api",
+                                        "hd",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Person",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/person",
+                                    "path": [
+                                        "api",
+                                        "person"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"name\": \"Khaled\",\n  \"gender\": \"Male\",\n  \"createdDatetime\": \"2024-02-23T12:43:49.610Z\",\n  \"birthDate\":\"1911-1-1\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/person",
+                                    "path": [
+                                        "api",
+                                        "person"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/person/14",
+                                    "path": [
+                                        "api",
+                                        "person",
+                                        "14"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/person/1",
+                                    "path": [
+                                        "api",
+                                        "person",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"name\": \"Salam\",\n  \"birthDate\": \"1992-06-02T21:12:12.900Z\",\n  \"isMale\": false,\n  \"createdDatetime\": \"2003-02-07T21:12:12.100Z\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/person/1",
+                                    "path": [
+                                        "api",
+                                        "person",
+                                        "1"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Program",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/program",
+                                    "path": [
+                                        "api",
+                                        "program"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"name\":\"Nailsatt\",\n  \"createdDatetime\":\"2022-02-06T12:08:29.000Z\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/program",
+                                    "path": [
+                                        "api",
+                                        "program"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/program/3",
+                                    "path": [
+                                        "api",
+                                        "program",
+                                        "3"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/program/2",
+                                    "path": [
+                                        "api",
+                                        "program",
+                                        "2"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n    \"name\":\"Football\",\n  \"createdDatetime\":\"2023-02-06T11:21:08.000Z\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/program/3",
+                                    "path": [
+                                        "api",
+                                        "program",
+                                        "3"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                },
+                {
+                    "name": "Field",
+                    "item": [
+                        {
+                            "name": "create",
+                            "request": {
+                                "method": "POST",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/field",
+                                    "path": [
+                                        "api",
+                                        "field"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n  \"name\":\"this is\",\n  \"createdDatetime\":\"2023-02-06T12:08:29.000Z\",\n  \"performanceCount\":3\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "findAll",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/field",
+                                    "path": [
+                                        "api",
+                                        "field"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOne",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/field/16s",
+                                    "path": [
+                                        "api",
+                                        "field",
+                                        "16s"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "update",
+                            "request": {
+                                "method": "PATCH",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/field/15",
+                                    "path": [
+                                        "api",
+                                        "field",
+                                        "15"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                },
+                                "body": {
+                                    "mode": "raw",
+                                    "options": {
+                                        "raw": {
+                                            "language": "json"
+                                        }
+                                    },
+                                    "raw": "{\n    \"name\":\"Football\",\n  \"createdDatetime\":\"2023-02-06T11:21:08.000Z\"\n}"
+                                }
+                            }
+                        },
+                        {
+                            "name": "delete",
+                            "request": {
+                                "method": "DELETE",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/field/17",
+                                    "path": [
+                                        "api",
+                                        "field",
+                                        "17"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "name": "Auth",
+            "item": [
+                {
+                    "name": "Login",
+                    "request": {
+                        "method": "POST",
+                        "url": {
+                            "raw": "{{ACTS}}/api/auth/login",
+                            "path": [
+                                "api",
+                                "auth",
+                                "login"
+                            ],
+                            "host": [
+                                "{{acts}}"
+                            ]
+                        },
+                        "body": {
+                            "mode": "raw",
+                            "options": {
+                                "raw": {
+                                    "language": "json"
+                                }
+                            },
+                            "raw": "{\n  \"username\":\"asdf\",\n  \"password\":\"asdf\",\n  \"isRememberMe\":true\n}"
+                        }
+                    }
+                },
+                {
+                    "name": "Logout",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{ACTS}}/api/auth/logout",
+                            "path": [
+                                "api",
+                                "auth",
+                                "logout"
+                            ],
+                            "host": [
+                                "{{acts}}"
+                            ]
+                        }
+                    }
+                },
+                {
+                    "name": "isLogin",
+                    "request": {
+                        "method": "GET",
+                        "url": {
+                            "raw": "{{ACTS}}/api/auth/isLogin",
+                            "path": [
+                                "api",
+                                "auth",
+                                "isLogin"
+                            ],
+                            "host": [
+                                "{{acts}}"
+                            ]
+                        },
+                        "header": [
+                            {
+                                "key": "Accept",
+                                "value": "*/*",
+                                "disabled": true
+                            },
+                            {
+                                "key": "User-Agent",
+                                "value": "Thunder Client (https://www.thunderclient.com)",
+                                "disabled": true
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    ]
+}

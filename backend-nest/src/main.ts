@@ -48,18 +48,18 @@ const SESSION_OPTIONS: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     maxAge: +process.env.SESSION_AGE_MILLISECOND || 7 * 24 * 60 * 60 * 1000,//default 7 days
-    secure: false,
+    secure: 'auto',
   },
 };
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.useGlobalFilters(new HttpExceptionFilter());
   app.use(helmet())
+  app.enableCors({origin:"http://localhost:4200",credentials:true});
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor())
-  app.enableCors({origin:"http://localhost:4200",credentials:true});
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(port);
 }
 const port = +process.env.PORT_SERVER || 3000;

@@ -11,12 +11,26 @@ import { MessageDialogComponent, MessageDialogData } from '../components/dialogs
 })
 export class UtilityService {
   constructor(private http: HttpClient, private lang: TranslateService, private dialog: MatDialog) {
-    // this.http.get<SuccessResponse>(env.AUTH + 'isLogin').subscribe(res => {
-    //   console.log('UtilityService : this.http.get : res:', res);
-    //   if (res.success && res.data)
-    //     this.user.next(res.data);
-    // });
+    this.isLogin();
   }
+
+  /**
+   * promise will be fulfilled and user.next(...) will be called if user is login. otherwise rejected.
+   */
+  public isLogin = () => {
+    return new Promise<void>((resolve, rej) => {
+      this.http.get<User>(env.AUTH + 'isLogin', { withCredentials: true }).subscribe({
+        next: res => {
+          if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
+            this.user.next(res);
+            resolve()
+          }
+          else rej();
+        }, error: rej
+      });
+    })
+  }
+
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
 
   /**

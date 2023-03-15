@@ -24,6 +24,6 @@ export class NavBarComponent implements OnInit {
     this.language = this.language == 'Arabic' ? 'English' : 'Arabic';
   }
 
-  public language: 'Arabic' | 'English' = this.translate.currentLang=='ar'?'English':'Arabic';
+  public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
   public isLoggedIn: boolean = false;
 }

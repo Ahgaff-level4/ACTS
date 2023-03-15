@@ -18,5 +18,6 @@
 	"Minimum length is ":"اقل عدد احرف هو {{minlength}}",
 	"Arabic":"عربي",
 	"English":"إنجليزي",
-	"Call the administrator to reset your password. If you are the administrator then try to access the system with another account that has Admin privilege, so that you can reset this account password. If nothing of the previous steps works then try to contact the technician who set up this system.":"تواصل مع المشرف لإعادة كلمة المرور. إذا كنت انت المشرف إذا حاول تسجيل الدخول بإستخدام حساب اخر يحمل دور المشرف ثم اعد كلمة المرور لهذا الحساب. إذا لم تنجح إحد الطرق السابقة إذا تواصل مع الفني الذي ثبت هذا النظام."
+	"Call the administrator to reset your password. If you are the administrator then try to access the system with another account that has Admin privilege, so that you can reset this account password. If nothing of the previous steps works then try to contact the technician who set up this system.":"تواصل مع المشرف لإعادة كلمة المرور. إذا كنت انت المشرف إذا حاول تسجيل الدخول بإستخدام حساب اخر يحمل دور المشرف ثم اعد كلمة المرور لهذا الحساب. إذا لم تنجح إحد الطرق السابقة إذا تواصل مع الفني الذي ثبت هذا النظام.",
+	"You must login!":"يجب تسجيل الدخول اولاً!"
 }

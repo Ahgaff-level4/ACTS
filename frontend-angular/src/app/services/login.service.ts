@@ -12,9 +12,8 @@ export class LoginService {
   constructor(private http: HttpClient, private ut: UtilityService, private router: Router) { }
 
   login(username: string, password: string, isRememberMe: boolean) {
-    this.http.post<User>(env.AUTH + 'login', { username, password, isRememberMe }).subscribe({
+    this.http.post<User>(env.AUTH + 'login', { username, password, isRememberMe },{withCredentials:true}).subscribe({
       next: (res) => {
-        console.log('LoginService : login : this.http.post : res:', res);
         if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
           this.ut.user.next(res);
           this.router.navigate(['main']);
