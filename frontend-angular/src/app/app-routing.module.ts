@@ -5,6 +5,7 @@ import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children.component';
+import { AddChildComponent } from './components/pages/add-child/add-child.component';
 
 const titlePrefix = 'ACTS - ';
 const routes: Routes = [
@@ -14,7 +15,8 @@ const routes: Routes = [
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field' },
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program' },
-  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children' }
+  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children' },
+  { path: 'add-child', component: AddChildComponent, title: titlePrefix + 'add-child' }
 ];
 
 @NgModule({
