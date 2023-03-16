@@ -48,7 +48,7 @@ const SESSION_OPTIONS: SessionOptions = {
   saveUninitialized: false,
   cookie: {
     maxAge: +process.env.SESSION_AGE_MILLISECOND || 7 * 24 * 60 * 60 * 1000,//default 7 days
-    secure: 'auto',
+    secure: false,
   },
 };
 

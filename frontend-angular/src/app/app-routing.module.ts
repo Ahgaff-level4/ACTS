@@ -16,7 +16,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program' },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children' },
-  { path: 'add-child', component: AddChildComponent, title: titlePrefix + 'add-child' }
+  { path: 'add-child', component: AddChildComponent, title: titlePrefix + 'Add Child' }
 ];
 
 @NgModule({
