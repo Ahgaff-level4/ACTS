@@ -11,7 +11,10 @@ import { MessageDialogComponent, MessageDialogData } from '../components/dialogs
 })
 export class UtilityService {
   constructor(private http: HttpClient, private lang: TranslateService, private dialog: MatDialog) {
-    this.isLogin();
+    var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
+    if (isRememberMe === 'true')
+      this.isLogin();
+    console.log('isRememberMe', isRememberMe);
   }
 
   /**

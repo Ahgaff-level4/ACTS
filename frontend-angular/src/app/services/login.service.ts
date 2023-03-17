@@ -12,14 +12,16 @@ export class LoginService {
   constructor(private http: HttpClient, private ut: UtilityService, private router: Router) { }
 
   login(username: string, password: string, isRememberMe: boolean) {
-    this.http.post<User>(env.AUTH + 'login', { username, password, isRememberMe },{withCredentials:true}).subscribe({
+    this.http.post<User>(env.AUTH + 'login', { username, password },{withCredentials:true}).subscribe({
       next: (res) => {
         if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
           this.ut.user.next(res);
           this.router.navigate(['main']);
         } else this.ut.errorDefaultDialog();
       }, error: this.ut.errorDefaultDialog
-    })
+    });
+    
+    localStorage.setItem('isRememberMe',isRememberMe+'');
   }
 
   logout() {

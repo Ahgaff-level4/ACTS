@@ -13,8 +13,6 @@ import { PickType } from '@nestjs/mapped-types';
 
 export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 	implements ILoginInfo {
-	@IsBoolean()
-	public isRememberMe: boolean;
 }
 
 @Controller('api/auth')
