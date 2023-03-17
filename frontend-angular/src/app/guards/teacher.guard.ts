@@ -2,24 +2,22 @@ import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
 import { UtilityService } from '../services/utility.service';
+import { GuardService } from './guard.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class TeacherGuard implements CanActivate {
-  constructor(private ut:UtilityService){}
+  constructor(private guardService: GuardService) { }
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-      if (this.ut.user.value
-        && this.ut.user.value.isLoggedIn
-        && Array.isArray(this.ut.user.value.roles)
-        && this.ut.user.value.roles.includes('Admin')) {
-        return true;
-      }
-      
-      this.ut.showMsgDialog({type:'info',title:'Insufficient privilege!',content:`You don't have sufficient privilege to access this page!`})
-      return false;
+    if (this.guardService.hasRole('Teacher'))
+      return true;
+
+    console.log('TeacherGuard : canACtivate:', false);
+    this.guardService.showInsufficientDialog();
+    return false;
   }
-  
+
 }
