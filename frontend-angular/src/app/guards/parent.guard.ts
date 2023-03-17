@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot, UrlTree } from '@angular/router';
 import { Observable } from 'rxjs';
-import { UtilityService } from '../services/utility.service';
 import { GuardService } from './guard.service';
 
 @Injectable({
@@ -15,7 +14,6 @@ export class ParentGuard implements CanActivate {
     if (this.guardService.hasRole('Parent'))
       return true;
 
-    console.log('ParentGuard : canActivate:', false);
     this.guardService.showInsufficientDialog();
     return false;
   }
