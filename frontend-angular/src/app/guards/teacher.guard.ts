@@ -11,8 +11,9 @@ export class TeacherGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.guardService.hasRole('Teacher'))
+    if (this.guardService.hasRole('Teacher') || this.guardService.hasRole('Admin'))
       return true;
+      console.log('canActivate : Teacher :',false)
 
     this.guardService.showInsufficientDialog();
     return false;

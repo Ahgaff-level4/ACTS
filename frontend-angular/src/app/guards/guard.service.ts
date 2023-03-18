@@ -21,6 +21,7 @@ export class GuardService {
   }
 
   public hasRole(role: Role) {
+    console.log('user:',this.ut.user.value)
     return this.ut.user.value
       && this.ut.user.value.isLoggedIn
       && Array.isArray(this.ut.user.value.roles)

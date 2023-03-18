@@ -10,7 +10,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class NavBarComponent implements OnInit {
   constructor(private ut: UtilityService, public loginService: LoginService, public translate: TranslateService) { }
-
+  isShowDivIf = true;
+  
   ngOnInit(): void {
     this.ut.user.subscribe((v) => {
       this.isLoggedIn = v?.isLoggedIn ?? false;

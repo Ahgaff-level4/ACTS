@@ -11,8 +11,9 @@ export class HeadOfDepartmentGuard implements CanActivate {
   canActivate(
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
-    if (this.guardService.hasRole('HeadOfDepartment'))
-    return true;
+    if (this.guardService.hasRole('HeadOfDepartment') || this.guardService.hasRole('Admin'))
+      return true;
+    console.log('canActivate : HeadOfDepartment :', false)
 
     this.guardService.showInsufficientDialog();
     return false;

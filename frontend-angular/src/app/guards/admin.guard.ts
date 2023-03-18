@@ -14,7 +14,7 @@ export class AdminGuard implements CanActivate {
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
     if (this.guardService.hasRole('Admin'))
       return true;
-
+    console.log('canActivate : Admin :',false)
     this.guardService.showInsufficientDialog();
     return false;
   }
