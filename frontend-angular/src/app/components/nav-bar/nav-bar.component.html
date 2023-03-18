@@ -1,17 +1,42 @@
-<mat-toolbar color="primary" class="mat-elevation-z3">
-  <img />
-  <img class="image" src="../../../assets/ribbon.png" alt="logo" />
-  <span class="icon-name">{{'ACTS'|translate}}</span>
-  <div class="meddl">
-    <span><a routerLink="/" mat-button>{{'Home'|translate}}</a></span>
-    <span><a routerLink="/field" mat-button>{{'Field'|translate}} </a></span>
-    <span><button mat-button (click)="changeLang()">{{language|translate}}</button></span>
-  </div>
-  <div class="spanc"></div>
-  <span>
-    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'Login'|translate}}</a>
+    <!-- <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'Login'|translate}}</a>
     <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">{{'Logout'|translate}}</button>
   </span>
+  <div class="spanc"></div>
+</mat-toolbar> -->
 
+<<<<<<< HEAD
 
 </mat-toolbar>
+=======
+<nav class="navbar navbar-expand-lg navbar-dark my-primary-bg">
+  <div class="container mx-0">
+    <a routerLink="/"><img class="image" src="../../../assets/ribbon.png" alt="logo" /></a>
+    <a routerLink="/" class="icon-name text-white text-decoration-none"><span>{{'ACTS'|translate}}</span></a>
+    <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler" type="button" data-toggle="collapse"
+      data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- *ngIf="!isShowDivIf" --- hide and show -->
+    <div [ngClass]="!isShowDivIf ? 'd-block' : 'd-none'" class="collapse navbar-collapse" id="navbarResponsive">
+      <ul class="navbar-nav ml-auto">
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
+        </li>
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/field">{{'Field'|translate}}</a>
+        </li>
+        <li (click)="isShowDivIf=!isShowDivIf;changeLang()" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="#">{{language|translate}}</a>
+        </li>
+        <hr class="text-white my-2 mx-0">
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item" routerLinkActive="active">
+          <a class="nav-link" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
+          <div (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link" *ngIf="isLoggedIn">
+            {{'Logout'|translate}}</div>
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+>>>>>>> 868b5542c32e5876e29ff365e82562e48331cef6

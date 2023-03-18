@@ -10,7 +10,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class NavBarComponent implements OnInit {
   constructor(private ut: UtilityService, public loginService: LoginService, public translate: TranslateService) { }
-
+  isShowDivIf = true;
+  
   ngOnInit(): void {
     this.ut.user.subscribe((v) => {
       this.isLoggedIn = v?.isLoggedIn ?? false;
@@ -24,6 +25,6 @@ export class NavBarComponent implements OnInit {
     this.language = this.language == 'Arabic' ? 'English' : 'Arabic';
   }
 
-  public language: 'Arabic' | 'English' = this.translate.currentLang=='ar'?'English':'Arabic';
+  public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
   public isLoggedIn: boolean = false;
 }
