@@ -12,7 +12,7 @@ export class LoginService {
   constructor(private http: HttpClient, private ut: UtilityService, private router: Router) { }
 
   login(username: string, password: string, isRememberMe: boolean) {
-    this.http.post<User>(env.AUTH + 'login', { username, password },{withCredentials:true}).subscribe({
+    this.http.post<User>(env.AUTH + 'login', { username, password }, { withCredentials: true }).subscribe({
       next: (res) => {
         if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
           this.ut.user.next(res);
@@ -20,8 +20,8 @@ export class LoginService {
         } else this.ut.errorDefaultDialog();
       }, error: this.ut.errorDefaultDialog
     });
-    
-    localStorage.setItem('isRememberMe',isRememberMe+'');
+
+    localStorage.setItem('isRememberMe', isRememberMe + '');
   }
 
   logout() {
@@ -31,7 +31,10 @@ export class LoginService {
           this.ut.user.next(null)
           this.router.navigate(['login']);
         } else this.ut.errorDefaultDialog(res);
-      }, error: this.ut.errorDefaultDialog
+      }, error: (e) => {
+        this.ut.errorDefaultDialog(e);
+        this.ut.user.next(null)
+      }
     })
   }
 }

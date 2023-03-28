@@ -11,10 +11,11 @@ import { MessageDialogComponent, MessageDialogData } from '../components/dialogs
 })
 export class UtilityService {
   constructor(private http: HttpClient, private lang: TranslateService, private dialog: MatDialog) {
+    this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
+    
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
-    if (isRememberMe === 'true')
+    if (isRememberMe === 'true' && this.user.value === null)
       this.isLogin();
-    console.log('isRememberMe', isRememberMe);
   }
 
   /**
