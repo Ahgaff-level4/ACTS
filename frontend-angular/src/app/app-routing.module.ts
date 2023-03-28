@@ -6,9 +6,6 @@ import { LoginComponent } from './components/pages/login/login.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children.component';
 import { AddChildComponent } from './components/pages/add-child/add-child.component';
-import { AdminGuard } from './guards/onlyAdmin.guard';
-import { TeacherGuard } from './guards/teacher.guard';
-import { ParentGuard } from './guards/parent.guard';
 import { Observable } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
@@ -42,12 +39,14 @@ export class RoleGuard implements CanActivate {
       && Array.isArray(this.ut.user.value.roles)
       && this.ut.user.value.roles.includes(role);
   }
-
 }
-const titlePrefix = 'ACTS - ';
+
+
 const AH = { allowRoles: ['Admin', 'HeadOfDepartment'] };
 const AHT = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher'] };
 const AHTP = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] }
+const titlePrefix = 'ACTS - ';
+
 const routes: Routes = [
   { path: '', component: MainComponent, title: titlePrefix + 'Home', },
   { path: 'main', component: MainComponent, title: titlePrefix + 'Home' },
