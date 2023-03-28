@@ -1,15 +1,16 @@
-    <!-- <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'Login'|translate}}</a>
+<!-- <mat-toolbar color="primary" class="mat-elevation-z3">
+  <a routerLink="/"><img class="image" src="../../../assets/ribbon.png" alt="logo" /></a>
+  <a routerLink="/" class="icon-name text-white text-decoration-none"><span >{{'ACTS'|translate}}</span></a>
+  <div class="d-flex w-100 d-md-none d-sm-none d-lg-flex  justify-content-center">
+  </div>
+  <span>
+    <a *ngIf="!isLoggedIn" routerLink="/login" mat-raised-button color="accent">{{'Login'|translate}}</a>
     <button *ngIf="isLoggedIn" (click)="this.loginService.logout()" mat-raised-button color="accent">{{'Logout'|translate}}</button>
   </span>
-  <div class="spanc"></div>
 </mat-toolbar> -->
 
-<<<<<<< HEAD
-
-</mat-toolbar>
-=======
-<nav class="navbar navbar-expand-lg navbar-dark my-primary-bg">
-  <div class="container mx-0">
+<nav class="navbar navbar-expand-lg navbar-dark my-primary-bg w-100 justify-content-between">
+  <div class="container mx-0 w-100 pe-0">
     <a routerLink="/"><img class="image" src="../../../assets/ribbon.png" alt="logo" /></a>
     <a routerLink="/" class="icon-name text-white text-decoration-none"><span>{{'ACTS'|translate}}</span></a>
     <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler" type="button" data-toggle="collapse"
@@ -18,25 +19,34 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- *ngIf="!isShowDivIf" --- hide and show -->
-    <div [ngClass]="!isShowDivIf ? 'd-block' : 'd-none'" class="collapse navbar-collapse" id="navbarResponsive">
-      <ul class="navbar-nav ml-auto">
-        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item" routerLinkActive="active">
+    <div class=" w-100">
+      <ul [ngClass]="!isShowDivIf ? 'd-block' : 'd-none'"  id="navbarResponsive" class="navbar-nav w-100 collapse navbar-collapse ms-lg-5 mt-lg-0 mt-3 justify-content-center">
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
         </li>
-        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item" routerLinkActive="active">
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/field">{{'Field'|translate}}</a>
         </li>
-        <li (click)="isShowDivIf=!isShowDivIf;changeLang()" class="nav-item" routerLinkActive="active">
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
+          <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
+        </li>
+        <li (click)="isShowDivIf=!isShowDivIf;changeLang()" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="#">{{language|translate}}</a>
         </li>
         <hr class="text-white my-2 mx-0">
-        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item" routerLinkActive="active">
-          <a class="nav-link" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
-          <div (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link" *ngIf="isLoggedIn">
-            {{'Logout'|translate}}</div>
-        </li>
+        <div (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-lg-none d-block" routerLinkActive="active">
+          <a class="nav-link" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
+          <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link"
+            *ngIf="isLoggedIn">
+            {{'Logout'|translate}}</button>
+        </div>
       </ul>
     </div>
   </div>
+  <div (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-none d-lg-block" routerLinkActive="active">
+    <a class="nav-link" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
+    <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link"
+      *ngIf="isLoggedIn">
+      {{'Logout'|translate}}</button>
+  </div>
 </nav>
->>>>>>> 868b5542c32e5876e29ff365e82562e48331cef6
