@@ -122,7 +122,7 @@ export interface IChildEntity extends ICreateChild {
 	familyMembers?: number;
 	durationSpent: number;
 	/** registerDate is person.createdDatetime */
-	registerDate: Date;
+	// registerDate: Date;
 }
 
 export interface ICreateEvaluation {

@@ -132,6 +132,7 @@ export class UpdateChild extends PartialType(CreateChild) { }
 		.addSelect('DATEDIFF(CURDATE(),person.createdDatetime)', 'durationSpent')
 		.from(ChildEntity, 'child')
 		.leftJoinAndMapOne('child.person',PersonView,'person','child.personId=person.id')
+		// .leftJoinAndMapOne('child.numOfGoals',GoalEntity,'goal','child.id=goal.childId')
 		// .leftJoin(ParentEntity,'parent')
 })
 export class ChildView extends ChildEntity implements IChildEntity {
@@ -142,6 +143,6 @@ export class ChildView extends ChildEntity implements IChildEntity {
 	public durationSpent: number;
 
 	/** registerDate is person.createdDatetime */
-	@ViewColumn()
-	public registerDate: Date;
+	// @ViewColumn({name:'registerDate'})
+	// public registerDate: Date;
 }

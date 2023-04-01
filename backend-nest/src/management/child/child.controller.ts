@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseIntPipe, Query, ParseBoolPipe, Req, Session } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseInterceptors, ParseIntPipe, Query, ParseBoolPipe, Req, Session, ParseEnumPipe } from '@nestjs/common';
 import { ChildService } from './child.service';
 import { CreateChild, UpdateChild } from './child.entity';
 import { Roles } from 'src/auth/Role.guard';

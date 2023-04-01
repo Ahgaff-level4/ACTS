@@ -12,7 +12,7 @@ import { MessageDialogComponent, MessageDialogData } from '../components/dialogs
 export class UtilityService {
   constructor(private http: HttpClient, private lang: TranslateService, private dialog: MatDialog) {
     this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
-    
+
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (isRememberMe === 'true' && this.user.value === null)
       this.isLogin();
@@ -42,7 +42,7 @@ export class UtilityService {
    * - if HttpErrorResponse then extract the message.
    * - if string then message is eOrMessage.
    * - else show default message (e.g., 'Something Went Wrong!').
-   * @param eOrMessage 
+   * @param eOrMessage
    */
   public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse): void => {
     console.warn('UtilityService : errorDefaultDialog : eOrMessage:', eOrMessage);

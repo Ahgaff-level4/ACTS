@@ -8,6 +8,8 @@ import { MatIconModule } from '@angular/material/icon'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
+import { AppComponent } from './components/app/app.component';
 
 @NgModule({
   exports: [
@@ -19,7 +21,11 @@ import { MatTableModule } from '@angular/material/table';
     MatIconModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatTableModule
+    MatTableModule,
+    MatPaginatorModule
+  ],
+  providers: [
+    { provide: MatPaginatorIntl, useClass: AppComponent }
   ]
 })
 export class AppMaterialModule {
