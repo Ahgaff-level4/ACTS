@@ -36,9 +36,11 @@
   "Tuesday":"",
   "Wednesday":"",
   "Thursday":"",
-  "Items per page: ":"عناصر لكل صفحة",
+  "Items per page:":"عناصر لكل صفحة:",
   "Next page":"الصفحة التالية",
   "Previous page":"",
   "First page":"",
-  "Last page":""
+  "Last page":"",
+  "Date of birth":"تاريخ الميلاد",
+  "of":"من"
 }

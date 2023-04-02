@@ -31,7 +31,7 @@
           <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
         </li>
         <li (click)="isShowDivIf=!isShowDivIf;changeLang()" class="nav-item px-3" routerLinkActive="active">
-          <a class="nav-link" routerLink="#">{{language|translate}}</a>
+          <a class="nav-link" style="cursor:pointer" >{{language|translate}}</a>
         </li>
         <hr class="text-white my-2 mx-0">
         <div (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-lg-none d-block" routerLinkActive="active">

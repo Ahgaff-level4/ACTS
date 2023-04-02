@@ -12,7 +12,13 @@ import { of, range } from 'rxjs';
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
-
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class ChildrenComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
@@ -25,10 +31,10 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   @ViewChild(MatTable) table!: MatTable<IChildEntity>;
 
   ngAfterViewInit(): void {
-    // for (let i = 0; i < 10; i++) {
+    // setInterval(()=>{
     //   this.childrenService.children
     //   .next([...this.childrenService.children.value, { ...this.childrenService.children.value[0] }])
-    // }
+    // },1000);
     // setTimeout(() => { this.childrenService.children.next([]) }, 2000)
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
@@ -39,8 +45,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     });
   }
   public dataSource!: ChildrenDataSource;
-  public columnsKeys: string[] = ['name', 'age', 'diagnostic', 'gender', 'createdDatetime']
+  public columnsKeys: string[] = ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
   public columnsTitles: string[] = ['Name', 'Age', 'Diagnostic', 'Gender', 'Created']
+  public expandedItem?: IChildEntity;
 }
 
 class ChildrenDataSource extends MatTableDataSource<IChildEntity>{
