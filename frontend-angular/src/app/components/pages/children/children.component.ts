@@ -24,6 +24,11 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataSource = new ChildrenDataSource();
     this.dataSource.setData(this.childrenService.children.value);
+    this.childrenService.children.subscribe(v => {
+      this.dataSource.setData(v);
+      if (this.table)
+        this.table.renderRows();
+    });
   }
   constructor(private childrenService: ChildrenService) { }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -35,14 +40,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     //   this.childrenService.children
     //   .next([...this.childrenService.children.value, { ...this.childrenService.children.value[0] }])
     // },1000);
-    // setTimeout(() => { this.childrenService.children.next([]) }, 2000)
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
-    this.childrenService.children.subscribe(v => {
-      this.dataSource.setData(v);
-      if (this.table)
-        this.table.renderRows();
-    });
   }
   public dataSource!: ChildrenDataSource;
   public columnsKeys: string[] = ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
