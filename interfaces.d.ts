@@ -39,7 +39,7 @@ export interface SuccessResponse {
 	success: boolean;
 	data: any;
 	/** if success false there will be a message */
-	message?:string;
+	message?: string;
 }
 
 /** success response of findOne/findAll request */
@@ -95,31 +95,31 @@ export interface IAccountEntity extends ICreateAccount {
 }
 
 export interface ICreateChild {
-	femaleFamilyMembers?: number;
-	maleFamilyMembers?: number;
-	birthOrder?: number;
-	parentsKinship?: string;
-	diagnosticDate?: Date | string;
-	pregnancyState?: string;
-	birthState?: string;
-	growthState?: string;
-	diagnostic?: string;
-	medicine?: string;
-	behaviors?: string;
-	prioritySkills?: string;
+	femaleFamilyMembers?: number | null;
+	maleFamilyMembers?: number | null;
+	birthOrder?: number | null;
+	parentsKinship?: string | null;
+	diagnosticDate?: Date | string | null;
+	pregnancyState?: string | null;
+	birthState?: string | null;
+	growthState?: string | null;
+	diagnostic?: string | null;
+	medicine?: string | null;
+	behaviors?: string | null;
+	prioritySkills?: string | null;
 	/** Default is false (i.e., NOT archive) */
-	isArchive?: boolean;
-	parentId?: number;
+	isArchive?: boolean | null;
+	parentId?: number | null;
 	personId: number;
 }
 
 export interface IChildEntity extends ICreateChild {
 	id: number;
-	parent?: IAccountEntity;
+	parent?: IAccountEntity|null;
 	person: IPersonEntity;
 	goals: IGoalEntity[];
 	teachers: IAccountEntity[];
-	familyMembers?: number;
+	familyMembers?: number|null;
 	durationSpent: number;
 	/** registerDate is person.createdDatetime */
 	// registerDate: Date;
@@ -143,14 +143,14 @@ export interface IEvaluationEntity extends ICreateEvaluation {
 
 export interface ICreatePerson {
 	name: string;
-	birthDate?: string;
+	birthDate?: string|null;
 	gender: Gender;
 	createdDatetime: Date;
 }
 
 export interface IPersonEntity extends ICreatePerson {
 	id: number;
-	age: number;
+	age: number|null;
 }
 
 export interface ICreateGoal {
