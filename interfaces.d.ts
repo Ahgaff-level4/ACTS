@@ -145,7 +145,7 @@ export interface ICreatePerson {
 	name: string;
 	birthDate?: string;
 	gender: Gender;
-	createdDatetime?: Date;
+	createdDatetime: Date;
 }
 
 export interface IPersonEntity extends ICreatePerson {

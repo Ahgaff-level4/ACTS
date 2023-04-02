@@ -24,7 +24,7 @@ export class CreatePerson implements ICreatePerson {
 	@Type(() => Date) @IsOptional() @IsDate()
 	@ViewColumn()
 	@CreateDateColumn({ type: 'datetime', unique: false })
-	public createdDatetime?: Date;
+	public createdDatetime: Date;
 }
 
 export class UpdatePerson extends PartialType(CreatePerson) { }

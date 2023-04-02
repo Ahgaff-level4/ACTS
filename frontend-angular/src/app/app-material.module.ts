@@ -10,6 +10,8 @@ import { MatDialogModule } from '@angular/material/dialog'
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { AppComponent } from './components/app/app.component';
+import { MatSortModule } from '@angular/material/sort';
+
 
 @NgModule({
   exports: [
@@ -22,7 +24,8 @@ import { AppComponent } from './components/app/app.component';
     MatCheckboxModule,
     MatDialogModule,
     MatTableModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatSortModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }
