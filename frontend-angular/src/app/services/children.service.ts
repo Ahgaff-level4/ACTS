@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { IChildEntity } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
@@ -10,9 +10,9 @@ import { UtilityService } from './utility.service';
 })
 export class ChildrenService {
   constructor(private http:HttpClient,private ut:UtilityService) {
-    this.children.subscribe(console.log);
-    this.fetchChildren();
+    // this.fetchChildren();
   }
+
   public children = new BehaviorSubject<IChildEntity[]>([]);
   fetchChildren=():void=>{
     this.http.get<IChildEntity[]>(env.API+'child',{params:{'FK':true}})
