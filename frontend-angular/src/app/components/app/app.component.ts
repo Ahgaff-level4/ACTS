@@ -1,6 +1,7 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
+import { Subscription } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -8,32 +9,41 @@ import { UtilityService } from 'src/app/services/utility.service';
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
-export class AppComponent extends MatPaginatorIntl implements OnInit {
+export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy {
 
   constructor(public translate: TranslateService, private ut: UtilityService) {
     super();
-    this.overridePaginatorWords();
-    this.translate.onLangChange.subscribe(() => this.overridePaginatorWords());
-
+    this.subscribeOnLangChange();
+    this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//duplicate line used to speed up language used
+    this.handleOnLangChange();
   }
-  async ngOnInit() {
+  private sub!: Subscription;
+  ngOnInit = async () => {
     // Register translation languages
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
-    this.translate.use('en');
-    this.translate.onLangChange.subscribe(async () => await this.overridePaginatorWords());
-    await this.overridePaginatorWords();
-    this.dir = this.translate.currentLang === 'en' ? 'ltr' : 'rtl';
+    this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');
+    this.subscribeOnLangChange();
+    this.handleOnLangChange();
   }
-  public dir!: 'ltr' | 'rtl';
-  override itemsPerPageLabel: string='hi';
-  async overridePaginatorWords() {
-    this.itemsPerPageLabel = await this.ut.translate('Items per page:');
-    this.nextPageLabel = await this.ut.translate('Next page');
-    this.previousPageLabel = await this.ut.translate('Previous page');
-    this.firstPageLabel = await this.ut.translate('First page');
-    this.lastPageLabel = await this.ut.translate('Last page');
-    let of = await this.ut.translate('of');
+  subscribeOnLangChange() {
+    if (this.sub)
+      this.sub.unsubscribe();
+    this.sub = this.translate.onLangChange.subscribe(() => this.handleOnLangChange());
+  }
+
+  async handleOnLangChange() {
+    document.documentElement.lang = this.translate.currentLang;
+    document.documentElement.dir = this.translate.currentLang === 'ar' ? 'rtl' : 'ltr';
+    sessionStorage.setItem('lang', this.translate.currentLang);
+    let words = ['Items per page:', 'Next page', 'Previous page', 'First page', 'Last page', 'of'];
+    let objWords = await this.ut.translate(words) as { [key: string]: string };//returns {'Next page':'Next page'...etc} or in arabic will be {'Next page':'الصفحة التالية'...etc}
+    this.itemsPerPageLabel = objWords[words[0]];
+    this.nextPageLabel = objWords[words[1]];
+    this.previousPageLabel = objWords[words[2]];
+    this.firstPageLabel = objWords[words[3]];
+    this.lastPageLabel = objWords[words[4]];
+    let of = objWords[words[5]];
     this.getRangeLabel = (page: number, pageSize: number, length: number) => {
       if (length == 0 || pageSize == 0)
         return `0 ${of} ${length}`;
@@ -42,6 +52,10 @@ export class AppComponent extends MatPaginatorIntl implements OnInit {
       return `${startIndex + 1} – ${endIndex} ${of} ${length}`;
     }
     this.changes.next();
-    this.dir = this.translate.currentLang === 'en' ? 'ltr' : 'rtl';
   }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
+
 }

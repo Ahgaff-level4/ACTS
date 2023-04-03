@@ -9,7 +9,7 @@
 
     <ng-container matColumnDef="createdDatetime">
       <th mat-header-cell *matHeaderCellDef mat-sort-header> {{'Created'|translate}} </th>
-      <td mat-cell *matCellDef="let el"> {{ (el.createdDatetime | date:'yyyy/M/dd, hh:mm a, ')+((el.createdDatetime |
+      <td mat-cell *matCellDef="let el"> {{ (el.createdDatetime | date:'yyyy/M/dd. hh:mm a. ')+((el.createdDatetime |
         date:'EEEE')??''|translate) }} </td>
     </ng-container>
 
@@ -27,7 +27,21 @@
     <ng-container matColumnDef="expandedDetail">
       <td mat-cell *matCellDef="let item" [attr.colspan]="columnsKeys.length">
         <div class="example-element-detail" [@detailExpand]="item == expandedItem ? 'expanded' : 'collapsed'">
-        <p>{{'Date of birth'|translate}}</p>:&nbsp;<p>{{item.person.birthDate}}</p>
+          <p>
+            <b>{{'Date of birth'|translate}}:&nbsp;</b><span *ngIf="item.person.birthDate">{{item.person.birthDate}}.</span><span *ngIf="!item.person.birthDate" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
+            <b>{{'Order between siblings'|translate}}:&nbsp;</b><span *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers || item.familyMembers ">{{item.birthOrder}}{{'of'|translate}}
+            {{item.familyMembers}}&nbsp;{{'siblings'|translate}}&nbsp;({{item.femaleFamilyMembers}}&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;{{item.maleFamilyMembers}}&nbsp;{{'boys'|translate}}).</span><span *ngIf="!item.birthOrder && !item.femaleFamilyMembers && !item.maleFamilyMembers && !item.familyMembers" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Parent kinship'|translate}}:&nbsp;</b><span *ngIf="item.parentsKinship">{{item.parentsKinship}}.</span><span *ngIf="!item.parentsKinship" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
+            <b>{{'Duration spent'|translate}}:&nbsp;</b><span *ngIf="item.person.createdDatetime">{{durationAgo(item.person.createdDatetime)}}&nbsp;{{'from register date'|translate}}&nbsp;{{item.person.createdDatetime|date:'yyyy/M/dd'}}.</span><span *ngIf="!item.person.createdDatetime" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
+            <b>{{'Diagnostic date'|translate}}:&nbsp;</b><span *ngIf="item.diagnosticDate">{{item.diagnosticDate}}.</span><span *ngIf="!item.diagnosticDate" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Pregnancy state'|translate}}:&nbsp;</b><span *ngIf="item.pregnancyState">{{item.pregnancyState}}.</span><span *ngIf="!item.pregnancyState" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Birth state'|translate}}:&nbsp;</b><span *ngIf="item.birthState">{{item.birthState}}.</span><span *ngIf="!item.birthState" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Growth state'|translate}}:&nbsp;</b><span *ngIf="item.growthState">{{item.growthState}}.</span><span *ngIf="!item.growthState" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Diagnostic'|translate}}:&nbsp;</b><span *ngIf="item.diagnostic">{{item.diagnostic}}.</span><span *ngIf="!item.diagnostic" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Medicines'|translate}}:&nbsp;</b><span *ngIf="item.medicine">{{item.medicine}}.</span><span *ngIf="!item.medicine" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Behaviors'|translate}}:&nbsp;</b><span *ngIf="item.behaviors">{{item.behaviors}}.</span><span *ngIf="!item.behaviors" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+            <b>{{'Priority skills'|translate}}:&nbsp;</b><span *ngIf="item.prioritySkills">{{item.prioritySkills}}.</span><span *ngIf="!item.prioritySkills" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
+          </p>
         </div>
       </td>
     </ng-container>
@@ -36,7 +50,7 @@
     <tr mat-row *matRowDef="let item; columns:columnsKeys;" class="example-element-row"
       [class.example-expanded-row]="expandedItem === item"
       (click)="expandedItem = expandedItem === item?undefined:item"></tr>
-      <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 
     <ng-template matNoDataRow>
       <h4 class="p-2">{{'No data available'|translate}}</h4>

@@ -66,7 +66,7 @@ export class UtilityService {
    * @param key (e.g., 'login' or 'somethingWentWrong')
    * @returns correspond translation of the key (e.g., 'Login' or 'تسجيل دخول')
    */
-  public translate(key: string): Promise<string> {
+  public translate(key: string|string[]):Promise<string|{[key:string]:string}>{
     return new Promise((res, rej) => {
       this.lang.get(key).subscribe({
         next: res,

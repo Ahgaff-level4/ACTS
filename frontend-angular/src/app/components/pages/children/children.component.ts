@@ -4,10 +4,8 @@ import { ChildrenService } from 'src/app/services/children.service';
 import { IChildEntity } from '../../../../../../interfaces';
 import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
-import { DataSource } from '@angular/cdk/collections';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import { of, range } from 'rxjs';
-
+import * as moment from 'moment';
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
@@ -42,6 +40,10 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     // },1000);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;
+  }
+
+  durationAgo(date:Date):string{
+    return moment(date, "YYYYMMDD").fromNow(); // 3 years ago, two days age...etc
   }
   public dataSource!: ChildrenDataSource;
   public columnsKeys: string[] = ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
