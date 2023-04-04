@@ -6,6 +6,9 @@ import { MatSort, Sort } from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import * as moment from 'moment';
+import { UtilityService } from 'src/app/services/utility.service';
+import { MatDialog } from '@angular/material/dialog';
+import { AddEditChildComponent } from '../../dialogs/add-edit-child/add-edit-child.component';
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
@@ -28,7 +31,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         this.table.renderRows();
     });
   }
-  constructor(private childrenService: ChildrenService) { }
+  constructor(private childrenService: ChildrenService, private dialog:MatDialog) { }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IChildEntity>;
@@ -42,14 +45,24 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  durationAgo(date:Date):string{
-    return moment(date, "YYYYMMDD").fromNow(); // 3 years ago, two days age...etc
-  }
   public dataSource!: ChildrenDataSource;
   public columnsKeys: string[] = ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
-  public columnsTitles: string[] = ['Name', 'Age', 'Diagnostic', 'Gender', 'Created']
   public expandedItem?: IChildEntity;
+
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator)
+      this.dataSource.paginator.firstPage();
+  }
+
+  public showEditDialog(item?:IChildEntity){
+    this.dialog
+      .open<AddEditChildComponent, IChildEntity>(AddEditChildComponent, { data:item });
+  }
 }
+
 
 class ChildrenDataSource extends MatTableDataSource<IChildEntity>{
   setData(arr: IChildEntity[]) {

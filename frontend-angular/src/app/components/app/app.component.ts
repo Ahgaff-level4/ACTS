@@ -14,20 +14,19 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
 
   constructor(public translate: TranslateService, private ut: UtilityService) {
     super();
+    this.translate.addLangs(['en', 'ar']);
+    this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//in the constructor to speed up language used
     this.subscribeOnLangChange();
-    this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//duplicate line used to speed up language used
-    this.handleOnLangChange();
   }
+
   private sub!: Subscription;
   ngOnInit = async () => {
     // Register translation languages
-    this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
-    this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');
-    this.subscribeOnLangChange();
     this.handleOnLangChange();
   }
-  subscribeOnLangChange() {
+
+  subscribeOnLangChange=()=> {
     if (this.sub)
       this.sub.unsubscribe();
     this.sub = this.translate.onLangChange.subscribe(() => this.handleOnLangChange());
@@ -36,7 +35,7 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
   async handleOnLangChange() {
     document.documentElement.lang = this.translate.currentLang;
     document.documentElement.dir = this.translate.currentLang === 'ar' ? 'rtl' : 'ltr';
-    moment.locale(this.translate.currentLang==='ar'?'ar-kw':'en')
+    moment.locale(this.translate.currentLang==='ar'?'ar-kw':'en');
     sessionStorage.setItem('lang', this.translate.currentLang);
     let words = ['Items per page:', 'Next page', 'Previous page', 'First page', 'Last page', 'of'];
     let objWords = await this.ut.translate(words) as { [key: string]: string };//returns {'Next page':'Next page'...etc} or in arabic will be {'Next page':'الصفحة التالية'...etc}

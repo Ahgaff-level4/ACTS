@@ -1,0 +1,11 @@
+<div style="max-width: 500px;">
+  <h1 mat-dialog-title>{{(!!data?"Edit":'Add new child')|translate}}</h1>
+  <div mat-dialog-content>
+
+  </div>
+  <div mat-dialog-actions>
+    <button mat-button (click)="dialogRef.close()" color="accent">{{"Cancel"|translate}}</button>
+    <button *ngIf="!data" mat-button (click)="add()" color="primary">{{"Add"|translate}}</button>
+    <button *ngIf="!!data" mat-button (click)="edit()" color="primary">{{"Edit"|translate}}</button>
+  </div>
+</div>

@@ -6,6 +6,7 @@ import { environment as env } from 'src/environment';
 import { TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
+import * as moment from 'moment';
 @Injectable({
   providedIn: 'root'
 })
@@ -66,7 +67,7 @@ export class UtilityService {
    * @param key (e.g., 'login' or 'somethingWentWrong')
    * @returns correspond translation of the key (e.g., 'Login' or 'تسجيل دخول')
    */
-  public translate(key: string|string[]):Promise<string|{[key:string]:string}>{
+  public translate(key: string | string[]): Promise<string | { [key: string]: string }> {
     return new Promise((res, rej) => {
       this.lang.get(key).subscribe({
         next: res,
@@ -74,6 +75,17 @@ export class UtilityService {
       });
     });
   }
+
+  public dateDisplay(date: Date): string {
+    return moment(date).format('yyyy/M/DD');
+  }
+  public datetimeWeekDisplay(date: Date) {
+    if (date)
+      return moment(date).format('yyyy/M/DD h:mm:ss a dddd')
+    console.warn('Unexpected param : datetimeWeekDisplay(date) called with date=' + date);
+    return '';
+  }
+
 
   public showMsgDialog(data: MessageDialogData) {
     return this.dialog
