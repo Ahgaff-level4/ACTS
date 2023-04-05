@@ -1,14 +1,11 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { ChildrenService } from 'src/app/services/children.service';
 import { IChildEntity } from '../../../../../../interfaces';
-import { MatSort, Sort } from '@angular/material/sort';
+import { MatSort} from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
-import * as moment from 'moment';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
-import { AddEditChildComponent } from '../../dialogs/add-edit-child/add-edit-child.component';
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
@@ -30,8 +27,15 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       if (this.table)
         this.table.renderRows();
     });
+    this.ut.user.subscribe(v=>{
+      this.canAddEdit = this.ut.userHasAny('Admin','HeadOfDepartment');
+    });
   }
-  constructor(private childrenService: ChildrenService, private dialog:MatDialog) { }
+
+  public canAddEdit:boolean;
+  constructor(private childrenService: ChildrenService,public ut:UtilityService) {
+    this.canAddEdit = this.ut.userHasAny('Admin','HeadOfDepartment');
+  }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IChildEntity>;
@@ -57,9 +61,15 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       this.dataSource.paginator.firstPage();
   }
 
-  public showEditDialog(item?:IChildEntity){
-    this.dialog
-      .open<AddEditChildComponent, IChildEntity>(AddEditChildComponent, { data:item });
+  add(){
+//todo redirect add-child
+  }
+
+  edit(child:IChildEntity|undefined){
+    if(child !=undefined){
+      //todo see how to transfer child param to edit-child page :/
+
+    }
   }
 }
 

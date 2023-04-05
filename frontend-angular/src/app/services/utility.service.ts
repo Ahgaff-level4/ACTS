@@ -86,9 +86,20 @@ export class UtilityService {
     return '';
   }
 
-
   public showMsgDialog(data: MessageDialogData) {
     return this.dialog
       .open<MessageDialogComponent, MessageDialogData>(MessageDialogComponent, { data });
+  }
+
+  /**
+   * @return `true` if user's roles has any one role of the param `roles`. If user han no role overlap with param `roles` then return `false`
+   */
+  public userHasAny(...roles: Role[]) {
+    if (this.user.value)
+      for (let r of this.user.value.roles)
+        if (roles.includes(r))
+          return true;
+
+    return false;
   }
 }

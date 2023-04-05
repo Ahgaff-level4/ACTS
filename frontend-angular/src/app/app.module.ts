@@ -19,11 +19,11 @@ import { FooterComponent } from './components/footer/footer.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children.component';
 import { MessageDialogComponent } from './components/dialogs/message/message.component';
-import { AddChildComponent } from './components/pages/add-child/add-child.component';
+import { AddEditChildComponent } from './components/pages/add-edit-child/add-edit-child.component';
 import { DatePipe } from './pipes/date.pipe';
 import { DateTimeWeekPipe } from './pipes/date-time-week.pipe';
 import { FromNowPipe } from './pipes/from-now.pipe';
-import { AddEditChildComponent } from './components/dialogs/add-edit-child/add-edit-child.component';
+// import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
   return new TranslateHttpLoader(http);
@@ -40,7 +40,6 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     ProgramComponent,
     ChildrenComponent,
     MessageDialogComponent,
-    AddChildComponent,
     DatePipe,
     DateTimeWeekPipe,
     FromNowPipe,

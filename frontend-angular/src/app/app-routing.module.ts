@@ -5,7 +5,7 @@ import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children.component';
-import { AddChildComponent } from './components/pages/add-child/add-child.component';
+import { AddEditChildComponent } from './components/pages/add-edit-child/add-edit-child.component';
 import { Observable } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
@@ -49,13 +49,14 @@ const titlePrefix = 'ACTS - ';
 
 const routes: Routes = [
   { path: '', component: MainComponent, title: titlePrefix + 'Home', },
-  { path: 'main', component: MainComponent, title: titlePrefix + 'Home' },
-  { path: 'home', component: MainComponent, title: titlePrefix + 'Home' },
+  { path: 'main', redirectTo:'' },
+  { path: 'home', redirectTo:''},
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
-  { path: 'add-child', component: AddChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH }
+  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },
+  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
 ];
 
 @NgModule({

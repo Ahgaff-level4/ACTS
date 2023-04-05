@@ -103,6 +103,9 @@
     <mat-paginator [pageSizeOptions]="[5, 10, 20,50,100]" showFirstLastButtons>
     </mat-paginator>
   </div>
-  <button mat-raised-button color="primary" (click)="showEditDialog()">{{'Add new child'|translate}}</button>
-  <button class="mx-3" mat-raised-button color="primary" [disabled]="!this.expandedItem" (click)="showEditDialog(this.expandedItem)">{{'Edit'}}</button>
+  <div *ngIf="canAddEdit">
+    <a mat-raised-button color="primary" routerLink="/add-child">{{'Add new child'|translate}}</a>
+    <button class="mx-3" mat-raised-button color="primary" [disabled]="!this.expandedItem"
+      (click)="edit(this.expandedItem)">{{'Edit'}}</button>
+  </div>
 </div>

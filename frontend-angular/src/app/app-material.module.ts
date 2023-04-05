@@ -25,7 +25,7 @@ import { MatSortModule } from '@angular/material/sort';
     MatDialogModule,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule,
+    MatSortModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

@@ -6,7 +6,7 @@
 
 <form [formGroup]="myFormGroup">
 	<label for="name">Name:</label>
-	<input id="name" type="text" formControlName="name" />
+	<input id="name" type="text" [formControl]="myFormGroup.controls.name" />
 	<p>Name value: {{ myFormGroup.controls.name.value }}</p>
 	<p>Name status: {{ myFormGroup.controls.name.status }}</p>
 	<label for="age">Age:</label>
@@ -14,9 +14,9 @@
 	<p>Age value: {{myFormGroup.controls.age.value}}</p>
 	<p>Age status: {{myFormGroup.controls.age.status}}</p>
 </form>
-<mat-icon class="material-symbols-sharp">
+<!-- <mat-icon>
 	favorite
-	</mat-icon>
+	</mat-icon> -->
 
 
 <h1><a href="https://material.angular.io/components/categories">Angular Material</a></h1>

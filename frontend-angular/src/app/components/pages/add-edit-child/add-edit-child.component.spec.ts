@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { AddEditChildComponent } from './add-edit-child.component';
+import { AddChildComponent } from './add-edit-child.component';
 
-describe('AddEditChildComponent', () => {
-  let component: AddEditChildComponent;
-  let fixture: ComponentFixture<AddEditChildComponent>;
+describe('AddChildComponent', () => {
+  let component: AddChildComponent;
+  let fixture: ComponentFixture<AddChildComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ AddEditChildComponent ]
+      declarations: [ AddChildComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(AddEditChildComponent);
+    fixture = TestBed.createComponent(AddChildComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
