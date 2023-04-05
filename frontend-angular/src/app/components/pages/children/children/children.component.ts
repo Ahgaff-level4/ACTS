@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { ChildrenService } from 'src/app/services/children.service';
-import { IChildEntity } from '../../../../../../interfaces';
+import { IChildEntity } from '../../../../../../../interfaces';
 import { MatSort} from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';

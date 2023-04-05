@@ -41,7 +41,9 @@ body {
 	margin: 0;
 	font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-
+// .rtl{ if you don't uncomment this. then you may want to delete the imported file bootstrap.rtl.min.css
+//   @import url(./assets/bootstrap.rtl.min.css);
+// }
 mat-checkbox.text-white div label {
 	color:white!important;
 }

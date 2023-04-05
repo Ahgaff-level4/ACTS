@@ -10,19 +10,21 @@ import { AppMaterialModule } from './app-material.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 
-import { AppComponent } from './components/app/app.component';
+import { AppComponent } from './components/static/app/app.component';
 import { MainComponent } from './components/pages/main/main.component';
 import { FieldComponent } from './components/pages/field/field.component';
-import { NavBarComponent } from './components/nav-bar/nav-bar.component';
+import { NavBarComponent } from './components/static/nav-bar/nav-bar.component';
 import { LoginComponent } from './components/pages/login/login.component';
-import { FooterComponent } from './components/footer/footer.component';
+import { FooterComponent } from './components/static/footer/footer.component';
 import { ProgramComponent } from './components/pages/program/program.component';
-import { ChildrenComponent } from './components/pages/children/children.component';
+import { ChildrenComponent } from './components/pages/children/children/children.component';
 import { MessageDialogComponent } from './components/dialogs/message/message.component';
-import { AddEditChildComponent } from './components/pages/add-edit-child/add-edit-child.component';
+import { AddEditChildComponent } from './components/pages/children/add-edit-child/add-edit-child.component';
 import { DatePipe } from './pipes/date.pipe';
 import { DateTimeWeekPipe } from './pipes/date-time-week.pipe';
 import { FromNowPipe } from './pipes/from-now.pipe';
+import { ChildGoalsComponent } from './components/pages/children/child-goals/child-goals.component';
+import { PersonFormComponent } from './components/forms/person-form/person-form.component';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -43,7 +45,9 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     DatePipe,
     DateTimeWeekPipe,
     FromNowPipe,
-    AddEditChildComponent
+    AddEditChildComponent,
+    ChildGoalsComponent,
+    PersonFormComponent
   ],
   imports: [
     BrowserModule,

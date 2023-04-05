@@ -9,9 +9,11 @@ import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDialogModule } from '@angular/material/dialog'
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
-import { AppComponent } from './components/app/app.component';
+import { AppComponent } from './components/static/app/app.component';
 import { MatSortModule } from '@angular/material/sort';
 import {DragDropModule} from '@angular/cdk/drag-drop';
+import {MatRippleModule} from '@angular/material/core';
+import {MatDatepickerModule} from '@angular/material/datepicker';
 
 
 @NgModule({
@@ -27,7 +29,9 @@ import {DragDropModule} from '@angular/cdk/drag-drop';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    DragDropModule
+    DragDropModule,
+    MatRippleModule,
+    MatDatepickerModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }
