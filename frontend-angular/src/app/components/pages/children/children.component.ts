@@ -6,6 +6,7 @@ import { MatSort} from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UtilityService } from 'src/app/services/utility.service';
+import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
@@ -50,7 +51,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   }
 
   public dataSource!: ChildrenDataSource;
-  public columnsKeys: string[] = ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
+  public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('children table')??'null')?? ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
   public expandedItem?: IChildEntity;
 
   applyFilter(event: Event) {
@@ -59,6 +60,11 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
     if (this.dataSource.paginator)
       this.dataSource.paginator.firstPage();
+  }
+
+  drop(event: CdkDragDrop<string[]>) {
+    moveItemInArray(this.columnsKeys, event.previousIndex, event.currentIndex);
+    sessionStorage.setItem('children table',JSON.stringify(this.columnsKeys));
   }
 
   add(){
