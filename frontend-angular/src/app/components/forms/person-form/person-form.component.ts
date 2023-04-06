@@ -8,14 +8,18 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
   templateUrl: './person-form.component.html',
   styleUrls: ['./person-form.component.scss']
 })
-export class PersonFormComponent {
+export class PersonFormComponent implements OnInit{
   @Output() personFormChanged:EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
   public minlength = {minlength:4}
-  formGroup;
+  public formGroup;
 
+  ngOnInit(): void {
+    this.personFormChanged.emit(this.formGroup);
+
+  }
   constructor(private fb: FormBuilder) {
     this.formGroup = this.fb.group({
-      name: ['', Validators.required],
+      name: ['', Validators.required,Validators.maxLength(50),Validators.minLength(4)],
       birthDate:'',
       gender: ['', Validators.required],
       createdDate: [new Date(), Validators.required],
@@ -30,7 +34,4 @@ export class PersonFormComponent {
     this.formGroup.controls['createdDate'].setValue(event.value);
   }
 
-  submit() {
-    console.log(this.formGroup.value);
-  }
 }

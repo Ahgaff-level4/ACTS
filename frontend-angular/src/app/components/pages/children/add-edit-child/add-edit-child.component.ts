@@ -12,5 +12,12 @@ export class AddEditChildComponent {
   }
 
   public personForm!:FormGroup;
-
+  personFormChanged(personForm:FormGroup){
+    this.personForm = personForm;
+    console.log('personFormChanged',this.personForm);
+  }
+  submit(){
+    console.log('personForm',this.personForm);
+    this.personForm?.markAllAsTouched();
+  }
 }

@@ -15,6 +15,7 @@
 	"Success!": "نجح!",
 	"Cancel":"إلغاء",
 	"You must enter a value":"يجب إدخال قيمة",
+  "You must choose a value":"يجب إختيار قيمة",
 	"Minimum length is ":"اقل عدد احرف هو {{minlength}}",
 	"Arabic":"عربي",
 	"English":"إنجليزي",
@@ -58,5 +59,7 @@
   "Edit":"تعديل",
   "Search":"البحث",
   "Goals":"اهداف",
-  "Birthdate":"تاريخ الميلاد"
+  "Birthdate":"تاريخ الميلاد",
+  "Created Date":"تاريخ الإنشاء",
+  "You must choose a date":"يجب تحديد تاريخ"
 }

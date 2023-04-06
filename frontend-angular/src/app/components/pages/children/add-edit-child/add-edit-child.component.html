@@ -1,3 +1,4 @@
 <p>add-edit-child works!</p>
-<app-person-form (personFormChanged)="personForm = $event"></app-person-form>
+<app-person-form (personFormChanged)="personFormChanged($event)"></app-person-form>
 
+<button type="submit" mat-raised-button (click)="submit()"> Submit </button>
