@@ -25,6 +25,8 @@ import { DateTimeWeekPipe } from './pipes/date-time-week.pipe';
 import { FromNowPipe } from './pipes/from-now.pipe';
 import { ChildGoalsComponent } from './components/pages/children/child-goals/child-goals.component';
 import { PersonFormComponent } from './components/forms/person-form/person-form.component';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 export function httpTranslateLoaderFactory(http: HttpClient) {
@@ -55,7 +57,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    RouterModule,
+    // RouterModule,
     BrowserAnimationsModule,
     AppMaterialModule,
     TranslateModule.forRoot({
@@ -65,6 +67,10 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
         deps: [HttpClient]
       }
     })
+  ],
+  providers:[
+    {provide:MAT_DATE_LOCALE,useValue:'en-gb'},
+    {provide:DateAdapter,useClass:MomentDateAdapter,deps:[MAT_DATE_LOCALE,MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
   ],
   bootstrap: [AppComponent]
 })

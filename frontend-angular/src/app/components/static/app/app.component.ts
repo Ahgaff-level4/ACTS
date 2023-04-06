@@ -1,4 +1,5 @@
 import { Component, Input, OnDestroy, OnInit } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -12,7 +13,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy {
 
-  constructor(public translate: TranslateService, private ut: UtilityService) {
+  constructor(public translate: TranslateService, private ut: UtilityService, private dateAdapter:DateAdapter<moment.Moment>) {
     super();
     this.translate.addLangs(['en', 'ar']);
     this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//in the constructor to speed up language used
@@ -33,9 +34,10 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
   }
 
   async handleOnLangChange() {
+    moment.locale(this.translate.currentLang==='ar'?'ar-kw':'en-gb');
+    this.dateAdapter.setLocale(this.translate.currentLang==='ar'?'ar-ly':'en-gb');
     document.documentElement.lang = this.translate.currentLang;
     document.documentElement.dir = this.translate.currentLang === 'ar' ? 'rtl' : 'ltr';
-    moment.locale(this.translate.currentLang==='ar'?'ar-kw':'en');
     sessionStorage.setItem('lang', this.translate.currentLang);
     let words = ['Items per page:', 'Next page', 'Previous page', 'First page', 'Last page', 'of'];
     let objWords = await this.ut.translate(words) as { [key: string]: string };//returns {'Next page':'Next page'...etc} or in arabic will be {'Next page':'الصفحة التالية'...etc}

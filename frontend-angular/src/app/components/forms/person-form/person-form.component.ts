@@ -1,6 +1,7 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ICreatePerson, IPersonEntity } from '../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 
 @Component({
   selector: 'app-person-form',
@@ -8,16 +9,28 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
   styleUrls: ['./person-form.component.scss']
 })
 export class PersonFormComponent {
-  @Input() person!:ICreatePerson;
-  @Output() personChange = new EventEmitter<ICreatePerson>();
+  @Output() personFormChanged:EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
+  public minlength = {minlength:4}
+  formGroup;
 
-  formGroup:FormGroup;
-  constructor(private fb:FormBuilder){
-    this.formGroup = fb.group({
-      name:['',Validators.required],
+  constructor(private fb: FormBuilder) {
+    this.formGroup = this.fb.group({
+      name: ['', Validators.required],
       birthDate:'',
-      gender:['',Validators.required],
-      createdDatetime:[new Date(),Validators.required]
-    })
+      gender: ['', Validators.required],
+      createdDate: [new Date(), Validators.required],
+    });
+  }
+
+  formatDate(event: MatDatepickerInputEvent<Date>) {
+    this.formGroup.controls['birthDate'].setValue(event.value?.toISOString()??null);
+  }
+
+  formatDate2(event: MatDatepickerInputEvent<Date>) {
+    this.formGroup.controls['createdDate'].setValue(event.value);
+  }
+
+  submit() {
+    console.log(this.formGroup.value);
   }
 }

@@ -1,24 +1,33 @@
+<p>app-person-form works!</p>
+
 <form [formGroup]="formGroup">
-  <mat-form-field>
-    <input matInput placeholder="Name" formControlName="name">
+
+  <mat-form-field appearance="fill">
+    <mat-label>{{'Username'|translate}}</mat-label>
+    <mat-icon matPrefix class="material-symbols-rounded">person</mat-icon>
+    <input type="text" matInput placeholder="..." [formControl]="formGroup.controls['name']" required minlength="4" maxlength="30">
+    <mat-error *ngIf="formGroup.controls['name'].errors?.['required']">{{'You must enter a value'|translate}}</mat-error>
+    <mat-error *ngIf="formGroup.controls['name'].errors?.['minlength']">{{'Minimum length is '|translate:minlength}}</mat-error>
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput [matDatepicker]="picker" [placeholder]="'Birthdate'|translate" formControlName="birthdate">
-    <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-    <mat-datepicker #picker></mat-datepicker>
+    <input matInput [matDatepicker]="picker" placeholder="Birthdate" [formControl]="formGroup.controls['birthDate']">
+    <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+    <mat-datepicker startView="multi-year" [startAt]="'2010-01-01T04:48:00.380Z'" #picker></mat-datepicker>
   </mat-form-field>
 
   <mat-form-field>
-    <mat-select placeholder="Gender" formControlName="gender">
+    <mat-select placeholder="Gender" [formControl]="formGroup.controls['gender']">
       <mat-option value="male">Male</mat-option>
       <mat-option value="female">Female</mat-option>
     </mat-select>
   </mat-form-field>
 
   <mat-form-field>
-    <input matInput [matDatepicker]="picker2" placeholder="Created Date" formControlName="createdDate">
+    <input matInput [matDatepicker]="picker2" placeholder="Created Date" [formControl]="formGroup.controls['createdDate']">
     <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
     <mat-datepicker #picker2></mat-datepicker>
   </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="submit()">Submit</button>
 </form>

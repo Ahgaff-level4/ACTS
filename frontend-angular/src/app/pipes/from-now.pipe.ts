@@ -9,9 +9,13 @@ export class FromNowPipe implements PipeTransform {
   constructor(private translate: TranslateService) { }
   transform(value: unknown, ...args: unknown[]): unknown {
     var date;
-    if (value != '')
-      if (typeof value === 'string' || typeof value === 'number' || value instanceof Date)
-        date = new Date(value);
+    if (value == undefined || value === '')
+      return '';
+    if (typeof value === 'string' || typeof value === 'number' || value instanceof Date)
+      date = new Date(value);
+    else if (moment.isMoment(value))
+      date = value;
+
     if (date) {
       moment.locale(this.translate.currentLang === 'ar' ? 'ar-kw' : 'en');
       if (args[0] === true)

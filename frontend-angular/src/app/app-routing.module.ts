@@ -1,4 +1,4 @@
-import { Injectable, NgModule } from '@angular/core';
+import { Injectable, NgModule, inject } from '@angular/core';
 import { ActivatedRouteSnapshot, CanActivate, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
 import { MainComponent } from './components/pages/main/main.component';
 import { FieldComponent } from './components/pages/field/field.component';
@@ -10,34 +10,29 @@ import { Observable } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
 
-@Injectable({
-  providedIn: 'root'
-})
-export class RoleGuard implements CanActivate {
-  constructor(private ut: UtilityService) { }
-  canActivate(
-    route: ActivatedRouteSnapshot,
-    state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
+export function RoleGuard(route: ActivatedRouteSnapshot,
+    state: RouterStateSnapshot) {
+  const ut = inject(UtilityService);
     let allowRoles: Role[] = route.data['allowRoles'] as Role[];
     if (!Array.isArray(allowRoles) || allowRoles.length === 0)
       throw 'Expected allowRoles to be typeof Role[]. Got:' + allowRoles;
     for (let r of allowRoles)
-      if (this.hasRole(r))
+      if (hasRole(r))
         return true;
-    console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', this.ut.user.value?.roles)
-    this.ut.showMsgDialog({
+    console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', ut.user.value?.roles)
+    ut.showMsgDialog({
       type: 'info',
       title: 'Insufficient privilege!',
       content: `You don't have sufficient privilege to access this page!`
     });
     return false;
-  }
 
-  public hasRole = (role: Role) => {
-    return !!this.ut.user.value
-      && this.ut.user.value.isLoggedIn
-      && Array.isArray(this.ut.user.value.roles)
-      && this.ut.user.value.roles.includes(role);
+
+  function hasRole(role: Role){
+    return !!ut.user.value
+      && ut.user.value.isLoggedIn
+      && Array.isArray(ut.user.value.roles)
+      && ut.user.value.roles.includes(role);
   }
 }
 
@@ -54,7 +49,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
-  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
+  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP},
   { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },
   { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
 ];

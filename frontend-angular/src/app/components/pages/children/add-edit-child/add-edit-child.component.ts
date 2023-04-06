@@ -1,4 +1,6 @@
 import { Component } from '@angular/core';
+import { ICreatePerson } from '../../../../../../../interfaces';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 
 @Component({
   selector: 'app-add-edit-child',
@@ -6,5 +8,9 @@ import { Component } from '@angular/core';
   styleUrls: ['./add-edit-child.component.scss']
 })
 export class AddEditChildComponent {
+  constructor() {
+  }
+
+  public personForm!:FormGroup;
 
 }
