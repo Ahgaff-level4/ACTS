@@ -1,4 +1,142 @@
-<p>add-edit-child works!</p>
-<app-person-form (personFormChanged)="personFormChanged($event)"></app-person-form>
+<div class="container mt-5">
+  <app-person-form [person]="" (personFormChanged)="personForm = $event"></app-person-form>
+  <mat-divider class="p-2 my-3 mx-5"></mat-divider>
+  <form [formGroup]="childForm" class="container-fluid">
+    <div class="row">
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Number of sisters'|translate}}</mat-label>
+          <mat-select formControlName="femaleFamilyMembers" (selectionChange)="updateFamilyMembers(familyMembers)">
+            <mat-option *ngFor="let o of ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Number of brothers'|translate}}</mat-label>
+          <mat-select formControlName="maleFamilyMembers" (selectionChange)="updateFamilyMembers(familyMembers)">
+            <mat-option *ngFor="let o of ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Family members'|translate}}</mat-label>
+          <input matInput type="number" value="1" disabled #familyMembers>
+          <mat-hint>{{'Calculated automatically. This child has been calculated'|translate}}</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Order between siblings'|translate}}</mat-label>
+          <mat-select formControlName="birthOrder">
+            <mat-option *ngFor="let o of ordinalNumbers; let i=index;" [value]="i+1"
+              [disabled]="compare(i+1,familyMembers.value)">{{o|translate}}</mat-option>
+          </mat-select>
+          <mat-hint>{{"Example: 'First' of three siblings"|translate}}</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-8 p-2 mt-3">
+        <p *ngIf="childForm.controls['birthOrder'].value">
+          {{'Order between siblings'|translate}}
+          <b>{{ordinalNumbers[(childForm.controls['birthOrder'].value??0)-1]|translate}}</b>&nbsp;{{'of'|translate}}&nbsp;<b>{{familyMembers.value|translate}}</b>&nbsp;{{'siblings'|translate}}
+          (<b>{{add(childForm.controls['femaleFamilyMembers'].value,personForm.get('gender')?.value=='Female')}}</b>&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;<b>{{add(childForm.controls['maleFamilyMembers'].value,personForm.get('gender')?.value=='Male')}}</b>&nbsp;{{'boys'|translate}}).
+        </p>
+      </div>
+    </div>
 
-<button type="submit" mat-raised-button (click)="submit()"> Submit </button>
+    <div class="row">
+      <div class="col-md-8 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Parent kinship'|translate}}</mat-label>
+          <textarea placeholder="..." #parentsKinship matInput formControlName="parentsKinship"
+            maxlength="512"></textarea>
+          <mat-hint align="end">{{parentsKinship.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Diagnostic date'|translate}}</mat-label>
+          <input matInput [matDatepicker]="picker3" placeholder="..." formControlName="diagnosticDate">
+          <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
+          <mat-datepicker startView="multi-year" #picker3></mat-datepicker>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Pregnancy state'|translate}}</mat-label>
+          <textarea placeholder="..." #pregnancyState matInput formControlName="pregnancyState"
+            maxlength="512"></textarea>
+          <mat-hint align="end">{{pregnancyState.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Birth state'|translate}}</mat-label>
+          <textarea placeholder="..." #birthState matInput formControlName="birthState" maxlength="512"></textarea>
+          <mat-hint align="end">{{birthState.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Growth state'|translate}}</mat-label>
+          <textarea placeholder="..." #growthState matInput formControlName="growthState" maxlength="512"></textarea>
+          <mat-hint align="end">{{growthState.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Diagnostic'|translate}}</mat-label>
+          <textarea placeholder="..." #diagnostic matInput formControlName="diagnostic" maxlength="512"></textarea>
+          <mat-hint align="end">{{diagnostic.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Medicines'|translate}}</mat-label>
+          <textarea placeholder="..." #medicine matInput formControlName="medicine" maxlength="512"></textarea>
+          <mat-hint align="end">{{medicine.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Behaviors'|translate}}</mat-label>
+          <textarea placeholder="..." #behaviors matInput formControlName="behaviors" maxlength="512"></textarea>
+          <mat-hint align="end">{{behaviors.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100" appearance="fill">
+          <mat-label>{{'Priority skills'|translate}}</mat-label>
+          <textarea placeholder="..." #prioritySkills matInput formControlName="prioritySkills"
+            maxlength="512"></textarea>
+          <mat-hint align="end">{{prioritySkills.value.length}}/500</mat-hint>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6 p-2">
+        <button mat-flat-button>todo Select parent</button>
+      </div>
+    </div>
+
+  </form>
+
+
+  <div class="d-flex mt-4">
+    <button class="w-50 mx-auto" type="submit" mat-flat-button color="primary" (click)="submit()">
+      {{'Submit'|translate}} </button>
+  </div>
+</div>

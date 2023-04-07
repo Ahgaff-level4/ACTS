@@ -17,6 +17,7 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
 import {MatSelectModule} from '@angular/material/select';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import {MatDividerModule} from '@angular/material/divider';
 
 
 @NgModule({
@@ -37,7 +38,8 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
     MatDatepickerModule,
     MatNativeDateModule,
     MatSelectModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatDividerModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }
