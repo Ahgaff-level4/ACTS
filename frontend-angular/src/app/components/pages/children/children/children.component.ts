@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { ChildrenService } from 'src/app/services/children.service';
+import { ChildService } from 'src/app/services/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
 import { MatSort} from '@angular/material/sort';
 import { MatPaginator } from '@angular/material/paginator';
@@ -22,8 +22,8 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 export class ChildrenComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.dataSource = new ChildrenDataSource();
-    this.dataSource.setData(this.childrenService.children.value);
-    this.childrenService.children.subscribe(v => {
+    this.dataSource.setData(this.childService.children.value);
+    this.childService.children.subscribe(v => {
       this.dataSource.setData(v);
       if (this.table)
         this.table.renderRows();
@@ -34,7 +34,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   }
 
   public canAddEdit:boolean;
-  constructor(private childrenService: ChildrenService,public ut:UtilityService) {
+  constructor(private childService: ChildService,public ut:UtilityService) {
     this.canAddEdit = this.ut.userHasAny('Admin','HeadOfDepartment');
   }
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -43,8 +43,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   ngAfterViewInit(): void {
     // setInterval(()=>{
-    //   this.childrenService.children
-    //   .next([...this.childrenService.children.value, { ...this.childrenService.children.value[0] }])
+    //   this.childService.children
+    //   .next([...this.childService.children.value, { ...this.childService.children.value[0] }])
     // },1000);
     this.dataSource.sort = this.sort;
     this.dataSource.paginator = this.paginator;

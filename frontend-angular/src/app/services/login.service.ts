@@ -4,7 +4,6 @@ import { UtilityService } from './utility.service';
 import { Router } from '@angular/router';
 import { environment as env } from 'src/environment';
 import { ErrorResponse, SuccessResponse, User } from '../../../../interfaces';
-import { TranslateService } from '@ngx-translate/core';
 @Injectable({
   providedIn: 'root'
 })

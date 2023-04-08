@@ -8,7 +8,7 @@ import { RouterModule } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { AppMaterialModule } from './app-material.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 
 import { AppComponent } from './components/static/app/app.component';
 import { MainComponent } from './components/pages/main/main.component';
@@ -29,9 +29,6 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
-export function httpTranslateLoaderFactory(http: HttpClient) {
-  return new TranslateHttpLoader(http);
-}
 
 @NgModule({
   declarations: [
@@ -49,7 +46,7 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     FromNowPipe,
     AddEditChildComponent,
     ChildGoalsComponent,
-    PersonFormComponent
+    PersonFormComponent,
   ],
   imports: [
     BrowserModule,
@@ -63,14 +60,13 @@ export function httpTranslateLoaderFactory(http: HttpClient) {
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: httpTranslateLoaderFactory,
-        deps: [HttpClient]
-      }
+        useFactory: (http:HttpClient)=>new TranslateHttpLoader(http),
+        deps: [HttpClient],
+      },
     })
   ],
   providers:[
-    {provide:MAT_DATE_LOCALE,useValue:'en-gb'},
-    {provide:DateAdapter,useClass:MomentDateAdapter,deps:[MAT_DATE_LOCALE,MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
+    TranslatePipe
   ],
   bootstrap: [AppComponent]
 })

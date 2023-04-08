@@ -2,6 +2,7 @@ import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ICreatePerson, IPersonEntity } from '../../../../../../interfaces';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { PersonService } from 'src/app/services/person.service';
 
 @Component({
   selector: 'app-person-form',
@@ -9,16 +10,13 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
   styleUrls: ['./person-form.component.scss']
 })
 export class PersonFormComponent implements OnInit {
-  @Output() personFormChanged: EventEmitter<FormGroup> = new EventEmitter<FormGroup>();
-  @Input() person: IPersonEntity | undefined;//optional for edit
-  @Input() personId: number | undefined;//optional for edit if you can't provide person then only id
+  @Input() public person: IPersonEntity | undefined;//optional for edit
+  @Input() public personId: number | undefined;//optional for edit if you can't provide person then only id
   public formGroup!: FormGroup;
-  public minlength = { minlength: 4 };
-  public nowDate = new Date();
+  protected minlength = { minlength: 4 };
+  protected nowDate = new Date();
 
   ngOnInit(): void {
-    console.log('person', this.person);
-    console.log('personId', this.personId);
     this.formGroup.disable();
     if (this.person) {
       this.formGroup.get('name')?.setValue(this.person.name);
@@ -27,16 +25,29 @@ export class PersonFormComponent implements OnInit {
       this.formGroup.get('createdDatetime')?.setValue(this.person.createdDatetime);
     }//todo if necessary: else if(this.personId){//fetch person info}
     this.formGroup.enable();
-    this.personFormChanged.emit(this.formGroup);
   }
 
-  constructor(private fb: FormBuilder) {
+  constructor(private fb: FormBuilder, private personService: PersonService) {
     this.formGroup = this.fb.group({
-      name: ['', [Validators.required, Validators.maxLength(50), Validators.minLength(4)]],
-      birthDate: '',
-      gender: ['', [Validators.required]],
+      name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(4)]],
+      birthDate: null,
+      gender: [null, [Validators.required]],
       createdDatetime: [new Date(), [Validators.required]],
     });
+  }
+
+  /**
+   * Called by the parent component. Hint: using `@ViewChild` decorator
+   */
+  public async submit(): Promise<IPersonEntity> {
+      // if (this.person?.id || this.personId) {//edit person
+        //for editing...
+        // return await this.personService.patchPerson(this.formGroup);
+      // } else {//add new person
+      console.log('personFormGroup.value',this.formGroup.value);
+        return await this.personService.postPerson(this.formGroup.value);
+        // return await this.personService.postPerson(this.formGroup.value)
+      // }
   }
 
 }

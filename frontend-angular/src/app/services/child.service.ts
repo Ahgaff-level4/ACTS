@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IChildEntity } from '../../../../interfaces';
+import { IChildEntity, ICreateChild } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environment';
 import { UtilityService } from './utility.service';
@@ -8,16 +8,43 @@ import { UtilityService } from './utility.service';
 @Injectable({
   providedIn: 'root'
 })
-export class ChildrenService {
+export class ChildService {
+  public childURL = env.API + 'child';
   constructor(private http: HttpClient, private ut: UtilityService) {
-    this.children.next(TMP_DATA);
-    // this.fetchChildren();
+    // this.children.next(TMP_DATA);
+    this.fetchChildren();
   }
 
   public children = new BehaviorSubject<IChildEntity[]>([]);
-  fetchChildren = (): void => {
-    this.http.get<IChildEntity[]>(env.API + 'child', { params: { 'FK': true } })
-      .subscribe({ next: (v) => this.children.next(v), error: this.ut.errorDefaultDialog });
+  /**
+   * create api request to retrieve children information and broadcast it to `children` BehaviorSubject.
+   * @returns `resolve` if request succeeded. Otherwise `reject`.
+   */
+  fetchChildren = (): Promise<void> => {
+    return new Promise((res, rej) => {
+      this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
+        .subscribe({ next: (v) => { this.children.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e); rej(e); } });
+    })
+  }
+
+  /**
+ * api request to post a child information. Then append the new child with previous `children` BehaviorSubject and emit the new children array.
+ * @returns `resolve` if request succeeded. Otherwise `reject`.
+ */
+  postChild(child: ICreateChild): Promise<IChildEntity> {
+    return new Promise((res, rej) => {
+      this.http.post<IChildEntity>(this.childURL, child)
+        .subscribe({
+          next: (v) => {
+            this.fetchChildren()
+            res(v);
+          },
+          error: (e) => {
+            this.ut.errorDefaultDialog(e, "Couldn't create a child!");
+            rej(e);
+          }
+        })
+    });
   }
 }
 

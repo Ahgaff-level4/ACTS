@@ -3,16 +3,17 @@ import { Injectable } from '@angular/core';
 import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environment';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
 import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
-  constructor(private http: HttpClient, private lang: TranslateService, private dialog: MatDialog) {
+  constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router) {
     this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
 
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
@@ -45,8 +46,9 @@ export class UtilityService {
    * - if string then message is eOrMessage.
    * - else show default message (e.g., 'Something Went Wrong!').
    * @param eOrMessage
+   * @param appendMsg used when error could not be identified and will be appended after the default error message: `'Something Went Wrong! '+appendMsg`
    */
-  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse): void => {
+  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse,appendMsg?:string): void => {
     console.warn('UtilityService : errorDefaultDialog : eOrMessage:', eOrMessage);
 
     let message: string;
@@ -58,33 +60,18 @@ export class UtilityService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else
-      message = 'Something went wrong!';
+      message = this.translatePipe.transform('Something went wrong!')+' '+this.translatePipe.transform(appendMsg??'');
 
     this.showMsgDialog({ content: message, type: 'error' })
   }
 
   /**
    * We recommend using pipe translate (e.g., `<h1>{{title | translate}}</h1>`)
-   * @param key (e.g., 'login' or 'somethingWentWrong')
-   * @returns correspond translation of the key (e.g., 'Login' or 'تسجيل دخول')
+   * @param key key inside the ar.json file.
+   * @returns correspond value of the provided key translation (e.g., 'Login' or 'تسجيل دخول')
    */
-  public translate(key: string | string[]): Promise<string | { [key: string]: string }> {
-    return new Promise((res, rej) => {
-      this.lang.get(key).subscribe({
-        next: res,
-        error: rej,
-      });
-    });
-  }
-
-  public dateDisplay(date: Date): string {
-    return moment(date).format('yyyy/M/DD');
-  }
-  public datetimeWeekDisplay(date: Date) {
-    if (date)
-      return moment(date).format('yyyy/M/DD h:mm:ss a dddd')
-    console.warn('Unexpected param : datetimeWeekDisplay(date) called with date=' + date);
-    return '';
+  public translate(key: string): string {
+      return this.translatePipe.transform(key);
   }
 
   public showMsgDialog(data: MessageDialogData) {

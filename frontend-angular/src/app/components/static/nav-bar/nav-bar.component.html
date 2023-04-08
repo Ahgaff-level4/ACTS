@@ -34,7 +34,7 @@
           <a class="nav-link" style="cursor:pointer" >{{language|translate}}</a>
         </li>
         <hr class="text-white my-2 mx-0">
-        <div (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-lg-none d-block" routerLinkActive="active">
+        <div  style="min-width:150px" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-lg-none d-block" routerLinkActive="active">
           <a class="nav-link" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
           <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link"
             *ngIf="isLoggedIn">
@@ -43,7 +43,7 @@
       </ul>
     </div>
   </div>
-  <div (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-none d-lg-block" routerLinkActive="active">
+  <div style="min-width:150px" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-none d-lg-block" routerLinkActive="active">
     <a class="nav-link" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
     <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link"
       *ngIf="isLoggedIn">

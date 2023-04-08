@@ -1,7 +1,7 @@
 <div class="container mt-5">
-  <app-person-form [person]="" (personFormChanged)="personForm = $event"></app-person-form>
+  <app-person-form [person]=""></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
-  <form [formGroup]="childForm" class="container-fluid">
+  <form [formGroup]="childForm" class="container-fluid"  (ngSubmit)="submit()">
     <div class="row">
       <div class="col-md-4 p-2">
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
@@ -42,7 +42,7 @@
         <p *ngIf="childForm.controls['birthOrder'].value">
           {{'Order between siblings'|translate}}
           <b>{{ordinalNumbers[(childForm.controls['birthOrder'].value??0)-1]|translate}}</b>&nbsp;{{'of'|translate}}&nbsp;<b>{{familyMembers.value|translate}}</b>&nbsp;{{'siblings'|translate}}
-          (<b>{{add(childForm.controls['femaleFamilyMembers'].value,personForm.get('gender')?.value=='Female')}}</b>&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;<b>{{add(childForm.controls['maleFamilyMembers'].value,personForm.get('gender')?.value=='Male')}}</b>&nbsp;{{'boys'|translate}}).
+          (<b>{{add(childForm.controls['femaleFamilyMembers'].value,personForm.formGroup.get('gender')?.value=='Female')}}</b>&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;<b>{{add(childForm.controls['maleFamilyMembers'].value,personForm.formGroup.get('gender')?.value=='Male')}}</b>&nbsp;{{'boys'|translate}}).
         </p>
       </div>
     </div>
@@ -131,12 +131,12 @@
         <button mat-flat-button>todo Select parent</button>
       </div>
     </div>
-
+    <div class="d-flex mt-4">
+      <button #submitButton class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
+        {{'Submit'|translate}} </button>
+    </div>
   </form>
 
 
-  <div class="d-flex mt-4">
-    <button class="w-50 mx-auto" type="submit" mat-flat-button color="primary" (click)="submit()">
-      {{'Submit'|translate}} </button>
-  </div>
+
 </div>
