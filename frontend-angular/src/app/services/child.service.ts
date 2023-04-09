@@ -12,7 +12,7 @@ export class ChildService {
   public childURL = env.API + 'child';
   constructor(private http: HttpClient, private ut: UtilityService) {
     // this.children.next(TMP_DATA);
-    this.fetchChildren();
+    // this.fetchChildren(); if you need children then first subscribe to children SubjectBehavior then call fetchChildren.
   }
 
   public children = new BehaviorSubject<IChildEntity[]>([]);
@@ -20,7 +20,7 @@ export class ChildService {
    * create api request to retrieve children information and broadcast it to `children` BehaviorSubject.
    * @returns `resolve` if request succeeded. Otherwise `reject`.
    */
-  fetchChildren = (): Promise<void> => {
+  fetchChildren(): Promise<void> {
     return new Promise((res, rej) => {
       this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
         .subscribe({ next: (v) => { this.children.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e); rej(e); } });
@@ -45,6 +45,10 @@ export class ChildService {
           }
         })
     });
+  }
+
+  patchChild(child:IChildEntity){
+    
   }
 }
 

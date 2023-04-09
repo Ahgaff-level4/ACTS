@@ -1,28 +1,31 @@
 <div class="container mt-5">
-  <app-person-form [person]=""></app-person-form>
+  <h1 *ngIf="child?.id == null" class="m-2">{{'Add new child'|translate}}</h1>
+  <h1 *ngIf="child?.id" class="m-2">{{'Edit child information'|translate}}</h1>
+  <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
-  <form [formGroup]="childForm" class="container-fluid"  (ngSubmit)="submit()">
+  <form [formGroup]="childForm" class="container-fluid" (ngSubmit)="submit()">
     <div class="row">
       <div class="col-md-4 p-2">
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Number of sisters'|translate}}</mat-label>
-          <mat-select formControlName="femaleFamilyMembers" (selectionChange)="updateFamilyMembers(familyMembers)">
-            <mat-option *ngFor="let o of ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
+          <mat-select formControlName="femaleFamilyMembers"
+            (selectionChange)="familyMembers.value = calcFamilyMembers()">
+            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="col-md-4 p-2">
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Number of brothers'|translate}}</mat-label>
-          <mat-select formControlName="maleFamilyMembers" (selectionChange)="updateFamilyMembers(familyMembers)">
-            <mat-option *ngFor="let o of ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
+          <mat-select formControlName="maleFamilyMembers" (selectionChange)="familyMembers.value = calcFamilyMembers()">
+            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
       <div class="col-md-4 p-2">
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Family members'|translate}}</mat-label>
-          <input matInput type="number" value="1" disabled #familyMembers>
+          <input matInput type="number" disabled #familyMembers [value]="calcFamilyMembers()">
           <mat-hint>{{'Calculated automatically. This child has been calculated'|translate}}</mat-hint>
         </mat-form-field>
       </div>
@@ -32,17 +35,16 @@
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Order between siblings'|translate}}</mat-label>
           <mat-select formControlName="birthOrder">
-            <mat-option *ngFor="let o of ordinalNumbers; let i=index;" [value]="i+1"
-              [disabled]="compare(i+1,familyMembers.value)">{{o|translate}}</mat-option>
+            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i+1">{{o|translate}}</mat-option>
           </mat-select>
           <mat-hint>{{"Example: 'First' of three siblings"|translate}}</mat-hint>
         </mat-form-field>
       </div>
       <div class="col-md-8 p-2 mt-3">
-        <p *ngIf="childForm.controls['birthOrder'].value">
-          {{'Order between siblings'|translate}}
-          <b>{{ordinalNumbers[(childForm.controls['birthOrder'].value??0)-1]|translate}}</b>&nbsp;{{'of'|translate}}&nbsp;<b>{{familyMembers.value|translate}}</b>&nbsp;{{'siblings'|translate}}
-          (<b>{{add(childForm.controls['femaleFamilyMembers'].value,personForm.formGroup.get('gender')?.value=='Female')}}</b>&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;<b>{{add(childForm.controls['maleFamilyMembers'].value,personForm.formGroup.get('gender')?.value=='Male')}}</b>&nbsp;{{'boys'|translate}}).
+        <p *ngIf="childForm.get('birthOrder')?.value">
+          {{'Order between
+          siblings'|translate}}&nbsp;<b>{{ut.ordinalNumbers[(childForm.get('birthOrder')?.value)-1]|translate}}</b>&nbsp;{{'of'|translate}}&nbsp;<b>{{familyMembers.value}}</b>&nbsp;{{'siblings'|translate}}(<b>{{childForm.get('femaleFamilyMembers')?.value+(
+            person?.gender=='Female'?1:0)}}</b>&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;<b>{{childForm.get('maleFamilyMembers')?.value+(person?.gender=='Male'?1:0)}}</b>&nbsp;{{'boys'|translate}}).
         </p>
       </div>
     </div>
@@ -133,10 +135,7 @@
     </div>
     <div class="d-flex mt-4">
       <button #submitButton class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
-        {{'Submit'|translate}} </button>
+        {{child?.id == null?'Submit':'Edit'|translate}} </button>
     </div>
   </form>
-
-
-
 </div>

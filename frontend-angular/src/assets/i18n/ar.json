@@ -101,5 +101,7 @@
   "Invalid Field":"حقل غير صالح",
   "There are invalid fields!":"!هناك حقول غير صالحة",
   "Added successfully!":"",
-  "Child was registered successfully":""
+  "Child was registered successfully":"",
+  "Ok":"حسنًا",
+  "Edit child information":"تعديل معلومات الطفل"
 }

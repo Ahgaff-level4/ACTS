@@ -1,8 +1,9 @@
 <div style="max-width: 500px;">
-	<h1 mat-dialog-title [ngClass]="{'text-danger':type==='error','text-warn':type==='info',
+	<h1 mat-dialog-title [ngClass]="{'my-warn-text':type==='error','text-warn':type==='info',
 	'text-success':type==='success'}">{{title|translate}}</h1>
 	<p mat-dialog-content>{{content|translate}}</p>
 	<div mat-dialog-actions>
-		<button mat-button (click)="dialogRef.close()" color="accent">{{"Cancel"|translate}}</button>
+		<button *ngIf="button==='Cancel'" mat-button (click)="dialogRef.close()" color="accent">{{"Cancel"|translate}}</button>
+		<button *ngIf="button === 'Ok'" mat-button (click)="dialogRef.close()" color="accent">{{"Ok"|translate}}</button>
 	</div>
 </div>

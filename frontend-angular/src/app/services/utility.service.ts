@@ -13,6 +13,9 @@ import { Router } from '@angular/router';
   providedIn: 'root'
 })
 export class UtilityService {
+
+  public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
+  public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router) {
     this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
 
@@ -38,7 +41,6 @@ export class UtilityService {
     })
   }
 
-  public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
 
   /**
    * Display error dialog with message of:
@@ -48,7 +50,7 @@ export class UtilityService {
    * @param eOrMessage
    * @param appendMsg used when error could not be identified and will be appended after the default error message: `'Something Went Wrong! '+appendMsg`
    */
-  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse,appendMsg?:string): void => {
+  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse, appendMsg?: string): void => {
     console.warn('UtilityService : errorDefaultDialog : eOrMessage:', eOrMessage);
 
     let message: string;
@@ -60,7 +62,7 @@ export class UtilityService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else
-      message = this.translatePipe.transform('Something went wrong!')+' '+this.translatePipe.transform(appendMsg??'');
+      message = this.translatePipe.transform('Something went wrong!') + ' ' + this.translatePipe.transform(appendMsg ?? '');
 
     this.showMsgDialog({ content: message, type: 'error' })
   }
@@ -71,7 +73,7 @@ export class UtilityService {
    * @returns correspond value of the provided key translation (e.g., 'Login' or 'تسجيل دخول')
    */
   public translate(key: string): string {
-      return this.translatePipe.transform(key);
+    return this.translatePipe.transform(key);
   }
 
   public showMsgDialog(data: MessageDialogData) {
@@ -89,6 +91,21 @@ export class UtilityService {
           return true;
 
     return false;
+  }
+
+  /**
+   * Used in formGroup to setValue of formGroup.controls with the correspond object properties.
+   * Ex: `keys={'name':FormControl...}` and `properties={'name':'Ahmad','age':20,...}`
+   * return `{'name':'Ahmad'}` and ignore any other property in `properties` param
+   * @param keys
+   * @param properties
+   */
+  public extractFrom(keys: { [key: string]: any }, properties: { [key: string]: any }) {
+    let ret: { [key: string]: any } = {};
+    for (let k in keys) {
+      ret[k] = properties[k];
+    }
+    return ret;
   }
 }
 

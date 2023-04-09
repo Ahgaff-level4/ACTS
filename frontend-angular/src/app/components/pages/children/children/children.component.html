@@ -58,7 +58,7 @@
                     *ngIf="!item.person.birthDate"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
                   <b>{{'Order between siblings'|translate}}:&nbsp;</b><span
-                    *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers || item.familyMembers ">{{item.birthOrder}}{{'of'|translate}}
+                    *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers || item.familyMembers ">{{ut.ordinalNumbers[item.birthOrder]|translate}}&nbsp;{{'of'|translate}}
                     {{item.familyMembers}}&nbsp;{{'siblings'|translate}}&nbsp;({{item.femaleFamilyMembers}}&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;{{item.maleFamilyMembers}}&nbsp;{{'boys'|translate}}).</span><span
                     *ngIf="!item.birthOrder && !item.femaleFamilyMembers && !item.maleFamilyMembers && !item.familyMembers"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />

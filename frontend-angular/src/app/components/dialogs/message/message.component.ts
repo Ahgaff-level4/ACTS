@@ -8,11 +8,16 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./message.component.scss']
 })
 export class MessageDialogComponent implements OnInit {
-  constructor(public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) private data: MessageDialogData,) { 
-    
+  constructor(public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) private data: MessageDialogData,) {
+    this.type = this.data.type;
+    this.content = this.data.content;
+    this.button = this.data.button ?? 'Cancel';
   }
+  public content: string;
+  public type: DialogType;
+  public button: ButtonType;
 
-  public get title():string{
+  public get title(): string {
     if (typeof this.data.title === 'string')
       return this.data.title;
     else if (this.data.type === 'error')
@@ -27,8 +32,6 @@ export class MessageDialogComponent implements OnInit {
     }
   }
 
-  public content: string = this.data.content;
-  public type: DialogType = this.data.type;
 
   ngOnInit(): void {
   }
@@ -40,5 +43,8 @@ export interface MessageDialogData {
   title?: string;
   content: string;
   type: DialogType;
+  /** default is `Cancel` */
+  button?: ButtonType
 }
 type DialogType = 'error' | 'info' | 'success';
+type ButtonType = 'Cancel' | 'Ok';

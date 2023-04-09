@@ -20,26 +20,29 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   ],
 })
 export class ChildrenComponent implements OnInit, AfterViewInit {
+
+
+  public canAddEdit:boolean;
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatTable) table!: MatTable<IChildEntity>;
+  constructor(private childService: ChildService,public ut:UtilityService) {
+    this.canAddEdit = this.ut.userHasAny('Admin','HeadOfDepartment');
+  }
+
   ngOnInit(): void {
+
     this.dataSource = new ChildrenDataSource();
-    this.dataSource.setData(this.childService.children.value);
     this.childService.children.subscribe(v => {
       this.dataSource.setData(v);
       if (this.table)
         this.table.renderRows();
     });
+    this.childService.fetchChildren();
     this.ut.user.subscribe(v=>{
       this.canAddEdit = this.ut.userHasAny('Admin','HeadOfDepartment');
     });
   }
-
-  public canAddEdit:boolean;
-  constructor(private childService: ChildService,public ut:UtilityService) {
-    this.canAddEdit = this.ut.userHasAny('Admin','HeadOfDepartment');
-  }
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<IChildEntity>;
 
   ngAfterViewInit(): void {
     // setInterval(()=>{
@@ -67,14 +70,11 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     sessionStorage.setItem('children table',JSON.stringify(this.columnsKeys));
   }
 
-  add(){
-//todo redirect add-child
-  }
 
   edit(child:IChildEntity|undefined){
     if(child !=undefined){
       //todo see how to transfer child param to edit-child page :/
-
+      this.ut.router.navigate(['edit-child'],{state:{data:child}});
     }
   }
 }
