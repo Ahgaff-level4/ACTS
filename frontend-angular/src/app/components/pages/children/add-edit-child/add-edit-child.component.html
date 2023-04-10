@@ -1,3 +1,4 @@
+<app-spinner *ngIf="isLoading"></app-spinner>
 <div class="container mt-5">
   <h1 *ngIf="child?.id == null" class="m-2">{{'Register a child'|translate}}</h1>
   <h1 *ngIf="child?.id" class="m-2">{{'Edit child information'|translate}}</h1>
@@ -134,7 +135,7 @@
       </div>
     </div>
     <div class="d-flex mt-4">
-      <button #submitButton class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
+      <button [disabled]="isLoading" class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
         {{child?.id == null?'Submit':'Edit'|translate}} </button>
     </div>
   </form>

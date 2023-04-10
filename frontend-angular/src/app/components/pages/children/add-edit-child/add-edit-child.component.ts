@@ -16,6 +16,7 @@ export class AddEditChildComponent implements OnInit {
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
+  public isLoading = true;
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService) {
     this.childForm = this.fb.group({
@@ -38,7 +39,7 @@ export class AddEditChildComponent implements OnInit {
     if (this.child) {
       this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));
     }
-    console.log('child',this.child);
+    this.isLoading=false;
   }
 
   ngOnInit(): void {
@@ -66,12 +67,12 @@ export class AddEditChildComponent implements OnInit {
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
-      this.submitButton.disabled = true;
+      this.isLoading = true;
       if (this.child?.id == null) {//Register a child
         let p: IPersonEntity = await this.personForm.submit();
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
-          await this.childService.postChild({ ...dirtyFields==null?{}:dirtyFields, personId: p.id });
+          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id });
           this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The new child has been registered successfully.' })
             .afterClosed().subscribe({ next: () => this.ut.router.navigate(['/children']) });
         } catch (e) {
@@ -80,7 +81,7 @@ export class AddEditChildComponent implements OnInit {
       } else {//edit the child
         await this.personForm.submitEdit();
         let dirtyFields = this.ut.extractDirty(this.childForm.controls);
-        console.log('child',this.child);
+        console.log('child', this.child);
         if (dirtyFields != null)
           await this.childService.patchChild(this.child.id, dirtyFields);
         this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The child has been edited successfully.' })
@@ -88,7 +89,7 @@ export class AddEditChildComponent implements OnInit {
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
-      this.submitButton.disabled = false;
+      this.isLoading = false;
 
     } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
     // this.personForm.valid; do not submit if person field

@@ -118,5 +118,7 @@
   "Yes":"",
   "No":"",
   "Are you sure?":"",
-  "Delete":""
+  "Delete":"",
+  "You are about to delete the field: ":"",
+  " permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!":""
 }

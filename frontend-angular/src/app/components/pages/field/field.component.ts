@@ -22,7 +22,7 @@ export class FieldComponent implements OnInit {
   @ViewChild(MatTable) table!: MatTable<IFieldEntity>;
   public dataSource!: MatTableDataSource<IFieldEntity>;
   public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? ['name', 'activityCount', 'createdDatetime', 'control'];
-
+  public isLoading:boolean = true;
   constructor(private service: FieldService, public ut: UtilityService, private dialog: MatDialog) {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   }
@@ -33,8 +33,10 @@ export class FieldComponent implements OnInit {
       this.dataSource.data = v;
       if (this.table)
         this.table.renderRows();
+      this.isLoading = false;
     });
     this.service.fetch();
+    this.isLoading = true;
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
@@ -67,13 +69,15 @@ export class FieldComponent implements OnInit {
 
   deleteDialog(field: IFieldEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the field: ') + field.name + this.ut.translate(' permanently. Any existing activity that has this field, will have empty field.'),
+      content: this.ut.translate('You are about to delete the field: '+field.name+' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
       type: 'confirm',
       title: 'Are you sure?',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type:'Delete' }]
     }).afterClosed().subscribe(async(v) => {
       if (v === 'Delete') {
+        this.isLoading = true;
         await this.service.delete(field.id);
+        this.isLoading = false;
         this.ut.showMsgDialog({ title: 'Deleted successfully!', type: 'success', content: 'The field has been deleted successfully.' })
       }
     })

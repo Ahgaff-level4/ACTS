@@ -18,6 +18,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import {MatSelectModule} from '@angular/material/select';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import {MatDividerModule} from '@angular/material/divider';
+import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 
 
 @NgModule({
@@ -40,6 +41,7 @@ import {MatDividerModule} from '@angular/material/divider';
     MatSelectModule,
     MatMomentDateModule,
     MatDividerModule,
+    MatProgressSpinnerModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

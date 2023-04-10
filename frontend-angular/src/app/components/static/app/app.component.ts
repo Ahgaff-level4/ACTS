@@ -2,6 +2,7 @@ import { Component, Input, OnDestroy, OnInit } from '@angular/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MatPaginatorIntl } from '@angular/material/paginator';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { Subscription } from 'rxjs';
@@ -17,16 +18,26 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy {
 
-  constructor(public translate: TranslateService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>) {
+  private sub!: Subscription;
+  public isNavigating = true;
+  constructor(public translate: TranslateService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
     super();
+    // Register translation languages
     this.translate.addLangs(['en', 'ar']);
     this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//in the constructor to speed up language used
     this.subscribeOnLangChange();
+    this.router.events.subscribe({
+      next: (event) => {
+        if (event instanceof NavigationStart)
+          this.isNavigating = true;
+        else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError)
+          this.isNavigating = false;
+      }, error: () => this.isNavigating = false
+    });
   }
 
-  private sub!: Subscription;
   ngOnInit = async () => {
-    // Register translation languages
+    this.subscribeOnLangChange();
     this.translate.setDefaultLang('en');
     this.handleOnLangChange();
   }
