@@ -82,6 +82,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
 class ChildrenDataSource extends MatTableDataSource<IChildEntity>{
   setData(arr: IChildEntity[]) {
-    this.data = arr.map(v => ({ ...v, ...v.person }));
+    this.data = arr.map(v => ({ ...v.person, ...v, }));
   }
 }

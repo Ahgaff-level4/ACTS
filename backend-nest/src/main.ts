@@ -17,10 +17,10 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
   validationError: { target: true, value: true },
   exceptionFactory(error) {
     const recursion = (e: ValidationError[]) => {//return all constrains error messages into array of string messages
-      let arr = [];
-      for (let o of e)
+      const arr = [];
+      for (const o of e)
         if (o.constraints)
-          for (let keyCon in o.constraints)
+          for (const keyCon in o.constraints)
             arr.push(o.constraints[keyCon]);
         else if (o.children?.length > 0)//children force us to use recursion
           arr.push(...recursion(o.children))
@@ -29,7 +29,7 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
     const constrains = recursion(error);
     
     //beautify the message
-    var message = '';
+    let message = '';
     if (constrains.length <= 1)
       message = constrains[0];
     else {

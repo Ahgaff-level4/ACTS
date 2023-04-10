@@ -58,8 +58,8 @@
                     *ngIf="!item.person.birthDate"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
                   <b>{{'Order between siblings'|translate}}:&nbsp;</b><span
-                    *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers || item.familyMembers ">{{ut.ordinalNumbers[item.birthOrder]|translate}}&nbsp;{{'of'|translate}}
-                    {{item.familyMembers}}&nbsp;{{'siblings'|translate}}&nbsp;({{item.femaleFamilyMembers}}&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;{{item.maleFamilyMembers}}&nbsp;{{'boys'|translate}}).</span><span
+                    *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers || item.familyMembers ">{{ut.ordinalNumbers[item.birthOrder-1]|translate}}&nbsp;{{'of'|translate}}
+                    {{item.maleFamilyMembers+item.femaleFamilyMembers+1}}&nbsp;{{'siblings'|translate}}&nbsp;({{item.femaleFamilyMembers+(item.gender==='Female'?1:0)}}&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;{{item.maleFamilyMembers+(item.gender==='Male'?1:0)}}&nbsp;{{'boys'|translate}}).</span><span
                     *ngIf="!item.birthOrder && !item.femaleFamilyMembers && !item.maleFamilyMembers && !item.familyMembers"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
                   <b>{{'Parent kinship'|translate}}:&nbsp;</b><span
@@ -117,5 +117,5 @@
     </mat-paginator>
   </div>
 
-  <a *ngIf="canAddEdit" mat-raised-button color="primary" routerLink="/add-child">{{'Add new child'|translate}}<mat-icon>add</mat-icon></a>
+  <a *ngIf="canAddEdit" mat-raised-button color="primary" routerLink="/add-child">{{'Register a child'|translate}}<mat-icon>add</mat-icon></a>
 </div>

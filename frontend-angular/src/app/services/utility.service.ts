@@ -107,5 +107,20 @@ export class UtilityService {
     }
     return ret;
   }
+
+  /**
+   * Used to send the changed fields to the server.
+   * @param controls formGroup.controls
+   * @returns the only changed fields of the entity that formGroup represent OR null if there is no change instead of empty object `{}`
+   */
+  public extractDirty(controls: {[key: string]: AbstractControl<any, any>}): { [key: string]: any }|null {
+    let ret: { [key: string]: any } = {};
+    for (let key in controls)
+      if (controls[key].dirty)
+        ret[key] = controls[key].value;
+
+    console.log('extractDirty', ret);
+    return Object.keys(ret).length==0?null:ret;
+  }
 }
 

@@ -3,3 +3,7 @@
 - when user changing route/page there should be sort of loader/spinner. Loading until the page is loaded. Also, check for animation when transporting between pages
 
 - when language changed the dateTimeWeekPipes are not refreshed because transform() called once. Then the language changed :/
+
+- in add-edit-child add custom validator in 'Order between siblings' field instead of just disable it.
+
+- trim all fields in all forms before submitting

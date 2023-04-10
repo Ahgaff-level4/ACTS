@@ -1,5 +1,5 @@
 <div class="container mt-5">
-  <h1 *ngIf="child?.id == null" class="m-2">{{'Add new child'|translate}}</h1>
+  <h1 *ngIf="child?.id == null" class="m-2">{{'Register a child'|translate}}</h1>
   <h1 *ngIf="child?.id" class="m-2">{{'Edit child information'|translate}}</h1>
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
@@ -35,7 +35,7 @@
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Order between siblings'|translate}}</mat-label>
           <mat-select formControlName="birthOrder">
-            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i+1">{{o|translate}}</mat-option>
+            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i+1" [disabled]="compare(i+1,familyMembers.value)">{{o|translate}}</mat-option>
           </mat-select>
           <mat-hint>{{"Example: 'First' of three siblings"|translate}}</mat-hint>
         </mat-form-field>

@@ -115,11 +115,11 @@ export interface ICreateChild {
 
 export interface IChildEntity extends ICreateChild {
 	id: number;
-	parent?: IAccountEntity|null;
+	parent?: IAccountEntity | null;
 	person: IPersonEntity;
 	goals: IGoalEntity[];
 	teachers: IAccountEntity[];
-	familyMembers?: number|null;
+	familyMembers?: number | null;
 	durationSpent: number;
 	/** registerDate is person.createdDatetime */
 	// registerDate: Date;
@@ -143,14 +143,14 @@ export interface IEvaluationEntity extends ICreateEvaluation {
 
 export interface ICreatePerson {
 	name: string;
-	birthDate?: string|null;
+	birthDate?: string | null;
 	gender: Gender;
 	createdDatetime: Date;
 }
 
 export interface IPersonEntity extends ICreatePerson {
 	id: number;
-	age: number|null;
+	age: number | null;
 }
 
 export interface ICreateGoal {
@@ -217,3 +217,12 @@ export interface IRoleEntity {
 
 export type ITableEntity = IProgramEntity | IFieldEntity | IActivityEntity
 	| IGoalEntity | IPersonEntity | IEvaluationEntity | IChildEntity | IAccountEntity;
+
+	/**Success Response of edit/delete methods (DELETE, PATCH) */
+export interface SucResEditDel {
+	generatedMaps?: any[],
+	raw?: any[],
+	/**Usually value is `1` because there is one raw affected. dah */
+	affected: number
+
+}

@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { IChildEntity, ICreateChild } from '../../../../interfaces';
+import { IChildEntity, ICreateChild, SucResEditDel } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environment';
 import { UtilityService } from './utility.service';
@@ -47,10 +47,20 @@ export class ChildService {
     });
   }
 
-  patchChild(child:IChildEntity){
-    
+  patchChild(id:number,child: Partial<IChildEntity>): Promise<SucResEditDel> {
+    return new Promise((res, rej) => {
+      this.http.patch<SucResEditDel>(this.childURL + '/' + id, child)
+        .subscribe({
+          next: (v) => res(v),
+          error: e => {
+            this.ut.errorDefaultDialog(e);
+            rej(e);
+          }
+        })
+    })
   }
 }
+
 
 const TMP_DATA: IChildEntity[] = [
   {

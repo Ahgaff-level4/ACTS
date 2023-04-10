@@ -55,7 +55,6 @@
   "Behaviors":"السلوكيات",
   "Priority skills":"اولويات الاسرة في التدريب",
   "Empty":"فارغ",
-  "Add new child":"إضافة طفل جديد",
   "Edit":"تعديل",
   "Search":"البحث",
   "Goals":"اهداف",
@@ -100,8 +99,11 @@
   "Register date":"تاريخ التسجيل",
   "Invalid Field":"حقل غير صالح",
   "There are invalid fields!":"!هناك حقول غير صالحة",
+  "Register a child":"إضافة طفل جديد",
+  "Edit child information":"تعديل معلومات الطفل",
   "Added successfully!":"",
-  "Child was registered successfully":"",
-  "Ok":"حسنًا",
-  "Edit child information":"تعديل معلومات الطفل"
+  "The new child has been registered successfully.":"",
+  "Edited successfully!":"",
+  "The child has been edited successfully.":"",
+  "Ok":"حسنًا"
 }

@@ -11,7 +11,7 @@ export class MessageDialogComponent implements OnInit {
   constructor(public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) private data: MessageDialogData,) {
     this.type = this.data.type;
     this.content = this.data.content;
-    this.button = this.data.button ?? 'Cancel';
+    this.button = this.data.button ?? 'Ok';
   }
   public content: string;
   public type: DialogType;
@@ -43,8 +43,8 @@ export interface MessageDialogData {
   title?: string;
   content: string;
   type: DialogType;
-  /** default is `Cancel` */
+  /** default is `Ok` */
   button?: ButtonType
 }
 type DialogType = 'error' | 'info' | 'success';
-type ButtonType = 'Cancel' | 'Ok';
+type ButtonType = 'Ok' | 'Cancel';
