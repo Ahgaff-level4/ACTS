@@ -28,7 +28,6 @@ export class ChildService {
   }
 
   update(id: number, updateChild: UpdateChild) {
-    console.log({id:id,updateChild})
     return this.repo.update({id}, updateChild);
   }
 

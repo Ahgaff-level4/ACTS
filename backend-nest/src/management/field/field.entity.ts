@@ -40,6 +40,7 @@ export class UpdateField extends PartialType(CreateField) { }
         .addSelect('COUNT(activity.fieldId)', 'activityCount')
         .from(FieldEntity, 'field')
         .leftJoin(ActivityEntity, 'activity', 'activity.fieldId=field.id')
+        .groupBy('field.id')
 })
 export class FieldView extends FieldEntity implements IFieldEntity {
     @ViewColumn()

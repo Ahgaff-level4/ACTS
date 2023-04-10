@@ -20,8 +20,6 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   ],
 })
 export class ChildrenComponent implements OnInit, AfterViewInit {
-
-
   public canAddEdit:boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;

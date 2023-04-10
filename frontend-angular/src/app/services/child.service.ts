@@ -47,11 +47,11 @@ export class ChildService {
     });
   }
 
-  patchChild(id:number,child: Partial<IChildEntity>): Promise<SucResEditDel> {
+  patchChild(id: number, child: Partial<IChildEntity>): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
       this.http.patch<SucResEditDel>(this.childURL + '/' + id, child)
         .subscribe({
-          next: (v) => res(v),
+          next: (v) => { this.fetchChildren(); res(v) },
           error: e => {
             this.ut.errorDefaultDialog(e);
             rej(e);

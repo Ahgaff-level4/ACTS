@@ -7,15 +7,15 @@ import { UtilityService } from 'src/app/services/utility.service';
   templateUrl: './message.component.html',
   styleUrls: ['./message.component.scss']
 })
-export class MessageDialogComponent implements OnInit {
+export class MessageDialogComponent {
   constructor(public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) private data: MessageDialogData,) {
     this.type = this.data.type;
     this.content = this.data.content;
-    this.button = this.data.button ?? 'Ok';
+    this.buttons = this.data.buttons ?? [{color:'primary',type:'Ok'}];
   }
   public content: string;
   public type: DialogType;
-  public button: ButtonType;
+  public buttons:{color:'primary'|'accent'|'warn',type:ButtonType}[];
 
   public get title(): string {
     if (typeof this.data.title === 'string')
@@ -26,14 +26,12 @@ export class MessageDialogComponent implements OnInit {
       return 'Information';
     else if (this.data.type === 'success')
       return 'Success!';
+    else if (this.data.type === 'confirm')
+      return 'Are you sure?';
     else {
       console.error('MessageDialogComponent : title : title value was not expected!', this.data);
       return '...';
     }
-  }
-
-
-  ngOnInit(): void {
   }
 
 }
@@ -43,8 +41,8 @@ export interface MessageDialogData {
   title?: string;
   content: string;
   type: DialogType;
-  /** default is `Ok` */
-  button?: ButtonType
+  /** default is `Ok`, color `primary` */
+  buttons?:{color:'primary'|'accent'|'warn',type:ButtonType}[]
 }
-type DialogType = 'error' | 'info' | 'success';
-type ButtonType = 'Ok' | 'Cancel';
+type DialogType = 'error' | 'info' | 'success' | 'confirm';
+type ButtonType = 'Ok' | 'Cancel'|'Yes'|'No'|'Delete';

@@ -72,7 +72,7 @@ export class AddEditChildComponent implements OnInit {
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields==null?{}:dirtyFields, personId: p.id });
-          this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The new child has been registered successfully.', button: 'Ok' })
+          this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The new child has been registered successfully.' })
             .afterClosed().subscribe({ next: () => this.ut.router.navigate(['/children']) });
         } catch (e) {
           this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
@@ -83,14 +83,14 @@ export class AddEditChildComponent implements OnInit {
         console.log('child',this.child);
         if (dirtyFields != null)
           await this.childService.patchChild(this.child.id, dirtyFields);
-        this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The child has been edited successfully.', button: 'Ok' })
+        this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The child has been edited successfully.' })
           .afterClosed().subscribe({ next: () => this.ut.router.navigate(['/children']) });
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
       this.submitButton.disabled = false;
 
-    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!', button: 'Ok' })
+    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
     // this.personForm.valid; do not submit if person field
   }
 

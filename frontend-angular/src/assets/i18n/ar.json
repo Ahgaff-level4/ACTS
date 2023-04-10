@@ -102,8 +102,21 @@
   "Register a child":"إضافة طفل جديد",
   "Edit child information":"تعديل معلومات الطفل",
   "Added successfully!":"",
-  "The new child has been registered successfully.":"",
   "Edited successfully!":"",
+  "Deleted successfully!":"",
+  "The new child has been registered successfully.":"",
   "The child has been edited successfully.":"",
-  "Ok":"حسنًا"
+  "The field has been edited successfully.":"",
+  "The field has been deleted successfully.":"",
+  "Ok":"حسنًا",
+  "Fields":"",
+  "Number of Activities":"",
+  "Control":"",
+  "Edit field":"",
+  "Field name":"",
+  "Field name should be unique.":"",
+  "Yes":"",
+  "No":"",
+  "Are you sure?":"",
+  "Delete":""
 }

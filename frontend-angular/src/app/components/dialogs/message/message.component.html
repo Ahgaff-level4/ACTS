@@ -3,7 +3,6 @@
 	'text-success':type==='success'}">{{title|translate}}</h1>
 	<p mat-dialog-content>{{content|translate}}</p>
 	<div mat-dialog-actions>
-		<button *ngIf="button==='Cancel'" mat-button (click)="dialogRef.close()" color="primary">{{"Cancel"|translate}}</button>
-		<button *ngIf="button === 'Ok'" mat-button (click)="dialogRef.close()" color="primary">{{"Ok"|translate}}</button>
+		<button *ngFor="let b of buttons" mat-button (click)="dialogRef.close(b.type)" [color]="b.color">{{b.type|translate}}</button>
 	</div>
 </div>

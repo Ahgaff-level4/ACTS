@@ -6,4 +6,6 @@
 
 - in add-edit-child add custom validator in 'Order between siblings' field instead of just disable it.
 
-- trim all fields in all forms before submitting
+- trim all fields in all forms before submitting.
+
+- in add-edit-child component add isArchive field only shown when edit child. Also, in children page show only isArchive=false children, using server or in client depends on you. And there should be an option for showing isArchive=true children, using another page or filter in the children page depends on you.

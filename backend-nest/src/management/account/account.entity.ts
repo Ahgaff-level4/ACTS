@@ -3,7 +3,7 @@ import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsOptional, IsPhoneNumbe
 import { PersonEntity } from "../person/person.entity";
 import { IAccountEntity, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from './../../../../interfaces.d';
 import { Transform } from "class-transformer";
-import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewEntity } from "typeorm";
+import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEntity } from "./role/role.entity";
 import { ChildEntity } from "../child/child.entity";
 import { EvaluationEntity } from "../evaluation/evaluation.entity";

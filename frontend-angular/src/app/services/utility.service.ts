@@ -16,6 +16,7 @@ export class UtilityService {
 
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
+  
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router) {
     this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
 
