@@ -21,10 +21,11 @@ export class FieldComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IFieldEntity>;
   public dataSource!: MatTableDataSource<IFieldEntity>;
-  public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? ['name', 'activityCount', 'createdDatetime', 'control'];
+  public columnsKeys: string[];
   public isLoading:boolean = true;
   constructor(private service: FieldService, public ut: UtilityService, private dialog: MatDialog) {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? (this.canAddEdit?['name', 'activityCount', 'createdDatetime', 'control']:['name', 'activityCount', 'createdDatetime']);
   }
 
   ngOnInit(): void {

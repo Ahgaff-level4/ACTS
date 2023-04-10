@@ -26,7 +26,7 @@
         <td mat-cell *matCellDef="let el"> {{ el.createdDatetime|fromNow }} </td>
       </ng-container>
 
-      <ng-container *ngIf="canAddEdit" matColumnDef="control">
+      <ng-container matColumnDef="control">
         <th mat-header-cell cdkDrag *matHeaderCellDef> {{'Control'|translate}} </th>
         <td mat-cell *matCellDef="let el">
           <button (click)="addEdit(el)" class="px-3 mx-0" mat-button color="primary"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
