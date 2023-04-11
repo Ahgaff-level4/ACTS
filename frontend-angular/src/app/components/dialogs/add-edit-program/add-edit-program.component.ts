@@ -1,20 +1,20 @@
 import { Component, Inject } from '@angular/core';
-import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { IFieldEntity } from '../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FieldService } from 'src/app/services/field.service';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
+import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { IProgramEntity } from '../../../../../../interfaces';
 
 @Component({
-  selector: 'app-add-edit-field',
-  templateUrl: './add-edit-field.component.html',
-  styleUrls: ['./add-edit-field.component.scss']
+  selector: 'app-add-edit-program',
+  templateUrl: './add-edit-program.component.html',
+  styleUrls: ['./add-edit-program.component.scss']
 })
-export class AddEditFieldComponent {
+export class AddEditProgramComponent {
   public formGroup: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb: FormBuilder, public service: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public field?: IFieldEntity,) {
+  constructor(private fb: FormBuilder, public service: ProgramService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public program?: IProgramEntity,) {
     this.formGroup = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
       createdDatetime: [new Date(), [Validators.required]],
@@ -23,8 +23,8 @@ export class AddEditFieldComponent {
 
   ngOnInit(): void {
     //todo if necessary: if(this.personId){//fetch person info}
-    if (this.field)
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.field));
+    if (this.program)
+      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.program));
   }
 
 
@@ -34,15 +34,15 @@ export class AddEditFieldComponent {
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
-      if (this.field?.id == null) {//add new
+      if (this.program?.id == null) {//add new
         await this.service.post(this.formGroup.value);
-        this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The field has been added successfully.' })
+        this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The program has been added successfully.' })
           .afterClosed().subscribe({ next: () => this.dialogRef.close() });
       } else {//edit
-        let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
-        if (dirtyFields != null)
-          await this.service.patch(this.field.id, dirtyFields);
-        this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The field has been edited successfully.'})
+        let dirtyProgram = this.ut.extractDirty(this.formGroup.controls);
+        if (dirtyProgram != null)
+          await this.service.patch(this.program.id, dirtyProgram);
+        this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The program has been edited successfully.'})
           .afterClosed().subscribe({ next: () => this.dialogRef.close() });
       }
       this.formGroup.enable();

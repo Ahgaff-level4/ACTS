@@ -19,7 +19,7 @@ export class FieldService {
   fetch(): Promise<void> {
     return new Promise((res, rej) => {
       this.http.get<IFieldEntity[]>(this.URL)
-        .subscribe({ next: (v) => { this.fields.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e); rej(e); } });
+        .subscribe({ next: (v) => { this.fields.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e,"Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e); } });
     })
   }
 
@@ -35,20 +35,20 @@ export class FieldService {
             res(v);
           },
           error: (e) => {
-            this.ut.errorDefaultDialog(e, "Couldn't create the field!");
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
             rej(e);
           }
         })
     });
   }
 
-  patch(id: number, child: Partial<IFieldEntity>): Promise<SucResEditDel> {
+  patch(id: number, field: Partial<IFieldEntity>): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      this.http.patch<SucResEditDel>(this.URL + '/' + id, child)
+      this.http.patch<SucResEditDel>(this.URL + '/' + id, field)
         .subscribe({
           next: (v) => { this.fetch(); res(v) },
           error: e => {
-            this.ut.errorDefaultDialog(e);
+            this.ut.errorDefaultDialog(e,"Sorry, there was a problem editing the field. Please try again later or check your connection.");
             rej(e);
           }
         })
@@ -60,7 +60,7 @@ export class FieldService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => { this.fetch(); res(v) },
-          error: (e) => { this.ut.errorDefaultDialog(e); rej(e); }
+          error: (e) => { this.ut.errorDefaultDialog(e,"Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e); }
         })
     })
   }

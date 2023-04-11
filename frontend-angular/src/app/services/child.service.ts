@@ -23,7 +23,7 @@ export class ChildService {
   fetchChildren(): Promise<void> {
     return new Promise((res, rej) => {
       this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
-        .subscribe({ next: (v) => { this.children.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e); rej(e); } });
+        .subscribe({ next: (v) => { this.children.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e,"Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e); } });
     })
   }
 
@@ -40,7 +40,7 @@ export class ChildService {
             res(v);
           },
           error: (e) => {
-            this.ut.errorDefaultDialog(e, "Couldn't create a child!");
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the child. Please try again later or check your connection.");
             rej(e);
           }
         })
@@ -53,7 +53,7 @@ export class ChildService {
         .subscribe({
           next: (v) => { this.fetchChildren(); res(v) },
           error: e => {
-            this.ut.errorDefaultDialog(e);
+            this.ut.errorDefaultDialog(e,"Sorry, there was a problem editing the child information. Please try again later or check your connection.");
             rej(e);
           }
         })

@@ -29,6 +29,7 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { AddEditFieldComponent } from './components/dialogs/add-edit-field/add-edit-field.component';
 import { SpinnerComponent } from './components/static/spinner/spinner.component';
+import { AddEditProgramComponent } from './components/dialogs/add-edit-program/add-edit-program.component';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 
@@ -50,7 +51,8 @@ import { SpinnerComponent } from './components/static/spinner/spinner.component'
     ChildGoalsComponent,
     PersonFormComponent,
     AddEditFieldComponent,
-    SpinnerComponent
+    SpinnerComponent,
+    AddEditProgramComponent
   ],
   imports: [
     BrowserModule,

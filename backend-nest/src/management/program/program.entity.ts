@@ -39,6 +39,7 @@ export class UpdateProgram extends PartialType(CreateProgram) { }
     .addSelect('COUNT(activity.programId)','activityCount')
     .from(ProgramEntity,'program')
     .leftJoin(ActivityEntity,'activity','activity.programId=program.id')
+    .groupBy('program.id')
 }) 
 export class ProgramView extends ProgramEntity implements IProgramEntity{
     @ViewColumn()

@@ -7,7 +7,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog } from '@angular/material/dialog';
 import { MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
-import { AbstractControl, FormControl, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 @Injectable({
   providedIn: 'root'
@@ -63,7 +63,7 @@ export class UtilityService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else
-      message = this.translatePipe.transform('Something went wrong!') + ' ' + this.translatePipe.transform(appendMsg ?? '');
+      message = this.translatePipe.transform('Something went wrong!') + (appendMsg ? ' ' + this.translatePipe.transform(appendMsg) : '');
 
     this.showMsgDialog({ content: message, type: 'error' })
   }
@@ -73,8 +73,8 @@ export class UtilityService {
    * @param key key inside the ar.json file.
    * @returns correspond value of the provided key translation (e.g., 'Login' or 'تسجيل دخول')
    */
-  public translate(key: string,...args:any[]): string {
-    return this.translatePipe.transform(key,args);
+  public translate(key: string, ...args: any[]): string {
+    return this.translatePipe.transform(key, args);
   }
 
   public showMsgDialog(data: MessageDialogData) {
@@ -114,14 +114,26 @@ export class UtilityService {
    * @param controls formGroup.controls
    * @returns the only changed fields of the entity that formGroup represent OR null if there is no change instead of empty object `{}`
    */
-  public extractDirty(controls: {[key: string]: AbstractControl<any, any>}): { [key: string]: any }|null {
+  public extractDirty(controls: { [key: string]: AbstractControl<any, any> }): { [key: string]: any } | null {
     let ret: { [key: string]: any } = {};
     for (let key in controls)
       if (controls[key].dirty)
         ret[key] = controls[key].value;
 
     console.log('extractDirty', ret);
-    return Object.keys(ret).length==0?null:ret;
+    return Object.keys(ret).length == 0 ? null : ret;
+  }
+
+  /**
+   * loop for each control in the passed formGroup and trim the value
+   */
+  public trimFormGroup(formGroup: FormGroup) {
+    if (formGroup)
+      Object.keys(formGroup.controls).forEach(key => {
+        const control = formGroup.get(key);
+        if (control)
+          control.setValue(control.value.trim());
+      });
   }
 }
 

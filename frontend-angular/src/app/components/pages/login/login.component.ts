@@ -20,9 +20,9 @@ export class LoginComponent {
 
   public submit() {
     const { username, password,isRememberMe } = this.formGroup.controls;
-    this.loginService.login(username.value, password.value,isRememberMe.value||true);
+    this.loginService.login(username.value.trim(), password.value,isRememberMe.value||true);
   }
-  
+
   public showForgetPasswordDialog(){
     this.ut.showMsgDialog({
       type:'info',

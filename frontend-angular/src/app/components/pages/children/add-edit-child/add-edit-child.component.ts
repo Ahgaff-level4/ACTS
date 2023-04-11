@@ -62,6 +62,8 @@ export class AddEditChildComponent implements OnInit {
 
 
   async submit() {
+    this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
+    this.ut.trimFormGroup(this.childForm)
     this.personForm?.formGroup?.markAllAsTouched();
     this.childForm?.markAllAsTouched();
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
