@@ -12,7 +12,7 @@ import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { config } from 'dotenv'
-import { FieldEntity, FieldView } from './management/field/field.entity';
+import { FieldEntity } from './management/field/field.entity';
 import { PersonEntity, PersonView } from './management/person/person.entity';
 import { AccountEntity } from './management/account/account.entity';
 import { PersonModule } from './management/person/person.module';
@@ -20,7 +20,7 @@ import { ActivityEntity } from './management/activity/activity.entity';
 import { ChildEntity, ChildView } from './management/child/child.entity';
 import { EvaluationEntity } from './management/evaluation/evaluation.entity';
 import { GoalEntity } from './management/goal/Goal.entity';
-import { ProgramEntity, ProgramView } from './management/program/program.entity';
+import { ProgramEntity } from './management/program/program.entity';
 config();
 
 @Module({
@@ -33,8 +33,8 @@ config();
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE,
       entities: [AccountEntity, ActivityEntity,
-        ChildEntity, ChildView, EvaluationEntity, FieldEntity, FieldView,
-        GoalEntity, PersonEntity, PersonView, ProgramEntity, ProgramView
+        ChildEntity, ChildView, EvaluationEntity, FieldEntity,
+        GoalEntity, PersonEntity, PersonView, ProgramEntity
       ],
       synchronize: true,
       autoLoadEntities: true,

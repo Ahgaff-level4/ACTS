@@ -22,19 +22,21 @@ export class FieldComponent implements OnInit {
   @ViewChild(MatTable) table!: MatTable<IFieldEntity>;
   public dataSource!: MatTableDataSource<IFieldEntity>;
   public columnsKeys: string[];
-  public isLoading:boolean = true;
+  public isLoading: boolean = true;
   constructor(private service: FieldService, public ut: UtilityService, private dialog: MatDialog) {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? (this.canAddEdit?['name', 'activityCount', 'createdDatetime', 'control']:['name', 'activityCount', 'createdDatetime']);
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? (this.canAddEdit ? ['name', 'activityCount', 'createdDatetime', 'control'] : ['name', 'activityCount', 'createdDatetime']);
   }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<IFieldEntity>();
-    this.service.fields.subscribe(v => {
-      this.dataSource.data = v;
-      if (this.table)
-        this.table.renderRows();
-      this.isLoading = false;
+    this.service.fields.subscribe({
+      next: v => {
+        this.dataSource.data = v;
+        if (this.table)
+          this.table.renderRows();
+        this.isLoading = false;
+      },error:()=>this.isLoading=false
     });
     this.service.fetch();
     this.isLoading = true;
@@ -70,11 +72,11 @@ export class FieldComponent implements OnInit {
 
   deleteDialog(field: IFieldEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the field: '+field.name+' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
+      content: this.ut.translate('You are about to delete the field: ' + field.name + ' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
       type: 'confirm',
       title: 'Are you sure?',
-      buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type:'Delete' }]
-    }).afterClosed().subscribe(async(v) => {
+      buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
+    }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
         this.isLoading = true;
         await this.service.delete(field.id);

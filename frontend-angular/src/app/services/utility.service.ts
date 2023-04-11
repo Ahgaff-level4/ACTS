@@ -4,7 +4,7 @@ import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interf
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MatDialog } from '@angular/material/dialog';
+import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
@@ -20,9 +20,7 @@ export class UtilityService {
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router) {
     // this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
 
-    var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
-    if (isRememberMe === 'true' && this.user.value === null)
-      this.isLogin();
+
   }
 
   /**
@@ -51,7 +49,7 @@ export class UtilityService {
    * @param eOrMessage
    * @param appendMsg used when error could not be identified and will be appended after the default error message: `'Something Went Wrong! '+appendMsg`
    */
-  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse, appendMsg?: string): void => {
+  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse, appendMsg?: string): MatDialogRef<MessageDialogComponent, any> => {
     console.warn('UtilityService : errorDefaultDialog : eOrMessage:', eOrMessage);
 
     let message: string;
@@ -65,7 +63,7 @@ export class UtilityService {
     else
       message = this.translatePipe.transform('Something went wrong!') + (appendMsg ? ' ' + this.translatePipe.transform(appendMsg) : '');
 
-    this.showMsgDialog({ content: message, type: 'error' })
+    return this.showMsgDialog({ content: message, type: 'error' })
   }
 
   /**

@@ -35,11 +35,13 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.dataSource = new ChildrenDataSource();
-    this.childService.children.subscribe(v => {
-      this.dataSource.setData(v);
-      if (this.table)
-        this.table.renderRows();
-      this.isLoading = false;
+    this.childService.children.subscribe({
+      next: v => {
+        this.dataSource.setData(v);
+        if (this.table)
+          this.table.renderRows();
+        this.isLoading = false;
+      }, error: () => this.isLoading = false
     });
     this.childService.fetchChildren();
     this.isLoading = true;

@@ -29,20 +29,3 @@ export class FieldEntity extends CreateField {
 }
 
 export class UpdateField extends PartialType(CreateField) { }
-
-
-@ViewEntity({//todo check if works
-    expression: (connect) => connect
-        .createQueryBuilder()
-        .select('field.id', 'id')
-        .addSelect('field.name', 'name')
-        .addSelect('field.createdDatetime', 'createdDatetime')
-        .addSelect('COUNT(activity.fieldId)', 'activityCount')
-        .from(FieldEntity, 'field')
-        .leftJoin(ActivityEntity, 'activity', 'activity.fieldId=field.id')
-        .groupBy('field.id')
-})
-export class FieldView extends FieldEntity implements IFieldEntity {
-    @ViewColumn()
-    activityCount: number;
-}

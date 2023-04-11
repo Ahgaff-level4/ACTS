@@ -9,6 +9,7 @@ import { UtilityService } from './utility.service';
   providedIn: 'root'
 })
 export class ProgramService {
+
   public programs = new BehaviorSubject<IProgramEntity[]>([]);
   public URL = env.API + 'program';
 
@@ -62,6 +63,19 @@ export class ProgramService {
           next: (v) => { this.fetch(); res(v) },
           error: (e) => { this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e); }
         })
+    })
+  }
+
+  /** program.activities will be array of IActivityEntity of the fetched program */
+  fetchOne(programId: number): Promise<IProgramEntity> {
+    return new Promise((res,rej)=>{
+      this.http.get<IProgramEntity[]>(this.URL+'/'+programId)
+      .subscribe({
+        next:v=>res(v[0]),
+        error:e=>{
+          this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program. Please try again later or check your connection."); rej(e);
+        }
+      })
     })
   }
 }

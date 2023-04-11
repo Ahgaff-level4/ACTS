@@ -2,12 +2,11 @@ import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInt
 import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CreateField, FieldEntity, FieldView, UpdateField } from './field.entity';
+import { CreateField, FieldEntity, UpdateField } from './field.entity';
 @Controller('api/field')
 export class FieldController {
 
-  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>,
-    @InjectRepository(FieldView) private view: Repository<FieldView>) { }
+  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')
@@ -18,14 +17,16 @@ export class FieldController {
   @Get()
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
   findAll() {
-    return this.view.find();
+    return this.repo.createQueryBuilder('field')
+      .loadRelationCountAndMap('field.activityCount', 'field.activities')
+      .getMany();
   }
 
-  @Get(':id')
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.view.findBy({ id })
-  }
+  // @Get(':id')
+  // @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  // findOne(@Param('id', ParseIntPipe) id: number) {
+  //   return this.repo.findBy({ id });
+  // }
 
   @Patch(':id')
   @Roles('Admin', 'HeadOfDepartment')

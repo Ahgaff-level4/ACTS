@@ -30,6 +30,8 @@ import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/mat
 import { AddEditFieldComponent } from './components/dialogs/add-edit-field/add-edit-field.component';
 import { SpinnerComponent } from './components/static/spinner/spinner.component';
 import { AddEditProgramComponent } from './components/dialogs/add-edit-program/add-edit-program.component';
+import { ActivityComponent } from './components/pages/activity/activity.component';
+import { AddEditActivityComponent } from './components/dialogs/add-edit-activity/add-edit-activity.component';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 
@@ -52,7 +54,9 @@ import { AddEditProgramComponent } from './components/dialogs/add-edit-program/a
     PersonFormComponent,
     AddEditFieldComponent,
     SpinnerComponent,
-    AddEditProgramComponent
+    AddEditProgramComponent,
+    ActivityComponent,
+    AddEditActivityComponent
   ],
   imports: [
     BrowserModule,

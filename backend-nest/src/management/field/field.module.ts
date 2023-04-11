@@ -1,10 +1,10 @@
 import { Module } from "@nestjs/common";
 import { FieldController } from './field.controller';
 import { TypeOrmModule } from "@nestjs/typeorm";
-import { FieldEntity, FieldView } from "./field.entity";
+import { FieldEntity } from "./field.entity";
 
 @Module({
-  imports:[TypeOrmModule.forFeature([FieldEntity,FieldView])],
+  imports:[TypeOrmModule.forFeature([FieldEntity])],
   controllers: [FieldController],
 })
 export class FieldModule { }

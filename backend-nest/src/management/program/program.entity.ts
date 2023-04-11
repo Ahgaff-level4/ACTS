@@ -28,20 +28,3 @@ export class ProgramEntity extends CreateProgram {
 }
 
 export class UpdateProgram extends PartialType(CreateProgram) { }
-
-
-@ViewEntity({
-    expression:(connect)=>connect
-    .createQueryBuilder()
-    .select('program.id','id')
-    .addSelect('program.name','name')
-    .addSelect('program.createdDatetime','createdDatetime')
-    .addSelect('COUNT(activity.programId)','activityCount')
-    .from(ProgramEntity,'program')
-    .leftJoin(ActivityEntity,'activity','activity.programId=program.id')
-    .groupBy('program.id')
-}) 
-export class ProgramView extends ProgramEntity implements IProgramEntity{
-    @ViewColumn()
-    public activityCount:number;
-}

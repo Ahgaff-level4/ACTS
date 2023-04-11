@@ -12,11 +12,11 @@ export class ActivityController {
         return this.activityService.create(createActivity)
     }
 
-    @Get()
-    @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-    async findAll(@Query('FK', ParseBoolPipe) fk: boolean) {
-        return this.activityService.findAll(fk);
-    }
+    // @Get() You need program id to get all activities of that program
+    // @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+    // async findAll(@Query('FK', ParseBoolPipe) fk: boolean) {
+    //     return this.activityService.findAll(fk);
+    // }
 
     @Get(':id')
     @Roles('Admin', 'HeadOfDepartment', 'Teacher')
