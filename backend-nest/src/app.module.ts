@@ -17,7 +17,7 @@ import { PersonEntity, PersonView } from './management/person/person.entity';
 import { AccountEntity } from './management/account/account.entity';
 import { PersonModule } from './management/person/person.module';
 import { ActivityEntity } from './management/activity/activity.entity';
-import { ChildEntity, ChildView } from './management/child/child.entity';
+import { ChildEntity } from './management/child/child.entity';
 import { EvaluationEntity } from './management/evaluation/evaluation.entity';
 import { GoalEntity } from './management/goal/Goal.entity';
 import { ProgramEntity } from './management/program/program.entity';
@@ -33,7 +33,7 @@ config();
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE,
       entities: [AccountEntity, ActivityEntity,
-        ChildEntity, ChildView, EvaluationEntity, FieldEntity,
+        ChildEntity, EvaluationEntity, FieldEntity,
         GoalEntity, PersonEntity, PersonView, ProgramEntity
       ],
       synchronize: true,

@@ -1,13 +1,13 @@
 import { Injectable } from '@nestjs/common';
-import { ChildEntity, ChildView, CreateChild, UpdateChild } from './child.entity';
+import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PersonView } from '../person/person.entity';
+import { PersonEntity, PersonView } from '../person/person.entity';
+import { GoalEntity } from '../goal/Goal.entity';
 
 @Injectable()
 export class ChildService {
-  constructor(@InjectRepository(ChildEntity) private repo: Repository<ChildEntity>,
-    @InjectRepository(ChildView) private view: Repository<ChildView>) { }
+  constructor(@InjectRepository(ChildEntity) private repo: Repository<ChildEntity>) { }
 
   create(createChild: CreateChild) {
     return this.repo.save(this.repo.create(createChild))
@@ -15,20 +15,24 @@ export class ChildService {
 
   async findAll(fk: boolean) {
     if (fk)
-      return this.view
+      return this.repo
         .createQueryBuilder('child')
-        .leftJoinAndMapOne('child.person', PersonView, 'person', 'child.personId=person.id')
+        .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
         .getMany();
     else
-      return this.view.find()
+      return this.repo.find()
   }
 
   async findOne(id: number) {
-    return this.view.findBy({ id });
+    return this.repo.createQueryBuilder('child')
+      .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
+      .leftJoinAndMapMany('child.goals',GoalEntity,'goal','child.id=goal.childId')
+      .where({ id })
+      .getMany();
   }
 
   update(id: number, updateChild: UpdateChild) {
-    return this.repo.update({id}, updateChild);
+    return this.repo.update({ id }, updateChild);
   }
 
   remove(id: number) {
@@ -36,6 +40,6 @@ export class ChildService {
   }
 
   async findChildrenOfParent(parentId: number) {
-    return this.view.findBy({ parentId });
+    return this.repo.findBy({ parentId });
   }
 }

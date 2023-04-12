@@ -120,9 +120,7 @@ export interface IChildEntity extends ICreateChild {
 	goals: IGoalEntity[];
 	teachers: IAccountEntity[];
 	familyMembers?: number | null;
-	durationSpent: number;
-	/** registerDate is person.createdDatetime */
-	// registerDate: Date;
+	/** registerDate: (is person.createdDatetime) */
 }
 
 export interface ICreateEvaluation {
@@ -150,7 +148,6 @@ export interface ICreatePerson {
 
 export interface IPersonEntity extends ICreatePerson {
 	id: number;
-	age: number | null;
 }
 
 export interface ICreateGoal {

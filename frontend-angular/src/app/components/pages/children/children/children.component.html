@@ -58,9 +58,9 @@
                     *ngIf="!item.person.birthDate"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
                   <b>{{'Order between siblings'|translate}}:&nbsp;</b><span
-                    *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers || item.familyMembers ">{{ut.ordinalNumbers[item.birthOrder-1]|translate}}&nbsp;{{'of'|translate}}
+                    *ngIf="item.birthOrder || item.maleFamilyMembers || item.femaleFamilyMembers ">{{ut.ordinalNumbers[item.birthOrder-1]|translate}}&nbsp;{{'of'|translate}}
                     {{item.maleFamilyMembers+item.femaleFamilyMembers+1}}&nbsp;{{'siblings'|translate}}&nbsp;({{item.femaleFamilyMembers+(item.gender==='Female'?1:0)}}&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;{{item.maleFamilyMembers+(item.gender==='Male'?1:0)}}&nbsp;{{'boys'|translate}}).</span><span
-                    *ngIf="!item.birthOrder && !item.femaleFamilyMembers && !item.maleFamilyMembers && !item.familyMembers"
+                    *ngIf="!item.birthOrder && !item.femaleFamilyMembers && !item.maleFamilyMembers"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
                   <b>{{'Parent kinship'|translate}}:&nbsp;</b><span
                     *ngIf="item.parentsKinship">{{item.parentsKinship}}.</span><span *ngIf="!item.parentsKinship"

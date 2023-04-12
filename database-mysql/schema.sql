@@ -210,8 +210,7 @@ CREATE VIEW programView AS
 
 
 CREATE VIEW personView AS
-	SELECT id, name, birthDate, createdDatetime, gender,
-	TIMESTAMPDIFF(YEAR,birthDate,CURDATE()) AS age FROM person;
+	SELECT id, name, birthDate, createdDatetime, gender FROM person;
 
 CREATE VIEW childView AS  -- To add registerDate
 	SELECT child.id,
@@ -230,8 +229,7 @@ CREATE VIEW childView AS  -- To add registerDate
 	child.parentId,
 	child.personId,
 	(child.femaleFamilyMembers + child.maleFamilyMembers) AS familyMembers,
-    person.createdDatetime AS registerDate,
-    TIMESTAMPDIFF(minute,person.createdDatetime,CURDATE()) AS durationSpent
+    person.createdDatetime AS registerDate
     FROM child LEFT JOIN person on child.personId = person.id WHERE isArchive=false;
 
 
