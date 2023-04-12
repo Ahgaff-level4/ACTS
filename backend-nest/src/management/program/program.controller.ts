@@ -3,6 +3,8 @@ import { CreateProgram, ProgramEntity, UpdateProgram } from './program.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import { ActivityEntity } from '../activity/activity.entity';
+import { FieldEntity } from '../field/field.entity';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/program')
 export class ProgramController {
@@ -24,7 +26,12 @@ export class ProgramController {
   @Get(':id')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.repo.find({relations:['activities'],where:{id}})
+    // return this.repo.find({relations:['activities'],where:{id}})
+    return this.repo.createQueryBuilder('program')
+    .leftJoinAndMapMany('program.activities',ActivityEntity,'activity','activity.programId=program.id')
+    .leftJoinAndMapOne('activity.field',FieldEntity,'field','activity.fieldId=field.id')
+    .where({id})
+    .getMany();
   }
 
   @Patch(':id')

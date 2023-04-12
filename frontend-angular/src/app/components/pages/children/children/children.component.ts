@@ -27,7 +27,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public dataSource!: ChildrenDataSource;
   public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('children table') ?? 'null') ?? ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
   public expandedItem?: IChildEntity;
-  public isLoading: boolean = true;
 
   constructor(private childService: ChildService, public ut: UtilityService) {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
@@ -40,11 +39,11 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         this.dataSource.setData(v);
         if (this.table)
           this.table.renderRows();
-        this.isLoading = false;
-      }, error: () => this.isLoading = false
+        this.ut.isLoading = false;
+      }, error: () => this.ut.isLoading = false
     });
     this.childService.fetchChildren();
-    this.isLoading = true;
+    this.ut.isLoading = true;
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });

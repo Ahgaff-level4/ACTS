@@ -17,23 +17,30 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   let allowRoles: Role[] = route.data['allowRoles'] as Role[];
   if (!Array.isArray(allowRoles) || allowRoles.length === 0)
     throw 'Expected allowRoles to be typeof Role[]. Got:' + allowRoles;
-  if(ut.user.value == null){
+  if (ut.user.value == null) {
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
-    if (isRememberMe === 'true' && ut.user.value === null)
-      await ut.isLogin();
+    try {
+      if (isRememberMe === 'true' && ut.user.value === null)
+        await ut.isLogin();
+    } catch (e) {//not authorize AKA not login
+      showUnauthorizeDialog();
+      return false;
+    }
   }
   for (let r of allowRoles)
     if (hasRole(r))
       return true;
   console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', ut.user.value?.roles)
-  ut.showMsgDialog({
-    type: 'info',
-    title: 'Insufficient privilege!',
-    content: `You don't have sufficient privilege to access this page!`
-  });
+  showUnauthorizeDialog();
   return false;
 
-
+  function showUnauthorizeDialog(){
+    ut.showMsgDialog({
+      type: 'info',
+      title: 'Insufficient privilege!',
+      content: `You don't have sufficient privilege to access this page!`
+    });
+  }
   function hasRole(role: Role) {
     return !!ut.user.value
       && ut.user.value.isLoggedIn

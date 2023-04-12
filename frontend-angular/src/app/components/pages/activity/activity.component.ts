@@ -24,26 +24,33 @@ export class ActivityComponent {
   @ViewChild(MatTable) table!: MatTable<IActivityEntity>;
   public dataSource!: MatTableDataSource<IActivityEntity>;
   public columnsKeys: string[];
-  public isLoading: boolean = true;
   public program = new BehaviorSubject<IProgramEntity | null>(null);
 
-  async fetch(programId: number) {
-    this.isLoading = true;
-    this.program.next(await this.programService.fetchOne(programId ?? this.program.value?.id));
-    this.isLoading = false;
+  /**
+   * - First use when init the class. The programId will be passed by URL param as (string|null).
+   * - Second when `Add`, `Edit`, or `Delete` an activity. So that it will emit the new data. So, that the table will be refresh. The programId will be undefined.
+   */
+  async fetch(programId?: number|string|null) {
+    this.ut.isLoading = true;
+    if(typeof programId === 'string')
+      programId = +programId;
+    if (programId || this.program.value?.id)// if First and Second cases. Else like if program.value is null and programId is null then there is something went wrong!
+      this.program.next(await this.programService.fetchOne(programId ?? this.program.value?.id as number));
+    else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem navigating to activities page. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
+    this.ut.isLoading = false;
   }
 
   constructor(private service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private programService: ProgramService) {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('activities table') ?? 'null') ?? (this.canAddEdit ? ['name', 'activityCount', 'createdDatetime', 'control'] : ['name', 'activityCount', 'createdDatetime']);
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('activities table') ?? 'null') ?? (this.canAddEdit ? ['name', 'ageRange', 'field', 'createdDatetime', 'control'] : ['name', 'ageRange', 'field', 'createdDatetime']);
     this.route.paramMap.subscribe({
       next: async params => {
         let programId = params.get('id');
-        if (programId) {
-          await this.fetch(+programId);
-        } else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem navigating to activities page. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
-        this.isLoading = false;
-      }, error: () => this.isLoading = false
+
+        await this.fetch(programId);
+
+        this.ut.isLoading = false;
+      }, error: () => this.ut.isLoading = false
     });
   }
 
@@ -82,10 +89,14 @@ export class ActivityComponent {
     sessionStorage.setItem('activities table', JSON.stringify(this.columnsKeys));
   }
 
-  /** if `data` param passed then it is Edit. Otherwise will be Add */
-  addEdit(data?: IActivityEntity) {
+  /** `data` is either Activity to be Edit. Or programId to be Add */
+  addEdit(data?: IActivityEntity | number) {
     this.dialog
-      .open<AddEditActivityComponent, IActivityEntity>(AddEditActivityComponent, { data });
+      .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data })
+      .afterClosed().subscribe(v => {
+        if (v === 'added' || v === 'edited')
+          this.fetch();
+      });
   }
 
   deleteDialog(activity: IActivityEntity) {
@@ -96,9 +107,10 @@ export class ActivityComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        this.isLoading = true;
+        this.ut.isLoading = true;
         await this.service.delete(activity.id);
-        this.isLoading = false;
+        this.fetch();
+        this.ut.isLoading = false;
         this.ut.showMsgDialog({ title: 'Deleted successfully!', type: 'success', content: 'The program has been deleted successfully.' })
       }
     })

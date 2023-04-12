@@ -16,7 +16,6 @@ export class AddEditChildComponent implements OnInit {
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
-  public isLoading = true;
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService) {
     this.childForm = this.fb.group({
@@ -39,7 +38,7 @@ export class AddEditChildComponent implements OnInit {
     if (this.child) {
       this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));
     }
-    this.isLoading=false;
+    this.ut.isLoading=false;
   }
 
   ngOnInit(): void {
@@ -69,7 +68,7 @@ export class AddEditChildComponent implements OnInit {
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
-      this.isLoading = true;
+      this.ut.isLoading = true;
       if (this.child?.id == null) {//Register a child
         let p: IPersonEntity = await this.personForm.submit();
         try {
@@ -91,7 +90,7 @@ export class AddEditChildComponent implements OnInit {
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
-      this.isLoading = false;
+      this.ut.isLoading = false;
 
     } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
     // this.personForm.valid; do not submit if person field

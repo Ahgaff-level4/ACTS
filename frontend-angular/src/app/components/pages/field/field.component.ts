@@ -35,11 +35,11 @@ export class FieldComponent implements OnInit {
         this.dataSource.data = v;
         if (this.table)
           this.table.renderRows();
-        this.isLoading = false;
-      },error:()=>this.isLoading=false
+        this.ut.isLoading = false;
+      },error:()=>this.ut.isLoading=false
     });
     this.service.fetch();
-    this.isLoading = true;
+    this.ut.isLoading = true;
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
@@ -78,9 +78,9 @@ export class FieldComponent implements OnInit {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        this.isLoading = true;
+        this.ut.isLoading = true;
         await this.service.delete(field.id);
-        this.isLoading = false;
+        this.ut.isLoading = false;
         this.ut.showMsgDialog({ title: 'Deleted successfully!', type: 'success', content: 'The field has been deleted successfully.' })
       }
     })

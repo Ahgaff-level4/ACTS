@@ -32,6 +32,8 @@ import { SpinnerComponent } from './components/static/spinner/spinner.component'
 import { AddEditProgramComponent } from './components/dialogs/add-edit-program/add-edit-program.component';
 import { ActivityComponent } from './components/pages/activity/activity.component';
 import { AddEditActivityComponent } from './components/dialogs/add-edit-activity/add-edit-activity.component';
+import { TypePipe } from './pipes/type.pipe';
+import { RangePipe } from './pipes/range.pipe';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 
@@ -49,6 +51,8 @@ import { AddEditActivityComponent } from './components/dialogs/add-edit-activity
     DatePipe,
     DateTimeWeekPipe,
     FromNowPipe,
+    TypePipe,
+    RangePipe,
     AddEditChildComponent,
     ChildGoalsComponent,
     PersonFormComponent,

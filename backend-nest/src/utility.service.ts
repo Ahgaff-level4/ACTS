@@ -1,5 +1,5 @@
 import { ExecutionContext, Injectable, UnauthorizedException, createParamDecorator } from '@nestjs/common';
-import { Role, User } from '../../interfaces';
+import {  User } from '../../interfaces';
 export interface MyResponse<T> {
     success: boolean;
     data?: T;
@@ -21,7 +21,7 @@ export class UtilityService {
             parent = hasIsParent.parent;
         else return hasIsParent;
 
-        let phones = [];
+        const phones = [];
         for (let i = 1; i <= 10; i++) {
             if (parent['phone' + i])
                 phones.push(parent['phone' + i])
