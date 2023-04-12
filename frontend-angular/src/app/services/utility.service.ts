@@ -9,6 +9,7 @@ import { MessageDialogComponent, MessageDialogData } from '../components/dialogs
 import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MatSnackBar } from '@angular/material/snack-bar';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,11 +17,10 @@ export class UtilityService {
 
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
-  public isLoading:boolean = true;
-  constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router) {
+  public isLoading: boolean = true;
+
+  constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
     // this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
-
-
   }
 
   /**
@@ -132,6 +132,17 @@ export class UtilityService {
         if (control && typeof control.value === 'string')
           control.setValue(control.value.trim());
       });
+  }
+
+  /**
+   *
+   * @param message text
+   * @param action text of the action button like `Undo` or `Ok`.
+   * @param duration before the snackbar automatically dismissed. Value is in milliseconds.
+   * @returns on action clicked observable.
+   */
+  public showSnackbar(message: string, action?: string, duration = 4000) {
+    return this.snackbar.open(message, action, { duration }).onAction()
   }
 }
 

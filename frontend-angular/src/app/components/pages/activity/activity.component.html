@@ -22,7 +22,7 @@
 
       <ng-container matColumnDef="field">
         <th mat-header-cell cdkDrag *matHeaderCellDef mat-sort-header> {{'Field'|translate}} </th>
-        <td mat-cell *matCellDef="let el"> {{ el.field.name }} </td>
+        <td mat-cell *matCellDef="let el"> {{ el.field?.name }} </td>
       </ng-container>
 
       <ng-container matColumnDef="createdDatetime">

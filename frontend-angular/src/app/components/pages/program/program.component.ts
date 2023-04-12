@@ -79,7 +79,7 @@ export class ProgramComponent {
         this.ut.isLoading = true;
         await this.service.delete(program.id);
         this.ut.isLoading = false;
-        this.ut.showMsgDialog({ title: 'Deleted successfully!', type: 'success', content: 'The program has been deleted successfully.' })
+        this.ut.showSnackbar('The program has been deleted successfully.');
       }
     })
 

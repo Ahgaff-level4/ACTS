@@ -111,7 +111,7 @@ export class ActivityComponent {
         await this.service.delete(activity.id);
         this.fetch();
         this.ut.isLoading = false;
-        this.ut.showMsgDialog({ title: 'Deleted successfully!', type: 'success', content: 'The program has been deleted successfully.' })
+        this.ut.showSnackbar('The activity has been deleted successfully.');
       }
     })
 

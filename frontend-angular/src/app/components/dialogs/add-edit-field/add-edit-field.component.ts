@@ -36,17 +36,17 @@ export class AddEditFieldComponent {
       this.formGroup.disable();
       if (this.field?.id == null) {//add new
         await this.service.post(this.formGroup.value);
-        this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The field has been added successfully.' })
-          .afterClosed().subscribe({ next: () => this.dialogRef.close() });
+        this.ut.showSnackbar('The field has been added successfully.')
+        this.dialogRef.close();
       } else {//edit
         let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
         if (dirtyFields != null)
           await this.service.patch(this.field.id, dirtyFields);
-        this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The field has been edited successfully.'})
-          .afterClosed().subscribe({ next: () => this.dialogRef.close() });
+        this.ut.showSnackbar('The field has been edited successfully.')
+        this.dialogRef.close();
       }
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!'})
+    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
   }
 
 }

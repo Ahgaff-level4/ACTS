@@ -81,7 +81,7 @@ export class FieldComponent implements OnInit {
         this.ut.isLoading = true;
         await this.service.delete(field.id);
         this.ut.isLoading = false;
-        this.ut.showMsgDialog({ title: 'Deleted successfully!', type: 'success', content: 'The field has been deleted successfully.' })
+        this.ut.showSnackbar('The field has been deleted successfully.');
       }
     })
 

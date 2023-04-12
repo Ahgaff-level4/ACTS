@@ -1,0 +1,17 @@
+th{
+  font-weight: 500;
+  font-size: 0.9rem;
+  border-bottom: 1px solid black;
+}
+
+tr.hover-row:hover {
+  background: whitesmoke;
+}
+
+tr.hover-row:active {
+  background: #efefef;
+}
+
+.table-row td {
+  border-bottom-width: 0;
+}

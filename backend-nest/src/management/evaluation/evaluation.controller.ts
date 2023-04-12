@@ -29,7 +29,7 @@ export class EvaluationController {
 
   @Get()
   findAll(@Query('FK', ParseBoolPipe) fk: boolean, @Query('goalId') goalIdStr: string, @Session() session) {
-    const goalId: number = Number(goalIdStr);
+    const goalId = Number(goalIdStr);
     if (goalId) {
       if (!Number.isInteger(goalId) || goalId <= 0)
         throw new BadRequestException();

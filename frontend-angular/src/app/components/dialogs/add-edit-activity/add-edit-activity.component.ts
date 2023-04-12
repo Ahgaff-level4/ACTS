@@ -46,15 +46,15 @@ export class AddEditActivityComponent {
       this.formGroup.disable();
       if (typeof this.activityProgramId == 'number') {//add new
         await this.service.post({ ...this.formGroup.value, programId: this.activityProgramId });
-        this.ut.showMsgDialog({ type: 'success', title: 'Added successfully!', content: 'The activity has been added successfully.' })
-          .afterClosed().subscribe({ next: () => this.dialogRef.close('added') });
+        this.ut.showSnackbar('The activity has been added successfully.');
+        this.dialogRef.close('added');
       } else if (typeof this.activityProgramId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         if (dirtyControls != null)
           await this.service.patch(this.activityProgramId.id, dirtyControls);
-        this.ut.showMsgDialog({ type: 'success', title: 'Edited successfully!', content: 'The activity has been edited successfully.' })
-          .afterClosed().subscribe({ next: () => this.dialogRef.close('edited') });
-      }else this.ut.errorDefaultDialog().afterClosed().subscribe(()=>this.dialogRef.close())
+        this.ut.showSnackbar('The activity has been edited successfully.');
+          this.dialogRef.close('edited');
+      } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
     } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
   }
