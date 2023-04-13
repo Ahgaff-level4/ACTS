@@ -20,6 +20,9 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import {MatDividerModule} from '@angular/material/divider';
 import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatListModule} from '@angular/material/list';
+import {MatButtonToggleModule} from '@angular/material/button-toggle';
+import {MatTooltipModule} from '@angular/material/tooltip';
 
 
 @NgModule({
@@ -43,7 +46,10 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
     MatMomentDateModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule
+    MatSnackBarModule,
+    MatListModule,
+    MatButtonToggleModule,
+    MatTooltipModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

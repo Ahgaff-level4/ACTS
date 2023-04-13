@@ -25,8 +25,8 @@ export class AddEditActivityComponent {
       createdDatetime: [new Date(), [Validators.required]],
     });
     if (this.fieldService.fields.value.length === 0) {
-      this.ut.isLoading = true;
-      this.fieldService.fetch().finally(() => this.ut.isLoading = false);
+      this.ut.isLoading.next(true);
+      this.fieldService.fetch().finally(() => this.ut.isLoading.next(false));
     }
     if (typeof this.activityProgramId != 'number' && typeof this.activityProgramId != 'object')
       this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());

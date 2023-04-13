@@ -23,7 +23,6 @@ import { AddEditChildComponent } from './components/pages/children/add-edit-chil
 import { DatePipe } from './pipes/date.pipe';
 import { DateTimeWeekPipe } from './pipes/date-time-week.pipe';
 import { FromNowPipe } from './pipes/from-now.pipe';
-import { ChildGoalsComponent } from './components/pages/children/child-goals/child-goals.component';
 import { PersonFormComponent } from './components/forms/person-form/person-form.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -34,6 +33,9 @@ import { ActivityComponent } from './components/pages/activity/activity.componen
 import { AddEditActivityComponent } from './components/dialogs/add-edit-activity/add-edit-activity.component';
 import { TypePipe } from './pipes/type.pipe';
 import { RangePipe } from './pipes/range.pipe';
+import { GoalComponent } from './components/pages/goal/goal.component';
+import { AddEditGoalComponent } from './components/dialogs/add-edit-goal/add-edit-goal.component';
+import { SelectActivityComponent } from './components/dialogs/select-activity/select-activity.component';
 // import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
 // Factory function required during AOT compilation
 
@@ -54,13 +56,15 @@ import { RangePipe } from './pipes/range.pipe';
     TypePipe,
     RangePipe,
     AddEditChildComponent,
-    ChildGoalsComponent,
     PersonFormComponent,
     AddEditFieldComponent,
     SpinnerComponent,
     AddEditProgramComponent,
     ActivityComponent,
-    AddEditActivityComponent
+    AddEditActivityComponent,
+    GoalComponent,
+    AddEditGoalComponent,
+    SelectActivityComponent
   ],
   imports: [
     BrowserModule,
@@ -68,7 +72,7 @@ import { RangePipe } from './pipes/range.pipe';
     ReactiveFormsModule,
     FormsModule,
     HttpClientModule,
-    // RouterModule,
+    RouterModule,
     BrowserAnimationsModule,
     AppMaterialModule,
     TranslateModule.forRoot({
@@ -80,7 +84,8 @@ import { RangePipe } from './pipes/range.pipe';
     })
   ],
   providers:[
-    TranslatePipe
+    TranslatePipe,
+    {provide:DateAdapter,useClass:MomentDateAdapter,deps:[MAT_DATE_LOCALE,MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
   ],
   bootstrap: [AppComponent]
 })

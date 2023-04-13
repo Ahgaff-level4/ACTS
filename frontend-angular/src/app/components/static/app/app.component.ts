@@ -19,8 +19,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy {
 
   private sub!: Subscription;
-  public isNavigating = true;
-  constructor(public translate: TranslateService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
+  constructor(public translate: TranslateService, public ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
     super();
     // Register translation languages
     this.translate.addLangs(['en', 'ar']);
@@ -29,10 +28,10 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
     this.router.events.subscribe({
       next: (event) => {
         if (event instanceof NavigationStart)
-          this.isNavigating = true;
+          this.ut.isLoading.next(true)
         else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError)
-          this.isNavigating = false;
-      }, error: () => this.isNavigating = false
+          this.ut.isLoading.next(false);
+      }, error: () => this.ut.isLoading.next(false)
     });
   }
 
@@ -49,7 +48,6 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
   }
 
   handleOnLangChange = async () => {
-    console.log('language changed')
     moment.locale(this.translate.currentLang === 'ar' ? 'ar-kw' : 'en-gb');
     this.dateAdapter.setLocale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
     document.documentElement.lang = this.translate.currentLang;

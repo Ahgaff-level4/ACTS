@@ -28,9 +28,9 @@
       <ng-container matColumnDef="control">
         <th mat-header-cell cdkDrag *matHeaderCellDef> {{'Control'|translate}} </th>
         <td mat-cell *matCellDef="let el">
-          <a [href]="'/activities/'+el.id" mat-button color="primary"><mat-icon>interests</mat-icon>{{'Activities'|translate}}</a>
-          <button (click)="addEdit(el)" mat-button color="primary"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
-          <button (click)="deleteDialog(el)" mat-button color="warn"><mat-icon>delete</mat-icon>{{'Delete'|translate}}</button>
+          <a [routerLink]="'/activities/'+el.id" mat-button color="primary"><mat-icon>interests</mat-icon>{{'Activities'|translate}}</a>
+          <button *ngIf="canAddEditDelete" (click)="addEdit(el)" mat-button color="primary"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
+          <button *ngIf="canAddEditDelete" (click)="deleteDialog(el)" mat-button color="warn"><mat-icon>delete</mat-icon>{{'Delete'|translate}}</button>
         </td>
       </ng-container>
 
@@ -43,5 +43,5 @@
     </mat-paginator>
   </div>
 
-  <button (click)="addEdit()" *ngIf="canAddEdit" mat-raised-button color="primary">{{'Add new program'|translate}}<mat-icon>add</mat-icon></button>
+  <button (click)="addEdit()" *ngIf="canAddEditDelete" mat-raised-button color="primary">{{'Add new program'|translate}}<mat-icon>add</mat-icon></button>
 </div>

@@ -94,7 +94,7 @@
                 </p>
               </div>
               <div class="col-md-4 pl-auto mt-auto mb-3">
-                  <button class="mx-3" mat-flat-button color="primary">{{'Goals'|translate}}</button>
+                  <a [routerLink]="'/goals/'+item.id" class="mx-3" mat-flat-button color="primary">{{'Goals'|translate}}</a>
                   <button *ngIf="canAddEdit" mat-raised-button color="primary"
                     (click)="edit(this.expandedItem)"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
               </div>

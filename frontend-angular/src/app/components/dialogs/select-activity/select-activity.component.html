@@ -1,0 +1,26 @@
+<div style="max-width: 600px;">
+  <h4 mat-dialog-title>{{'Choose a program'|translate}}</h4>
+  <div mat-dialog-content>
+    <mat-selection-list #listProgram [multiple]="false"
+      (selectionChange)="onSelectionChangeProgram(listProgram?.selectedOptions?.selected?.[0]?.value)">
+      <mat-list-option *ngFor="let program of this.programService.programs.value" [value]="program">
+        {{program.name}}
+      </mat-list-option>
+    </mat-selection-list>
+
+    <div *ngIf="this.chosenProgram">
+      <h4 mat-dialog-title>{{'Choose an activity'|translate}}</h4>
+      <mat-button-toggle-group value="all" (change)="filterActivities($event.value)" class="w-100" aria-label="Font Style">
+        <mat-button-toggle value="all">{{'All activities'|translate}}</mat-button-toggle>
+        <mat-button-toggle value="age" [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
+      </mat-button-toggle-group>
+      <mat-selection-list #listActivity [multiple]="false"
+        (selectionChange)="onSelectionChangeActivity(listActivity?.selectedOptions?.selected?.[0]?.value)">
+        <mat-list-option *ngFor="let activity of activities" [value]="activity">
+          <div matListItemTitle>{{activity.name}}</div>
+          <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} – {{activity.maxAge}}</div>
+        </mat-list-option>
+      </mat-selection-list>
+    </div>
+  </div>
+</div>

@@ -38,7 +38,6 @@ export class AddEditChildComponent implements OnInit {
     if (this.child) {
       this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));
     }
-    this.ut.isLoading=false;
   }
 
   ngOnInit(): void {
@@ -68,7 +67,7 @@ export class AddEditChildComponent implements OnInit {
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
-      this.ut.isLoading = true;
+      this.ut.isLoading.next(true);
       if (this.child?.id == null) {//Register a child
         let p: IPersonEntity = await this.personForm.submit();
         try {
@@ -90,7 +89,7 @@ export class AddEditChildComponent implements OnInit {
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
-      this.ut.isLoading = false;
+      this.ut.isLoading.next(false);
 
     } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
     // this.personForm.valid; do not submit if person field

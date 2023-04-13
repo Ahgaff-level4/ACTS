@@ -17,7 +17,7 @@ export class UtilityService {
 
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
-  public isLoading: boolean = true;
+  public isLoading = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
     // this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
@@ -61,7 +61,7 @@ export class UtilityService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else
-      message = this.translatePipe.transform('Something went wrong!') + (appendMsg ? ' ' + this.translatePipe.transform(appendMsg) : 'Sorry, there was a problem. Please try again later or check your connection.');
+      message = this.translatePipe.transform('Something went wrong!') + (appendMsg ? ' ' + this.translatePipe.transform(appendMsg) : this.translatePipe.transform('Sorry, there was a problem. Please try again later or check your connection.'));
 
     return this.showMsgDialog({ content: message, type: 'error' })
   }

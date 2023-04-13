@@ -19,7 +19,7 @@ export class CreateGoal implements ICreateGoal {
 
 	@IsEnum({ "continual": "continual", "strength": "strength", "completed": "completed" }
 		, { message: `state must be a valid enum value. Enum values are (continual, strength, completed)` })
-	@Column({ type: 'enum', enum: ["continual", "strength", "completed"], nullable: false })
+	@Column({ type: 'enum', enum: ["continual", "strength", "completed"], default:'continual', nullable: false })
 	public state: GoalState;
 
 	@IsNumber() @IsInt() @IsPositive()

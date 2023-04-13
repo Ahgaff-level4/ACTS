@@ -34,16 +34,16 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.dataSource = new ChildrenDataSource();
+    this.ut.isLoading.next(true);
     this.childService.children.subscribe({
       next: v => {
         this.dataSource.setData(v);
         if (this.table)
           this.table.renderRows();
-        this.ut.isLoading = false;
-      }, error: () => this.ut.isLoading = false
+        this.ut.isLoading.next(false);
+      }, error: () => this.ut.isLoading.next(false)
     });
     this.childService.fetchChildren();
-    this.ut.isLoading = true;
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });

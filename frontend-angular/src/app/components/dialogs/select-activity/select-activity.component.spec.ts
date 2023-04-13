@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ChildGoalsComponent } from './child-goals.component';
+import { SelectActivityComponent } from './select-activity.component';
 
-describe('ChildGoalsComponent', () => {
-  let component: ChildGoalsComponent;
-  let fixture: ComponentFixture<ChildGoalsComponent>;
+describe('SelectActivityComponent', () => {
+  let component: SelectActivityComponent;
+  let fixture: ComponentFixture<SelectActivityComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ChildGoalsComponent ]
+      declarations: [ SelectActivityComponent ]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(ChildGoalsComponent);
+    fixture = TestBed.createComponent(SelectActivityComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

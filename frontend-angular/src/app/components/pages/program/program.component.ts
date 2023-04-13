@@ -15,31 +15,31 @@ import { AddEditProgramComponent } from '../../dialogs/add-edit-program/add-edit
   styleUrls: ['./program.component.scss']
 })
 export class ProgramComponent {
-  public canAddEdit: boolean;
+  public canAddEditDelete: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IProgramEntity>;
   public dataSource!: MatTableDataSource<IProgramEntity>;
   public columnsKeys: string[];
   constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog) {
-    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('programs table') ?? 'null') ?? (this.canAddEdit ? ['name', 'activityCount', 'createdDatetime', 'control'] : ['name', 'activityCount', 'createdDatetime']);
+    this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('programs table') ?? 'null') ?? ['name', 'activityCount', 'createdDatetime', 'control'];
   }
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<IProgramEntity>();
+    this.ut.isLoading.next(true);
     this.service.programs.subscribe({
       next: v => {
         this.dataSource.data = v;
         if (this.table)
           this.table.renderRows();
-        this.ut.isLoading = false;
-      }, error: () => this.ut.isLoading = false
+        this.ut.isLoading.next(false);
+      }, error: () => this.ut.isLoading.next(false)
     });
     this.service.fetch();
-    this.ut.isLoading = true;
     this.ut.user.subscribe(v => {
-      this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+      this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
   }
 
@@ -76,9 +76,9 @@ export class ProgramComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        this.ut.isLoading = true;
+        this.ut.isLoading.next(true);
         await this.service.delete(program.id);
-        this.ut.isLoading = false;
+        this.ut.isLoading.next(false);
         this.ut.showSnackbar('The program has been deleted successfully.');
       }
     })

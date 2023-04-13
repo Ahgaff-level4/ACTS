@@ -10,6 +10,7 @@ import { Observable } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
+import { GoalComponent } from './components/pages/goal/goal.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -66,6 +67,7 @@ const routes: Routes = [
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
   { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },
   { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
+  { path: 'goals/:id', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
 ];
 
 @NgModule({
