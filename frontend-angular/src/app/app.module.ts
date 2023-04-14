@@ -36,7 +36,8 @@ import { RangePipe } from './pipes/range.pipe';
 import { GoalComponent } from './components/pages/goal/goal.component';
 import { AddEditGoalComponent } from './components/dialogs/add-edit-goal/add-edit-goal.component';
 import { SelectActivityComponent } from './components/dialogs/select-activity/select-activity.component';
-// import { AddEditChildComponent } from './components/dialogs/delete me/add-edit-child.component';
+import { AccountComponent } from './components/pages/accounts/account/account.component';
+import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
 // Factory function required during AOT compilation
 
 @NgModule({
@@ -64,7 +65,9 @@ import { SelectActivityComponent } from './components/dialogs/select-activity/se
     AddEditActivityComponent,
     GoalComponent,
     AddEditGoalComponent,
-    SelectActivityComponent
+    SelectActivityComponent,
+    AccountComponent,
+    AddEditAccountComponent
   ],
   imports: [
     BrowserModule,

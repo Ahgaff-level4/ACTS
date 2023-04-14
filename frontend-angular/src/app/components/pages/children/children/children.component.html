@@ -48,10 +48,10 @@
       <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
       <ng-container matColumnDef="expandedDetail">
         <td mat-cell *matCellDef="let item" [attr.colspan]="columnsKeys.length">
-          <div class="example-element-detail pe-0 w-100"
+          <div class="w-100"
             [@detailExpand]="item == expandedItem ? 'expanded' : 'collapsed'">
-            <div class="row align-items-start w-100 position-relative">
-              <div class="col-md-8">
+            <div class="row d-flex justify-content-center align-items-center mb-3 mb-md-0">
+              <div class="col-md-9">
                 <p>
                   <b>{{'Birthdate'|translate}}:&nbsp;</b><span
                     *ngIf="item.person.birthDate">{{item.person.birthDate|toDate}}.</span><span
@@ -90,12 +90,12 @@
                     *ngIf="!item.behaviors" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
                   <b>{{'Priority skills'|translate}}:&nbsp;</b><span
                     *ngIf="item.prioritySkills">{{item.prioritySkills}}.</span><span *ngIf="!item.prioritySkills"
-                    class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br />
+                    class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span>
                 </p>
               </div>
-              <div class="col-md-4 pl-auto mt-auto mb-3">
-                  <a [routerLink]="'/goals/'+item.id" class="mx-3" mat-flat-button color="primary">{{'Goals'|translate}}</a>
-                  <button *ngIf="canAddEdit" mat-raised-button color="primary"
+              <div class="col-md-3">
+                  <a [routerLink]="'/goals/'+item.id" class="m-1" mat-stroked-button color="primary">{{'Goals'|translate}}</a>
+                  <button *ngIf="canAddEdit" class="m-1" mat-stroked-button color="primary"
                     (click)="edit(this.expandedItem)"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
               </div>
             </div>

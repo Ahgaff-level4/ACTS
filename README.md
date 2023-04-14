@@ -80,7 +80,8 @@
   #### **1. No hard coded text string.**
 
   There should be a way to convert all static text string to Arabic.
-  >`var title = R.lang.titleName`
+  >`var title = this.ut.translate('Hello World!')`
+  >`<h1>{{'Hello World!'|translate}}</h1>`
 
   #### **2. Address path of HTML page should be identical to its most used table name.**
 
@@ -96,15 +97,15 @@
 
   #### **5. All table names and their columns should be identical in coding BUT in camelCase.**
 
-  > Table `Performance(ID, Name, FieldId)` will be `performance(id, name, fieldId)`
+  > Table `Activity(ID, Name, FieldId)` will be `activity(id, name, fieldId)`
 
   #### **6. Foreign key name is the refereed table name with suffix of `id`.**
 
-  > `performance(..., fieldId)`
+  > `activity(..., fieldId)`
 
   #### **7. Foreign key attribute have its object with same attribute name subtract `Id`.**
 
-  > `goal(..., performanceId)` Will has `goal(..., performanceId, performance)` where `performance` is object of type Performance, correspond of performanceId. This is true only by retrieving data from the server. And the child attribute `performance` in our example has nothing to do in deleting or updating. Its job only to show the `performanceId` information. We will let the frontend developer solve this issue as a homework 🙂
+  > `goal(..., activityId)` Will has `goal(..., activityId, activity)` where `activity` is object of type Activity, correspond of activityId. This is true only by retrieving data from the server. And the child attribute `activity` in our example has nothing to do in deleting or updating. Its job only to show the `activityId` information. We will let the frontend developer solve this issue as a homework 🙂
 
   #### **8. Any attribute of type `Date` -in javascript- its name should contains `Date`, or `Datetime` if time is concerned.**
 
@@ -134,7 +135,7 @@
 
   #### **2. GET request of path with table name (e.g., `.../api/field` or `.../api/field/1`) will return an object its properties is exactly its columns. And properties with derived attribute. And foreign key will be as said in (`Convention` > `Naming` > `7`)**
 
-  > Table `goal(id, performanceId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, performanceId:9, performance:{...,minAge:4,maxAge:6}...}, ...]`
+  > Table `goal(id, activityId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, activityId:9, activity:{...,minAge:4,maxAge:6}...}, ...]`
 
   #### **3. Each request should provide a token in the request header. And authorization of user privilege should be in the server before any respond.**
 

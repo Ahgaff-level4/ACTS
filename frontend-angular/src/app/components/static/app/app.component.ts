@@ -15,13 +15,16 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy {
 
-  private sub!: Subscription;
-  constructor(public translate: TranslateService, public ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
+  private sub: Subscription = new Subscription();
+  public isLoading: boolean = true;
+  constructor(public translate: TranslateService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
     super();
     // Register translation languages
     this.translate.addLangs(['en', 'ar']);
+    this.translate.setDefaultLang('en');
     this.translate.use(sessionStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//in the constructor to speed up language used
-    this.subscribeOnLangChange();
+    // this.subscribeOnLangChange();
+    this.sub.add(this.translate.onLangChange.subscribe(() => this.handleOnLangChange()));
     this.router.events.subscribe({
       next: (event) => {
         if (event instanceof NavigationStart)
@@ -33,19 +36,19 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
   }
 
   ngOnInit = async () => {
-    this.subscribeOnLangChange();
-    this.translate.setDefaultLang('en');
+    // this.subscribeOnLangChange();
+    this.ut.isLoading.subscribe(v => this.isLoading = v);
     this.handleOnLangChange();
+
   }
 
-  subscribeOnLangChange = () => {
-    if (this.sub)
-      this.sub.unsubscribe();
-    this.sub = this.translate.onLangChange.subscribe(() => this.handleOnLangChange());
-  }
+  // subscribeOnLangChange = () => {
+  // if (this.sub)
+  //   this.sub.unsubscribe();
+  // }
 
   handleOnLangChange = async () => {
-    moment.locale(this.translate.currentLang === 'ar' ? 'ar-kw' : 'en-gb');
+    moment.locale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
     this.dateAdapter.setLocale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
     document.documentElement.lang = this.translate.currentLang;
     document.documentElement.dir = this.translate.currentLang === 'ar' ? 'rtl' : 'ltr';

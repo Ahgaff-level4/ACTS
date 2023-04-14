@@ -26,7 +26,7 @@ export class UtilityService {
   /**
    * promise will be fulfilled and user.next(...) will be called if user is login. otherwise rejected.
    */
-  public isLogin = () => {
+  public isLogin=()=>{
     return new Promise<void>((resolve, rej) => {
       this.http.get<User>(env.AUTH + 'isLogin', { withCredentials: true }).subscribe({
         next: res => {
@@ -150,12 +150,19 @@ export class UtilityService {
     return this.snackbar.open(message, action, { duration }).onAction()
   }
 
+  /**calculate the age of birthdate object from now
+   * @returns age in decimal. ex: 3.141
+   */
   public calcAge(birthdate: Date | string) {
     birthdate = new Date(birthdate);
     const today = new Date();
     const ageInDays = (today.getTime() - birthdate.getTime()) / (1000 * 60 * 60 * 24);
     const ageInYears = ageInDays / 365.25;
     return ageInYears;
+  }
+
+  public displayRoles(roles:Role[]){
+    return roles.map(v=>this.translate(v==='HeadOfDepartment'?'Head of Department':v)).join(this.translate(',')+' ');
   }
 }
 

@@ -170,6 +170,9 @@
   "Sorry, there was a problem navigating to activities page. Please try again later or check your connection.":"",
   "Sorry, there was a problem. Please try again later or check your connection.":"",
   "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.":"",
+  "Sorry, there was a problem fetching the accounts information. Please try again later or check your connection.":"",
+  "Sorry, there was a problem registering the account. Please try again later or check your connection.":"",
+  "Sorry, there was a problem editing the account information. Please try again later or check your connection.":"",
   "Age Range":"",
   "Age range":"",
   "Minimum age":"",
@@ -188,5 +191,15 @@
   "Change the activity":"",
   "Filter activities within age range of the child age":"",
   "Create special activity":"",
-  "Or":""
+  "Or":"",
+  "Accounts":"",
+  "Role":"",
+  "Roles":"",
+  "Address":"",
+  "Register new account":"",
+  "Reset password":"",
+  "Head of Department":"",
+  "Teacher":"",
+  "Parent":"",
+  "Admin":""
 }

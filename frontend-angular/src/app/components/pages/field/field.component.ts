@@ -23,7 +23,7 @@ export class FieldComponent implements OnInit {
   public dataSource!: MatTableDataSource<IFieldEntity>;
   public columnsKeys: string[];
   public isLoading: boolean = true;
-  
+
   constructor(private service: FieldService, public ut: UtilityService, private dialog: MatDialog) {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     this.columnsKeys = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? (this.canAddEdit ? ['name', 'activityCount', 'createdDatetime', 'control'] : ['name', 'activityCount', 'createdDatetime']);
@@ -36,11 +36,9 @@ export class FieldComponent implements OnInit {
         this.dataSource.data = v;
         if (this.table)
           this.table.renderRows();
-        this.ut.isLoading.next(false);
-      },error:()=>this.ut.isLoading.next(false)
+      }
     });
-    this.service.fetch();
-    this.ut.isLoading.next(true);
+    this.service.fetch(true);
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });

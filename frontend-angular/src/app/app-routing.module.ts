@@ -11,6 +11,7 @@ import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
 import { GoalComponent } from './components/pages/goal/goal.component';
+import { AccountComponent } from './components/pages/accounts/account/account.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -51,6 +52,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
 }
 
 
+const A = { allowRoles: ['Admin'] };
 const AH = { allowRoles: ['Admin', 'HeadOfDepartment'] };
 const AHT = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher'] };
 const AHTP = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] }
@@ -63,6 +65,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
+  { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: A },
   { path: 'activities/:id', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: AHT },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
   { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },

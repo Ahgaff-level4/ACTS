@@ -17,7 +17,7 @@ export class FromNowPipe implements PipeTransform {
       date = value;
 
     if (date) {
-      moment.locale(this.translate.currentLang === 'ar' ? 'ar-kw' : 'en');
+      moment.locale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
       if (args[0] === true)
         return moment(date).fromNow(true)
       return moment(date).fromNow();
