@@ -1,9 +1,9 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { IChildEntity, IGoalEntity } from '../../../../../../interfaces';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { ChildService } from 'src/app/services/child.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -17,7 +17,7 @@ import { AddEditGoalComponent } from '../../dialogs/add-edit-goal/add-edit-goal.
   templateUrl: './goal.component.html',
   styleUrls: ['./goal.component.scss']
 })
-export class GoalComponent {
+export class GoalComponent implements OnDestroy {
   public canAdd: boolean;
   public canEditDelete: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -25,33 +25,29 @@ export class GoalComponent {
   @ViewChild(MatTable) table!: MatTable<IGoalEntity>;
   public dataSource!: MatTableDataSource<IGoalEntity>;
   public columnsKeys: string[];
-  public child = new BehaviorSubject<IChildEntity | null>(null);
+  private sub: Subscription = new Subscription();
 
   /**
    * - First use when init the class. The param will be passed by URL param as (string|null).
    * - Second when `Add`, `Edit`, or `Delete`. So that it will emit the new data. So, that the table will be refresh. The param will be undefined.
    */
   async fetch(childId?: number | string | null) {
-    this.ut.isLoading.next(true);
     if (typeof childId === 'string')
       childId = +childId;
-    if (childId || this.child.value?.id)// if First and Second cases. Else like if child.value is null and childId is null then there is something went wrong!
-      this.child.next(await this.childService.fetchOne(childId ?? this.child.value?.id as number));
-    else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem navigating to activities page. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
-    this.ut.isLoading.next(false);
+    if (childId ?? this.service.childItsGoals.value?.id)// if First and Second cases. Else like if child.value is null and childId is null then there is something went wrong!
+      this.service.fetchChildItsGoals(childId ?? this.service.childItsGoals.value?.id as number, childId?true:false);
+    else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
   }
 
-  constructor(private service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private childService: ChildService) {
+  constructor(public service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private childService: ChildService) {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
     this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'control'];
-    this.ut.isLoading.next(true);
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
         await this.fetch(childId);
-        this.ut.isLoading.next(false);
-      }, error: () => this.ut.isLoading.next(false)
+      },
     });
   }
 
@@ -59,17 +55,20 @@ export class GoalComponent {
 
   ngOnInit(): void {
     this.dataSource = new MatTableDataSource<IGoalEntity>();
-    this.child.subscribe((v) => {
-      if (v == null)
-        return;
-      this.dataSource.data = v.goals;
-      if (this.table)
-        this.table.renderRows();
-    });
-    this.ut.user.subscribe(v => {
+    this.sub.add(this.service.childItsGoals.subscribe({
+      next: (v) => {
+        if (v == null)
+          return;
+        this.dataSource.data = v.goals;
+        if (this.table)
+          this.table.renderRows();
+      }
+    }));
+
+    this.sub.add(this.ut.user.subscribe(v => {
       this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
       this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    });
+    }));
   }
 
   ngAfterViewInit(): void {
@@ -109,11 +108,9 @@ export class GoalComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        this.ut.isLoading.next(true);
-        await this.service.delete(goal.id);
+        await this.service.delete(goal.id,true);
         this.fetch();
         this.ut.showSnackbar('The goal has been deleted successfully.');
-        this.ut.isLoading.next(false);
       }
     })
   }
@@ -124,5 +121,9 @@ export class GoalComponent {
 
   showEvaluations(goal: IGoalEntity) {
 
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

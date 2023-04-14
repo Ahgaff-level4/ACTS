@@ -17,25 +17,37 @@ export class ProgramService {
   }
 
   /** fetch programs from DB and emit it to programs */
-  fetch(): Promise<void> {
+  fetch(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.get<IProgramEntity[]>(this.URL)
-        .subscribe({ next: (v) => { this.programs.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e); } });
+        .subscribe({
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.programs.next(v); res()
+          }, error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e);
+          }
+        });
     })
   }
 
   /**
  * @returns if request succeeded, `resolve` with the added entity, and call fetch() to emit the new entities. Otherwise show error dialog and `reject`.
  */
-  post(field: ICreateProgram): Promise<IProgramEntity> {
+  post(field: ICreateProgram, manageLoading = false): Promise<IProgramEntity> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.post<IProgramEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
             rej(e);
           }
@@ -43,12 +55,17 @@ export class ProgramService {
     });
   }
 
-  patch(id: number, child: Partial<IProgramEntity>): Promise<SucResEditDel> {
+  patch(id: number, child: Partial<IProgramEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.URL + '/' + id, child)
         .subscribe({
-          next: (v) => { this.fetch(); res(v) },
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.fetch(); res(v)
+          },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the program. Please try again later or check your connection.");
             rej(e);
           }
@@ -56,26 +73,38 @@ export class ProgramService {
     })
   }
 
-  delete(id: number): Promise<SucResEditDel> {
+  delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
-          next: (v) => { this.fetch(); res(v) },
-          error: (e) => { this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e); }
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.fetch(); res(v)
+          },
+          error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e);
+          }
         })
     })
   }
 
   /** program.activities will be array of IActivityEntity of the fetched program */
-  fetchOne(programId: number): Promise<IProgramEntity> {
-    return new Promise((res,rej)=>{
-      this.http.get<IProgramEntity[]>(this.URL+'/'+programId)
-      .subscribe({
-        next:v=>res(v[0]),
-        error:e=>{
-          this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program. Please try again later or check your connection."); rej(e);
-        }
-      })
+  fetchOne(programId: number, manageLoading = false): Promise<IProgramEntity> {
+    return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
+      this.http.get<IProgramEntity[]>(this.URL + '/' + programId)
+        .subscribe({
+          next: v => {
+            manageLoading && this.ut.isLoading.next(false);
+            res(v[0])
+          },
+          error: e => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program. Please try again later or check your connection."); rej(e);
+          }
+        })
     })
   }
 }

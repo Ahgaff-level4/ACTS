@@ -19,10 +19,10 @@ export class GoalController {
   //   return this.goalService.findAll(fk);
   // }
 
-  @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.goalService.findOne(+id);
-  }
+  // @Get(':id')
+  // findOne(@Param('id', ParseIntPipe) id: number) {
+  //   return this.goalService.findOne(+id);
+  // }
 
   @Patch(':id')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')

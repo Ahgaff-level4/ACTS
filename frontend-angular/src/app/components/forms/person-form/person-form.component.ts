@@ -35,9 +35,7 @@ export class PersonFormComponent implements OnInit {
     this.formGroup.valueChanges.subscribe(() => {
       this.person = { ...this.person, ...this.formGroup.value };
       this.personChange.emit(this.person);
-      console.log('passed person:', this.person)
     });
-    console.log('passed person:', this.person)
   }
 
   /**

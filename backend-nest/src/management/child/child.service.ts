@@ -28,11 +28,11 @@ export class ChildService {
   async findOne(id: number) {
     return this.repo.createQueryBuilder('child')
       .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
-      .leftJoinAndMapMany('child.goals', GoalEntity, 'goal', 'child.id=goal.childId')
+      .leftJoinAndMapMany('child.goals', GoalEntity, 'goal', 'child.id=goal.childId AND goal.state != :state', { state: 'strength' })
       .leftJoinAndMapOne('goal.activity', ActivityEntity, 'activity', "goal.activityId=activity.id")
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
-      .where({ id })
-      .andWhere('goal.state != :state', { state: 'strength' })
+      .where('child.id=:id', { id })
+      // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();
   }
 

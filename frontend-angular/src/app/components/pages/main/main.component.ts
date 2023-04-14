@@ -13,17 +13,5 @@ import { SelectActivityComponent } from '../../dialogs/select-activity/select-ac
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
-  public title: string = "Hello";
-  public myFormGroup = new FormGroup({
-    name: new FormControl('None', [Validators.required, Validators.maxLength(10)]),
-    age: new FormControl('0', Validators.max(100))
-  });
-constructor(private dialog:MatDialog){
-  this.dialog.open(SelectActivityComponent);
-}
-  changeTitle() {
-    if (this.title == 'Hello')
-      this.title = 'Hi'
-    else this.title = "Hello";
-  }
+
 }

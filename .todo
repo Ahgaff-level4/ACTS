@@ -1,11 +1,7 @@
-- fix <mat-icon> need internet!
-
 - when user changing route/page there should be sort of loader/spinner. Loading until the page is loaded. Also, check for animation when transporting between pages
 
-- when language changed the dateTimeWeekPipes are not refreshed because transform() called once. Then the language changed :/
-
-- in add-edit-child add custom validator in 'Order between siblings' field instead of just disable it.
-
-- trim all fields in all forms before submitting.
+- in add-edit-child add custom validator(control.setErrors({myErr:true})) and mat-error. in 'Order between siblings' field instead of just disable it.
 
 - in add-edit-child component add isArchive field only shown when edit child. Also, in children page show only isArchive=false children, using server or in client depends on you. And there should be an option for showing isArchive=true children, using another page or filter in the children page depends on you.
+
+- optimize button that will delete any activity dose not connected to a child AND dose not have programId. Made when user create special activity but dose not continue to fill the goal form to add goal with special activity.

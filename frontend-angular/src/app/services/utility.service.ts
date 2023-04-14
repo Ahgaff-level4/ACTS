@@ -115,8 +115,13 @@ export class UtilityService {
   public extractDirty(controls: { [key: string]: AbstractControl<any, any> }): { [key: string]: any } | null {
     let ret: { [key: string]: any } = {};
     for (let key in controls)
-      if (controls[key].dirty)
+      if (controls[key].dirty) {
         ret[key] = controls[key].value;
+        if (typeof ret[key] == 'string' && key != 'password')
+          ret[key] = ret[key].toString();
+        if (ret[key] instanceof moment || moment.isMoment(ret[key]))
+          ret[key] = ret[key].toDate().toISOString();
+      }
 
     console.log('extractDirty', ret);
     return Object.keys(ret).length == 0 ? null : ret;
@@ -143,6 +148,14 @@ export class UtilityService {
    */
   public showSnackbar(message: string, action?: string, duration = 4000) {
     return this.snackbar.open(message, action, { duration }).onAction()
+  }
+
+  public calcAge(birthdate: Date | string) {
+    birthdate = new Date(birthdate);
+    const today = new Date();
+    const ageInDays = (today.getTime() - birthdate.getTime()) / (1000 * 60 * 60 * 24);
+    const ageInYears = ageInDays / 365.25;
+    return ageInYears;
   }
 }
 

@@ -11,10 +11,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrls: ['./app.component.scss'],
-  providers: [
-    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
-  ]
+  styleUrls: ['./app.component.scss']
 })
 export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy {
 

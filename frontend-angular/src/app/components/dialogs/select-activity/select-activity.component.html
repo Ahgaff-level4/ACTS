@@ -10,9 +10,11 @@
 
     <div *ngIf="this.chosenProgram">
       <h4 mat-dialog-title>{{'Choose an activity'|translate}}</h4>
-      <mat-button-toggle-group value="all" (change)="filterActivities($event.value)" class="w-100" aria-label="Font Style">
+      <mat-button-toggle-group [value]="filter" (change)="filterActivities($event.value)" class="w-100"
+        aria-label="Filter activities">
         <mat-button-toggle value="all">{{'All activities'|translate}}</mat-button-toggle>
-        <mat-button-toggle value="age" [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
+        <mat-button-toggle [matTooltip]="'Filter activities within age range of the child age'|translate" value="age"
+          [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
       </mat-button-toggle-group>
       <mat-selection-list #listActivity [multiple]="false"
         (selectionChange)="onSelectionChangeActivity(listActivity?.selectedOptions?.selected?.[0]?.value)">
@@ -21,6 +23,23 @@
           <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} – {{activity.maxAge}}</div>
         </mat-list-option>
       </mat-selection-list>
+    </div>
+
+    <div class="row m-3 d-flex">
+      <div class="col-4 border-bottom border-secondary align-self-center">
+      </div>
+      <div class="col-4 text-center align-self-center">
+        {{'Or'|translate}}
+      </div>
+      <div class="col-4 border-bottom border-secondary align-self-center">
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12">
+        <button class="w-100" type="button" mat-flat-button color="primary" (click)="createSpecialActivity()">{{'Create
+          special activity'|translate}}</button>
+      </div>
     </div>
   </div>
 </div>

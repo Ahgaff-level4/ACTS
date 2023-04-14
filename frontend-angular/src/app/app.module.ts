@@ -86,6 +86,7 @@ import { SelectActivityComponent } from './components/dialogs/select-activity/se
   providers:[
     TranslatePipe,
     {provide:DateAdapter,useClass:MomentDateAdapter,deps:[MAT_DATE_LOCALE,MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
+
   ],
   bootstrap: [AppComponent]
 })

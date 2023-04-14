@@ -20,10 +20,20 @@ export class ChildService {
    * create api request to retrieve children information and broadcast it to `children` BehaviorSubject.
    * @returns `resolve` if request succeeded. Otherwise `reject`.
    */
-  fetchChildren(): Promise<void> {
+  fetchChildren(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true)
       this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
-        .subscribe({ next: (v) => { this.children.next(v); res() }, error: (e) => { this.ut.errorDefaultDialog(e,"Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e); } });
+        .subscribe({
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.children.next(v);
+            res()
+          }, error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e);
+          }
+        });
     })
   }
 
@@ -31,15 +41,18 @@ export class ChildService {
  * api request to post a child information. Then append the new child with previous `children` BehaviorSubject and emit the new children array.
  * @returns `resolve` if request succeeded. Otherwise `reject`.
  */
-  postChild(child: ICreateChild): Promise<IChildEntity> {
+  postChild(child: ICreateChild, manageLoading = false): Promise<IChildEntity> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.post<IChildEntity>(this.childURL, child)
         .subscribe({
           next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.fetchChildren()
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the child. Please try again later or check your connection.");
             rej(e);
           }
@@ -47,20 +60,25 @@ export class ChildService {
     });
   }
 
-  patchChild(id: number, child: Partial<IChildEntity>): Promise<SucResEditDel> {
+  patchChild(id: number, child: Partial<IChildEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.childURL + '/' + id, child)
         .subscribe({
-          next: (v) => { this.fetchChildren(); res(v) },
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.fetchChildren(); res(v)
+          },
           error: e => {
-            this.ut.errorDefaultDialog(e,"Sorry, there was a problem editing the child information. Please try again later or check your connection.");
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the child information. Please try again later or check your connection.");
             rej(e);
           }
         })
     })
   }
 
-  
+
 }
 
 

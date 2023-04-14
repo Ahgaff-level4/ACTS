@@ -23,15 +23,15 @@ export class GoalService {
     else return this.repo.find();
   }
 
-  async findOne(id: number) {
-    // return this.db.selectJoinOne(['goal', 'childView','performance'], id)
-  }
+  // async findOne(id: number) {
+  //   // return this.db.selectJoinOne(['goal', 'childView','performance'], id)
+  // }
 
   update(id: number, updateGoal: UpdateGoal) {
-    // return this.db.update('goal', id, updateGoal);
+    return this.repo.update(id,updateGoal);
   }
 
   remove(id: number) {
-    // return this.db.delete('goal',id);
+    return this.repo.delete(id);
   }
 }

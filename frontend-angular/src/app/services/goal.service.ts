@@ -18,14 +18,19 @@ export class GoalService {
   * @returns if request succeeded, `resolve` with the added entity, and call fetch() to emit the new entities. Otherwise show error dialog and `reject`.
   * don't forget refresh table after adding
   */
-  post(field: ICreateGoal): Promise<IGoalEntity> {
+  post(field: ICreateGoal, manageLoading = false): Promise<IGoalEntity> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.post<IGoalEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            if (this.childItsGoals.value?.id)
+              this.fetchChildItsGoals(this.childItsGoals.value.id);
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
             rej(e);
           }
@@ -34,12 +39,19 @@ export class GoalService {
   }
 
   /** don't forget refresh after editing */
-  patch(id: number, child: Partial<IGoalEntity>): Promise<SucResEditDel> {
+  patch(id: number, child: Partial<IGoalEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.URL + '/' + id, child)
         .subscribe({
-          next: (v) => { res(v) },
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            if (this.childItsGoals.value?.id)
+              this.fetchChildItsGoals(this.childItsGoals.value.id);
+            res(v)
+          },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the goal. Please try again later or check your connection.");
             rej(e);
           }
@@ -47,13 +59,21 @@ export class GoalService {
     })
   }
 
-  /** don't forget refresh after deleting  */
-  delete(id: number): Promise<SucResEditDel> {
+  delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
-          next: (v) => { res(v) },
-          error: (e) => { this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the goal. Please try again later or check your connection."); rej(e); }
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            if (this.childItsGoals.value?.id)
+              this.fetchChildItsGoals(this.childItsGoals.value.id);
+            res(v);
+          },
+          error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the goal. Please try again later or check your connection."); rej(e);
+          }
         })
     })
   }
@@ -63,18 +83,23 @@ export class GoalService {
    * - child.goals[...].activity is defined
    * - child.goals[...].activity.field is defined
    * */
-  public fetchChildItsGoals(id: number): Promise<IChildEntity> {
+  public fetchChildItsGoals(id: number, manageLoading = false): Promise<IChildEntity> {
     return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
       this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id)
         .subscribe({
           next: v => {
+            manageLoading && this.ut.isLoading.next(false);
             if (Array.isArray(v) && v.length != 0) {
               this.childItsGoals.next(v[0]);
               res(v[0]);
             }
-            else { this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(v); }
+            else {
+              this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(v);
+            }
           },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
           }
         })

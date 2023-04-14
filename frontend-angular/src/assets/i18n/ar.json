@@ -61,6 +61,7 @@
   "Birthdate":"تاريخ الميلاد",
   "Created Date":"تاريخ الإنشاء",
   "You must choose a date":"يجب تحديد تاريخ",
+  "You must choose an activity":"يجب تحديد تاريخ",
   "Number of sisters":"عدد الأخوات",
   "Number of brothers":"عدد الأخوان",
   "Family members":"عدد افراد العائلة",
@@ -173,7 +174,7 @@
   "Age range":"",
   "Minimum age":"",
   "Maximum age":"",
-  "Goals of:":"",
+  "Goals of":"",
   "Goal":"",
   "Continual":"",
   "Completed":"",
@@ -183,5 +184,9 @@
   "Evaluate":"",
   "Evaluations":"",
   "Choose a program":"",
-  "Choose an activity":""
+  "Choose an activity":"",
+  "Change the activity":"",
+  "Filter activities within age range of the child age":"",
+  "Create special activity":"",
+  "Or":""
 }
