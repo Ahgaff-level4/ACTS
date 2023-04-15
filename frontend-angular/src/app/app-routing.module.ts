@@ -12,6 +12,7 @@ import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
 import { GoalComponent } from './components/pages/goal/goal.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
+import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -36,7 +37,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   showUnauthorizeDialog();
   return false;
 
-  function showUnauthorizeDialog(){
+  function showUnauthorizeDialog() {
     ut.showMsgDialog({
       type: 'error',
       title: 'Insufficient privilege!',
@@ -66,6 +67,8 @@ const routes: Routes = [
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
   { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: A },
+  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canActivate: [RoleGuard], data: A },
+  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canActivate: [RoleGuard], data: A },
   { path: 'activities/:id', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: AHT },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
   { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },

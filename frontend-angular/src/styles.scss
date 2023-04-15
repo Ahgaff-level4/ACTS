@@ -13,7 +13,6 @@
 // import our custom theme
 @import "./theme.scss";
 
-
 // Include theme styles for core and each component used in your app.
 // Alternatively, you can import and @include the theme mixins for each component
 // that you are using.
@@ -25,7 +24,7 @@
 // `.dark-theme` will be affected by this alternate dark theme instead of the default theme.
 
 .dark-theme {
-	@include angular-material-color($dark-theme);
+  @include angular-material-color($dark-theme);
 }
 
 // Override typography for all Angular Material, including mat-base-typography and all components.
@@ -35,17 +34,20 @@
 
 html,
 body {
-	height: 100%;
+  height: 100%;
 }
 body {
-	margin: 0;
-	font-family: Roboto, "Helvetica Neue", sans-serif;
+  margin: 0;
+  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 // .rtl{ if you don't uncomment this. then you may want to delete the imported file bootstrap.rtl.min.css
 //   @import url(./assets/bootstrap.rtl.min.css);
 // }
 mat-checkbox.text-white div label {
-	color:white!important;
+  color: white !important;
 }
 
-
+:not(mat-form-field) > mat-error {
+  font-size: small;
+  font-weight: 500;
+}

@@ -11,24 +11,18 @@ export class AccountService {
     constructor(@InjectDataSource() private dataSource: DataSource, @InjectRepository(AccountEntity) private repo: Repository<AccountEntity>) { }
 
     async create(createAccount: CreateAccount) {
-        return new Promise(async (res, rej) => {
-            createAccount.password = await this.generateHashSalt(createAccount.password);
-            this.dataSource.manager.transaction(async (transaction) => {
-                let created = await transaction.withRepository(this.repo).save(
-                    transaction.withRepository(this.repo).create(createAccount)
-                );
+        createAccount.password = await this.generateHashSalt(createAccount.password);
+        const created = this.repo.create(createAccount);
 
-                for (let role of createAccount.roles) {
-                    let roleEntity = await transaction.findOneBy(RoleEntity, { name: role });
-                    if (roleEntity == null)
-                        throw new BadRequestException({ message: R.string.invalidRole(role) });
-                    if (Array.isArray(created.rolesEntities))
-                        created.rolesEntities = [...created.rolesEntities, roleEntity]
-                    else created.rolesEntities = [roleEntity];
-                }
-                res(await transaction.withRepository(this.repo).save(created));
-            });
-        });
+        for (const role of createAccount.roles) {
+            const roleEntity = await this.dataSource.getRepository(RoleEntity).findOneBy({ name: role });
+            if (roleEntity == null)
+                throw new BadRequestException({ message: R.string.invalidRole(role) });
+            if (Array.isArray(created.rolesEntities))
+                created.rolesEntities = [...created.rolesEntities, roleEntity]
+            else created.rolesEntities = [roleEntity];
+        }
+        return this.shapeBaseOnRole(this.extractRoles(await this.repo.save(created)));
     }
 
     async findAll() {
@@ -78,13 +72,13 @@ export class AccountService {
      * Same as update(...) BUT no need for oldPassword. Must be authorized only by admin
      */
     async update(id: number, updateAccount: UpdateAccount) {
-        return new Promise(async (res, rej) => {
+        return new Promise(async (res) => {
             if (updateAccount.password)
                 updateAccount.password = await this.generateHashSalt(updateAccount.password);
             if (Array.isArray(updateAccount.roles))
                 return this.dataSource.transaction(async (transaction) => {
-                    for (let role of updateAccount.roles) {
-                        let roleEntity = await transaction.findOneBy(RoleEntity, { name: role });
+                    for (const role of updateAccount.roles) {
+                        const roleEntity = await transaction.findOneBy(RoleEntity, { name: role });
                         if (roleEntity == null)
                             throw new BadRequestException({ message: R.string.invalidRole(role) });
                         if (Array.isArray((updateAccount as AccountEntity).rolesEntities))
@@ -119,7 +113,7 @@ export class AccountService {
      * ex: {..., rolesEntities:[{id:4,name:"Teacher"}]} => {..., roles:["Teacher"]}
      */
     public extractRoles(v: AccountEntity): AccountEntity {
-        let roles = v.rolesEntities.map(roleEntity => roleEntity.name);
+        const roles = v.rolesEntities.map(roleEntity => roleEntity.name);
         delete v.rolesEntities;
         return { ...v, roles };
     }

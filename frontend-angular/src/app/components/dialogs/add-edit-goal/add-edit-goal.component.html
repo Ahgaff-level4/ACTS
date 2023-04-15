@@ -7,7 +7,7 @@
           <div class="col-md-12">
             <button class="w-100" type="button" mat-flat-button color="primary"
               (click)="selectActivity()">{{selectedActivity?'Change the activity':'Choose an activity'|translate}}</button>
-            <mat-error *ngIf="formGroup.get('activityId')?.errors?.['dirty']">{{'You must choose an activity'|translate}}</mat-error>
+            <mat-error *ngIf="formGroup.get('activityId')?.errors?.['dirty']" style="font-size: small;font-weight: 500;" class="mx-2 mat-error">{{'You must choose an activity'|translate}}</mat-error>
           </div>
         </div>
 

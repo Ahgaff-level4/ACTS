@@ -1,1 +1,58 @@
-<p>add-edit-account works!</p>
+<div class="container mt-5">
+  <h1 class="m-2">{{this.account?.id?'Edit account':'Register new account'|translate}}</h1>
+  <app-person-form [(person)]="person"></app-person-form>
+  <mat-divider class="p-2 my-3 mx-5"></mat-divider>
+  <form [formGroup]="accountForm" class="container-fluid" (ngSubmit)="submit()">
+    <div class="row">
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Username'|translate}}</mat-label>
+          <input matInput formControlName="username" minlength="4" maxlength="32">
+          <mat-error>{{getUsernameErrorMessage()|translate:minMaxLength}}</mat-error>
+          <mat-hint>{{'Username should be unique.'|translate}}</mat-hint>
+
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Password'|translate}}</mat-label>
+          <input matInput formControlName="password" minlength="4">
+          <mat-error>{{getPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
+        </mat-form-field>
+      </div>
+      <div class="col-md-4 p-2">
+        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+          <mat-label>{{'Repeat password'|translate}}</mat-label>
+          <input matInput formControlName="repeatPassword" minlength>
+          <mat-error>{{getRepeatPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
+        </mat-form-field>
+      </div>
+    </div>
+
+    <div class="row">
+      <div class="col-md-12 p-2">
+        <h5>{{'Role'|translate}}</h5>
+        <mat-button-toggle-group formControlName="roles" multiple style="flex-wrap: wrap;">
+          <mat-button-toggle value="Admin">{{'Admin'|translate}}</mat-button-toggle>
+          <mat-button-toggle value="HeadOfDepartment">{{"Head of Department"|translate}}</mat-button-toggle>
+          <mat-button-toggle value="Teacher">{{'Teacher'|translate}}</mat-button-toggle>
+          <mat-button-toggle value="Parent">{{'Parent'|translate}}</mat-button-toggle>
+        </mat-button-toggle-group>
+        <mat-icon class="mx-2" [matTooltip]="'Admin has all roles privileges. Click for more information'|translate">info</mat-icon>
+        <mat-error style="font-size: small;font-weight: 500;"
+          class="mx-2 mat-error">{{getRolesErrorMessage()}}</mat-error>
+
+      </div>
+    </div>
+    <div *ngIf="accountForm.get('roles')?.value.includes('Parent')" class="row">
+      <div class="col-md-4 p-2">
+        <textarea matInput placeholder="..."  formControlName="address" maxlength="64"></textarea>
+        <mat-hint align="end">{{accountForm.get('address')?.value?.length??0}}/60</mat-hint>
+      </div>
+    </div>
+    <div class="d-flex mt-4">
+      <button [disabled]="isLoading" class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
+        {{account?.id == null?'Submit':'Edit'|translate}} </button>
+    </div>
+  </form>
+</div>
