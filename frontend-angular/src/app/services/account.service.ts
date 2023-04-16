@@ -77,4 +77,24 @@ export class AccountService {
         })
     })
   }
+  
+  /**Used only by Admin (can reset password without providing the old password) */
+  put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
+    return new Promise((res, rej) => {
+      manageLoading && this.ut.isLoading.next(true);
+      this.http.put<SucResEditDel>(this.URL + '/' + id, account)
+        .subscribe({
+          next: (v) => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.fetch(manageLoading);
+            res(v);
+          },
+          error: e => {
+            manageLoading && this.ut.isLoading.next(false);
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
+            rej(e);
+          }
+        })
+    })
+  }
 }

@@ -116,5 +116,5 @@ export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
 	oldPassword: string;
 }
 
-export class UpdateAccount extends PartialType(CreateAccount) {
+export class UpdateAccount extends PartialType(AccountEntity) {
 }

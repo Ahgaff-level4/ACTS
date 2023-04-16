@@ -26,7 +26,7 @@ export class UtilityService {
   /**
    * promise will be fulfilled and user.next(...) will be called if user is login. otherwise rejected.
    */
-  public isLogin=()=>{
+  public isLogin = () => {
     return new Promise<void>((resolve, rej) => {
       this.http.get<User>(env.AUTH + 'isLogin', { withCredentials: true }).subscribe({
         next: res => {
@@ -102,7 +102,7 @@ export class UtilityService {
   public extractFrom(keys: { [key: string]: any }, properties: { [key: string]: any }) {
     let ret: { [key: string]: any } = {};
     for (let k in keys) {
-      ret[k] = properties[k];
+      ret[k] = properties[k] ?? null;
     }
     return ret;
   }
@@ -161,8 +161,29 @@ export class UtilityService {
     return ageInYears;
   }
 
-  public displayRoles(roles:Role[]){
-    return roles.map(v=>this.translate(v==='HeadOfDepartment'?'Head of Department':v)).join(this.translate(',')+' ');
+  public displayRoles(roles: Role[]) {
+    return roles.map(v => this.translate(v === 'HeadOfDepartment' ? 'Head of Department' : v)).join(this.translate(',') + ' ');
+  }
+
+  public validation = {//used in FormControl validators
+    strongPasswordValidator(control: FormControl) {
+      // implement password strength check
+      const isValid = true;
+      return isValid ? null : { strongPassword: true };
+    },
+    /**if control use maxlength or minlength validators then component should have {min/maxlength:number} obj. And this function should be called with translate pipe using param min/max obj. Ex: {{getRequireMaxMinErrMsg()|translate:minMaxLength}} */
+    getRequireMaxMinLengthErrMsg(control: AbstractControl|null): string | '' {
+      if (control?.hasError('required'))
+        return 'You must enter a value';
+
+      if (control?.hasError('maxlength'))
+        return 'Maximum length is ';
+
+      if (control?.hasError('minlength'))
+        return 'Minimum length is ';
+
+      return '';
+    }
   }
 }
 

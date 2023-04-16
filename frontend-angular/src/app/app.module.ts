@@ -38,6 +38,7 @@ import { AddEditGoalComponent } from './components/dialogs/add-edit-goal/add-edi
 import { SelectActivityComponent } from './components/dialogs/select-activity/select-activity.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
+import { ResetChangePasswordComponent } from './components/dialogs/reset-change-password/reset-change-password.component';
 // Factory function required during AOT compilation
 
 @NgModule({
@@ -67,7 +68,8 @@ import { AddEditAccountComponent } from './components/pages/accounts/add-edit-ac
     AddEditGoalComponent,
     SelectActivityComponent,
     AccountComponent,
-    AddEditAccountComponent
+    AddEditAccountComponent,
+    ResetChangePasswordComponent
   ],
   imports: [
     BrowserModule,

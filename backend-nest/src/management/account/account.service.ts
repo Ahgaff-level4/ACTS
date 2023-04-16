@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
-import { AccountEntity, CreateAccount, UpdateAccount } from './account.entity';
+import { AccountEntity, CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { PersonView } from '../person/person.entity';
@@ -8,6 +8,7 @@ import { RoleEntity } from './role/role.entity';
 import { R } from 'src/utility.service';
 @Injectable()
 export class AccountService {
+
     constructor(@InjectDataSource() private dataSource: DataSource, @InjectRepository(AccountEntity) private repo: Repository<AccountEntity>) { }
 
     async create(createAccount: CreateAccount) {
@@ -52,45 +53,41 @@ export class AccountService {
     /**
      * UpdateAccount needs oldPassword. And it will validate the old password with existed password, if invalid throw Unauthorized exception
      */
-    // async updateOldPassword(id: number, updateAccount: UpdateAccountOldPassword) {
-    // if (updateAccount.password)
-    //     updateAccount.password = await this.generateHashSalt(updateAccount.password);
+    async updateOldPassword(id: number, updateAccount: UpdateAccountOldPassword) {
+        // if (updateAccount.password)
+        //     updateAccount.password = await this.generateHashSalt(updateAccount.password);
 
-    // var oldPassword = await this.db.select('password', 'account', 'id=?', [id]) as [{ password: string }] | [];
-    // if (oldPassword.length == 0)
-    //     throw new BadRequestException('Account with id provided dose not exist!')
+        // var oldPassword = await this.db.select('password', 'account', 'id=?', [id]) as [{ password: string }] | [];
+        // if (oldPassword.length == 0)
+        //     throw new BadRequestException('Account with id provided dose not exist!')
 
-    // let oldPass: string = oldPassword[0].password;
-    // if (!(await bcrypt.compare(updateAccount.oldPassword, oldPass)))
-    //     throw new UnauthorizedException('Old password is invalid!');
+        // let oldPass: string = oldPassword[0].password;
+        // if (!(await bcrypt.compare(updateAccount.oldPassword, oldPass)))
+        //     throw new UnauthorizedException('Old password is invalid!');
 
-    // delete updateAccount.oldPassword;
-    // return this.db.update('account', id, updateAccount);
-    // }
+        // delete updateAccount.oldPassword;
+        // return this.db.update('account', id, updateAccount);
+        throw 'not implemented'
+    }
 
     /**
      * Same as update(...) BUT no need for oldPassword. Must be authorized only by admin
      */
     async update(id: number, updateAccount: UpdateAccount) {
-        return new Promise(async (res) => {
-            if (updateAccount.password)
-                updateAccount.password = await this.generateHashSalt(updateAccount.password);
-            if (Array.isArray(updateAccount.roles))
-                return this.dataSource.transaction(async (transaction) => {
-                    for (const role of updateAccount.roles) {
-                        const roleEntity = await transaction.findOneBy(RoleEntity, { name: role });
-                        if (roleEntity == null)
-                            throw new BadRequestException({ message: R.string.invalidRole(role) });
-                        if (Array.isArray((updateAccount as AccountEntity).rolesEntities))
-                            (updateAccount as AccountEntity).rolesEntities = [...(updateAccount as AccountEntity).rolesEntities, roleEntity]
-                        else (updateAccount as AccountEntity).rolesEntities = [roleEntity];
-                    }
-                    res(await transaction.save(updateAccount));
-                })
-            else
-                return this.repo.update(id, updateAccount);
-
-        })
+        console.log(updateAccount);
+        if (updateAccount.password)
+            updateAccount.password = await this.generateHashSalt(updateAccount.password);
+        if (Array.isArray(updateAccount.roles))
+            for (const role of updateAccount.roles) {
+                const roleEntity = await this.dataSource.getRepository(RoleEntity).findOneBy({ name: role });
+                console.log(roleEntity);
+                if (roleEntity == null)
+                    throw new BadRequestException({ message: R.string.invalidRole(role) });
+                if (Array.isArray(updateAccount.rolesEntities))
+                    updateAccount.rolesEntities = [...updateAccount.rolesEntities, roleEntity];
+                else updateAccount.rolesEntities = [roleEntity];
+            }
+        return this.repo.save({...updateAccount,id});
     }
 
     remove(id: number) {

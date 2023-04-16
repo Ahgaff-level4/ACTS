@@ -4,6 +4,8 @@ import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from 'src/app/services/account.service';
+import { MatDialog } from '@angular/material/dialog';
+import { ResetChangePasswordComponent } from 'src/app/components/dialogs/reset-change-password/reset-change-password.component';
 
 @Component({
   selector: 'app-add-edit-account',
@@ -18,19 +20,27 @@ export class AddEditAccountComponent {
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
   minMaxLength = { minlength: 4, maxlength: 32 };
   isLoading = false;
+  hide = true;
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService) {
-    this.accountForm = this.fb.group({
-      username: [null, [Validators.required, this.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
-      password: [null, [Validators.required, this.strongPasswordValidator, Validators.minLength(4)]],
-      repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],
-      roles: [[], [this.rolesValidator]],
-      address:[null,[Validators.maxLength(64)]]
-    });
+  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
     this.account = history.state.data;
     this.person = this.account?.person;
+    let pass = this.account?.id ? {} : {
+      password: [null, [Validators.required, this.ut.validation.strongPasswordValidator, Validators.minLength(4)]],
+      repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],
+    };
+    this.accountForm = this.fb.group({
+      username: [null, [Validators.required, this.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
+      ...pass,
+      roles: [[], [this.rolesValidator]],
+      address: [null, [Validators.maxLength(64)]],
+      phone0: [null, [Validators.maxLength(15)]],
+    });
     if (this.account) {
-      this.accountForm?.setValue(this.ut.extractFrom(this.accountForm.controls, { ...this.account, password: '',repeatPassword:'' }));
+      this.account.address = this.account.address ?? undefined;//the field should be as a key property in the account object even if it has value of undefined
+      for (let i = 0; i < 10; i++)
+        this.account['phone' + i] = this.account['phone' + i] ?? undefined;
+      this.accountForm?.setValue(this.ut.extractFrom(this.accountForm.controls, { ...this.account, password: '', repeatPassword: '' }));
     }
     this.ut.isLoading.subscribe(v => this.isLoading = v);
   }
@@ -40,6 +50,7 @@ export class AddEditAccountComponent {
     this.ut.trimFormGroup(this.accountForm);
     this.personForm?.formGroup?.markAllAsTouched();
     this.accountForm?.markAllAsTouched();
+
     if (this.personForm?.formGroup?.valid && this.accountForm?.valid) {
       this.accountForm?.disable();
       this.personForm?.formGroup?.disable();
@@ -58,7 +69,7 @@ export class AddEditAccountComponent {
         await this.personForm.submitEdit();
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
         if (dirtyFields != null)
-          await this.accountService.patch(this.account.id, dirtyFields);
+          await this.accountService.put(this.account.id, dirtyFields);
         this.ut.showSnackbar('The account has been edited successfully.');
         this.ut.router.navigate(['/account']);
       }
@@ -66,42 +77,46 @@ export class AddEditAccountComponent {
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
 
-    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
+    } else {
+      console.log(this.accountForm)
+      this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
+    }
     // this.personForm.valid; do not submit if person field
   }
 
-  private getRequireMaxMinLengthErrMsg(controlName: string): string | '' {
-    if (this.accountForm.get(controlName)?.hasError('required'))
-      return 'You must enter a value';
 
-    if (this.accountForm.get(controlName)?.hasError('maxlength'))
-      return 'Maximum length is ';
-
-    if (this.accountForm.get(controlName)?.hasError('minlength'))
-      return 'Minimum length is ';
-
-    return '';
+  resetPassword() {
+    this.accountForm.get('password')?.disable();
+    this.dialog.open<ResetChangePasswordComponent, string, string>(ResetChangePasswordComponent,
+      { data: this.accountForm.get('password')?.value||'' }).afterClosed()
+      .subscribe(v => {
+        if (typeof v === 'string') {
+          this.accountForm.get('password')?.setValue(v);
+          this.accountForm.get('password')?.markAsDirty()
+          this.accountForm.get('repeatPassword')?.setValue(v);
+        }
+      })
   }
 
   getUsernameErrorMessage() {
     if (this.accountForm.get('username')?.hasError('whitespace'))
       return 'Username must not contain spaces';
 
-    return this.getRequireMaxMinLengthErrMsg('username') || '';
+    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('username')) || '';
   }
 
   getPasswordErrorMessage() {
     if (this.accountForm.get('password')?.hasError('strongPassword'))
       return 'Password is not strong enough';
 
-    return this.getRequireMaxMinLengthErrMsg('password') || '';
+    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('password')) || '';
   }
 
   getRepeatPasswordErrorMessage() {
     if (this.accountForm.get('repeatPassword')?.hasError('passwordMatch'))
       return 'Passwords do not match';
 
-    return this.getRequireMaxMinLengthErrMsg('repeatPassword') || '';
+    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('repeatPassword')) || '';
   }
 
   getRolesErrorMessage() {
@@ -116,12 +131,6 @@ export class AddEditAccountComponent {
     return isValid ? null : { whitespace: true };
   }
 
-  /**my Validator */
-  strongPasswordValidator(control: FormControl) {
-    // implement password strength check
-    const isValid = true;
-    return isValid ? null : { strongPassword: true };
-  }
 
   /**my Validator */
   passwordMatchValidator = (control: FormControl) => {
@@ -136,4 +145,5 @@ export class AddEditAccountComponent {
       return { require: true };
     return null;
   }
+
 }

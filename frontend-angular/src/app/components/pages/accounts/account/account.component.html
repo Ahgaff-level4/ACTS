@@ -53,7 +53,7 @@
             <div class="row d-flex justify-content-center align-items-center mb-3 mb-md-0">
               <div class="col-md-9">
                 <p>
-                  <b>{{'Gender'|translate}}:&nbsp;</b><span *ngIf="item.gender">{{item.gender|translate}}</span><span *ngIf="!item.gender">‹{{'Empty'|translate}}›</span><br/>
+                  <b>{{'Gender'|translate}}:&nbsp;</b><span *ngIf="item.gender">{{item.gender|translate}}</span><span *ngIf="!item.gender" class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span><br/>
                   <span *ngIf="item.roles.includes('Parent')"><b>{{'Address'|translate}}:&nbsp;</b><span *ngIf="item.address">{{item.address}}</span><span *ngIf="!item.address">‹{{'Empty'|translate}}›</span><br>
                   <b>{{'Phones'|translate}}:&nbsp;</b><span
                     *ngIf="item.phone0||item.phone1||item.phone2||item.phone3||item.phone4||item.phone5||item.phone6||item.phone7||item.phone8||item.phone9">{{displayPhones([item.phone0,item.phone1,item.phone2,item.phone3,item.phone4,item.phone5,item.phone6,item.phone7,item.phone8,item.phone9])}}.</span><span
@@ -62,9 +62,6 @@
                 </p>
               </div>
               <div class="col-md-3">
-                <!-- <a [routerLink]="'/accounts/'+item.id" class="mx-3" mat-flat-button
-                  color="primary">{{'Goals'|translate}}</a> -->
-                  <!--reset password & addEditDelete role are in edit-account page -->
                 <button class="m-1" mat-stroked-button color="primary" (click)="edit(this.expandedItem)"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
                 <button class="m-1" mat-stroked-button color="warn" (click)="deleteAccount(this.expandedItem)"><mat-icon>delete</mat-icon>{{'Delete'|translate}}</button>
               </div>
