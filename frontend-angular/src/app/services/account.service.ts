@@ -42,6 +42,7 @@ export class AccountService {
  */
   post(account: ICreateAccount, manageLoading = false): Promise<IAccountEntity> {
     return new Promise((res, rej) => {
+      console.log('createAccount',account)
       manageLoading && this.ut.isLoading.next(true);
       this.http.post<IAccountEntity>(this.URL, account)
         .subscribe({
@@ -77,7 +78,7 @@ export class AccountService {
         })
     })
   }
-  
+
   /**Used only by Admin (can reset password without providing the old password) */
   put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {

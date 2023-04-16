@@ -68,11 +68,18 @@
       </div>
     </div>
     <div *ngIf="accountForm.get('roles')?.value.includes('Parent')" class="row">
-      <div class="col-md-4 p-2">
-        <mat-form-field>
+      <div class="col-md-8 p-2">
+        <mat-form-field style="width:90%">
           <mat-label>{{'Address'|translate}}</mat-label>
           <textarea matInput placeholder="..." formControlName="address" maxlength="64"></textarea>
           <mat-hint align="end">{{accountForm.get('address')?.value?.length??0}}/60</mat-hint>
+        </mat-form-field>
+      </div>
+      <div *ngFor="let phoneField of phoneFields; let i = index" class="col-md-4 p-2">
+        <mat-form-field>
+          <mat-label>{{'Phone'|translate}}&nbsp;{{i+1}}</mat-label>
+          <input matInput formControlName="{{ phoneField }}" (input)="onPhoneChange(i)" placeholder="..." maxlength="15"/>
+          <mat-error>{{getPhoneErrorMessage(phoneField)|translate:phoneMaxLength}}</mat-error>
         </mat-form-field>
       </div>
     </div>

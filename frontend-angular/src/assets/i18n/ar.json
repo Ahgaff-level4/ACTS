@@ -211,5 +211,7 @@
   "Parent":"",
   "Admin":"",
   "Passwords do not match":"",
-  "Username must not contain spaces":""
+  "Must not contain spaces":"",
+  "Phone":"",
+  "Phone number must contain only digits and '+' symbol":""
 }

@@ -1,5 +1,5 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsOptional, IsPhoneNumber, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
+import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsOptional, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
 import { IAccountEntity, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from './../../../../interfaces.d';
 import { Transform } from "class-transformer";
@@ -28,53 +28,43 @@ export class CreateAccount implements ICreateAccount {
 	@Column({ type: 'nvarchar', length: 64, nullable: true })
 	public address?: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone0: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone1: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone2: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone3: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone4: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone5: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone6: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone7: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone8: string;//!Parent
 
-	@IsOptional() @IsString() @MaxLength(15)
-	@IsPhoneNumber("YE") @NotContains(' ')
+	@IsOptional() @IsString() @MaxLength(15) @NotContains(' ')
 	@Column({ type: 'varchar', nullable: true, length: 15, })
 	public phone9: string;//!Parent
 

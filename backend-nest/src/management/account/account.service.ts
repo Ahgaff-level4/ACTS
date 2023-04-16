@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
 import { AccountEntity, CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
@@ -54,20 +54,16 @@ export class AccountService {
      * UpdateAccount needs oldPassword. And it will validate the old password with existed password, if invalid throw Unauthorized exception
      */
     async updateOldPassword(id: number, updateAccount: UpdateAccountOldPassword) {
-        // if (updateAccount.password)
-        //     updateAccount.password = await this.generateHashSalt(updateAccount.password);
+        if (updateAccount.password)
+            updateAccount.password = await this.generateHashSalt(updateAccount.password);
 
-        // var oldPassword = await this.db.select('password', 'account', 'id=?', [id]) as [{ password: string }] | [];
-        // if (oldPassword.length == 0)
-        //     throw new BadRequestException('Account with id provided dose not exist!')
+        const oldPassword = (await this.repo.findOneByOrFail({id})).password;
+        
+        if (!(await bcrypt.compare(updateAccount.oldPassword, oldPassword)))
+            throw new UnauthorizedException('Old password is invalid!');
 
-        // let oldPass: string = oldPassword[0].password;
-        // if (!(await bcrypt.compare(updateAccount.oldPassword, oldPass)))
-        //     throw new UnauthorizedException('Old password is invalid!');
-
-        // delete updateAccount.oldPassword;
-        // return this.db.update('account', id, updateAccount);
-        throw 'not implemented'
+        delete updateAccount.oldPassword;
+        return this.repo.update(id, updateAccount);
     }
 
     /**

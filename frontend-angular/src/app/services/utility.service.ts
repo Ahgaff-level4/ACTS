@@ -171,8 +171,12 @@ export class UtilityService {
       const isValid = true;
       return isValid ? null : { strongPassword: true };
     },
+    noWhitespaceValidator(control: FormControl) {
+      const isValid = !(control.value || '').trim().includes(' ');
+      return isValid ? null : { whitespace: true };
+    },
     /**if control use maxlength or minlength validators then component should have {min/maxlength:number} obj. And this function should be called with translate pipe using param min/max obj. Ex: {{getRequireMaxMinErrMsg()|translate:minMaxLength}} */
-    getRequireMaxMinLengthErrMsg(control: AbstractControl|null): string | '' {
+    getRequireMaxMinLengthErrMsg(control: AbstractControl | null): string | '' {
       if (control?.hasError('required'))
         return 'You must enter a value';
 
