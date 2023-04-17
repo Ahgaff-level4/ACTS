@@ -3,6 +3,11 @@
 	'text-success':type==='success'}">{{title|translate}}</h1>
 	<p mat-dialog-content>{{content|translate}}</p>
 	<div mat-dialog-actions>
-		<button *ngFor="let b of buttons" mat-button (click)="dialogRef.close(b.type)" [color]="b.color">{{b.type|translate}}</button>
+    <div class="mx-2" *ngFor="let b of buttons">
+
+      <button *ngIf="b.type != 'Login'" mat-button [color]="b.color">{{b.type|translate}}</button>
+      <a *ngIf="b.type == 'Login'"  (click)="dialogRef.close(b.type)" mat-button routerLink="/login" color="b.color">{{'Login'|translate}}</a>
+
+    </div>
 	</div>
 </div>

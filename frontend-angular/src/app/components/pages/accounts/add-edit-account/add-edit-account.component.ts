@@ -93,10 +93,11 @@ export class AddEditAccountComponent {
     this.dialog.open<ResetChangePasswordComponent, string, string>(ResetChangePasswordComponent,
       { data: this.accountForm.get('password')?.value || '' }).afterClosed()
       .subscribe(v => {
+        console.log('after close', v)
         if (typeof v === 'string') {
+          this.accountForm.addControl('password', this.fb.control(v));
           this.accountForm.get('password')?.setValue(v);
           this.accountForm.get('password')?.markAsDirty()
-          this.accountForm.get('repeatPassword')?.setValue(v);
         }
       })
   }

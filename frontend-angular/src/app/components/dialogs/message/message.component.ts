@@ -45,4 +45,4 @@ export interface MessageDialogData {
   buttons?:{color:'primary'|'accent'|'warn',type:ButtonType}[]
 }
 type DialogType = 'error' | 'info' | 'success' | 'confirm';
-type ButtonType = 'Ok' | 'Cancel'|'Yes'|'No'|'Delete';
+type ButtonType = 'Ok' | 'Cancel'|'Yes'|'No'|'Delete'|'Login';

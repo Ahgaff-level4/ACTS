@@ -70,13 +70,11 @@ export class AccountService {
      * Same as update(...) BUT no need for oldPassword. Must be authorized only by admin
      */
     async update(id: number, updateAccount: UpdateAccount) {
-        console.log(updateAccount);
         if (updateAccount.password)
             updateAccount.password = await this.generateHashSalt(updateAccount.password);
         if (Array.isArray(updateAccount.roles))
             for (const role of updateAccount.roles) {
                 const roleEntity = await this.dataSource.getRepository(RoleEntity).findOneBy({ name: role });
-                console.log(roleEntity);
                 if (roleEntity == null)
                     throw new BadRequestException({ message: R.string.invalidRole(role) });
                 if (Array.isArray(updateAccount.rolesEntities))

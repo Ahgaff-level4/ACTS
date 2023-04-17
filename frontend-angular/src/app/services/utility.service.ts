@@ -7,7 +7,7 @@ import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
-import { AbstractControl, FormControl, FormGroup, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 @Injectable({
@@ -166,7 +166,7 @@ export class UtilityService {
   }
 
   public validation = {//used in FormControl validators
-    strongPasswordValidator(control: FormControl) {
+    strongPasswordValidator(control: FormControl):ValidationErrors | null {
       // implement password strength check
       const isValid = true;
       return isValid ? null : { strongPassword: true };

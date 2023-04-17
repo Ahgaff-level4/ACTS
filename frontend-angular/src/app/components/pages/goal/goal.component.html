@@ -20,7 +20,7 @@
         <td mat-cell *matCellDef="let el"> {{el.activity?.name}} </td>
       </ng-container>
 
-      <ng-container matColumnDef="completed"  class="px-0 mx-0">
+      <ng-container matColumnDef="completed" class="px-0 mx-0">
         <th mat-header-cell cdkDrag *matHeaderCellDef mat-sort-header> {{'Completed'|translate}} </th>
         <td mat-cell *matCellDef="let el"> <mat-icon *ngIf="el.state == 'completed'">done</mat-icon> </td>
       </ng-container>
@@ -40,28 +40,51 @@
         <td mat-cell *matCellDef="let el"> {{ el.assignDatetime|fromNow }} </td>
       </ng-container>
 
-      <ng-container matColumnDef="control">
+      <!-- <ng-container matColumnDef="control">
         <th mat-header-cell cdkDrag *matHeaderCellDef> {{'Control'|translate}} </th>
         <td mat-cell *matCellDef="let el">
-          <button *ngIf="canAdd" (click)="evaluate(el)" mat-button
-            color="primary"><mat-icon>rate_review</mat-icon>{{'Evaluate'|translate}}</button>
-          <button (click)="showEvaluations(el)" mat-button
-            color="primary"><mat-icon>reviews</mat-icon>{{'Evaluations'|translate}}</button>
-          <button *ngIf="canEditDelete" (click)="addEdit(el)" mat-button
-            color="primary"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
-          <button *ngIf="canEditDelete" (click)="deleteDialog(el)" mat-button
-            color="warn"><mat-icon>delete</mat-icon>{{'Delete'|translate}}</button>
+
+        </td>
+      </ng-container> -->
+      <ng-container matColumnDef="expand">
+        <th mat-header-cell *matHeaderCellDef aria-label="row actions">&nbsp;</th>
+        <td mat-cell *matCellDef="let el">
+          <button mat-icon-button aria-label="expand row"
+            (click)="(expandedItem = expandedItem === el ? null : el); $event.stopPropagation()">
+            <mat-icon>{{expandedItem === el ? 'keyboard_arrow_up' : 'keyboard_arrow_down'}}</mat-icon>
+          </button>
         </td>
       </ng-container>
 
+      <!-- Expanded Content Column - The detail row is made up of this one column that spans across all columns -->
+      <ng-container matColumnDef="expandedDetail">
+        <td mat-cell *matCellDef="let el" [attr.colspan]="columnsKeys.length">
+          <div class="w-100" [@detailExpand]="el == expandedItem ? 'expanded' : 'collapsed'">
+            <div class="d-flex justify-content-center align-items-end pb-3 pb-md-1">
+                <button *ngIf="canAdd" (click)="evaluate(el)" mat-button
+                  color="primary"><mat-icon>rate_review</mat-icon>{{'Evaluate'|translate}}</button>
+                <button (click)="showEvaluations(el)" mat-button
+                  color="primary"><mat-icon>reviews</mat-icon>{{'Evaluations'|translate}}</button>
+                <button *ngIf="canEditDelete" (click)="addEdit(el)" mat-button
+                  color="primary"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
+                <button *ngIf="canEditDelete" (click)="deleteDialog(el)" mat-button
+                  color="warn"><mat-icon>delete</mat-icon>{{'Delete'|translate}}</button>
+              </div>
+          </div>
+        </td>
+      </ng-container>
 
       <tr mat-header-row *matHeaderRowDef="columnsKeys"></tr>
-      <tr mat-row *matRowDef="let row; columns: columnsKeys"></tr>
+      <tr mat-row *matRowDef="let item; columns:columnsKeys;" class="table-row"
+      [class.example-expanded-row]="expandedItem === item"
+      (click)="expandedItem = expandedItem === item?undefined:item"></tr>
+    <tr mat-row *matRowDef="let row; columns: ['expandedDetail']" class="example-detail-row"></tr>
 
     </table>
     <mat-paginator [pageSizeOptions]="[5, 10, 20,50,100]" showFirstLastButtons>
     </mat-paginator>
   </div>
 
-  <button (click)="addEdit()" *ngIf="canAdd" mat-raised-button color="primary">{{'Add new goal'|translate}}<mat-icon>add</mat-icon></button>
+  <button (click)="addEdit()" *ngIf="canAdd" mat-raised-button color="primary">{{'Add new
+    goal'|translate}}<mat-icon>add</mat-icon></button>
 </div>

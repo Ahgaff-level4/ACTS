@@ -44,10 +44,11 @@ export class ResetChangePasswordComponent {
   public async submit(e: SubmitEvent) {
     e.preventDefault();
     this.formGroup.markAllAsTouched();
-    if (this.formGroup.valid || (this.formGroup.get('password')?.valid && this.formGroup.get('repeatPassword')?.valid)) {
+    if (this.formGroup.valid || (this.isReset && this.formGroup.get('password')?.valid && this.formGroup.get('repeatPassword')?.valid)) {
       this.formGroup.disable();
       if (typeof this.data === 'string') {//reset
-        this.dialogRef.close(this.formGroup.get('password')?.value);
+        this.dialogRef.close(this.formGroup.get('password')?.value?.toString());
+        console.log('reset password',this.formGroup.get('password')?.value?.toString())
       } else {//change
         //todo communicate with server to change password. Change snackbar message
         this.ut.showSnackbar('The field has been edited successfully.');

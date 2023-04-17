@@ -11,11 +11,19 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { GoalService } from 'src/app/services/goal.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditGoalComponent } from '../../dialogs/add-edit-goal/add-edit-goal.component';
+import { animate, state, style, transition, trigger } from '@angular/animations';
 
 @Component({
   selector: 'app-goal',
   templateUrl: './goal.component.html',
-  styleUrls: ['./goal.component.scss']
+  styleUrls: ['./goal.component.scss'],
+  animations: [
+    trigger('detailExpand', [
+      state('collapsed', style({ height: '0px', minHeight: '0' })),
+      state('expanded', style({ height: '*' })),
+      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
+    ]),
+  ],
 })
 export class GoalComponent implements OnDestroy {
   public canAdd: boolean;
@@ -26,6 +34,7 @@ export class GoalComponent implements OnDestroy {
   public dataSource!: MatTableDataSource<IGoalEntity>;
   public columnsKeys: string[];
   private sub: Subscription = new Subscription();
+  public expandedItem?: IGoalEntity;
 
   /**
    * - First use when init the class. The param will be passed by URL param as (string|null).
@@ -42,7 +51,7 @@ export class GoalComponent implements OnDestroy {
   constructor(public service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private childService: ChildService) {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'control'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'expand'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');

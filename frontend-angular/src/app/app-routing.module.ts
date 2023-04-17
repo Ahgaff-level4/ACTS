@@ -41,7 +41,8 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
     ut.showMsgDialog({
       type: 'error',
       title: 'Insufficient privilege!',
-      content: `You don't have sufficient privilege to access this page!`
+      content: `You don't have sufficient privilege to access this page!`,
+      buttons:[{color:'primary',type:'Login'},{color:'warn',type:'Ok'},]
     });
   }
   function hasRole(role: Role) {
