@@ -15,18 +15,20 @@ import { AddEditProgramComponent } from '../../dialogs/add-edit-program/add-edit
   styleUrls: ['./program.component.scss']
 })
 export class ProgramComponent {
-  public canAddEditDelete: boolean;
+  public canAddEditDelete!: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IProgramEntity>;
   public dataSource!: MatTableDataSource<IProgramEntity>;
-  public columnsKeys: string[];
+  public columnsKeys!: string[];
+
   constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog) {
-    this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('programs table') ?? 'null') ?? ['name', 'activityCount', 'createdDatetime', 'control'];
   }
 
   ngOnInit(): void {
+    this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('programs table') ?? 'null') ?? ['name', 'activityCount', 'createdDatetime', 'control'];
+
     this.dataSource = new MatTableDataSource<IProgramEntity>();
     this.ut.isLoading.next(true);
     this.service.programs.subscribe({
@@ -72,7 +74,6 @@ export class ProgramComponent {
     this.ut.showMsgDialog({
       content: this.ut.translate('You are about to delete the program: ' + program.name + " permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
       type: 'confirm',
-      title: 'Are you sure?',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {

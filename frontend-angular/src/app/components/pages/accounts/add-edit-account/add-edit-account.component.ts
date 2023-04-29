@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
@@ -12,8 +12,8 @@ import { ResetChangePasswordComponent } from 'src/app/components/dialogs/reset-c
   templateUrl: './add-edit-account.component.html',
   styleUrls: ['./add-edit-account.component.scss']
 })
-export class AddEditAccountComponent {
-  public accountForm: FormGroup;
+export class AddEditAccountComponent implements OnInit{
+  public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
@@ -26,6 +26,9 @@ export class AddEditAccountComponent {
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
+  }
+
+  ngOnInit(): void {
     this.account = history.state.data;
     this.person = this.account?.person;
     let pass = this.account?.id ? {} : {
@@ -84,7 +87,7 @@ export class AddEditAccountComponent {
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
 
-    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!' })
   }
 
 

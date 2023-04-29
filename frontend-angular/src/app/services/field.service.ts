@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs'
 import { ICreateField, IFieldEntity, SucResEditDel } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
-import { environment as env } from 'src/environment';
+import { environment as env } from 'src/environments/environment';
 import { UtilityService } from './utility.service';
 
 @Injectable({

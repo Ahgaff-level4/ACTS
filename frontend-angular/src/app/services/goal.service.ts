@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { environment as env } from 'src/environment';
+import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from './utility.service';
 import { IChildEntity, ICreateGoal, IGoalEntity, SucResEditDel } from '../../../../interfaces';
@@ -16,7 +16,6 @@ export class GoalService {
   constructor(private http: HttpClient, private ut: UtilityService, private childService: ChildService) { }
   /**
   * @returns if request succeeded, `resolve` with the added entity, and call fetch() to emit the new entities. Otherwise show error dialog and `reject`.
-  * don't forget refresh table after adding
   */
   post(field: ICreateGoal, manageLoading = false): Promise<IGoalEntity> {
     return new Promise((res, rej) => {

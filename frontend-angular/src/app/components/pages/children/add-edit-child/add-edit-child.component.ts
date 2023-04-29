@@ -1,23 +1,32 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
-import { IChildEntity, ICreateChild, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ChildService } from 'src/app/services/child.service';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
+import { Subscription } from 'rxjs';
+import { AccountService } from 'src/app/services/account.service';
 
 @Component({
   selector: 'app-add-edit-child',
   templateUrl: './add-edit-child.component.html',
   styleUrls: ['./add-edit-child.component.scss']
 })
-export class AddEditChildComponent implements OnInit {
-  public childForm: FormGroup;
+export class AddEditChildComponent implements OnInit, OnDestroy {
+  public childForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
+  public selectedParent: IAccountEntity | undefined;
+  public parents!: IAccountEntity[];
+  public sub!: Subscription;
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService) {
+  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService, private accountService: AccountService) {
+
+  }
+
+  ngOnInit(): void {
     this.childForm = this.fb.group({
       femaleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
       maleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
@@ -31,16 +40,19 @@ export class AddEditChildComponent implements OnInit {
       medicine: [null, [Validators.maxLength(512)]],
       behaviors: [null, [Validators.maxLength(512)]],
       prioritySkills: [null, [Validators.maxLength(512)]],
-      parentId: [null]//todo
+      parentId: [null],
+      isArchive: [false]
     });
     this.child = history.state.data;
     this.person = this.child?.person;
+    this.sub = this.accountService.accounts.subscribe((v) => {
+      this.parents = v.filter(v => v.roles.includes('Parent'));
+    });
+    if (this.accountService.accounts.value.length == 0)
+      this.accountService.fetch(true);
     if (this.child) {
       this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));
     }
-  }
-
-  ngOnInit(): void {
   }
 
   calcFamilyMembers = (): string => {
@@ -91,8 +103,27 @@ export class AddEditChildComponent implements OnInit {
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
 
-    } else this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
     // this.personForm.valid; do not submit if person field
+  }
+
+
+  archiveChanged() {
+    if (this.childForm.get('isArchive')?.value === true) {
+      this.ut.showMsgDialog({
+        title: { text: `Are you sure you want to archive this child?` },
+        content: `Archiving a child will hide their information from other pages, such as goals and parents. You can only view archived children in the Children page by applying the ‘Show archived children’ filter. This action requires admin privilege.`,
+        type: 'confirm',
+        buttons: [{ type: 'Cancel', color: 'primary' }, { type: 'Archive', color: 'warn' }]
+      }).afterClosed().subscribe(v => {
+        if (v !== 'Archive')
+          this.childForm.get('isArchive')?.setValue(false);
+      })
+    }
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
 }

@@ -1,13 +1,16 @@
-<div style="max-width: 500px;">
-	<h1 mat-dialog-title [ngClass]="{'text-danger':type==='error','text-warning':type==='info',
-	'text-success':type==='success'}">{{title|translate}}</h1>
-	<p mat-dialog-content>{{content|translate}}</p>
-	<div mat-dialog-actions>
-    <div class="mx-2" *ngFor="let b of buttons">
-
-      <button *ngIf="b.type != 'Login'" mat-button [color]="b.color">{{b.type|translate}}</button>
-      <a *ngIf="b.type == 'Login'"  (click)="dialogRef.close(b.type)" mat-button routerLink="/login" color="b.color">{{'Login'|translate}}</a>
-
+<div style="max-width: 500px;" class="px-md-3 px-2 pt-3">
+  <h4 mat-dialog-title [className]="titleColor">
+    <div style="display: flex; align-items: center;">
+      <mat-icon *ngIf="titleIcon"  style="margin-top: 5px;">{{titleIcon}}</mat-icon>
+      <span class="mx-1">{{titleText|translate}}</span>
     </div>
-	</div>
+  </h4>
+  <mat-dialog-content>
+    {{content|translate}}
+  </mat-dialog-content>
+
+  <mat-dialog-actions align="end">
+    <button mat-button *ngFor="let b of buttons" (click)="dialogRef.close(b.type)"
+      [color]="b.color">{{b.type|translate}}</button>
+  </mat-dialog-actions>
 </div>

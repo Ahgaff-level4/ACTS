@@ -26,15 +26,14 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
   ],
 })
 export class GoalComponent implements OnDestroy {
-  public canAdd: boolean;
-  public canEditDelete: boolean;
+  public canAdd!: boolean;
+  public canEditDelete!: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IGoalEntity>;
   public dataSource!: MatTableDataSource<IGoalEntity>;
-  public columnsKeys: string[];
+  public columnsKeys!: string[];
   private sub: Subscription = new Subscription();
-  public expandedItem?: IGoalEntity;
 
   /**
    * - First use when init the class. The param will be passed by URL param as (string|null).
@@ -49,20 +48,21 @@ export class GoalComponent implements OnDestroy {
   }
 
   constructor(public service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private childService: ChildService) {
+   }
+
+
+
+  ngOnInit(): void {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'expand'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'menu'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
         await this.fetch(childId);
       },
     });
-  }
 
-
-
-  ngOnInit(): void {
     this.dataSource = new MatTableDataSource<IGoalEntity>();
     this.sub.add(this.service.childItsGoals.subscribe({
       next: (v) => {
@@ -104,8 +104,8 @@ export class GoalComponent implements OnDestroy {
     this.dialog
       .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data })
       .afterClosed().subscribe(v => {
-        if (v === 'added' || v === 'edited')//has been
-          this.fetch();
+        // if (v === 'added' || v === 'edited')//has been
+          // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
       });
   }
 
@@ -113,12 +113,11 @@ export class GoalComponent implements OnDestroy {
     this.ut.showMsgDialog({
       content: this.ut.translate('You are about to delete the goal: \"' + goal.activity.name + "\" permanently. If the child has finished the goal then edit the goal state as competed. NOTE: all evaluations of this goal will also be deleted permanently."),
       type: 'confirm',
-      title: 'Are you sure?',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
         await this.service.delete(goal.id,true);
-        this.fetch();
+        // this.fetch();
         this.ut.showSnackbar('The goal has been deleted successfully.');
       }
     })

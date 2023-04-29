@@ -18,12 +18,12 @@ import { AddEditActivityComponent } from '../../dialogs/add-edit-activity/add-ed
   styleUrls: ['./activity.component.scss']
 })
 export class ActivityComponent {
-  public canAddEdit: boolean;
+  public canAddEdit!: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IActivityEntity>;
   public dataSource!: MatTableDataSource<IActivityEntity>;
-  public columnsKeys: string[];
+  public columnsKeys!: string[];
   public program = new BehaviorSubject<IProgramEntity | null>(null);
 
   /**
@@ -41,6 +41,12 @@ export class ActivityComponent {
   }
 
   constructor(private service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private programService: ProgramService) {
+
+  }
+
+
+
+  ngOnInit(): void {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     this.columnsKeys = JSON.parse(sessionStorage.getItem('activities table') ?? 'null') ?? (this.canAddEdit ? ['name', 'ageRange', 'field', 'createdDatetime', 'control'] : ['name', 'ageRange', 'field', 'createdDatetime']);
     this.ut.isLoading.next(true);
@@ -53,11 +59,6 @@ export class ActivityComponent {
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
-  }
-
-
-
-  ngOnInit(): void {
     this.dataSource = new MatTableDataSource<IActivityEntity>();
     this.program.subscribe((v) => {
       if (v == null)
@@ -104,7 +105,6 @@ export class ActivityComponent {
     this.ut.showMsgDialog({
       content: this.ut.translate('You are about to delete the activity: \"' + activity.name + "\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
       type: 'confirm',
-      title: 'Are you sure?',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {

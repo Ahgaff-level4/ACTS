@@ -2,7 +2,7 @@ import { HttpClient, HttpErrorResponse, HttpRequest } from '@angular/common/http
 import { Injectable } from '@angular/core';
 import { UtilityService } from './utility.service';
 import { Router } from '@angular/router';
-import { environment as env } from 'src/environment';
+import { environment as env } from 'src/environments/environment';
 import { ErrorResponse, SuccessResponse, User } from '../../../../interfaces';
 @Injectable({
   providedIn: 'root'

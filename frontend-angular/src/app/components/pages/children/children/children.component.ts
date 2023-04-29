@@ -20,7 +20,7 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
   ],
 })
 export class ChildrenComponent implements OnInit, AfterViewInit {
-  public canAddEdit: boolean;
+  public canAddEdit!: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IChildEntity>;
@@ -29,10 +29,11 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public expandedItem?: IChildEntity;
 
   constructor(private childService: ChildService, public ut: UtilityService) {
-    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   }
 
   ngOnInit(): void {
+    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+
     this.dataSource = new ChildrenDataSource();
     this.ut.isLoading.next(true);
     this.childService.children.subscribe({

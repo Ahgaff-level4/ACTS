@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ICreateProgram, IProgramEntity, SucResEditDel } from '../../../../interfaces';
-import { environment as env } from 'src/environment';
+import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from './utility.service';
 

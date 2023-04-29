@@ -11,6 +11,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class LoginComponent {
   public hide: boolean = true;//used to hide password
   constructor(private loginService: LoginService,private ut:UtilityService) { }
+  
   public formGroup = new FormGroup({
     username: new FormControl('', { validators: [Validators.required, Validators.maxLength(30),Validators.minLength(4),], nonNullable: true }),
     password: new FormControl('', { validators: [Validators.required,Validators.maxLength(1024),Validators.minLength(4)], nonNullable: true }),
@@ -26,7 +27,7 @@ export class LoginComponent {
   public showForgetPasswordDialog(){
     this.ut.showMsgDialog({
       type:'info',
-      title:'Forget the password?',
+      title:{text:'Forget the password?',icon:'info'},
       content:`Call the administrator to reset your password. If you are the administrator then try to access the system with another account that has Admin privilege, so that you can reset this account password. If nothing of the previous steps works then try to contact the technician who set up this system.`
     })
   }

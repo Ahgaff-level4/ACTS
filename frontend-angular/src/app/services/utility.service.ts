@@ -2,10 +2,10 @@ import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common
 import { Injectable } from '@angular/core';
 import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
-import { environment as env } from 'src/environment';
+import { environment as env } from 'src/environments/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
+import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -21,6 +21,7 @@ export class UtilityService {
 
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
     // this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
+    this.isLogin().finally(()=>console.log('isLogin:',this.user.value));
   }
 
   /**
@@ -61,7 +62,7 @@ export class UtilityService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else
-      message = this.translatePipe.transform('Something went wrong!') + (appendMsg ? ' ' + this.translatePipe.transform(appendMsg) : this.translatePipe.transform('Sorry, there was a problem. Please try again later or check your connection.'));
+      message = this.translatePipe.transform('Something went wrong!') + ' ' + (appendMsg ? this.translatePipe.transform(appendMsg) : this.translatePipe.transform('Sorry, there was a problem. Please try again later or check your connection.'));
 
     return this.showMsgDialog({ content: message, type: 'error' })
   }
@@ -75,9 +76,14 @@ export class UtilityService {
     return this.translatePipe.transform(key, args);
   }
 
+  /**
+   *
+   * @param data structure of the message dialog
+   * @returns MatDialogRef. Value when close is the button type clicked.
+   */
   public showMsgDialog(data: MessageDialogData) {
     return this.dialog
-      .open<MessageDialogComponent, MessageDialogData>(MessageDialogComponent, { data });
+      .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data });
   }
 
   /**
@@ -166,7 +172,7 @@ export class UtilityService {
   }
 
   public validation = {//used in FormControl validators
-    strongPasswordValidator(control: FormControl):ValidationErrors | null {
+    strongPasswordValidator(control: FormControl): ValidationErrors | null {
       // implement password strength check
       const isValid = true;
       return isValid ? null : { strongPassword: true };

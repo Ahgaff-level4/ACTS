@@ -16,20 +16,21 @@ import { MessageDialogComponent, MessageDialogData } from '../../dialogs/message
   styleUrls: ['./field.component.scss']
 })
 export class FieldComponent implements OnInit {
-  public canAddEdit: boolean;
+  public canAddEdit!: boolean;
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IFieldEntity>;
   public dataSource!: MatTableDataSource<IFieldEntity>;
-  public columnsKeys: string[];
+  public columnsKeys!: string[];
   public isLoading: boolean = true;
 
   constructor(private service: FieldService, public ut: UtilityService, private dialog: MatDialog) {
-    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? (this.canAddEdit ? ['name', 'activityCount', 'createdDatetime', 'control'] : ['name', 'activityCount', 'createdDatetime']);
-  }
+      }
 
   ngOnInit(): void {
+    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('fields table') ?? 'null') ?? (this.canAddEdit ? ['name', 'activityCount', 'createdDatetime', 'control'] : ['name', 'activityCount', 'createdDatetime']);
+
     this.dataSource = new MatTableDataSource<IFieldEntity>();
     this.service.fields.subscribe({
       next: v => {
@@ -73,7 +74,6 @@ export class FieldComponent implements OnInit {
     this.ut.showMsgDialog({
       content: this.ut.translate('You are about to delete the field: ' + field.name + ' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
       type: 'confirm',
-      title: 'Are you sure?',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {

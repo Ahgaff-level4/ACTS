@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsNumber, IsOptional, IsDateString, IsString, Length, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean } from "class-validator";
-import { PersonEntity, PersonView } from "../person/person.entity";
-import { IAccountEntity, IChildEntity, ICreateChild, IGoalEntity, IPersonEntity } from './../../../../interfaces.d'
+import { IsNumber, IsOptional, IsString, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean } from "class-validator";
+import { PersonEntity } from "../person/person.entity";
+import { IAccountEntity, ICreateChild, IGoalEntity, IPersonEntity } from './../../../../interfaces.d'
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Type } from "class-transformer";
 import { GoalEntity } from "../goal/Goal.entity";

@@ -23,6 +23,8 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatListModule} from '@angular/material/list';
 import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
+import {MatSlideToggleModule} from '@angular/material/slide-toggle';
+import {MatMenuModule} from '@angular/material/menu';
 
 
 @NgModule({
@@ -49,7 +51,9 @@ import {MatTooltipModule} from '@angular/material/tooltip';
     MatSnackBarModule,
     MatListModule,
     MatButtonToggleModule,
-    MatTooltipModule
+    MatTooltipModule,
+    MatSlideToggleModule,
+    MatMenuModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

@@ -16,6 +16,8 @@
 	"Cancel":"إلغاء",
 	"You must enter a value":"يجب إدخال قيمة",
   "You must choose a value":"يجب إختيار قيمة",
+  "You must choose a date":"يجب تحديد تاريخ",
+  "You must choose an activity":"",
 	"Minimum length is ":"اقل عدد احرف هو {{minlength}}",
 	"Maximum length is ":"اكثر عدد احرف هو {{maxlength}}",
 	"Arabic":"عربي",
@@ -60,8 +62,6 @@
   "Goals":"اهداف",
   "Birthdate":"تاريخ الميلاد",
   "Created Date":"تاريخ الإنشاء",
-  "You must choose a date":"يجب تحديد تاريخ",
-  "You must choose an activity":"يجب تحديد تاريخ",
   "Number of sisters":"عدد الأخوات",
   "Number of brothers":"عدد الأخوان",
   "Family members":"عدد افراد العائلة",
@@ -193,6 +193,7 @@
   "Evaluations":"",
   "Choose a program":"",
   "Choose an activity":"",
+  "Choose a parent":"",
   "Change the activity":"",
   "Filter activities within age range of the child age":"",
   "Create special activity":"",
@@ -213,5 +214,11 @@
   "Passwords do not match":"",
   "Must not contain spaces":"",
   "Phone":"",
-  "Phone number must contain only digits and '+' symbol":""
+  "Phone number must contain only digits and '+' symbol":"",
+  "None":"",
+  "Save Changes":"",
+  "Are you sure you want to archive this child?":"",
+  "Archiving a child will hide their information from other pages, such as goals and parents. You can only view archived children in the Children page by applying the ‘Show archived children’ filter. This action requires admin privilege.":"",
+  "GO BACK HOME":"",
+  "Looks like you are lost":""
 }

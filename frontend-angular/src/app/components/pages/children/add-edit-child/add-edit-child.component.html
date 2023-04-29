@@ -1,4 +1,4 @@
-<div class="container mt-5">
+<div class="container mt-5  mb-5 pb-5">
   <h1 *ngIf="child?.id == null" class="m-2">{{'Register a child'|translate}}</h1>
   <h1 *ngIf="child?.id" class="m-2">{{'Edit child information'|translate}}</h1>
   <app-person-form [(person)]="person"></app-person-form>
@@ -42,8 +42,10 @@
       </div>
       <div class="col-md-8 p-2 mt-3">
         <p *ngIf="childForm.get('birthOrder')?.value">
-          {{'Order between
-          siblings'|translate}}&nbsp;<b>{{ut.ordinalNumbers[(childForm.get('birthOrder')?.value)-1]|translate}}</b>&nbsp;{{'of'|translate}}&nbsp;<b>{{familyMembers.value}}</b>&nbsp;{{'siblings'|translate}}(<b>{{childForm.get('femaleFamilyMembers')?.value+(
+          {{'Order between siblings'|translate}}&nbsp;
+          <b>{{ut.ordinalNumbers[(childForm.get('birthOrder')?.value)-1]|translate}}</b>
+          &nbsp;{{'of'|translate}}&nbsp;<b>{{familyMembers.value}}</b>&nbsp;
+          {{'siblings'|translate}}(<b>{{childForm.get('femaleFamilyMembers')?.value+(
             person?.gender=='Female'?1:0)}}</b>&nbsp;{{'girls'|translate}}{{','|translate}}&nbsp;<b>{{childForm.get('maleFamilyMembers')?.value+(person?.gender=='Male'?1:0)}}</b>&nbsp;{{'boys'|translate}}).
         </p>
       </div>
@@ -129,13 +131,25 @@
           <mat-hint align="end">{{prioritySkills.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
-      <div class="col-md-6 p-2">
-        <button mat-flat-button>todo Select parent</button>
+      <div class="col-md-3 p-2 d-flex justify-content-center align-items-center">
+        <mat-form-field>
+          <mat-label>{{'Choose a parent'|translate}}</mat-label>
+          <mat-select formControlName="parentId">
+            <mat-option value="null">--&nbsp;{{"None"|translate}}&nbsp;--</mat-option>
+            <mat-option *ngFor="let parent of parents" [value]="parent.id">
+              <p class="fs-5">{{parent.person.name}}.<br>
+              <span class="fs-6 opacity-75">&nbsp;{{'Address'|translate}}:&nbsp;{{parent.address}}</span></p>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="child?.id" class="col-md-3 p-2 d-flex justify-content-center align-items-center">
+        <mat-slide-toggle (change)="archiveChanged()" color="warn" formControlName="isArchive">{{'Archive'|translate}}</mat-slide-toggle>
       </div>
     </div>
     <div class="d-flex mt-4">
       <button [disabled]="this.ut.isLoading.value" class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
-        {{child?.id == null?'Submit':'Edit'|translate}} </button>
+        {{child?.id == null?'Submit':'Save Changes'|translate}} </button>
     </div>
   </form>
 </div>

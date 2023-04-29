@@ -27,7 +27,7 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
       return arr;
     }
     const constrains = recursion(error);
-    
+
     //beautify the message
     let message = '';
     if (constrains.length <= 1)
@@ -37,7 +37,7 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
         message += `${i + 1}- ${constrains[i]}.\n`;
     }
     message = message.trim();
-    
+
     throw new BadRequestException({ msg: 'Invalid object structure/values !', message, error })
   },
 };
@@ -55,7 +55,7 @@ const SESSION_OPTIONS: SessionOptions = {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet())
-  app.enableCors({origin:"http://localhost:4200",credentials:true});
+  app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.1.4:4200"], credentials: true, methods: '*' });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor())

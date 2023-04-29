@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { environment as env } from 'src/environment';
+import { environment as env } from 'src/environments/environment';
 import { UtilityService } from './utility.service';
 import { BehaviorSubject } from 'rxjs';
 import { IAccountEntity, ICreateAccount, SucResEditDel } from '../../../../interfaces';

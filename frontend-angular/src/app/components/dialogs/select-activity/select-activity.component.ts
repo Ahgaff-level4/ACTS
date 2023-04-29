@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IProgramEntity } from '../../../../../../interfaces';
@@ -12,12 +12,16 @@ import { AddEditActivityComponent } from '../add-edit-activity/add-edit-activity
   templateUrl: './select-activity.component.html',
   styleUrls: ['./select-activity.component.scss']
 })
-export class SelectActivityComponent {
+export class SelectActivityComponent implements OnInit {
   public chosenProgram: IProgramEntity | undefined;
   public filter: 'age' | 'all' = 'age';
   public activities: IActivityEntity[] | [] = [];
+
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService, private ut: UtilityService, private goalService: GoalService, private dialog: MatDialog) {
-    if (programService.programs.value.length === 0)
+  }
+
+  ngOnInit(): void {
+    if (this.programService.programs.value.length === 0)
       this.programService.fetch(true)
   }
 

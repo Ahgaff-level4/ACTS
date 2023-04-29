@@ -11,11 +11,11 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class ResetChangePasswordComponent {
   protected minlength = { minlength: 4 };
-  public formGroup: FormGroup;
+  public formGroup!: FormGroup;
   public hide = true;
   public hide1 = true;
   minMaxLength = { minlength: 4, maxlength: 32 };
-  isReset: boolean;
+  isReset!: boolean;
   /**
    * This component used to reset password or change password.
    * Changing password require the old password.
@@ -24,16 +24,16 @@ export class ResetChangePasswordComponent {
    * 1- data:string. To rest password either passing password typed before or empty string. dialog button 'Ok'. dialog return the entered password
    * 2- data:undefined. Change password will be handled here. dialog buttons 'Cancel' and 'Change' handed here. dialog return nothing aka undefined
    */
-  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: '',) {
-    this.formGroup = fb.group({
+  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data:string|undefined,) {
+  }
+
+  ngOnInit(): void {
+    this.formGroup = this.fb.group({
       oldPassword: [null, [Validators.required, Validators.minLength(4)]],
       password: [null, [Validators.required, this.ut.validation.strongPasswordValidator, Validators.minLength(4)]],
       repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],
     });
     this.isReset = typeof this.data === 'string';
-  }
-
-  ngOnInit(): void {
     if (typeof this.data === 'string') {//Reset password
       this.formGroup.get('password')?.setValue(this.data);
       this.formGroup.get('repeatPassword')?.setValue(this.data);
@@ -56,7 +56,7 @@ export class ResetChangePasswordComponent {
       }
       this.formGroup.enable();
     } else
-      this.ut.showMsgDialog({ title: 'Invalid Field', type: 'error', content: 'There are invalid fields!' });
+      this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!' });
 
   }
 

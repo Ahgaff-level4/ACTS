@@ -13,6 +13,7 @@ import { ActivityComponent } from './components/pages/activity/activity.componen
 import { GoalComponent } from './components/pages/goal/goal.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
+import { Page404Component } from './components/pages/page404/page404.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -40,9 +41,13 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   function showUnauthorizeDialog() {
     ut.showMsgDialog({
       type: 'error',
-      title: 'Insufficient privilege!',
+      title: { text: 'Insufficient privilege!' },
       content: `You don't have sufficient privilege to access this page!`,
-      buttons:[{color:'primary',type:'Login'},{color:'warn',type:'Ok'},]
+      buttons: [{ color: 'primary', type: 'Login' }, { color: 'accent', type: 'Ok' },]
+    }).afterClosed().subscribe(v => {
+      if (v === 'Login')
+        ut.router.navigateByUrl('login');
+      else ut.router.navigateByUrl('/')
     });
   }
   function hasRole(role: Role) {
@@ -61,7 +66,7 @@ const AHTP = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] }
 const titlePrefix = 'ACTS - ';
 
 const routes: Routes = [
-  { path: '', component: MainComponent, title: titlePrefix + 'Home', },
+  { path: '', component: MainComponent, title: titlePrefix + 'Home', pathMatch: 'full' },
   { path: 'main', redirectTo: '' },
   { path: 'home', redirectTo: '' },
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
@@ -75,6 +80,7 @@ const routes: Routes = [
   { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },
   { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
   { path: 'goals/:id', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
+  { path: '**', component: Page404Component, title: 'Page Not Found' }
 ];
 
 @NgModule({

@@ -39,7 +39,8 @@ import { SelectActivityComponent } from './components/dialogs/select-activity/se
 import { AccountComponent } from './components/pages/accounts/account/account.component';
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
 import { ResetChangePasswordComponent } from './components/dialogs/reset-change-password/reset-change-password.component';
-// Factory function required during AOT compilation
+import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
+import { Page404Component } from './components/pages/page404/page404.component';
 
 @NgModule({
   declarations: [
@@ -69,7 +70,9 @@ import { ResetChangePasswordComponent } from './components/dialogs/reset-change-
     SelectActivityComponent,
     AccountComponent,
     AddEditAccountComponent,
-    ResetChangePasswordComponent
+    ResetChangePasswordComponent,
+    EvaluationComponent,
+    Page404Component
   ],
   imports: [
     BrowserModule,
