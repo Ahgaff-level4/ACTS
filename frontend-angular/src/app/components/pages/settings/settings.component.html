@@ -1,0 +1,42 @@
+<mat-card class="m-4">
+  <mat-card-header>
+    <mat-card-title><p>{{'Application Language'|translate}}</p></mat-card-title>
+  </mat-card-header>
+  <mat-card-content class="d-flex justify-content-center">
+    <mat-button-toggle-group class="w-75" aria-label="Choose language">
+      <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='ar'"
+        (change)="this.translate.use('ar')">{{'عربي'|translate}}</mat-button-toggle>
+      <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='en'"
+        (change)="this.translate.use('en')">{{'English'|translate}}</mat-button-toggle>
+    </mat-button-toggle-group>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="m-4">
+  <mat-card-header>
+    <mat-card-title>Notification Settings</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>Receive email notifications for:</p>
+    <ul>
+      <li><mat-slide-toggle>News and updates</mat-slide-toggle></li>
+      <li><mat-slide-toggle>Special offers and discounts</mat-slide-toggle></li>
+      <li><mat-slide-toggle>Feedback requests and surveys</mat-slide-toggle></li>
+    </ul>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="m-4">
+  <mat-card-header>
+    <mat-card-title>Theme Settings</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p>Select your preferred theme:</p>
+    <ul>
+      <li><input type="radio" name="theme" value="indigo-pink"> Indigo/Pink</li>
+      <li><input type="radio" name="theme" value="deeppurple-amber"> Deep Purple/Amber</li>
+      <li><input type="radio" name="theme" value="pink-bluegrey"> Pink/Blue Grey</li>
+      <li><input type="radio" name="theme" value="purple-green"> Purple/Green</li>
+    </ul>
+  </mat-card-content>
+</mat-card>

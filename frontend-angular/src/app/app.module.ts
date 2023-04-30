@@ -40,7 +40,8 @@ import { AccountComponent } from './components/pages/accounts/account/account.co
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
 import { ResetChangePasswordComponent } from './components/dialogs/reset-change-password/reset-change-password.component';
 import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
-import { Page404Component } from './components/pages/page404/page404.component';
+import { Page404Component } from './components/pages/404/404.component';
+import { SettingsComponent } from './components/pages/settings/settings.component';
 
 @NgModule({
   declarations: [
@@ -72,7 +73,8 @@ import { Page404Component } from './components/pages/page404/page404.component';
     AddEditAccountComponent,
     ResetChangePasswordComponent,
     EvaluationComponent,
-    Page404Component
+    Page404Component,
+    SettingsComponent
   ],
   imports: [
     BrowserModule,

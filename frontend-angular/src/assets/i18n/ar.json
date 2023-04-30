@@ -220,5 +220,7 @@
   "Are you sure you want to archive this child?":"",
   "Archiving a child will hide their information from other pages, such as goals and parents. You can only view archived children in the Children page by applying the ‘Show archived children’ filter. This action requires admin privilege.":"",
   "GO BACK HOME":"",
-  "Looks like you are lost":""
+  "Looks like you are lost":"",
+  "Settings":"",
+  "Application Language":""
 }

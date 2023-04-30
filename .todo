@@ -2,6 +2,6 @@
 
 - in add-edit-child add custom validator(control.setErrors({myErr:true})) and mat-error. in 'Order between siblings' field instead of just disable it.
 
-- in add-edit-child component add isArchive field only shown when edit child. Also, in children page show only isArchive=false children, using server or in client depends on you. And there should be an option for showing isArchive=true children, using another page or filter in the children page depends on you.
+- in children page show only isArchive=false children. And there should be an option for showing isArchive=true children, using filter button in the children page depends on your preference.
 
 - optimize button that will delete any activity dose not connected to a child AND dose not have programId. Made when user create special activity but dose not continue to fill the goal form to add goal with special activity.

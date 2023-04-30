@@ -13,7 +13,8 @@ import { ActivityComponent } from './components/pages/activity/activity.componen
 import { GoalComponent } from './components/pages/goal/goal.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
-import { Page404Component } from './components/pages/page404/page404.component';
+import { Page404Component } from './components/pages/404/404.component';
+import { SettingsComponent } from './components/pages/settings/settings.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -80,7 +81,8 @@ const routes: Routes = [
   { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },
   { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
   { path: 'goals/:id', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
-  { path: '**', component: Page404Component, title: 'Page Not Found' }
+  { path: 'settings',component:SettingsComponent,title: titlePrefix + 'Settings', canActivate:[RoleGuard], data:AHTP},
+  { path: '**', component: Page404Component, title: 'Page Not Found' },
 ];
 
 @NgModule({

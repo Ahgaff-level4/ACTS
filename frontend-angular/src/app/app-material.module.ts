@@ -25,6 +25,7 @@ import {MatButtonToggleModule} from '@angular/material/button-toggle';
 import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatMenuModule} from '@angular/material/menu';
+import {MatCardModule} from '@angular/material/card';
 
 
 @NgModule({
@@ -53,7 +54,8 @@ import {MatMenuModule} from '@angular/material/menu';
     MatButtonToggleModule,
     MatTooltipModule,
     MatSlideToggleModule,
-    MatMenuModule
+    MatMenuModule,
+    MatCardModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }
