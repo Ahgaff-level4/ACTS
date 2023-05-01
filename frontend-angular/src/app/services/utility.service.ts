@@ -1,5 +1,5 @@
-import { HttpClient, HttpClientModule, HttpErrorResponse } from '@angular/common/http';
-import { Injectable } from '@angular/core';
+import { HttpClient, HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
+import { Injectable, OnInit } from '@angular/core';
 import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
@@ -10,6 +10,7 @@ import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { saveAs } from 'file-saver'
 @Injectable({
   providedIn: 'root'
 })
@@ -21,8 +22,8 @@ export class UtilityService {
 
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
     // this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
-    this.isLogin().finally(()=>console.log('isLogin:',this.user.value));
   }
+
 
   /**
    * promise will be fulfilled and user.next(...) will be called if user is login. otherwise rejected.
@@ -31,9 +32,9 @@ export class UtilityService {
     return new Promise<void>((resolve, rej) => {
       this.http.get<User>(env.AUTH + 'isLogin', { withCredentials: true }).subscribe({
         next: res => {
-          if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
+          if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {
             this.user.next(res);
-            resolve()
+            resolve();
           }
           else rej();
         }, error: rej
@@ -87,7 +88,7 @@ export class UtilityService {
   }
 
   /**
-   * @return `true` if user's roles has any one role of the param `roles`. If user han no role overlap with param `roles` then return `false`
+   * @return `true` if user's roles has any one role of the param `roles`. If user has no role overlap with param `roles` then return `false`
    */
   public userHasAny(...roles: Role[]) {
     if (this.user.value)
@@ -195,5 +196,6 @@ export class UtilityService {
       return '';
     }
   }
+
 }
 

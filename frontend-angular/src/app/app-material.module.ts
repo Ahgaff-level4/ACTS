@@ -26,6 +26,7 @@ import {MatTooltipModule} from '@angular/material/tooltip';
 import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatCardModule} from '@angular/material/card';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
 
 
 @NgModule({
@@ -55,7 +56,8 @@ import {MatCardModule} from '@angular/material/card';
     MatTooltipModule,
     MatSlideToggleModule,
     MatMenuModule,
-    MatCardModule
+    MatCardModule,
+    MatProgressBarModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

@@ -21,6 +21,7 @@ import { ChildEntity } from './management/child/child.entity';
 import { EvaluationEntity } from './management/evaluation/evaluation.entity';
 import { GoalEntity } from './management/goal/Goal.entity';
 import { ProgramEntity } from './management/program/program.entity';
+import { OtherModule } from './management/other/other.module';
 config();
 
 @Module({
@@ -42,7 +43,7 @@ config();
     }),
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,
-    PersonModule, ProgramModule, AuthModule
+    PersonModule, ProgramModule, AuthModule,OtherModule
   ],
   providers: [{
     provide: APP_GUARD,
@@ -50,5 +51,4 @@ config();
   },]
 })
 export class AppModule {
-  constructor(private dataSource: DataSource) { }
 }

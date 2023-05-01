@@ -1,6 +1,3 @@
-import { HttpException } from './backend-nest/node_modules/@nestjs/common';
-
-
 
 // export type TableName = 'person' | 'personView' | 'account' | 'accountView' | 'parent' | 'teacher' |
 // 	'hd' | 'child' | 'childView' | 'teacher_child' | 'program' |
@@ -28,7 +25,7 @@ export interface ErrorResponse {
 	sqlMessage: any;
 	error: {
 		statusCode: number;
-		exception: HttpException;
+		exception: any;
 		timestamp: string;
 	};
 

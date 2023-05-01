@@ -35,11 +35,11 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
     });
   }
 
-  ngOnInit = async () => {
+  ngOnInit(){
     // this.subscribeOnLangChange();
     this.ut.isLoading.subscribe(v => this.isLoading = v);
     this.handleOnLangChange();
-
+    this.ut.isLogin().finally(()=>console.log('isLogin:',this.ut.user.value));
   }
 
   // subscribeOnLangChange = () => {

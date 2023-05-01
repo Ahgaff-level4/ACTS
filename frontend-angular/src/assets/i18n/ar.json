@@ -222,5 +222,13 @@
   "GO BACK HOME":"",
   "Looks like you are lost":"",
   "Settings":"",
-  "Application Language":""
+  "Application Language":"",
+  "Backup & Recovery":"",
+  "Backup and recovery is a process of creating and storing copies of the system data that can be used to protect your system information in case of a system failure, malware attack, or accidental deletion.":"",
+  "Click on Create Backup File button to create a backup of the entire database and download it as a backup file. You can also use this file to restore your database to its previous state if something goes wrong.":"",
+  "Click on Restore Database button to restore the database from a backup, choose the backup file you want to use. Your database will be overwritten with the data from the backup file. The restore process will replace your current database with the backup version.":"",
+  "NOTE: The restore process will replace/overwrite your current database with the backup version. Any current data that is not exist in the backup version will be lost!":"",
+  "Create Backup File":"",
+  "Restore Database":"",
+  "Database restored successfully":""
 }

@@ -39,7 +39,7 @@ export class AuthController {
 		const user: User = session['user'];
 		// console.log('AuthController : isLogin : user:', user);
 
-		if (user && user.isLoggedIn)
+		if (user && user.accountId)
 			return { ...user };
 
 		throw new UnauthorizedException({ message: R.string.mustLogin });

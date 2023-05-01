@@ -13,7 +13,7 @@ export class LoginService {
   login(username: string, password: string, isRememberMe: boolean) {
     this.http.post<User>(env.AUTH + 'login', { username, password }, { withCredentials: true }).subscribe({
       next: (res) => {
-        if (typeof res.accountId === 'number' && typeof res.isLoggedIn === 'boolean' && Array.isArray(res.roles)) {
+        if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {
           this.ut.user.next(res);
           this.router.navigate(['main']);
         } else this.ut.errorDefaultDialog();

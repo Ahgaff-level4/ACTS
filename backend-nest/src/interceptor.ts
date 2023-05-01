@@ -1,7 +1,7 @@
 
-import { Injectable, NestInterceptor, ExecutionContext, CallHandler, ArgumentsHost, BadRequestException, InternalServerErrorException, HttpException } from '@nestjs/common';
-import { Observable, throwError } from 'rxjs';
-import { catchError, map } from 'rxjs/operators';
+import { Injectable, NestInterceptor, ExecutionContext, CallHandler, BadRequestException, InternalServerErrorException } from '@nestjs/common';
+import { Observable } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { QueryFailedError } from 'typeorm';
 import { R } from './utility.service';
 
