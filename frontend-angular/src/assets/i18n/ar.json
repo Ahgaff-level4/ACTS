@@ -230,5 +230,9 @@
   "NOTE: The restore process will replace/overwrite your current database with the backup version. Any current data that is not exist in the backup version will be lost!":"",
   "Create Backup File":"",
   "Restore Database":"",
-  "Database restored successfully":""
+  "Database restored successfully":"",
+  "File size is very small!":"",
+  "File extension is invalid! Expected `.sql.gz`":"",
+  "There was a problem while restoring the database!":"",
+  "Invalid username or password!":""
 }

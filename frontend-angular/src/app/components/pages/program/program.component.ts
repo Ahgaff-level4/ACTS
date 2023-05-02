@@ -77,9 +77,7 @@ export class ProgramComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        this.ut.isLoading.next(true);
-        await this.service.delete(program.id);
-        this.ut.isLoading.next(false);
+        await this.service.delete(program.id, true);
         this.ut.showSnackbar('The program has been deleted successfully.');
       }
     })

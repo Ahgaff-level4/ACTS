@@ -11,7 +11,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class LoginComponent {
   public hide: boolean = true;//used to hide password
   constructor(private loginService: LoginService,private ut:UtilityService) { }
-  
+
   public formGroup = new FormGroup({
     username: new FormControl('', { validators: [Validators.required, Validators.maxLength(30),Validators.minLength(4),], nonNullable: true }),
     password: new FormControl('', { validators: [Validators.required,Validators.maxLength(1024),Validators.minLength(4)], nonNullable: true }),
@@ -21,7 +21,7 @@ export class LoginComponent {
 
   public submit() {
     const { username, password,isRememberMe } = this.formGroup.controls;
-    this.loginService.login(username.value.trim(), password.value,isRememberMe.value||true);
+    this.loginService.login(username.value.trim(), password.value,isRememberMe.value||true,true)
   }
 
   public showForgetPasswordDialog(){

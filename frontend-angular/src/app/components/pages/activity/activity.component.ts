@@ -108,10 +108,8 @@ export class ActivityComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        this.ut.isLoading.next(true);
-        await this.service.delete(activity.id);
-        this.fetch();
-        this.ut.isLoading.next(false);
+        await this.service.delete(activity.id,true);
+        await this.fetch();
         this.ut.showSnackbar('The activity has been deleted successfully.');
       }
     })

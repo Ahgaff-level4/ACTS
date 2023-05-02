@@ -1,17 +1,17 @@
-import { Controller, Get, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
-import { } from '@nestjs/platform-express/';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Mutex } from 'async-mutex';
 import { Response } from 'express';
-import { ReadStream, createReadStream, createWriteStream, unlink } from 'fs';
-import { readFile, writeFile } from 'fs/promises';
+import { createReadStream, unlink } from 'fs';
 import mysqldump from 'mysqldump';
-import { join } from 'path';
+import { createInterface } from 'readline/promises';
 import { Roles } from 'src/auth/Role.guard';
 import { Readable } from 'stream';
 import { DataSource } from 'typeorm';
 import { createGunzip, createGzip } from 'zlib';
+
+
 @Controller('api')
 export class OtherController {
 	// Create a mutex instance to lock the flow. So that backup/recovery process will be async
@@ -34,6 +34,13 @@ export class OtherController {
 					host: this.dataSource.options['host'],
 					port: this.dataSource.options['port'],
 				},
+				dump: {
+					tables: ['person_entity', 'account_entity', 'role_entity',
+						'account_entity_roles_entities_role_entity', 'program_entity', 'field_entity',
+						'child_entity', 'account_entity_teaches_child_entity',
+						'activity_entity', 'goal_entity', 'evaluation_entity',
+						'typeorm_metadata'],
+				},
 				// compressFile: true, needs `gzib` to be installed in the computer!
 				dumpToFile: fileName
 			});
@@ -52,7 +59,7 @@ export class OtherController {
 			});
 		} catch (e) {
 			console.error(e);
-			// throw e;
+			throw e;
 		} finally {
 			// Release the lock
 			release();
@@ -65,30 +72,61 @@ export class OtherController {
 	async restore(@UploadedFile() file: Express.Multer.File) {
 		// Acquire the lock
 		const release = await this.mutex.acquire();
-		try {
-			//Diagram flow of file stream:
-			// client >> server's buffer >> read from buffer >> uncompressing (gunzip) >> write stream into server's disk
-			const readStream = Readable.from(file.buffer);
-			const gunzip = createGunzip();
-			const writeStream = createWriteStream(join('backups', Date.now() + '-' + file.originalname.substring(0,file.originalname.length-3)));
-			readStream.pipe(gunzip);
-			gunzip.pipe(writeStream);
-			
-			
-			//todo execute the file code in sql then delete the file
-			return await new Promise((res,rej)=>{
-				writeStream.on('error', (e) => {
-					throw e;
+		return await new Promise(async (res, rej) => {
+			try {
+				//Diagram flow of restore process:
+				// client send backup file >> server's buffer >> read stream from buffer >> uncompressing stream (gunzip) >> read line by line from gunzip >> store lines into variable until a line ends with `;`(sql statement) >> execute the sql statement
+				if (file.buffer.length < 1024 * 3) {
+					throw new BadRequestException('File size is very small!')
+				} else if (!file.originalname.endsWith('.sql.gz')) {
+					throw new BadRequestException('File extension is invalid! Expected `.sql.gz`');
+				}
+				const readStream = Readable.from(file.buffer);
+				const gunzip = createGunzip();
+				readStream.pipe(gunzip);
+
+				//! Recreate the Database
+				const dbName = this.dataSource.options.database.toString();
+				const queryRunner = this.dataSource.createQueryRunner();
+				await queryRunner.dropDatabase(dbName, true);
+				await queryRunner.createDatabase(dbName, true);
+				await queryRunner.query('USE ' + dbName);
+
+				// create a readline interface to read the stream line by line
+				const readline = createInterface({
+					input: gunzip,
+					crlfDelay: Infinity
 				});
-				writeStream.on('finish', () => res({ success: true }));
-			});
-		} catch (e) {
-			console.error(e);
-			throw e;
-		} finally {
+
+				let buffer = '';
+				for await (const line of readline) {
+					// if line is empty or sql comment ignore it.
+					if (line.trim().length == 0 || line.substring(0, 2) == '/*' || line.substring(0, 2) == '# ')
+						continue;
+
+					buffer += line;
+					// check if the buffer ends with a semicolon, indicating a complete statement
+					if (buffer.trimEnd().endsWith(';')) {
+						// execute the statement
+						console.log('execute chunk:', buffer);
+						await queryRunner.query(buffer);
+						// clear the buffer
+						buffer = '';
+					} else buffer += '\n';
+				}
+				
+				//Reconnect to the database; because database was dropped
+				await this.dataSource.destroy();
+				await this.dataSource.initialize();
+
+				res({ success: true });
+			} catch (e) {
+				console.error(e);
+				rej(e);
+			}
 			// Release the lock
-			release();
-		}
+		}).finally(() => release());
+
 	}
 
 }

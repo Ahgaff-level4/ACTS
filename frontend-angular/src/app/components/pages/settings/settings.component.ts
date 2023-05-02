@@ -52,7 +52,7 @@ export class SettingsComponent {
           console.log('response', event);
 
         },
-        error: (error) => this.ut.errorDefaultDialog(error)
+        error: (error) => this.ut.errorDefaultDialog(error,'There was a problem while restoring the database!')
       });
   }
 

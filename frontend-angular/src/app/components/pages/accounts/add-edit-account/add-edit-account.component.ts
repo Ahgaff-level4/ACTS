@@ -69,7 +69,7 @@ export class AddEditAccountComponent implements OnInit{
         let p: IPersonEntity = await this.personForm.submit();
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
-          await this.accountService.post({ ...accountFields, personId: p.id });//include personId property
+          await this.accountService.post({ ...accountFields, personId: p.id },true);//include personId property
           this.ut.showSnackbar('The new account has been registered successfully.');
           this.ut.router.navigate(['/account']);
         } catch (e) {
@@ -79,7 +79,7 @@ export class AddEditAccountComponent implements OnInit{
         await this.personForm.submitEdit();
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
         if (dirtyFields != null)
-          await this.accountService.put(this.account.id, dirtyFields);
+          await this.accountService.put(this.account.id, dirtyFields,true);
         this.ut.showSnackbar('The account has been edited successfully.');
         this.ut.router.navigate(['/account']);
       }

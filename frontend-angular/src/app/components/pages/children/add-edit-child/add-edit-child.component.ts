@@ -84,7 +84,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
         let p: IPersonEntity = await this.personForm.submit();
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
-          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id });
+          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id },true);
           this.ut.showSnackbar('The new child has been registered successfully.');
           this.ut.router.navigate(['/children']);
         } catch (e) {
@@ -95,7 +95,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
         let dirtyFields = this.ut.extractDirty(this.childForm.controls);
         console.log('child', this.child);
         if (dirtyFields != null)
-          await this.childService.patchChild(this.child.id, dirtyFields);
+          await this.childService.patchChild(this.child.id, dirtyFields,true);
         this.ut.showSnackbar('The child has been edited successfully.');
         this.ut.router.navigate(['/children']);
       }

@@ -51,13 +51,13 @@ export class AddEditActivityComponent {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.activityProgramId == 'number' || !this.activityProgramId) {//add new
-        let newActivity = await this.service.post({ ...this.formGroup.value, programId: this.activityProgramId });
+        let newActivity = await this.service.post({ ...this.formGroup.value, programId: this.activityProgramId },true);
         this.ut.showSnackbar('The activity has been added successfully.');
         this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
       } else if (typeof this.activityProgramId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         if (dirtyControls != null)
-          await this.service.patch(this.activityProgramId.id, dirtyControls);
+          await this.service.patch(this.activityProgramId.id, dirtyControls,true);
         this.ut.showSnackbar('The activity has been edited successfully.');
         this.dialogRef.close('edited');
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
