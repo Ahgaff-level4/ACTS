@@ -52,7 +52,8 @@
             [@detailExpand]="item == expandedItem ? 'expanded' : 'collapsed'">
             <div class="row d-flex justify-content-center align-items-center mb-3 mb-md-0">
               <div class="col-md-9">
-                <p>
+                <app-add-edit-child></app-add-edit-child>
+                <!-- <p>
                   <b>{{'Birthdate'|translate}}:&nbsp;</b><span
                     *ngIf="item.person.birthDate">{{item.person.birthDate|toDate}}.</span><span
                     *ngIf="!item.person.birthDate"
@@ -91,7 +92,7 @@
                   <b>{{'Priority skills'|translate}}:&nbsp;</b><span
                     *ngIf="item.prioritySkills">{{item.prioritySkills}}.</span><span *ngIf="!item.prioritySkills"
                     class="opacity-50 fst-italic fw-bold">‹{{'Empty'|translate}}›</span>
-                </p>
+                </p> -->
               </div>
               <div class="col-md-3">
                   <a [routerLink]="'/goals/'+item.id" class="m-1" mat-stroked-button color="primary">{{'Goals'|translate}}</a>

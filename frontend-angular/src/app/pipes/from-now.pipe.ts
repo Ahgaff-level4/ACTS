@@ -5,8 +5,18 @@ import * as moment from 'moment';
 @Pipe({
   name: 'fromNow'
 })
+
 export class FromNowPipe implements PipeTransform {
   constructor(private translate: TranslateService) { }
+  /**
+   *
+   * @param value date object
+   * @param args boolean|undefined
+   * @returns string user friendly date from now.
+   * - If `args==true` Ex: `4 months`, `2 days`.
+   * - If `args==undefined` Ex: `4 months ago`, `2 days ago`.
+   * - If value is not expected returns empty string.
+   */
   transform(value: unknown, ...args: unknown[]): unknown {
     var date;
     if (value == undefined || value === '')

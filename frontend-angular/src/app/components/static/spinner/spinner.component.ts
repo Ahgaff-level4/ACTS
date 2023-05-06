@@ -7,5 +7,4 @@ import { Router } from '@angular/router';
   styleUrls: ['./spinner.component.scss']
 })
 export class SpinnerComponent {
-constructor(private router:Router){}
 }

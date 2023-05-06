@@ -137,8 +137,8 @@
           <mat-select formControlName="parentId">
             <mat-option value="null">--&nbsp;{{"None"|translate}}&nbsp;--</mat-option>
             <mat-option *ngFor="let parent of parents" [value]="parent.id">
-              <p class="fs-5">{{parent.person.name}}.<br>
-              <span class="fs-6 opacity-75">&nbsp;{{'Address'|translate}}:&nbsp;{{parent.address}}</span></p>
+              <span style="font-size: medium;" class="d-block pt-2">{{parent.person.name}}.</span>
+              <span *ngIf="parent.address" style="font-size: small;" class="opacity-75">&nbsp;{{'Address'|translate}}:&nbsp;{{parent.address}}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>

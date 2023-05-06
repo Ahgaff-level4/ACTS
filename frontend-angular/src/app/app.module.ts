@@ -42,6 +42,7 @@ import { ResetChangePasswordComponent } from './components/dialogs/reset-change-
 import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
 import { Page404Component } from './components/pages/404/404.component';
 import { SettingsComponent } from './components/pages/settings/settings.component';
+import { AddEditEvaluationComponent } from './components/dialogs/add-edit-evaluation/add-edit-evaluation.component';
 
 @NgModule({
   declarations: [
@@ -74,7 +75,8 @@ import { SettingsComponent } from './components/pages/settings/settings.componen
     ResetChangePasswordComponent,
     EvaluationComponent,
     Page404Component,
-    SettingsComponent
+    SettingsComponent,
+    AddEditEvaluationComponent
   ],
   imports: [
     BrowserModule,

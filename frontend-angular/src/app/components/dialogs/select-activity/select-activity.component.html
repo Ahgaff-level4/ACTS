@@ -16,6 +16,9 @@
         <mat-button-toggle [matTooltip]="'Filter activities within age range of the child age'|translate" value="age"
           [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
       </mat-button-toggle-group>
+      <p *ngIf="!activities || activities.length ==0" class="text-center opacity-75 mt-4 mb-0 pb-0">
+        {{'Empty activity list'|translate}}
+      </p>
       <mat-selection-list #listActivity [multiple]="false"
         (selectionChange)="onSelectionChangeActivity(listActivity?.selectedOptions?.selected?.[0]?.value)">
         <mat-list-option *ngFor="let activity of activities" [value]="activity">
@@ -37,8 +40,9 @@
 
     <div class="row">
       <div class="col-md-12">
-        <button class="w-100" type="button" mat-flat-button color="primary" (click)="createSpecialActivity()">{{'Create
-          special activity'|translate}}</button>
+        <button class="w-100" type="button" mat-stroked-button color="primary" (click)="createSpecialActivity()">
+          {{'Create special activity'|translate}}
+        </button>
       </div>
     </div>
   </div>

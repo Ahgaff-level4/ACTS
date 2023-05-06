@@ -12,7 +12,7 @@ import { ResetChangePasswordComponent } from 'src/app/components/dialogs/reset-c
   templateUrl: './add-edit-account.component.html',
   styleUrls: ['./add-edit-account.component.scss']
 })
-export class AddEditAccountComponent implements OnInit{
+export class AddEditAccountComponent implements OnInit {
   public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
@@ -22,7 +22,7 @@ export class AddEditAccountComponent implements OnInit{
   phoneMaxLength = { maxlength: 15 }
   isLoading = false;
   hide = true;
-  phoneFields = ['phone0'];
+  phoneFields: string[] = [];
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
@@ -30,6 +30,15 @@ export class AddEditAccountComponent implements OnInit{
 
   ngOnInit(): void {
     this.account = history.state.data;
+    for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
+      if (this.account?.['phone' + i])
+        this.phoneFields.push('phone' + i);
+      else{
+        this.phoneFields.push('phone'+i);
+        break;
+      }
+
+
     this.person = this.account?.person;
     let pass = this.account?.id ? {} : {
       password: [null, [Validators.required, this.ut.validation.strongPasswordValidator, Validators.minLength(4)]],
@@ -69,7 +78,7 @@ export class AddEditAccountComponent implements OnInit{
         let p: IPersonEntity = await this.personForm.submit();
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
-          await this.accountService.post({ ...accountFields, personId: p.id },true);//include personId property
+          await this.accountService.post({ ...accountFields, personId: p.id }, true);//include personId property
           this.ut.showSnackbar('The new account has been registered successfully.');
           this.ut.router.navigate(['/account']);
         } catch (e) {
@@ -79,7 +88,7 @@ export class AddEditAccountComponent implements OnInit{
         await this.personForm.submitEdit();
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
         if (dirtyFields != null)
-          await this.accountService.put(this.account.id, dirtyFields,true);
+          await this.accountService.put(this.account.id, dirtyFields, true);
         this.ut.showSnackbar('The account has been edited successfully.');
         this.ut.router.navigate(['/account']);
       }
@@ -87,7 +96,7 @@ export class AddEditAccountComponent implements OnInit{
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
 
-    } else this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
   }
 
 

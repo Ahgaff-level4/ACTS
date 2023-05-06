@@ -43,19 +43,19 @@ export class GoalComponent implements OnDestroy {
     if (typeof childId === 'string')
       childId = +childId;
     if (childId ?? this.service.childItsGoals.value?.id)// if First and Second cases. Else like if child.value is null and childId is null then there is something went wrong!
-      this.service.fetchChildItsGoals(childId ?? this.service.childItsGoals.value?.id as number, childId?true:false);
+      this.service.fetchChildItsGoals(childId ?? this.service.childItsGoals.value?.id as number, childId ? true : false);
     else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
   }
 
   constructor(public service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private childService: ChildService) {
-   }
+  }
 
 
 
   ngOnInit(): void {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'menu'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'teacher', 'menu'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
@@ -105,7 +105,7 @@ export class GoalComponent implements OnDestroy {
       .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data })
       .afterClosed().subscribe(v => {
         // if (v === 'added' || v === 'edited')//has been
-          // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
+        // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
       });
   }
 
@@ -116,7 +116,7 @@ export class GoalComponent implements OnDestroy {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        await this.service.delete(goal.id,true);
+        await this.service.delete(goal.id, true);
         // this.fetch();
         this.ut.showSnackbar('The goal has been deleted successfully.');
       }

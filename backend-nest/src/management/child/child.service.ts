@@ -6,6 +6,7 @@ import { PersonEntity, PersonView } from '../person/person.entity';
 import { GoalEntity } from '../goal/Goal.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { FieldEntity } from '../field/field.entity';
+import { AccountEntity } from '../account/account.entity';
 
 @Injectable()
 export class ChildService {
@@ -30,6 +31,8 @@ export class ChildService {
       .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
       .leftJoinAndMapMany('child.goals', GoalEntity, 'goal', 'child.id=goal.childId AND goal.state != :state', { state: 'strength' })
       .leftJoinAndMapOne('goal.activity', ActivityEntity, 'activity', "goal.activityId=activity.id")
+      .leftJoinAndMapOne('goal.teacher', AccountEntity, 'teacher', "goal.teacherId=teacher.id")
+      .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', "teacher.personId=teacherPerson.id")
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
       .where('child.id=:id', { id })
       // .andWhere('goal.state != :state', { state: 'strength' })

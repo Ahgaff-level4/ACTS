@@ -45,9 +45,9 @@ export class UtilityService {
 
   /**
    * Display error dialog with message of:
-   * - if HttpErrorResponse then extract the message.
-   * - if string then message is eOrMessage.
-   * - else show default message (e.g., 'Something Went Wrong!').
+   * - if `HttpErrorResponse` then extract the error `message`.
+   * - if string then message is `eOrMessage`.
+   * - else show default message (e.g., 'Something Went Wrong!') followed by `appendMsg` if exist.
    * @param eOrMessage
    * @param appendMsg used when error could not be identified and will be appended after the default error message: `'Something Went Wrong! '+appendMsg`
    */
