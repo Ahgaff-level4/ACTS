@@ -119,10 +119,13 @@
   "The goal has been deleted successfully.":"",
   "The new account has been registered successfully.":"",
   "The account has been edited successfully.":"",
+  "The evaluation has been added successfully.":"",
+  "The evaluation has been edited successfully.":"",
   "Add new program":"",
   "Add new field":"",
   "Add new activity":"",
   "Add new goal":"",
+  "Add new evaluation":"",
   "Register a child":"إضافة طفل جديد",
   "Register new account":"",
   "Edit program":"",
@@ -131,6 +134,7 @@
   "Edit activity":"",
   "Edit goal":"",
   "Edit account":"",
+  "Edit evaluation":"",
   "Program":"",
   "program":"",
   "Programs":"",
@@ -247,5 +251,7 @@
   "By Teacher":"",
   "Evaluations of goal":"",
   "Goal of child":"",
-  "Empty activity list":""
+  "Empty activity list":"",
+  "Evaluate date":"",
+  "Excellent":""
 }

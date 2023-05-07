@@ -2,13 +2,12 @@ import { Component, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
+import { IEvaluationEntity } from '../../../../../../interfaces';
 import { Subscription } from 'rxjs';
 import { EvaluationService } from 'src/app/services/evaluation.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { GoalService } from 'src/app/services/goal.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit-evaluation/add-edit-evaluation.component';
 
@@ -83,12 +82,15 @@ export class EvaluationComponent {
 
   /** @param data is either a evaluation to be Edit. Or goalId to be Add */
   addEdit(data?: IEvaluationEntity | number) {
-    this.dialog
-      .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data })
-      .afterClosed().subscribe(v => {
-        // if (v === 'added' || v === 'edited')//has been
-        //    this.fetch(); we don't need fetch goal's evaluations; evaluationService will fetch when added/edited, and we've subscribed to it
-      });
+    if (typeof data != 'object' && typeof data != 'number')
+      this.ut.errorDefaultDialog(undefined);
+    else
+      this.dialog
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data })
+        .afterClosed().subscribe(v => {
+          // if (v === 'added' || v === 'edited')//has been
+          //    this.fetch(); we don't need fetch goal's evaluations; evaluationService will fetch when added/edited, and we've subscribed to it
+        });
   }
 
   deleteDialog(evaluation: IEvaluationEntity) {

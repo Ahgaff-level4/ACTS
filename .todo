@@ -5,3 +5,5 @@
 - in children page show only isArchive=false children. And there should be an option for showing isArchive=true children, using filter button in the children page depends on your preference.
 
 - optimize button that will delete any activity dose not connected to a child AND dose not have programId. Made when user create special activity but dose not continue to fill the goal form to add goal with special activity.
+
+- In big forms the user before leaving should have dialog says 'Your changes will be lost!'

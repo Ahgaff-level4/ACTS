@@ -1,16 +1,15 @@
-import { HttpClient, HttpClientModule, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { Injectable, OnInit } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { Injectable } from '@angular/core';
 import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors, ValidatorFn } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { saveAs } from 'file-saver'
 @Injectable({
   providedIn: 'root'
 })
@@ -154,6 +153,7 @@ export class UtilityService {
    * @returns on action clicked observable.
    */
   public showSnackbar(message: string, action?: string, duration = 4000) {
+    message = this.translate(message);
     return this.snackbar.open(message, action, { duration }).onAction()
   }
 

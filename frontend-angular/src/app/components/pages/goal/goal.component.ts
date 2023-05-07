@@ -2,8 +2,8 @@ import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { IChildEntity, IGoalEntity } from '../../../../../../interfaces';
-import { BehaviorSubject, Subscription } from 'rxjs';
+import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
+import { Subscription } from 'rxjs';
 import { ChildService } from 'src/app/services/child.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
@@ -12,6 +12,7 @@ import { GoalService } from 'src/app/services/goal.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditGoalComponent } from '../../dialogs/add-edit-goal/add-edit-goal.component';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AddEditEvaluationComponent } from '../../dialogs/add-edit-evaluation/add-edit-evaluation.component';
 
 @Component({
   selector: 'app-goal',
@@ -123,12 +124,9 @@ export class GoalComponent implements OnDestroy {
     })
   }
 
-  evaluate(goal: IGoalEntity) {
-    //todo evaluate dialog
-  }
-
-  showEvaluations(goal: IGoalEntity) {
-
+  evaluate(goalId: number) {
+    this.dialog
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data:goalId });
   }
 
   ngOnDestroy(): void {

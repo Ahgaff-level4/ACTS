@@ -55,7 +55,7 @@
             <mat-icon>more_vert</mat-icon>
           </button>
           <mat-menu #menu="matMenu">
-            <button  *ngIf="canAdd" (click)="evaluate(el)" mat-menu-item>
+            <button  *ngIf="canAdd" (click)="evaluate(el.id)" mat-menu-item>
               <mat-icon color="primary">rate_review</mat-icon>
               <span>{{'Evaluate'|translate}}</span>
             </button>

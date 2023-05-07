@@ -23,7 +23,7 @@
 
       <ng-container matColumnDef="rate">
         <th mat-header-cell cdkDrag *matHeaderCellDef mat-sort-header> {{'Rate'|translate}} </th>
-        <td mat-cell *matCellDef="let el"> {{el.rate}} </td>
+        <td mat-cell *matCellDef="let el"> {{el.rate=='excellent'?'Excellent':'Continual'|translate}} </td>
       </ng-container>
 
       <ng-container matColumnDef="mainstream" class="px-0 mx-0">
@@ -74,6 +74,6 @@
     </mat-paginator>
   </div>
 
-  <button (click)="addEdit()" *ngIf="canAdd" mat-raised-button color="primary">
+  <button (click)="addEdit(service.goalItsEvaluations.value!.id)" *ngIf="canAdd" mat-raised-button color="primary">
     {{'Add new evaluation'|translate}}<mat-icon>rate_review</mat-icon></button>
 </div>
