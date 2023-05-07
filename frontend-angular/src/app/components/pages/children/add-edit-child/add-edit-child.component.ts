@@ -1,4 +1,4 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -12,7 +12,7 @@ import { AccountService } from 'src/app/services/account.service';
   templateUrl: './add-edit-child.component.html',
   styleUrls: ['./add-edit-child.component.scss']
 })
-export class AddEditChildComponent implements OnInit, OnDestroy {
+export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
   public childForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
@@ -21,9 +21,11 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
   public selectedParent: IAccountEntity | undefined;
   public parents!: IAccountEntity[];
   public sub!: Subscription;
+  maxlength = { maxlength: 512 };
+  /**Used to show the add-edit form in children table. If `readonlyChild` exist then do not show title, submit, and every control should be readonly */
+  @Input('child') readonlyChild: IChildEntity | undefined;
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService, private accountService: AccountService) {
-
   }
 
   ngOnInit(): void {
@@ -55,6 +57,15 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
     }
   }
 
+  ngAfterViewInit() {
+    if (this.readonlyChild && this.personForm) {//if add-edit shows in readonly mode, AKA in children table
+      this.childForm.disable();
+      this.personForm.formGroup.disable();
+      this.childForm.setValue(this.ut.extractFrom(this.childForm.controls,this.readonlyChild));
+      this.personForm.formGroup.setValue(this.ut.extractFrom(this.personForm.formGroup.controls,this.readonlyChild.person))
+    }
+  }
+
   calcFamilyMembers = (): string => {
     return (Number(this.childForm?.get('femaleFamilyMembers')?.value ?? 0)
       + Number(this.childForm?.get('maleFamilyMembers')?.value ?? 0)
@@ -68,10 +79,12 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
       return 1 + (Number(str || 0) || 0);
     } else return Number(str || 0) || 0;
   }
-  maxlength = { maxlength: 512 };
 
 
   async submit() {
+    if (this.readonlyChild)
+      return;//can not perform submit when showing the form in readonly mode
+
     this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
     this.ut.trimFormGroup(this.childForm)
     this.personForm?.formGroup?.markAllAsTouched();
@@ -84,7 +97,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
         let p: IPersonEntity = await this.personForm.submit();
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
-          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id },true);
+          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
           this.ut.showSnackbar('The new child has been registered successfully.');
           this.ut.router.navigate(['/children']);
         } catch (e) {
@@ -95,7 +108,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy {
         let dirtyFields = this.ut.extractDirty(this.childForm.controls);
         console.log('child', this.child);
         if (dirtyFields != null)
-          await this.childService.patchChild(this.child.id, dirtyFields,true);
+          await this.childService.patchChild(this.child.id, dirtyFields, true);
         this.ut.showSnackbar('The child has been edited successfully.');
         this.ut.router.navigate(['/children']);
       }

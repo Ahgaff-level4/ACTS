@@ -7,11 +7,14 @@
           <mat-form-field class="w-100" appearance="fill">
             <mat-label>{{'Activity'|translate}}</mat-label>
             <mat-icon matPrefix class="material-symbols-rounded">interests</mat-icon>
-            <textarea type="text" matInput placeholder="..." formControlName="name" required minlength="3" maxlength="512"></textarea>
-            <mat-error *ngIf="formGroup.get('name')?.errors?.['required']">{{'You must enter a
-              value'|translate}}</mat-error>
-            <mat-error *ngIf="formGroup.get('name')?.errors?.['minlength']">{{'Minimum length is
-              '|translate:minlength}}</mat-error>
+            <textarea type="text" matInput placeholder="..." formControlName="name" required minlength="3"
+              maxlength="512"></textarea>
+            <mat-error *ngIf="formGroup.get('name')?.errors?.['required']">
+              {{'You must enter a value'|translate}}
+            </mat-error>
+            <mat-error *ngIf="formGroup.get('name')?.errors?.['minlength']">
+              {{'Minimum length is '|translate:minlength}}
+            </mat-error>
             <mat-hint align="end">{{formGroup.get('name')?.value?.length??0}}/500</mat-hint>
           </mat-form-field>
         </div>
@@ -24,7 +27,9 @@
             <mat-select formControlName="minAge">
               <mat-option *ngFor="let age of 1|range:100; let i=index;" [value]="age">{{age}}</mat-option>
             </mat-select>
-            <mat-error *ngIf="formGroup.get('minAge')?.errors?.['required']">{{'You must choose a value'|translate}}</mat-error>
+            <mat-error *ngIf="formGroup.get('minAge')?.errors?.['required']">
+              {{'You must choose a value'|translate}}
+            </mat-error>
           </mat-form-field>
         </div>
       </div>
@@ -37,8 +42,11 @@
               <mat-option *ngFor="let age of 1|range:100; let i=index;"
                 [disabled]="formGroup.get('minAge')?.value > age" [value]="age">{{age}}</mat-option>
             </mat-select>
-            <mat-error *ngIf="formGroup.get('maxAge')?.errors?.['required']">{{'You must choose a value'|translate}}</mat-error>
-            <mat-hint class="d-inline-flex w-auto m-0 p-0" *ngIf="formGroup.get('minAge')?.value && formGroup.get('maxAge')?.value">{{'Age
+            <mat-error *ngIf="formGroup.get('maxAge')?.errors?.['required']">
+              {{'You must choose a value'|translate}}
+            </mat-error>
+            <mat-hint class="d-inline-flex w-auto m-0 p-0"
+              *ngIf="formGroup.get('minAge')?.value && formGroup.get('maxAge')?.value">{{'Age
               range'}}:&nbsp;{{formGroup.get('minAge')?.value}} – {{formGroup.get('maxAge')?.value}}</mat-hint>
           </mat-form-field>
         </div>
@@ -51,7 +59,8 @@
             <mat-select formControlName="fieldId">
               <mat-option *ngFor="let field of fieldService.fields.value" [value]="field.id">{{field.name}}</mat-option>
             </mat-select>
-            <mat-error *ngIf="formGroup.get('fieldId')?.errors?.['required']">{{'You must choose a value'|translate}}</mat-error>
+            <mat-error *ngIf="formGroup.get('fieldId')?.errors?.['required']">{{'You must choose a
+              value'|translate}}</mat-error>
           </mat-form-field>
         </div>
       </div>
