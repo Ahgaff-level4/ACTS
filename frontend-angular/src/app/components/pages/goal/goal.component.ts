@@ -35,7 +35,7 @@ export class GoalComponent implements OnDestroy {
   ngOnInit(): void {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'teacher', 'menu'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['program','field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'teacher', 'menu'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');

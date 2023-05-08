@@ -38,7 +38,7 @@ export class AuthController {
 	isLogin(@Session() session: Express_Session) {
 		const user: User = session['user'];
 		// console.log('AuthController : isLogin : user:', user);
-
+		
 		if (user && user.accountId)
 			return { ...user };
 

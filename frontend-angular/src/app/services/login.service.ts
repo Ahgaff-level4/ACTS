@@ -12,7 +12,7 @@ export class LoginService {
 
   login(username: string, password: string, isRememberMe: boolean,onDone:Function) {
     localStorage.setItem('isRememberMe', isRememberMe + '');
-    return this.http.post<User>(env.AUTH + 'login', { username, password }, { withCredentials: true }).subscribe({
+    return this.http.post<User>(env.AUTH + 'login', { username, password }).subscribe({
       next: (res) => {
         onDone();
         if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {

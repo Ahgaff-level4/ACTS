@@ -7,6 +7,7 @@ import { GoalEntity } from '../goal/Goal.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { FieldEntity } from '../field/field.entity';
 import { AccountEntity } from '../account/account.entity';
+import { ProgramEntity } from '../program/program.entity';
 
 @Injectable()
 export class ChildService {
@@ -34,6 +35,7 @@ export class ChildService {
       .leftJoinAndMapOne('goal.teacher', AccountEntity, 'teacher', "goal.teacherId=teacher.id")
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', "teacher.personId=teacherPerson.id")
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
+      .leftJoinAndMapOne('activity.program', ProgramEntity, 'program', 'activity.programId=program.id')
       .where('child.id=:id', { id })
       // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();
@@ -47,6 +49,7 @@ export class ChildService {
       .leftJoinAndMapOne('goal.teacher', AccountEntity, 'teacher', "goal.teacherId=teacher.id")
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', "teacher.personId=teacherPerson.id")
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
+      .leftJoinAndMapOne('activity.program', ProgramEntity, 'program', 'activity.programId=program.id')
       .where('child.id=:id', { id })
       // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();

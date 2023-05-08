@@ -35,7 +35,7 @@ export class StrengthComponent {
   ngOnInit(): void {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('strengths table') ?? 'null') ?? ['field', 'strength', 'assignDatetime', 'note', 'teacher', 'menu'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('strengths table') ?? 'null') ?? ['program','field', 'strength', 'assignDatetime', 'note', 'teacher', 'menu'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');

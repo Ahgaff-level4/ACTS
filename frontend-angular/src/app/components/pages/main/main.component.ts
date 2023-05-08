@@ -13,5 +13,6 @@ import { SelectActivityComponent } from '../../dialogs/select-activity/select-ac
   styleUrls: ['./main.component.scss']
 })
 export class MainComponent {
+  constructor(public ut: UtilityService) { }
 
 }

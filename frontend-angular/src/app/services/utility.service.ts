@@ -29,7 +29,7 @@ export class UtilityService {
    */
   public isLogin = () => {
     return new Promise<void>((resolve, rej) => {
-      this.http.get<User>(env.AUTH + 'isLogin', { withCredentials: true }).subscribe({
+      this.http.get<User>(env.AUTH + 'isLogin').subscribe({
         next: res => {
           if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {
             this.user.next(res);

@@ -1,4 +1,37 @@
-<p>main page</p>
-ها كيف لو تكون الصفحة الرئيسية كما حق امازون ذي
-<img width="100%" src="assets/Web capture_14-4-2023_64418_www.amazon.sa.jpeg"/>
-<h1><a href="https://material.angular.io/components/categories">Angular Material</a></h1>
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-md-4">
+      <mat-card routerLink="account" class="4 m-3 p-3 mdc-elevation--z7" style="cursor: pointer;">
+        <div class="row">
+          <img width="90" class="col-3 rounded-circle" src="assets/ribbon.png" alt="image represent the field">
+          <div class="col-9">
+            <h4 class="card-title">{{'Field'|translate}}</h4>
+            <p class="card-text">{{'View and manage fields. Fields are used to label an activity.'}}</p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card routerLink="account" class="card m-3 p-3 mdc-elevation--z7" style="cursor: pointer;">
+        <div class="row">
+          <img width="90" class="col-3 rounded-circle" src="assets/Web capture_14-4-2023_64418_www.amazon.sa.jpeg" alt="image represent the field">
+          <div class="col-9">
+            <h4 class="card-title">{{'Field'|translate}}</h4>
+            <p class="card-text">{{'View and manage fields. Fields are used to label an activity.'}}</p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+    <div class="col-md-4">
+      <mat-card routerLink="account" class="card m-3 p-3 mdc-elevation--z7" style="cursor: pointer;">
+        <div class="row">
+          <img width="90" class="col-3 rounded-circle" src="assets/ribbon.png" alt="image represent the field">
+          <div class="col-9">
+            <h4 class="card-title">{{'Field'|translate}}</h4>
+            <p class="card-text">{{'View and manage fields. Fields are used to label an activity.'}}</p>
+          </div>
+        </div>
+      </mat-card>
+    </div>
+  </div>
+</div>

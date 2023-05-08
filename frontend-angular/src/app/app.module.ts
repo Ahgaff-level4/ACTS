@@ -1,6 +1,6 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClient, HttpClientModule } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { ReactiveFormsModule } from '@angular/forms';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -45,6 +45,7 @@ import { SettingsComponent } from './components/pages/settings/settings.componen
 import { AddEditEvaluationComponent } from './components/dialogs/add-edit-evaluation/add-edit-evaluation.component';
 import { StrengthComponent } from './components/pages/strength/strength.component';
 import { AddEditStrengthComponent } from './components/dialogs/add-edit-strength/add-edit-strength.component';
+import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
 
 @NgModule({
   declarations: [
@@ -102,7 +103,11 @@ import { AddEditStrengthComponent } from './components/dialogs/add-edit-strength
   providers:[
     TranslatePipe,
     {provide:DateAdapter,useClass:MomentDateAdapter,deps:[MAT_DATE_LOCALE,MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
-
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: WithCredentialsInterceptor,
+      multi: true
+    }
   ],
   bootstrap: [AppComponent]
 })

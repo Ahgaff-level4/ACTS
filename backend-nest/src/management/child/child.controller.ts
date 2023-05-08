@@ -24,7 +24,7 @@ export class ChildController {
   }
 
   @Get('/parent')
-  @Roles('Parent')
+  @Roles('Parent','Admin','HeadOfDepartment','Teacher')
   findChildrenOfParent(@Session() session: ExpressSession) {
     const user: User = session && session['user'];
     if (session['user'] && (session['user'] as User).roles.includes('Parent')) {
@@ -34,13 +34,13 @@ export class ChildController {
   }
 
   @Get(':id/goals')
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher','Parent')
   findOneItsGoals(@Param('id', ParseIntPipe) id: number) {
     return this.childService.findOneItsGoals(+id);
   }
 
   @Get(':id/strengths')
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher','Parent')
   findOneItsStrengths(@Param('id', ParseIntPipe) id: number) {
     return this.childService.findOneItsStrengths(+id);
   }

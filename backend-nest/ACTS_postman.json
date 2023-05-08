@@ -294,11 +294,11 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{ACTS}}/api/goal/11",
+                                    "raw": "{{ACTS}}/api/goal/1",
                                     "path": [
                                         "api",
                                         "goal",
-                                        "11"
+                                        "1"
                                     ],
                                     "host": [
                                         "{{acts}}"
@@ -375,7 +375,7 @@
                                             "language": "json"
                                         }
                                     },
-                                    "raw": "{\n  \"username\": \"oneTwo\",\n  \"password\": \"zxcv\",\n  \"personId\":15\n}"
+                                    "raw": "{\n  \"username\": \"asdffffff\",\n  \"password\": \"zxcv\",\n  \"personId\":9,\n  \"roles\":[\"Admin\"]\n}"
                                 }
                             }
                         },
@@ -516,7 +516,14 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{ACTS}}/api/child",
+                                    "raw": "{{ACTS}}/api/child?FK=true",
+                                    "query": [
+                                        {
+                                            "key": "FK",
+                                            "value": "true"
+                                        }
+                                    ],
+                                    "variable": [],
                                     "path": [
                                         "api",
                                         "child"
@@ -528,15 +535,34 @@
                             }
                         },
                         {
-                            "name": "findOne",
+                            "name": "findOneItsGoals",
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{ACTS}}/api/child/1",
+                                    "raw": "{{ACTS}}/api/child/1/goals",
                                     "path": [
                                         "api",
                                         "child",
-                                        "1"
+                                        "1",
+                                        "goals"
+                                    ],
+                                    "host": [
+                                        "{{acts}}"
+                                    ]
+                                }
+                            }
+                        },
+                        {
+                            "name": "findOneItsStrengths",
+                            "request": {
+                                "method": "GET",
+                                "url": {
+                                    "raw": "{{ACTS}}/api/child/1/strengths",
+                                    "path": [
+                                        "api",
+                                        "child",
+                                        "1",
+                                        "strengths"
                                     ],
                                     "host": [
                                         "{{acts}}"
@@ -549,11 +575,11 @@
                             "request": {
                                 "method": "PATCH",
                                 "url": {
-                                    "raw": "{{ACTS}}/api/child/1",
+                                    "raw": "{{ACTS}}/api/child/20",
                                     "path": [
                                         "api",
                                         "child",
-                                        "1"
+                                        "20"
                                     ],
                                     "host": [
                                         "{{acts}}"
@@ -566,7 +592,7 @@
                                             "language": "json"
                                         }
                                     },
-                                    "raw": "{\n  \"femaleFamilyMembers\": 2,\n      \"maleFamilyMembers\": 2,\n      \"birthOrder\": 3,\n      \"parentsKinship\": \"they are cousin\",\n      \"diagnosticDate\": \"2018-05-01T21:00:00.000Z\",\n      \"pregnancyState\": \"normal pregnancy\",\n      \"birthState\": \"born in the seventh month\",\n      \"growthState\": \"grow normal\",\n      \"diagnostic\": \"diagnostied with autism\",\n      \"medicine\": \"Antibiotic\",\n      \"behaviors\": \"very quite\",\n      \"prioritySkills\": \"learn speaking and social intraction\",\n      \"parentId\":null,\n      \"personId\": 8}"
+                                    "raw": "{\n  \"parentsKinship\": \"kinship asdf\"\n}"
                                 }
                             }
                         },
@@ -1189,11 +1215,11 @@
                             "request": {
                                 "method": "GET",
                                 "url": {
-                                    "raw": "{{ACTS}}/api/program/3",
+                                    "raw": "{{ACTS}}/api/program/1",
                                     "path": [
                                         "api",
                                         "program",
-                                        "3"
+                                        "1"
                                     ],
                                     "host": [
                                         "{{acts}}"
@@ -1338,11 +1364,11 @@
                             "request": {
                                 "method": "DELETE",
                                 "url": {
-                                    "raw": "{{ACTS}}/api/field/17",
+                                    "raw": "{{ACTS}}/api/field/5",
                                     "path": [
                                         "api",
                                         "field",
-                                        "17"
+                                        "5"
                                     ],
                                     "host": [
                                         "{{acts}}"
@@ -1379,7 +1405,7 @@
                                     "language": "json"
                                 }
                             },
-                            "raw": "{\n  \"username\":\"asdf\",\n  \"password\":\"asdf\",\n  \"isRememberMe\":true\n}"
+                            "raw": "{\n  \"username\":\"asdf\",\n  \"password\":\"asdf\"\n}"
                         }
                     }
                 },

@@ -44,7 +44,7 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
 
 const SESSION_OPTIONS: SessionOptions = {
   secret: process.env.SESSION_SECRET || 'lkv4nippoqSFweuroivc1mxnvlsPa4353',
-  resave: false,
+  resave: true,
   saveUninitialized: false,
   cookie: {
     maxAge: +process.env.SESSION_AGE_MILLISECOND || 7 * 24 * 60 * 60 * 1000,//default 7 days
@@ -55,7 +55,7 @@ const SESSION_OPTIONS: SessionOptions = {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet())
-  app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.1.4:4200"], credentials: true, methods: '*' });
+  app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.1.4:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor())
