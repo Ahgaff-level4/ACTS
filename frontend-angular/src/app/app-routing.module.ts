@@ -16,6 +16,7 @@ import { AddEditAccountComponent } from './components/pages/accounts/add-edit-ac
 import { Page404Component } from './components/pages/404/404.component';
 import { SettingsComponent } from './components/pages/settings/settings.component';
 import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
+import { StrengthComponent } from './components/pages/strength/strength.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -83,6 +84,7 @@ const routes: Routes = [
   { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
   { path: 'goals/:id', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
   { path: 'evaluations/:id', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
+  { path: 'strengths/:id', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
   { path: 'settings',component:SettingsComponent,title: titlePrefix + 'Settings', canActivate:[RoleGuard], data:AHTP},
   { path: '**', component: Page404Component, title: 'Page Not Found' },
 ];

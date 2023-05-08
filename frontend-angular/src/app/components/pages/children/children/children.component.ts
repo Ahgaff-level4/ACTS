@@ -49,17 +49,18 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
 
-    this.dataSource.filterPredicate = (item: IChildEntity, filter: string) => {
-      for (let k in item) {
-        if (typeof (item as any)[k] == 'object') {
-          for (let k2 in (item as any)[k])
-            if (((item as any)[k] as any)[k2]?.toString().toLowerCase().indexOf(filter.toLowerCase()) != -1)
-              return true;
-        } else if ((item as any)[k]?.toString().toLowerCase().indexOf(filter.toLocaleLowerCase()) != -1)
-          return true;
-      }
-      return false;
-    }
+    //!Not working! shows nothing record! Show a record with empty fields what ever search bar typed on!
+    // this.dataSource.filterPredicate = (item: IChildEntity, filter: string) => {
+    //   for (let k in item) {
+    //     if (typeof (item as any)[k] == 'object') {
+    //       for (let k2 in (item as any)[k])
+    //         if (((item as any)[k] as any)[k2]?.toString().toLowerCase().indexOf(filter.toLowerCase()) != -1)
+    //           return true;
+    //     } else if ((item as any)[k]?.toString().toLowerCase().indexOf(filter.toLocaleLowerCase()) != -1)
+    //       return true;
+    //   }
+    //   return false;
+    // }
   }
 
   ngAfterViewInit(): void {

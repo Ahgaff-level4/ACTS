@@ -30,7 +30,7 @@ export class GoalService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
+            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the goal. Please try again later or check your connection.");
             rej(e);
           }
         })
@@ -84,11 +84,11 @@ export class GoalService {
   public fetchChildItsGoals(id: number, manageLoading = false): Promise<IChildEntity> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
-      this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id)
+      this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id+'/goals')
         .subscribe({
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
-            if (Array.isArray(v) && v.length != 0) {
+            if (Array.isArray(v)) {
               this.childItsGoals.next(v[0]);
               res(v[0]);
             }

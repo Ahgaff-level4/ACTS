@@ -12,17 +12,20 @@ import { FieldService } from 'src/app/services/field.service';
   styleUrls: ['./add-edit-activity.component.scss']
 })
 export class AddEditActivityComponent {
-  public formGroup: FormGroup;
+  public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
 
   constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     /**passed data could be:
-     * 1- activity to be edit.
-     * 2- programId to add the new activity into it.
-     * 3- undefined to add new special activity without program and should return the IActivityEntity after post*/
+     * 1- `activity` to be edit.
+     * 2- `programId` to add the new activity into it.
+     * 3- `undefined` to add new special activity without program and should return the IActivityEntity after post*/
     @Inject(MAT_DIALOG_DATA) public activityProgramId?: IActivityEntity | number,) {
-    let ages = activityProgramId ? {//special activity don't need age stuff
+  }
+
+  ngOnInit(): void {
+    let ages = this.activityProgramId ? {//special activity don't need age stuff
       minAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
       maxAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
     } : {};
@@ -36,9 +39,6 @@ export class AddEditActivityComponent {
       this.fieldService.fetch(true);
     if (typeof this.activityProgramId != 'number' && typeof this.activityProgramId != 'object')
       this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
-  }
-
-  ngOnInit(): void {
     if (typeof this.activityProgramId === 'object' && typeof this.activityProgramId != 'number' && this.activityProgramId)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.activityProgramId));
   }

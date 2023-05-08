@@ -43,6 +43,8 @@ import { EvaluationComponent } from './components/pages/evaluation/evaluation.co
 import { Page404Component } from './components/pages/404/404.component';
 import { SettingsComponent } from './components/pages/settings/settings.component';
 import { AddEditEvaluationComponent } from './components/dialogs/add-edit-evaluation/add-edit-evaluation.component';
+import { StrengthComponent } from './components/pages/strength/strength.component';
+import { AddEditStrengthComponent } from './components/dialogs/add-edit-strength/add-edit-strength.component';
 
 @NgModule({
   declarations: [
@@ -76,7 +78,9 @@ import { AddEditEvaluationComponent } from './components/dialogs/add-edit-evalua
     EvaluationComponent,
     Page404Component,
     SettingsComponent,
-    AddEditEvaluationComponent
+    AddEditEvaluationComponent,
+    StrengthComponent,
+    AddEditStrengthComponent
   ],
   imports: [
     BrowserModule,

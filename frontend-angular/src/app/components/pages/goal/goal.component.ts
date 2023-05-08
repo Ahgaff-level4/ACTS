@@ -4,27 +4,18 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
 import { Subscription } from 'rxjs';
-import { ChildService } from 'src/app/services/child.service';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { UtilityService } from 'src/app/services/utility.service';
 import { GoalService } from 'src/app/services/goal.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditGoalComponent } from '../../dialogs/add-edit-goal/add-edit-goal.component';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit-evaluation/add-edit-evaluation.component';
 
 @Component({
   selector: 'app-goal',
   templateUrl: './goal.component.html',
-  styleUrls: ['./goal.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
+  styleUrls: ['./goal.component.scss']
 })
 export class GoalComponent implements OnDestroy {
   public canAdd!: boolean;
@@ -36,19 +27,7 @@ export class GoalComponent implements OnDestroy {
   public columnsKeys!: string[];
   private sub: Subscription = new Subscription();
 
-  /**
-   * - First use when init the class. The param will be passed by URL param as (string|null).
-   * - Second when `Add`, `Edit`, or `Delete`. So that it will emit the new data. So, that the table will be refresh. The param will be undefined.
-   */
-  async fetch(childId?: number | string | null) {
-    if (typeof childId === 'string')
-      childId = +childId;
-    if (childId ?? this.service.childItsGoals.value?.id)// if First and Second cases. Else like if child.value is null and childId is null then there is something went wrong!
-      this.service.fetchChildItsGoals(childId ?? this.service.childItsGoals.value?.id as number, childId ? true : false);
-    else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
-  }
-
-  constructor(public service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private childService: ChildService) {
+  constructor(public service: GoalService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute,) {
   }
 
 
@@ -60,7 +39,9 @@ export class GoalComponent implements OnDestroy {
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
-        await this.fetch(childId);
+        if (typeof childId === 'string')
+          await this.service.fetchChildItsGoals(+childId, true);
+        else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
       },
     });
 
@@ -100,14 +81,17 @@ export class GoalComponent implements OnDestroy {
     sessionStorage.setItem('goals table', JSON.stringify(this.columnsKeys));
   }
 
-  /** @param data is either a goal to be Edit. Or childId to be Add */
-  addEdit(data?: IGoalEntity | number) {
-    this.dialog
-      .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data })
-      .afterClosed().subscribe(v => {
-        // if (v === 'added' || v === 'edited')//has been
-        // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
-      });
+  /** @param goalOrChildId is either a goal to be Edit. Or childId to be Add */
+  addEdit(goalOrChildId?: IGoalEntity | number) {
+    if (typeof goalOrChildId != 'object' && typeof goalOrChildId != 'number')
+      this.ut.errorDefaultDialog(undefined);
+    else
+      this.dialog
+        .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId })
+        .afterClosed().subscribe(v => {
+          // if (v === 'added' || v === 'edited')//has been
+          // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
+        });
   }
 
   deleteDialog(goal: IGoalEntity) {
@@ -126,7 +110,7 @@ export class GoalComponent implements OnDestroy {
 
   evaluate(goalId: number) {
     this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data:goalId });
+      .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId });
   }
 
   ngOnDestroy(): void {

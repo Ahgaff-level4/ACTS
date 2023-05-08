@@ -33,10 +33,16 @@ export class ChildController {
     throw new UnauthorizedException(R.string.onlyParent)
   }
 
-  @Get(':id')
+  @Get(':id/goals')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  findOne(@Param('id', ParseIntPipe) id: number) {
-    return this.childService.findOne(+id);
+  findOneItsGoals(@Param('id', ParseIntPipe) id: number) {
+    return this.childService.findOneItsGoals(+id);
+  }
+
+  @Get(':id/strengths')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  findOneItsStrengths(@Param('id', ParseIntPipe) id: number) {
+    return this.childService.findOneItsStrengths(+id);
   }
 
   @Patch(':id')

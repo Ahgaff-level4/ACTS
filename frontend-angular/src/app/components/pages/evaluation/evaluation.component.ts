@@ -101,7 +101,7 @@ export class EvaluationComponent {
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
         await this.service.delete(evaluation.id, true);
-        this.ut.showSnackbar('The goal has been deleted successfully.');
+        this.ut.showSnackbar('The evaluation has been deleted successfully.');
       }
     })
   }

@@ -84,6 +84,6 @@
     </mat-paginator>
   </div>
 
-  <button (click)="addEdit()" *ngIf="canAdd" mat-raised-button color="primary">
+  <button (click)="addEdit(service.childItsGoals.value?.id)" *ngIf="canAdd" mat-raised-button color="primary">
     {{'Add new goal'|translate}}<mat-icon>add</mat-icon></button>
 </div>

@@ -116,6 +116,7 @@ export interface IChildEntity extends ICreateChild {
 	parent?: IAccountEntity | null;
 	person: IPersonEntity;
 	goals: IGoalEntity[];
+	strengths:IStrengthEntity[];
 	teachers: IAccountEntity[];
 	familyMembers?: number | null;
 	/** registerDate: (is person.createdDatetime) */
@@ -148,21 +149,28 @@ export interface IPersonEntity extends ICreatePerson {
 	id: number;
 }
 
-export interface ICreateGoal {
+export interface ICreateStrength {
 	note?: string;
 	assignDatetime?: Date;
-	state: GoalState;
 	activityId: number;
 	childId: number;
 	teacherId: number;
 }
 
-export interface IGoalEntity extends ICreateGoal {
+export interface IStrengthEntity extends ICreateStrength{
 	id: number;
 	activity: IActivityEntity;
 	child: IChildEntity;
 	evaluations: IEvaluationEntity[];
 	teacher: IAccountEntity;
+}
+
+export interface ICreateGoal extends ICreateStrength{
+	state: GoalState;
+}
+
+export interface IGoalEntity extends ICreateGoal,IStrengthEntity {
+
 }
 
 export interface ICreateActivity {
