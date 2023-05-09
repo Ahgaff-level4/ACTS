@@ -46,6 +46,7 @@ import { AddEditEvaluationComponent } from './components/dialogs/add-edit-evalua
 import { StrengthComponent } from './components/pages/strength/strength.component';
 import { AddEditStrengthComponent } from './components/dialogs/add-edit-strength/add-edit-strength.component';
 import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
+import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
 
 @NgModule({
   declarations: [
@@ -107,6 +108,11 @@ import { WithCredentialsInterceptor } from './interceptors/WithCredentials.inter
       provide: HTTP_INTERCEPTORS,
       useClass: WithCredentialsInterceptor,
       multi: true
+    },
+    {
+      provide:HTTP_INTERCEPTORS,
+      useClass:HttpCatchInterceptor,
+      multi:true
     }
   ],
   bootstrap: [AppComponent]

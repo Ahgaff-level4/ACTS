@@ -22,11 +22,11 @@ export class RolesGuard implements CanActivate {
   canActivate(context: ExecutionContext): boolean {
     //first: check login
     const req = context.switchToHttp().getRequest();
-    if (req.path === '/api/auth/login' || req.path == '/api/auth/isLogin')//user can only login without authentication
+    if (req.path === '/api/auth/login' || req.path == '/api/auth/isLogin'||req.path=='/api/auth/logout')//user can only login without authentication
       return true;
     const user: User = req.session['user'];
     
-    console.log(user)
+    // console.log(user)
     if (!user || !user.roles || !Array.isArray(user.roles))
       throw new UnauthorizedException({ message: R.string.mustLogin, action: 'login' });
 
@@ -37,7 +37,7 @@ export class RolesGuard implements CanActivate {
       context.getHandler(),
       context.getClass(),
     ]);
-    console.log({requiredRoles})
+    // console.log({requiredRoles})
     if (!Array.isArray(requiredRoles))
       return true;
 

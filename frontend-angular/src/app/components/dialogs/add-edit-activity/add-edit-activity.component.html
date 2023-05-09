@@ -15,6 +15,7 @@
             <mat-error *ngIf="formGroup.get('name')?.errors?.['minlength']">
               {{'Minimum length is '|translate:minlength}}
             </mat-error>
+            <mat-hint>{{'Activity text should be unique.'|translate}}</mat-hint>
             <mat-hint align="end">{{formGroup.get('name')?.value?.length??0}}/500</mat-hint>
           </mat-form-field>
         </div>

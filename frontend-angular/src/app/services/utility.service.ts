@@ -35,8 +35,14 @@ export class UtilityService {
             this.user.next(res);
             resolve();
           }
-          else rej();
-        }, error: rej
+          else {
+            this.user.next(null);
+            rej();
+          }
+        }, error: () => {
+          this.user.next(null);
+          rej();
+        }
       });
     })
   }
