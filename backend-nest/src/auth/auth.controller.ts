@@ -1,7 +1,5 @@
-import { Body, Controller, Get, Post, Req, Session, UseInterceptors } from '@nestjs/common';
-import { SuccessInterceptor } from 'src/interceptor';
+import { Body, Controller, Get, Post, Req, Session } from '@nestjs/common';
 import { Request } from 'express';
-import { IsBoolean, IsString, Length } from 'class-validator';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcrypt';
 import { AuthService } from './auth.service';
@@ -42,7 +40,7 @@ export class AuthController {
 		if (user && user.accountId)
 			return { ...user };
 
-		throw new UnauthorizedException({ message: R.string.mustLogin });
+		throw new UnauthorizedException({ message: R.string.mustLogin,action: 'login'  });
 	}
 
 	@Get('logout')

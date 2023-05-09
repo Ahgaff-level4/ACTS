@@ -61,8 +61,8 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.readonlyChild && this.personForm) {//if add-edit shows in readonly mode, AKA in children table
       this.childForm.disable();
       this.personForm.formGroup.disable();
-      this.childForm.setValue(this.ut.extractFrom(this.childForm.controls,this.readonlyChild));
-      this.personForm.formGroup.setValue(this.ut.extractFrom(this.personForm.formGroup.controls,this.readonlyChild.person))
+      this.childForm.setValue(this.ut.extractFrom(this.childForm.controls, this.readonlyChild));
+      this.personForm.formGroup.setValue(this.ut.extractFrom(this.personForm.formGroup.controls, this.readonlyChild.person))
     }
   }
 
@@ -94,7 +94,9 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
       this.personForm?.formGroup?.disable();
       this.ut.isLoading.next(true);
       if (this.child?.id == null) {//Register a child
-        let p: IPersonEntity = await this.personForm.submit();
+        let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
+        if (typeof p != 'object')
+          return;
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
@@ -104,13 +106,14 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
           this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
         }
       } else {//edit the child
-        await this.personForm.submitEdit();
+        await this.personForm.submitEdit().catch(() => { });
         let dirtyFields = this.ut.extractDirty(this.childForm.controls);
-        console.log('child', this.child);
-        if (dirtyFields != null)
-          await this.childService.patchChild(this.child.id, dirtyFields, true);
-        this.ut.showSnackbar('The child has been edited successfully.');
-        this.ut.router.navigate(['/children']);
+        try {
+          if (dirtyFields != null)
+            await this.childService.patchChild(this.child.id, dirtyFields, true);
+          this.ut.showSnackbar('The child has been edited successfully.');
+          this.ut.router.navigate(['/children']);
+        } catch (e) { }
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();

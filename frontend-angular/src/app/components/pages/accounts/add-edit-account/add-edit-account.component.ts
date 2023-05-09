@@ -33,8 +33,8 @@ export class AddEditAccountComponent implements OnInit {
     for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
       if (this.account?.['phone' + i])
         this.phoneFields.push('phone' + i);
-      else{
-        this.phoneFields.push('phone'+i);
+      else {
+        this.phoneFields.push('phone' + i);
         break;
       }
 
@@ -75,22 +75,26 @@ export class AddEditAccountComponent implements OnInit {
       this.personForm?.formGroup?.disable();
       this.ut.isLoading.next(true);
       if (this.account?.id == null) {//Register new account
-        let p: IPersonEntity = await this.personForm.submit();
+        let person = await this.personForm.submit().catch(() => { });
+        if (typeof person != 'object')
+          return;
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
-          await this.accountService.post({ ...accountFields, personId: p.id }, true);//include personId property
+          await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
           this.ut.showSnackbar('The new account has been registered successfully.');
           this.ut.router.navigate(['/account']);
         } catch (e) {
-          this.personForm.personService.deletePerson(p.id);//if creating an account run into some problem but person created successfully then just delete the person :>
+          this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
-        await this.personForm.submitEdit();
+        await this.personForm.submitEdit().catch(() => { });
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
-        if (dirtyFields != null)
-          await this.accountService.put(this.account.id, dirtyFields, true);
-        this.ut.showSnackbar('The account has been edited successfully.');
-        this.ut.router.navigate(['/account']);
+        try {
+          if (dirtyFields != null)
+            await this.accountService.put(this.account.id, dirtyFields, true);
+          this.ut.showSnackbar('The account has been edited successfully.');
+          this.ut.router.navigate(['/account']);
+        } catch (e) { }
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();

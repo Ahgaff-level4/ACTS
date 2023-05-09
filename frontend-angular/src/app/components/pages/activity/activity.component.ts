@@ -24,23 +24,8 @@ export class ActivityComponent {
   @ViewChild(MatTable) table!: MatTable<IActivityEntity>;
   public dataSource!: MatTableDataSource<IActivityEntity>;
   public columnsKeys!: string[];
-  public program = new BehaviorSubject<IProgramEntity | null>(null);
 
-  /**
-   * - First use when init the class. The programId will be passed by URL param as (string|null).
-   * - Second when `Add`, `Edit`, or `Delete` an activity. So that it will emit the new data. So, that the table will be refresh. The programId will be undefined.
-   */
-  async fetch(programId?: number|string|null) {
-    this.ut.isLoading.next(true);
-    if(typeof programId === 'string')
-      programId = +programId;
-    if (programId || this.program.value?.id)// if First and Second cases. Else like if program.value is null and programId is null then there is something went wrong!
-      this.program.next(await this.programService.fetchOne(programId ?? this.program.value?.id as number));
-    else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem navigating to activities page. Please try again later or check your connection.").afterClosed().subscribe(() => this.ut.router.navigate(['/main']));
-    this.ut.isLoading.next(false);
-  }
-
-  constructor(private service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private programService: ProgramService) {
+  constructor(public service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private programService: ProgramService) {
 
   }
 
@@ -53,14 +38,15 @@ export class ActivityComponent {
     this.route.paramMap.subscribe({
       next: async params => {
         let programId = params.get('id');
-
-        await this.fetch(programId);
-
+        if (typeof programId == 'string')
+          await this.service.fetchProgramItsActivities(+programId, true).catch(() => { });
+        else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
     this.dataSource = new MatTableDataSource<IActivityEntity>();
-    this.program.subscribe((v) => {
+    this.service.specialActivities.next(undefined);//prevent unnecessary loading when: (create,update,delete) activity
+    this.service.programItsActivities.subscribe((v) => {
       if (v == null)
         return;
       this.dataSource.data = v.activities;
@@ -93,12 +79,15 @@ export class ActivityComponent {
 
   /** `data` is either Activity to be Edit. Or programId to be Add */
   addEdit(data?: IActivityEntity | number) {
-    this.dialog
-      .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data })
-      .afterClosed().subscribe(v => {
-        if (v === 'added' || v === 'edited')
-          this.fetch();
-      });
+    if (typeof data != 'object' && typeof data != 'number')
+      this.ut.errorDefaultDialog(undefined);
+    else
+      this.dialog
+        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data })
+    // .afterClosed().subscribe(v => { service will fetch when add/edit/delete
+    //   if (v === 'added' || v === 'edited')
+    //     this.fetch();
+    // });
   }
 
   deleteDialog(activity: IActivityEntity) {
@@ -108,11 +97,11 @@ export class ActivityComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        await this.service.delete(activity.id,true);
-        await this.fetch();
-        this.ut.showSnackbar('The activity has been deleted successfully.');
+        try {
+          await this.service.delete(activity.id, true);
+          this.ut.showSnackbar('The activity has been deleted successfully.');
+        } catch (e) { }
       }
-    })
-
+    });
   }
 }

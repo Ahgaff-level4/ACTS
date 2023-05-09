@@ -40,7 +40,9 @@ export class AppComponent extends MatPaginatorIntl implements OnInit, OnDestroy 
     // this.subscribeOnLangChange();
     this.ut.isLoading.subscribe(v => this.isLoading = v);
     this.handleOnLangChange();
-    this.ut.isLogin().finally(() => console.log('isLogin:', this.ut.user.value));
+    var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
+    if (this.ut.user.value == null && isRememberMe !== 'false')
+      this.ut.isLogin().finally(() => console.log('isLogin:', this.ut.user.value));
   }
 
   // subscribeOnLangChange = () => {

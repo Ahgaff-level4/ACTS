@@ -51,18 +51,23 @@ export class AddEditActivityComponent {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.activityProgramId == 'number' || !this.activityProgramId) {//add new
-        let newActivity = await this.service.post({ ...this.formGroup.value, programId: this.activityProgramId },true);
-        this.ut.showSnackbar('The activity has been added successfully.');
-        this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
+        try {
+          let newActivity = await this.service.post({ ...this.formGroup.value, programId: this.activityProgramId }, true);
+          this.ut.showSnackbar('The activity has been added successfully.');
+          this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
+        } catch (e) { }
       } else if (typeof this.activityProgramId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
-        if (dirtyControls != null)
-          await this.service.patch(this.activityProgramId.id, dirtyControls,true);
-        this.ut.showSnackbar('The activity has been edited successfully.');
-        this.dialogRef.close('edited');
+        try {
+
+          if (dirtyControls != null)
+            await this.service.patch(this.activityProgramId.id, dirtyControls, true);
+          this.ut.showSnackbar('The activity has been edited successfully.');
+          this.dialogRef.close('edited');
+        } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
   }
 
 }

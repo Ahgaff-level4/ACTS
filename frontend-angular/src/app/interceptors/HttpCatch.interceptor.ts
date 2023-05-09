@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpClient, HttpErrorResponse, HttpResponse } from '@angular/common/http';
-import { EMPTY, Observable, catchError, delay, from, mergeMap, of, retryWhen, take, throwError } from 'rxjs';
+import { EMPTY, Observable, catchError, delay, from, mergeMap, of, retry, retryWhen, take, tap, throwError } from 'rxjs';
 import { UtilityService } from '../services/utility.service';
 import { LoginService } from '../services/login.service';
 
@@ -11,27 +11,34 @@ export class HttpCatchInterceptor implements HttpInterceptor {
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     const requestClone = req.clone();
-    return next.handle(req).pipe(
-      catchError(async (error: HttpErrorResponse) => {
-        // Check the status and handle the error accordingly
-        if (error?.status === 0 || error?.status === -1) {
-          const isResend = await this.showNetworkErrorDialog();
-          if (isResend)
-            return next.handle(requestClone);
-          else return EMPTY;
-        } if (error?.status === 401 && error.error?.action == 'login' && this.ut.user.value?.isLoggedIn) {
-          try {
-            await this.ut.isLogin().finally(() => console.log('isLogin', this.ut.user.value))
-            return next.handle(requestClone);
-          } catch (e) {
+    return next.handle(req)
+      .pipe(
+        catchError(async (error: HttpErrorResponse,caught) => {
+          console.log('interceptor called', error);
+          // Check the status and handle the error accordingly
+          if (error?.status === 0 || error?.status === -1) {
+            this.ut.isLoading.next(false);
+            const isResend = await this.showNetworkErrorDialog();
+            if (isResend) {
+              this.ut.isLoading.next(true);
+              return next.handle(requestClone);
+            } else return EMPTY;
+          } else if (error?.status === 401 && error.error?.action == 'login') {
+            if (this.ut.user.value)
+              this.ut.user.next(null);
             this.showUnauthorizeDialog();
+            this.ut.isLoading.next(false);
             return EMPTY;
           }
-        }
-        // Rethrow the error
-        return throwError(() => error);
-      })
-    );
+          // Rethrow the error
+          throw error;
+          // return throwError(() => {
+          //   (error as any).passedByHttpInterceptor = true;
+          //   return error;
+          // });
+        }),
+
+      );
   }
 
   /**

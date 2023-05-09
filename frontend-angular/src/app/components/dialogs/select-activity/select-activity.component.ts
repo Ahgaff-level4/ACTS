@@ -6,6 +6,7 @@ import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { GoalService } from 'src/app/services/goal.service';
 import { AddEditActivityComponent } from '../add-edit-activity/add-edit-activity.component';
+import { ActivityService } from 'src/app/services/activity.service';
 
 @Component({
   selector: 'app-select-activity',
@@ -17,7 +18,7 @@ export class SelectActivityComponent implements OnInit {
   public filter: 'age' | 'all' = 'age';
   public activities: IActivityEntity[] | [] = [];
 
-  constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService, private ut: UtilityService, private goalService: GoalService, private dialog: MatDialog) {
+  constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService, private ut: UtilityService, private goalService: GoalService, private activityService: ActivityService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -27,11 +28,11 @@ export class SelectActivityComponent implements OnInit {
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {
     if (value != null) {
-      this.programService.fetchOne(value.id, true)//fetchOne will return the program with its activities
+      this.activityService.fetchProgramItsActivities(value.id, true)
         .then((v) => {
           this.chosenProgram = v;
           this.filterActivities();
-        })
+        });
     }
   }
 
@@ -66,6 +67,6 @@ export class SelectActivityComponent implements OnInit {
       .afterClosed().subscribe(v => {
         if (typeof v === 'object')
           this.dialogRef.close(v);
-      })
+      });
   }
 }

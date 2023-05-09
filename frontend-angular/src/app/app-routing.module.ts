@@ -17,6 +17,8 @@ import { Page404Component } from './components/pages/404/404.component';
 import { SettingsComponent } from './components/pages/settings/settings.component';
 import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
 import { StrengthComponent } from './components/pages/strength/strength.component';
+import { ButtonType, MessageDialogComponent } from './components/dialogs/message/message.component';
+import { MatDialogRef } from '@angular/material/dialog';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -24,15 +26,16 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   let allowRoles: Role[] = route.data['allowRoles'] as Role[];
   if (!Array.isArray(allowRoles) || allowRoles.length === 0)
     throw 'Expected allowRoles to be typeof Role[]. Got:' + allowRoles;
+  var dialog: MatDialogRef<MessageDialogComponent, ButtonType> | undefined = undefined;
   if (ut.user.value == null) {
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
-    try {
-      if (isRememberMe === 'true' && ut.user.value === null)
-        await ut.isLogin();
-    } catch (e) {//not authorize AKA not login
-      showUnauthorizeDialog();
-      return false;
-    }
+    if (ut.user.value == null && isRememberMe !== 'false')
+      ut.isLogin().finally(() => console.log('RoleGuard : isLogin:', ut.user.value));
+
+    ut.user.subscribe((user) => {
+      if (user)
+        dialog?.close();
+    });
   }
   for (let r of allowRoles)
     if (hasRole(r))
@@ -40,14 +43,14 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', ut.user.value?.roles)
   showUnauthorizeDialog();
   return false;
-
   function showUnauthorizeDialog() {
-    ut.showMsgDialog({
+    dialog = ut.showMsgDialog({
       type: 'error',
       title: { text: 'Insufficient privilege!' },
       content: `You don't have sufficient privilege to access this page!`,
       buttons: [{ color: 'primary', type: 'Login' }, { color: 'accent', type: 'Ok' },]
-    }).afterClosed().subscribe(v => {
+    })
+    dialog.afterClosed().subscribe(v => {
       if (v === 'Login')
         ut.router.navigateByUrl('login');
       else ut.router.navigateByUrl('/')
@@ -85,7 +88,7 @@ const routes: Routes = [
   { path: 'goals/:id', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
   { path: 'evaluations/:id', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
   { path: 'strengths/:id', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
-  { path: 'settings',component:SettingsComponent,title: titlePrefix + 'Settings', canActivate:[RoleGuard], data:AHTP},
+  { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', canActivate: [RoleGuard], data: AHTP },
   { path: '**', component: Page404Component, title: 'Page Not Found' },
 ];
 

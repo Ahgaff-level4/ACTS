@@ -39,7 +39,7 @@ export class EvaluationComponent {
       next: async params => {
         let goalId = params.get('id');
         if (typeof goalId === 'string')
-          await this.service.fetchGoalItsEvaluations(+goalId, true);
+          await this.service.fetchGoalItsEvaluations(+goalId, true).catch(() => { });
         else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
       },
     });
@@ -100,8 +100,10 @@ export class EvaluationComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        await this.service.delete(evaluation.id, true);
-        this.ut.showSnackbar('The evaluation has been deleted successfully.');
+        try {
+          await this.service.delete(evaluation.id, true);
+          this.ut.showSnackbar('The evaluation has been deleted successfully.');
+        } catch (e) { }
       }
     })
   }

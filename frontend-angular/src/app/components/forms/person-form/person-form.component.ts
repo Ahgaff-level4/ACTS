@@ -42,15 +42,15 @@ export class PersonFormComponent implements OnInit {
   /**
    * Called by the parent component. Hint: using `@ViewChild` decorator
    */
-  public async submit(): Promise<IPersonEntity> {
-    return await this.personService.postPerson(this.ut.extractDirty(this.formGroup.controls) as ICreatePerson);
+  public submit(): Promise<IPersonEntity> {
+    return this.personService.postPerson(this.ut.extractDirty(this.formGroup.controls) as ICreatePerson);
   }
 
   /** void if there is no dirty fields*/
-  public async submitEdit(): Promise<SucResEditDel | void> {
+  public async submitEdit(): Promise<SucResEditDel|void> {
     let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
     if (dirtyFields != null)
-      return await this.personService.patchPerson((this.person as IPersonEntity).id,dirtyFields);
+      return await this.personService.patchPerson((this.person as IPersonEntity).id,dirtyFields).catch(()=>{});
   }
 
 }

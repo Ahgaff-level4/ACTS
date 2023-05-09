@@ -35,18 +35,23 @@ export class AddEditFieldComponent {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (this.field?.id == null) {//add new
-        await this.service.post(this.formGroup.value);
-        this.ut.showSnackbar('The field has been added successfully.')
-        this.dialogRef.close();
+        try {
+
+          await this.service.post(this.formGroup.value);
+          this.ut.showSnackbar('The field has been added successfully.')
+          this.dialogRef.close();
+        } catch (e) { }
       } else {//edit
         let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
-        if (dirtyFields != null)
-          await this.service.patch(this.field.id, dirtyFields);
-        this.ut.showSnackbar('The field has been edited successfully.')
-        this.dialogRef.close();
+        try {
+          if (dirtyFields != null)
+            await this.service.patch(this.field.id, dirtyFields);
+          this.ut.showSnackbar('The field has been edited successfully.')
+          this.dialogRef.close();
+        } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
   }
 
 }

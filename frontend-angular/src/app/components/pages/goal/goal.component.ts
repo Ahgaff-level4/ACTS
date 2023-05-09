@@ -35,12 +35,12 @@ export class GoalComponent implements OnDestroy {
   ngOnInit(): void {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['program','field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'teacher', 'menu'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('goals table') ?? 'null') ?? ['program', 'field', 'goal', 'completed', 'continual', 'assignDatetime', 'note', 'teacher', 'menu'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
         if (typeof childId === 'string')
-          await this.service.fetchChildItsGoals(+childId, true);
+          await this.service.fetchChildItsGoals(+childId, true).catch(() => { });
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
       },
     });
@@ -101,9 +101,10 @@ export class GoalComponent implements OnDestroy {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        await this.service.delete(goal.id, true);
-        // this.fetch();
-        this.ut.showSnackbar('The goal has been deleted successfully.');
+        try {
+          await this.service.delete(goal.id, true);
+          this.ut.showSnackbar('The goal has been deleted successfully.');
+        } catch (e) { }
       }
     })
   }

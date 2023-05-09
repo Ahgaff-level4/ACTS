@@ -90,21 +90,5 @@ export class ProgramService {
     })
   }
 
-  /** program.activities will be array of IActivityEntity of the fetched program */
-  fetchOne(programId: number, manageLoading = false): Promise<IProgramEntity> {
-    return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
-      this.http.get<IProgramEntity[]>(this.URL + '/' + programId)
-        .subscribe({
-          next: v => {
-            manageLoading && this.ut.isLoading.next(false);
-            res(v[0])
-          },
-          error: e => {
-            manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program. Please try again later or check your connection."); rej(e);
-          }
-        })
-    })
-  }
+
 }

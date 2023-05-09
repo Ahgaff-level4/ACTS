@@ -52,15 +52,19 @@ export class AddEditGoalComponent {
       if (typeof this.goalOrChildId == 'number') {//add new
         if (this.goalService.childItsGoals.value?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
-        await this.service.post({ ...this.formGroup.value, childId: this.goalService.childItsGoals.value?.id, teacherId: this.ut.user.value?.accountId });
-        this.ut.showSnackbar('The goal has been added successfully.');
-        this.dialogRef.close('added');
+        try {
+          await this.service.post({ ...this.formGroup.value, childId: this.goalService.childItsGoals.value?.id, teacherId: this.ut.user.value?.accountId });
+          this.ut.showSnackbar('The goal has been added successfully.');
+          this.dialogRef.close('added');
+        } catch (e) { }
       } else if (typeof this.goalOrChildId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
-        if (dirtyControls != null)
-          await this.service.patch(this.goalOrChildId.id, dirtyControls);
-        this.ut.showSnackbar('The goal has been edited successfully.');
-        this.dialogRef.close('edited');
+        try {
+          if (dirtyControls != null)
+            await this.service.patch(this.goalOrChildId.id, dirtyControls);
+          this.ut.showSnackbar('The goal has been edited successfully.');
+          this.dialogRef.close('edited');
+        } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
     } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })

@@ -35,18 +35,22 @@ export class AddEditProgramComponent {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (this.program?.id == null) {//add new
-        await this.service.post(this.formGroup.value);
-        this.ut.showSnackbar('The program has been added successfully.')
-        this.dialogRef.close();
+        try {
+          await this.service.post(this.formGroup.value);
+          this.ut.showSnackbar('The program has been added successfully.')
+          this.dialogRef.close();
+        } catch (e) { }
       } else {//edit
         let dirtyProgram = this.ut.extractDirty(this.formGroup.controls);
-        if (dirtyProgram != null)
-          await this.service.patch(this.program.id, dirtyProgram);
-        this.ut.showSnackbar('The program has been edited successfully.');
-        this.dialogRef.close();
+        try {
+          if (dirtyProgram != null)
+            await this.service.patch(this.program.id, dirtyProgram);
+          this.ut.showSnackbar('The program has been edited successfully.');
+          this.dialogRef.close();
+        } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!'})
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
   }
 
 }

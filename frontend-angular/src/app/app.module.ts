@@ -47,6 +47,7 @@ import { StrengthComponent } from './components/pages/strength/strength.componen
 import { AddEditStrengthComponent } from './components/dialogs/add-edit-strength/add-edit-strength.component';
 import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
 import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
+import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
 
 @NgModule({
   declarations: [
@@ -82,7 +83,8 @@ import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
     SettingsComponent,
     AddEditEvaluationComponent,
     StrengthComponent,
-    AddEditStrengthComponent
+    AddEditStrengthComponent,
+    SpecialActivityComponent
   ],
   imports: [
     BrowserModule,

@@ -20,7 +20,6 @@ export class UtilityService {
   public isLoading = new BehaviorSubject<boolean>(false);
 
   constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
-    // this.user.next({ isLoggedIn: true, accountId: 8, roles: ['Admin'], name: 'Khaled' });//todo delete this. Used to show app as user logged in
   }
 
 
@@ -34,8 +33,7 @@ export class UtilityService {
           if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {
             this.user.next(res);
             resolve();
-          }
-          else {
+          } else {
             this.user.next(null);
             rej();
           }
@@ -44,7 +42,7 @@ export class UtilityService {
           rej();
         }
       });
-    })
+    });
   }
 
 

@@ -1,4 +1,4 @@
-import { Component,Inject } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IActivityEntity, IStrengthEntity } from '../../../../../../interfaces';
 import { StrengthService } from 'src/app/services/strength.service';
@@ -18,7 +18,7 @@ export class AddEditStrengthComponent {
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
 
-  constructor(private fb: FormBuilder, public service: StrengthService, public strengthService:StrengthService,
+  constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
@@ -52,15 +52,19 @@ export class AddEditStrengthComponent {
       if (typeof this.strengthOrChildId == 'number') {//add new
         if (this.strengthService.childItsStrengths.value?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
-        await this.service.post({ ...this.formGroup.value, childId: this.strengthService.childItsStrengths.value?.id, teacherId: this.ut.user.value?.accountId });
-        this.ut.showSnackbar('The strength has been added successfully.');
-        this.dialogRef.close('added');
+        try {
+          await this.service.post({ ...this.formGroup.value, childId: this.strengthService.childItsStrengths.value?.id, teacherId: this.ut.user.value?.accountId });
+          this.ut.showSnackbar('The strength has been added successfully.');
+          this.dialogRef.close('added');
+        } catch (e) { }
       } else if (typeof this.strengthOrChildId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
-        if (dirtyControls != null)
-          await this.service.patch(this.strengthOrChildId.id, dirtyControls);
-        this.ut.showSnackbar('The strength has been edited successfully.');
-        this.dialogRef.close('edited');
+        try {
+          if (dirtyControls != null)
+            await this.service.patch(this.strengthOrChildId.id, dirtyControls);
+          this.ut.showSnackbar('The strength has been edited successfully.');
+          this.dialogRef.close('edited');
+        } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
     } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })

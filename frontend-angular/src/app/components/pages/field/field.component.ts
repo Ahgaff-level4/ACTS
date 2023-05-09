@@ -25,7 +25,7 @@ export class FieldComponent implements OnInit {
   public isLoading: boolean = true;
 
   constructor(private service: FieldService, public ut: UtilityService, private dialog: MatDialog) {
-      }
+  }
 
   ngOnInit(): void {
     this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
@@ -77,8 +77,10 @@ export class FieldComponent implements OnInit {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        await this.service.delete(field.id,true);
-        this.ut.showSnackbar('The field has been deleted successfully.');
+        try {
+          await this.service.delete(field.id, true);
+          this.ut.showSnackbar('The field has been deleted successfully.');
+        } catch (e) { }
       }
     })
 

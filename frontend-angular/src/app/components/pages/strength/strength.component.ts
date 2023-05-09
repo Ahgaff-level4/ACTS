@@ -35,12 +35,12 @@ export class StrengthComponent {
   ngOnInit(): void {
     this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
     this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('strengths table') ?? 'null') ?? ['program','field', 'strength', 'assignDatetime', 'note', 'teacher', 'menu'];
+    this.columnsKeys = JSON.parse(sessionStorage.getItem('strengths table') ?? 'null') ?? ['program', 'field', 'strength', 'assignDatetime', 'note', 'teacher', 'menu'];
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
         if (typeof childId === 'string')
-          await this.service.fetchChildItsStrengths(+childId, true);
+          await this.service.fetchChildItsStrengths(+childId, true).catch(() => { });
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.")
       },
     });
@@ -97,8 +97,10 @@ export class StrengthComponent {
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
-        await this.service.delete(strength.id, true);
-        this.ut.showSnackbar('The strength has been deleted successfully.');
+        try {
+          await this.service.delete(strength.id, true);
+          this.ut.showSnackbar('The strength has been deleted successfully.');
+        } catch (e) { }
       }
     })
   }

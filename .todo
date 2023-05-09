@@ -8,6 +8,6 @@
 
 - In big forms the user before leaving should have dialog says 'Your changes will be lost!'
 
-- Interceptor in Http request for HttpErrorResponse. If no internet connection the subscriber next or error do not called, instead I got Unhandled exception. I think pipe(catchError(...)) will handle it correctly.
+- change password in user's settings page.
 
 - Fix sort of columns that their sort not working. Ex: Age column in children table
