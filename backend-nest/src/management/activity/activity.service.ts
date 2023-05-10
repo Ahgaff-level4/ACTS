@@ -4,6 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FieldEntity } from '../field/field.entity';
 import { ProgramEntity } from '../program/program.entity';
+import { GoalEntity } from '../goal/Goal.entity';
+import { ChildEntity } from '../child/child.entity';
+import { PersonEntity } from '../person/person.entity';
 
 @Injectable()
 export class ActivityService {
@@ -11,6 +14,17 @@ export class ActivityService {
 
     create(createActivity: CreateActivity) {
         return this.repo.save(this.repo.create(createActivity))
+    }
+
+    findSpecialActivities() {
+        return this.repo
+            .createQueryBuilder('activity')
+            .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
+            .leftJoinAndMapMany('activity.goals', GoalEntity, 'goal', 'activity.id = goal.activityId')
+            .leftJoinAndMapOne('goal.child', ChildEntity, 'child', 'child.id = goal.childId')
+            .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'person.id = child.personId')
+            .where('activity.programId IS NULL')
+            .getMany();
     }
 
     async findAll(fk: boolean) {

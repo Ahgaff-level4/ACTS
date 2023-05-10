@@ -18,6 +18,12 @@ export class ActivityController {
     //     return this.activityService.findAll(fk);
     // }
 
+    @Get('/special')
+    @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+    async findSpecialActivities() {
+        return this.activityService.findSpecialActivities();
+    }
+
     @Get(':id')
     @Roles('Admin', 'HeadOfDepartment', 'Teacher')
     async findOne(@Param('id', ParseIntPipe) id: number) {

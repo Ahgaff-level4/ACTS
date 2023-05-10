@@ -6,7 +6,7 @@ import { LoginComponent } from './components/pages/login/login.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children/children.component';
 import { AddEditChildComponent } from './components/pages/children/add-edit-child/add-edit-child.component';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
@@ -19,6 +19,7 @@ import { EvaluationComponent } from './components/pages/evaluation/evaluation.co
 import { StrengthComponent } from './components/pages/strength/strength.component';
 import { ButtonType, MessageDialogComponent } from './components/dialogs/message/message.component';
 import { MatDialogRef } from '@angular/material/dialog';
+import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -26,34 +27,43 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   let allowRoles: Role[] = route.data['allowRoles'] as Role[];
   if (!Array.isArray(allowRoles) || allowRoles.length === 0)
     throw 'Expected allowRoles to be typeof Role[]. Got:' + allowRoles;
+
   var dialog: MatDialogRef<MessageDialogComponent, ButtonType> | undefined = undefined;
   if (ut.user.value == null) {
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (ut.user.value == null && isRememberMe !== 'false')
       ut.isLogin().finally(() => console.log('RoleGuard : isLogin:', ut.user.value));
 
-    ut.user.subscribe((user) => {
-      if (user)
+    let sub: Subscription;
+    sub = ut.user.subscribe((user) => {
+      if (user) {
         dialog?.close();
+        ut.router.navigateByUrl(state.url);
+      }
+      sub?.unsubscribe();
     });
   }
+
   for (let r of allowRoles)
     if (hasRole(r))
       return true;
+
   console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', ut.user.value?.roles)
   showUnauthorizeDialog();
   return false;
+  //----------------------------------------
+
   function showUnauthorizeDialog() {
     dialog = ut.showMsgDialog({
       type: 'error',
       title: { text: 'Insufficient privilege!' },
-      content: `You don't have sufficient privilege to access this page!`,
+      content: `You don't have sufficient privilege to do this action!`,
       buttons: [{ color: 'primary', type: 'Login' }, { color: 'accent', type: 'Ok' },]
     })
     dialog.afterClosed().subscribe(v => {
       if (v === 'Login')
         ut.router.navigateByUrl('login');
-      else ut.router.navigateByUrl('/')
+      // else ut.router.navigateByUrl('/') If user is loggedIn then this dialog will be closed and navigated to the Unauthorize(was unauthorize) page. This line will navigate back to Home :/
     });
   }
   function hasRole(role: Role) {
@@ -88,6 +98,7 @@ const routes: Routes = [
   { path: 'goals/:id', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
   { path: 'evaluations/:id', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
   { path: 'strengths/:id', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
+  { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: AH },
   { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', canActivate: [RoleGuard], data: AHTP },
   { path: '**', component: Page404Component, title: 'Page Not Found' },
 ];

@@ -58,7 +58,7 @@ export class UtilityService {
 export const R = {
     string: {
         somethingWentWrong: 'Something went wrong!',
-        insufficientPrivilege: `You don't have sufficient privilege!`,
+        insufficientPrivilege: `You don't have sufficient privilege to do this action!`,
         loggedInSuccessfully: 'Logged in successfully',
         loggedOutSuccessfully: 'Logged out successfully',
         invalidUsernameOrPassword: 'Invalid username or password!',

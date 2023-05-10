@@ -25,7 +25,7 @@
 	"Call the administrator to reset your password. If you are the administrator then try to access the system with another account that has Admin privilege, so that you can reset this account password. If nothing of the previous steps works then try to contact the technician who set up this system.":"تواصل مع المشرف لإعادة كلمة المرور. إذا كنت انت المشرف إذا حاول تسجيل الدخول بإستخدام حساب اخر يحمل صلاحيات المشرف ثم اعد كلمة المرور لهذا الحساب. إذا لم تنجح إحدى الطرق السابقة إذا تواصل مع الفني الذي ثبت هذا النظام.",
 	"You must login!":"!يجب تسجيل الدخول اولاً",
 	"Insufficient privilege!":"!ليس لديك صلاحية",
-	"You don't have sufficient privilege to access this page!":"!ليس لديك صلاحية لدخول هذه الصفحة",
+	"You don't have sufficient privilege to do this action!":"!ليس لديك صلاحية",
   "Children":"الأطفال",
   "Name":"الاسم",
   "Age":"العمر",
@@ -277,5 +277,7 @@
   "Head of Department can not access Account page. And can not create child's goal or evaluate a goal.":"",
   "Activity text should be unique.":"",
   "Network Error!":"",
-  "Please check your network connection and try again.":""
+  "Please check your network connection and try again.":"",
+  "Special Activities":"",
+  "This activity is not bind to any child! We strongly recommend deleting it":""
 }

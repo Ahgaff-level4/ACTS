@@ -15,20 +15,21 @@ export class AddEditActivityComponent {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-
+  public isSpecialActivity!: boolean
   constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     /**passed data could be:
-     * 1- `activity` to be edit.
+     * 1- `activity` to be edit. If activity.programId == null THEN it is special activity
      * 2- `programId` to add the new activity into it.
      * 3- `undefined` to add new special activity without program and should return the IActivityEntity after post*/
     @Inject(MAT_DIALOG_DATA) public activityProgramId?: IActivityEntity | number,) {
   }
 
   ngOnInit(): void {
-    let ages = this.activityProgramId ? {//special activity don't need age stuff
+    this.isSpecialActivity = this.activityProgramId == undefined || (typeof this.activityProgramId == 'object' && this.activityProgramId.programId == null)
+    let ages = this.isSpecialActivity ? {} : {//special activity don't need age stuff
       minAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
       maxAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
-    } : {};
+    };
     this.formGroup = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(512), Validators.minLength(3)]],
       ...ages,
@@ -37,8 +38,6 @@ export class AddEditActivityComponent {
     });
     if (this.fieldService.fields.value.length === 0)
       this.fieldService.fetch(true);
-    if (typeof this.activityProgramId != 'number' && typeof this.activityProgramId != 'object')
-      this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
     if (typeof this.activityProgramId === 'object' && typeof this.activityProgramId != 'number' && this.activityProgramId)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.activityProgramId));
   }

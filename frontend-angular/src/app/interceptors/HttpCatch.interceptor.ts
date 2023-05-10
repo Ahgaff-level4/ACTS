@@ -13,7 +13,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
     const requestClone = req.clone();
     return next.handle(req)
       .pipe(
-        catchError(async (error: HttpErrorResponse,caught) => {
+        catchError(async (error: HttpErrorResponse, caught) => {
           console.log('interceptor called', error);
           // Check the status and handle the error accordingly
           if (error?.status === 0 || error?.status === -1) {
@@ -26,7 +26,10 @@ export class HttpCatchInterceptor implements HttpInterceptor {
           } else if (error?.status === 401 && error.error?.action == 'login') {
             if (this.ut.user.value)
               this.ut.user.next(null);
+            if (req.url.includes('api/auth/isLogin'))//this url to check login status. It will send even if user is only visitor. So, don't show Unauthorize dialog
+              throw error;
             this.showUnauthorizeDialog();
+
             this.ut.isLoading.next(false);
             return EMPTY;
           }
@@ -65,7 +68,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
     this.ut.showMsgDialog({
       type: 'error',
       title: { text: 'Insufficient privilege!' },
-      content: `You don't have sufficient privilege to access this page!`,
+      content: `You don't have sufficient privilege to do this action!`,
       buttons: [{ color: 'primary', type: 'Login' }, { color: 'accent', type: 'Ok' },]
     }).afterClosed().subscribe(v => {
       if (v === 'Login')

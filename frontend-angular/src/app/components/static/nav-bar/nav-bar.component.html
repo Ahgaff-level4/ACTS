@@ -30,6 +30,9 @@
         <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher')" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/program">{{'Program'|translate}}</a>
         </li>
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
+          <a class="nav-link" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
+        </li>
         <li *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment','Teacher')" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/field">{{'Field'|translate}}</a>
         </li>
@@ -38,9 +41,6 @@
         </li>
         <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
-        </li>
-        <li (click)="isShowDivIf=!isShowDivIf;changeLang()" class="nav-item px-3" routerLinkActive="active">
-          <a class="nav-link" style="cursor:pointer" >{{language|translate}}</a>
         </li>
         <hr class="text-white my-2 mx-0">
         <div  style="min-width:150px" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-lg-none d-block" routerLinkActive="active">

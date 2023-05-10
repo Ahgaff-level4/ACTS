@@ -25,7 +25,7 @@ export class ActivityComponent {
   public dataSource!: MatTableDataSource<IActivityEntity>;
   public columnsKeys!: string[];
 
-  constructor(public service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute, private programService: ProgramService) {
+  constructor(public service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute,) {
 
   }
 
