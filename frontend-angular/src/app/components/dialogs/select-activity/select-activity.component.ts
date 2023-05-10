@@ -5,7 +5,7 @@ import { IActivityEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { MatButtonToggleChange } from '@angular/material/button-toggle';
 import { GoalService } from 'src/app/services/goal.service';
-import { AddEditActivityComponent } from '../add-edit-activity/add-edit-activity.component';
+import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit-activity.component';
 import { ActivityService } from 'src/app/services/activity.service';
 
 @Component({

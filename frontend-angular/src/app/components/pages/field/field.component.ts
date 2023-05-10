@@ -7,7 +7,7 @@ import { FieldService } from 'src/app/services/field.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
-import { AddEditFieldComponent } from '../../dialogs/add-edit-field/add-edit-field.component';
+import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { MessageDialogComponent, MessageDialogData } from '../../dialogs/message/message.component';
 
 @Component({

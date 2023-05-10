@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EvaluationService } from 'src/app/services/evaluation.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { IEvaluationEntity } from '../../../../../../interfaces';
+import { IEvaluationEntity } from '../../../../../../../interfaces';
 
 @Component({
   selector: 'app-add-edit-evaluation',

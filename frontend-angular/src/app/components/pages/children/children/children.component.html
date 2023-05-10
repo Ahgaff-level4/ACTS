@@ -1,10 +1,15 @@
 <h1 class="p-4 mx-md-5 pb-0">{{'Children'|translate}}</h1>
 <div class="mx-md-5  mb-5 pb-5">
-  <div class="mt-3 w-100">
-    <mat-form-field class="w-100">
+  <div class="mt-3 w-100 row">
+    <mat-form-field class="col-11">
       <mat-label>{{'Search'|translate}}</mat-label>
-      <input matInput (keyup)="applyFilter($event)" placeholder="..." #input>
+      <input matInput (keyup)="applySearch($event)" placeholder="..." #input>
     </mat-form-field>
+    <div class="col-1">
+        <button (click)="showFilterDialog()" mat-icon-button [matTooltip]="'Advance filter options'|translate">
+          <mat-icon color="primary" [matBadge]="numOfFiltersApplied()||''" matBadgeColor="warn">filter_alt</mat-icon>
+        </button>
+      </div>
   </div>
   <div class="mat-elevation-z4 table-responsive mb-3">
     <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows cdkDropList

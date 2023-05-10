@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ChildService } from 'src/app/services/child.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { StrengthService } from 'src/app/services/strength.service';
-import { AddEditStrengthComponent } from '../../dialogs/add-edit-strength/add-edit-strength.component';
+import { AddEditStrengthComponent } from '../../dialogs/add-edit/add-edit-strength/add-edit-strength.component';
 
 @Component({
   selector: 'app-strength',

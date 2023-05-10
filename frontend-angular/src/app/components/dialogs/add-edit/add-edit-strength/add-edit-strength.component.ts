@@ -1,44 +1,44 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { GoalService } from 'src/app/services/goal.service';
+import { IActivityEntity, IStrengthEntity } from '../../../../../../../interfaces';
+import { StrengthService } from 'src/app/services/strength.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { GoalState, IAccountEntity, IActivityEntity, IGoalEntity } from '../../../../../../interfaces';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ProgramService } from 'src/app/services/program.service';
-import { SelectActivityComponent } from '../select-activity/select-activity.component';
+import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 
 @Component({
-  selector: 'app-add-edit-goal',
-  templateUrl: './add-edit-goal.component.html',
-  styleUrls: ['./add-edit-goal.component.scss']
+  selector: 'app-add-edit-strength',
+  templateUrl: './add-edit-strength.component.html',
+  styleUrls: ['./add-edit-strength.component.scss']
 })
-export class AddEditGoalComponent {
+export class AddEditStrengthComponent {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
 
-  constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
+  constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
     /**Either goal to be edit. Or childId to add the new goal into it */
-    @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
+    @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
   }
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
       note: [null, [Validators.maxLength(512)]],
       /**state is 'continual' when create a goal*/
-      state: ['continual', [Validators.required,]],
+      state: ['strength', [Validators.required,]],
       activityId: [null, [Validators.required, Validators.min(0),]],
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    if (typeof this.goalService.childItsGoals.value != 'object')
+    if (typeof this.strengthService.childItsStrengths.value != 'object')
       this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
 
-    if (typeof this.goalOrChildId === 'object') {
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.goalOrChildId));
-      this.selectedActivity = this.goalOrChildId?.activity;
+    if (typeof this.strengthOrChildId === 'object') {
+      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.strengthOrChildId));
+      this.selectedActivity = this.strengthOrChildId?.activity;
     }
   }
 
@@ -49,20 +49,20 @@ export class AddEditGoalComponent {
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
-      if (typeof this.goalOrChildId == 'number') {//add new
-        if (this.goalService.childItsGoals.value?.id == null || this.ut.user.value?.accountId == null)
+      if (typeof this.strengthOrChildId == 'number') {//add new
+        if (this.strengthService.childItsStrengths.value?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.goalService.childItsGoals.value?.id, teacherId: this.ut.user.value?.accountId });
-          this.ut.showSnackbar('The goal has been added successfully.');
+          await this.service.post({ ...this.formGroup.value, childId: this.strengthService.childItsStrengths.value?.id, teacherId: this.ut.user.value?.accountId });
+          this.ut.showSnackbar('The strength has been added successfully.');
           this.dialogRef.close('added');
         } catch (e) { }
-      } else if (typeof this.goalOrChildId == 'object') {//edit
+      } else if (typeof this.strengthOrChildId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
-            await this.service.patch(this.goalOrChildId.id, dirtyControls);
-          this.ut.showSnackbar('The goal has been edited successfully.');
+            await this.service.patch(this.strengthOrChildId.id, dirtyControls);
+          this.ut.showSnackbar('The strength has been edited successfully.');
           this.dialogRef.close('edited');
         } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())

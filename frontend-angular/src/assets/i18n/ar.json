@@ -279,5 +279,11 @@
   "Network Error!":"",
   "Please check your network connection and try again.":"",
   "Special Activities":"",
-  "This activity is not bind to any child! We strongly recommend deleting it":""
+  "This activity is not bind to any child! We strongly recommend deleting it":"",
+  "Filter options":"",
+  "Clear filter":"",
+  "Apply filter":"",
+  "Maximum register date":"",
+  "Minimum register date":"",
+  "Advance filter options":""
 }

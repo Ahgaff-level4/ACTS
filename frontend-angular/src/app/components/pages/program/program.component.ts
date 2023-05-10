@@ -7,7 +7,7 @@ import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AddEditProgramComponent } from '../../dialogs/add-edit-program/add-edit-program.component';
+import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 
 @Component({
   selector: 'app-program',

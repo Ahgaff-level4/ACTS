@@ -26,15 +26,15 @@ import { FromNowPipe } from './pipes/from-now.pipe';
 import { PersonFormComponent } from './components/forms/person-form/person-form.component';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { AddEditFieldComponent } from './components/dialogs/add-edit-field/add-edit-field.component';
+import { AddEditFieldComponent } from './components/dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { SpinnerComponent } from './components/static/spinner/spinner.component';
-import { AddEditProgramComponent } from './components/dialogs/add-edit-program/add-edit-program.component';
+import { AddEditProgramComponent } from './components/dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ActivityComponent } from './components/pages/activity/activity.component';
-import { AddEditActivityComponent } from './components/dialogs/add-edit-activity/add-edit-activity.component';
+import { AddEditActivityComponent } from './components/dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 import { TypePipe } from './pipes/type.pipe';
 import { RangePipe } from './pipes/range.pipe';
 import { GoalComponent } from './components/pages/goal/goal.component';
-import { AddEditGoalComponent } from './components/dialogs/add-edit-goal/add-edit-goal.component';
+import { AddEditGoalComponent } from './components/dialogs/add-edit/add-edit-goal/add-edit-goal.component';
 import { SelectActivityComponent } from './components/dialogs/select-activity/select-activity.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
@@ -42,12 +42,13 @@ import { ResetChangePasswordComponent } from './components/dialogs/reset-change-
 import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
 import { Page404Component } from './components/pages/404/404.component';
 import { SettingsComponent } from './components/pages/settings/settings.component';
-import { AddEditEvaluationComponent } from './components/dialogs/add-edit-evaluation/add-edit-evaluation.component';
+import { AddEditEvaluationComponent } from './components/dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 import { StrengthComponent } from './components/pages/strength/strength.component';
-import { AddEditStrengthComponent } from './components/dialogs/add-edit-strength/add-edit-strength.component';
+import { AddEditStrengthComponent } from './components/dialogs/add-edit/add-edit-strength/add-edit-strength.component';
 import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
 import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
+import { FilterChildrenComponent } from './components/dialogs/filter/filter-children/filter-children.component';
 
 @NgModule({
   declarations: [
@@ -84,7 +85,8 @@ import { SpecialActivityComponent } from './components/pages/special-activity/sp
     AddEditEvaluationComponent,
     StrengthComponent,
     AddEditStrengthComponent,
-    SpecialActivityComponent
+    SpecialActivityComponent,
+    FilterChildrenComponent
   ],
   imports: [
     BrowserModule,

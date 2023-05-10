@@ -10,7 +10,7 @@ import { ActivatedRoute } from '@angular/router';
 import { ProgramService } from 'src/app/services/program.service';
 import { BehaviorSubject } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AddEditActivityComponent } from '../../dialogs/add-edit-activity/add-edit-activity.component';
+import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 
 @Component({
   selector: 'app-activity',

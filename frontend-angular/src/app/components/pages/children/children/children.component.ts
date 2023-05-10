@@ -7,6 +7,8 @@ import { MatPaginator } from '@angular/material/paginator';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UtilityService } from 'src/app/services/utility.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
+import { MatDialog } from '@angular/material/dialog';
+import { FilterChildrenComponent, FilterChildrenOptions } from 'src/app/components/dialogs/filter/filter-children/filter-children.component';
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
@@ -27,8 +29,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public dataSource!: ChildrenDataSource;
   public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('children table') ?? 'null') ?? ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
   public expandedItem?: IChildEntity;
+  public filter: FilterChildrenOptions = {};
 
-  constructor(private childService: ChildService, public ut: UtilityService) {
+  constructor(private childService: ChildService, public ut: UtilityService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
@@ -68,7 +71,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     this.dataSource.paginator = this.paginator;
   }
 
-  applyFilter(event: Event) {
+  applySearch(event: Event) {
     const filterValue = (event.target as HTMLInputElement).value;
     this.dataSource.filter = filterValue.trim().toLowerCase();
 
@@ -86,6 +89,43 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     if (child != undefined) {
       this.ut.router.navigate(['edit-child'], { state: { data: child } });
     }
+  }
+
+  filteredItems: IChildEntity[] = [];
+  showFilterDialog() {
+    this.dialog
+      .open<FilterChildrenComponent, FilterChildrenOptions, FilterChildrenOptions>
+      (FilterChildrenComponent, { data: this.filter }).afterClosed()
+      .subscribe((newFilter) => {
+        if (typeof newFilter == 'object') {
+          this.filter = newFilter;
+          this.filteredItems = this.childService.children.value;
+          if (newFilter.maxRegisterDate)
+            this.filteredItems = this.filteredItems.filter((v) => {
+              if (typeof v.person?.createdDatetime == 'string')
+                return new Date(v.person.createdDatetime) <= (newFilter.maxRegisterDate as Date);
+              else if (v.person?.createdDatetime instanceof Date)
+                return v.person.createdDatetime <= (newFilter.maxRegisterDate as Date);
+              return false;
+            });
+          if (newFilter.minRegisterDate)
+            this.filteredItems = this.filteredItems.filter((v) => {
+              if (typeof v.person?.createdDatetime == 'string')
+                return new Date(v.person.createdDatetime) >= (newFilter.minRegisterDate as Date);
+              else if (v.person?.createdDatetime instanceof Date)
+                return v.person.createdDatetime >= (newFilter.minRegisterDate as Date);
+              return false;
+            });
+
+          this.dataSource.setData(this.filteredItems);
+          if (this.table)
+            this.table.renderRows();
+        }
+      })
+  }
+
+  numOfFiltersApplied(): number {
+    return Object.keys(this.filter).length;
   }
 }
 

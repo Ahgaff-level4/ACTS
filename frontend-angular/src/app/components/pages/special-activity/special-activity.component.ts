@@ -8,7 +8,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AddEditActivityComponent } from '../../dialogs/add-edit-activity/add-edit-activity.component';
+import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 
 @Component({
   selector: 'app-special-activity',

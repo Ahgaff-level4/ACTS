@@ -9,8 +9,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { UtilityService } from 'src/app/services/utility.service';
 import { GoalService } from 'src/app/services/goal.service';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { AddEditGoalComponent } from '../../dialogs/add-edit-goal/add-edit-goal.component';
-import { AddEditEvaluationComponent } from '../../dialogs/add-edit-evaluation/add-edit-evaluation.component';
+import { AddEditGoalComponent } from '../../dialogs/add-edit/add-edit-goal/add-edit-goal.component';
+import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 
 @Component({
   selector: 'app-goal',

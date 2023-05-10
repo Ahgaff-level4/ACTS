@@ -69,3 +69,15 @@ $dark-theme: mat-dark-theme(
 .my-lightblue-bg {
 	background-color: rgb(173, 187, 226);
 }
+.my-primary-border {
+	border-color: mat-color($my-primary);
+}
+.my-accent-border {
+	border-color: mat-color($my-accent);
+}
+.my-warn-border {
+	border-color: mat-color($my-warn);
+}
+.my-lightblue-border {
+	border-color: rgb(173, 187, 226);
+}
