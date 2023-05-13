@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
-import { AccountEntity, CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
+import { AccountEntity, ChangePassword, CreateAccount, UpdateAccount } from './account.entity';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 import { PersonView } from '../person/person.entity';
@@ -53,14 +53,14 @@ export class AccountService {
     /**
      * UpdateAccount needs oldPassword. And it will validate the old password with existed password, if invalid throw Unauthorized exception
      */
-    async updateOldPassword(id: number, updateAccount: UpdateAccountOldPassword) {
+    async updateOldPassword(id: number, updateAccount: ChangePassword) {
         if (updateAccount.password)
             updateAccount.password = await this.generateHashSalt(updateAccount.password);
 
         const oldPassword = (await this.repo.findOneByOrFail({id})).password;
         
         if (!(await bcrypt.compare(updateAccount.oldPassword, oldPassword)))
-            throw new UnauthorizedException('Old password is invalid!');
+            throw new BadRequestException('Old password is invalid!');
 
         delete updateAccount.oldPassword;
         return this.repo.update(id, updateAccount);

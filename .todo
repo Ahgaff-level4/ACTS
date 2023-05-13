@@ -1,13 +1,11 @@
 - when user changing route/page there should be sort of loader/spinner. Loading until the page is loaded. Also, check for animation when transporting between pages
 
-- in add-edit-child add custom validator(control.setErrors({myErr:true})) and mat-error. in 'Order between siblings' field instead of just disable it.
-
 - in children page show only isArchive=false children. And there should be an option for showing isArchive=true children, using filter button in the children page depends on your preference.
 
 - optimize button that will delete any activity dose not connected to a child AND dose not have programId. Made when user create special activity but dose not continue to fill the goal form to add goal with special activity.
 
 - In big forms the user before leaving should have dialog says 'Your changes will be lost!'
 
-- change password in user's settings page.
+- Fix sort of columns that their sort not working. Ex: Age column in children table.
 
-- Fix sort of columns that their sort not working. Ex: Age column in children table
+- Translate server error messages.

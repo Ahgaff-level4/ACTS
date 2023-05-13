@@ -29,7 +29,6 @@ export class PersonFormComponent implements OnInit {
       gender: [null, [Validators.required]],
       createdDatetime: [new Date(), [Validators.required]],
     });
-    //todo if necessary: if(this.personId){//fetch person info}
     if (this.person) {
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.person));
     }

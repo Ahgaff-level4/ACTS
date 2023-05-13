@@ -6,10 +6,10 @@ import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-reset-change-password',
-  templateUrl: './reset-change-password.component.html',
-  styleUrls: ['./reset-change-password.component.scss']
+  templateUrl: './password-dialog.component.html',
+  styleUrls: ['./password-dialog.component.scss']
 })
-export class ResetChangePasswordComponent {
+export class PasswordDialogComponent {
   protected minlength = { minlength: 4 };
   public formGroup!: FormGroup;
   public hide = true;
@@ -17,14 +17,15 @@ export class ResetChangePasswordComponent {
   minMaxLength = { minlength: 4, maxlength: 32 };
   isReset!: boolean;
   /**
-   * This component used to reset password or change password.
+   * This component used to reset password, change password, and re-enter password.
    * Changing password require the old password.
    * While reset can be done only by the Admin.
    * To show the correspond fields for the right situation you should pass data when opening the dialog:
    * 1- data:string. To rest password either passing password typed before or empty string. dialog button 'Ok'. dialog return the entered password
    * 2- data:undefined. Change password will be handled here. dialog buttons 'Cancel' and 'Change' handed here. dialog return nothing aka undefined
+   * 3- data:false. dialog buttons `Cancel` and `Confirm` will check the entered password. dialog return true if confirmed.
    */
-  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data:string|undefined,) {
+  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: string | undefined | false,) {
   }
 
   ngOnInit(): void {
@@ -44,19 +45,42 @@ export class ResetChangePasswordComponent {
   public async submit(e: SubmitEvent) {
     e.preventDefault();
     this.formGroup.markAllAsTouched();
-    if (this.formGroup.valid || (this.isReset && this.formGroup.get('password')?.valid && this.formGroup.get('repeatPassword')?.valid)) {
+    if (this.formGroup.valid || (this.getState() == 'reset' && this.formGroup.get('password')?.valid && this.formGroup.get('repeatPassword')?.valid) || (this.getState() == 'reenter' && this.formGroup.get('password')?.valid)) {
       this.formGroup.disable();
-      if (typeof this.data === 'string') {//reset
+      if (this.getState() == 'reset') {//reset
         this.dialogRef.close(this.formGroup.get('password')?.value?.toString());
-        console.log('reset password',this.formGroup.get('password')?.value?.toString())
-      } else {//change
-        //todo communicate with server to change password. Change snackbar message
-        this.ut.showSnackbar('The field has been edited successfully.');
-        this.dialogRef.close();
+      } else if (this.getState() == 'change') {//change
+        if (this.formGroup.get('password')?.value == this.formGroup.get('oldPassword')?.value)
+          this.ut.showMsgDialog({
+            type: 'error',
+            content: `The new password is the same old password!`
+          })
+        else {
+          try {
+            await this.accountService.changePassword({ oldPassword: this.formGroup.get('oldPassword')?.value, password: this.formGroup.get('password')?.value })
+            this.ut.showSnackbar('The password have been changed successfully.');
+            this.dialogRef.close();
+          } catch (e) { }
+        }
+      } else {//re-enter
+        this.ut.isLoading.next(true);
+        this.accountService.reenter(this.formGroup.get('password')?.value)
+          .subscribe({
+            next: (u) => {
+              console.log('u', u)
+              this.ut.isLoading.next(false);
+              if (u?.isLoggedIn)
+                this.dialogRef.close(true);
+              else this.ut.errorDefaultDialog();
+            }, error: (err) => {
+              this.ut.isLoading.next(false);
+              this.ut.errorDefaultDialog(err);
+            }
+          });
       }
       this.formGroup.enable();
     } else
-      this.ut.showMsgDialog({ title: {text:'Invalid Field'}, type: 'error', content: 'There are invalid fields!' });
+      this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' });
 
   }
 
@@ -68,7 +92,7 @@ export class ResetChangePasswordComponent {
   }
 
   getPasswordErrorMessage() {
-    if (this.formGroup.get('password')?.hasError('strongPassword'))
+    if (this.getState() != 'reenter' && this.formGroup.get('password')?.hasError('strongPassword'))
       return 'Password is not strong enough';
 
     return this.ut.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('password')) || '';
@@ -85,6 +109,19 @@ export class ResetChangePasswordComponent {
     return this.ut.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('oldPassword'));
   }
 
+  /** dialog state which is what the dialog purpose */
+  getState(): 'reset' | 'change' | 'reenter' {
+    if (this.data === false)
+      return 'reenter';
+    return typeof this.data === 'string' ? 'reset' : 'change';
+  }
 
+  getTitle(): string {
+    if (this.getState() === 'change')
+      return 'Change password';
+    if (this.getState() === 'reset')
+      return 'Reset password';
+    return 'Re-enter password'
+  }
 
 }

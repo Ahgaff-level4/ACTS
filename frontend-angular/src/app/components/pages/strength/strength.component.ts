@@ -92,7 +92,7 @@ export class StrengthComponent {
 
   deleteDialog(strength: IStrengthEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the strength: \"' + strength.activity.name + "\" permanently."),
+      content: this.ut.translate('You are about to delete the strength: \"') + strength.activity.name + this.ut.translate("\" permanently."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

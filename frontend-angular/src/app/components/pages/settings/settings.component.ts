@@ -5,6 +5,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
 import { environment } from 'src/environments/environment';
+import { PasswordDialogComponent } from '../../dialogs/password-dialog/password-dialog.component';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -16,7 +17,7 @@ export class SettingsComponent {
   public uploadProgress: number | null = null;
   public API = environment.API;
 
-  constructor(public translate: TranslateService, public ut: UtilityService, private http: HttpClient) { }
+  constructor(public translate: TranslateService, public ut: UtilityService, private http: HttpClient, private dialog: MatDialog) { }
 
 
   restore() {
@@ -39,21 +40,25 @@ export class SettingsComponent {
     const formData = new FormData();
     formData.append('backup', file);
 
-    this.http.post( environment.API + 'restore', formData, { reportProgress: true, observe: 'events' })
+    this.http.post(environment.API + 'restore', formData, { reportProgress: true, observe: 'events' })
       .pipe(finalize(() => this.uploadProgress = null))
       .subscribe({
-        next: (event:any) => {
+        next: (event: any) => {
           if (typeof event.loaded == 'number') {
             this.uploadProgress = Math.round(100 * (event.loaded / (event.total ?? 1)));
-          }else if(event instanceof HttpResponse && event.body.success){
+          } else if (event instanceof HttpResponse && event.body.success) {
             this.ut.showSnackbar('Database restored successfully');
             this.uploadProgress = null;
           }
           console.log('response', event);
 
         },
-        error: (error) => this.ut.errorDefaultDialog(error,'There was a problem while restoring the database!')
+        error: (error) => this.ut.errorDefaultDialog(error, 'There was a problem while restoring the database!')
       });
+  }
+
+  changePassword() {
+    this.dialog.open(PasswordDialogComponent);
   }
 
 }

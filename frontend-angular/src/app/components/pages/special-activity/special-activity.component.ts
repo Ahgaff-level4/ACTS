@@ -83,7 +83,7 @@ export class SpecialActivityComponent {
 
   deleteDialog(activity: IActivityEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the activity: \"' + activity.name + "\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
+      content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

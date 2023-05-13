@@ -1,18 +1,18 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from 'src/app/services/account.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ResetChangePasswordComponent } from 'src/app/components/dialogs/reset-change-password/reset-change-password.component';
+import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dialog/password-dialog.component';
 
 @Component({
   selector: 'app-add-edit-account',
   templateUrl: './add-edit-account.component.html',
   styleUrls: ['./add-edit-account.component.scss']
 })
-export class AddEditAccountComponent implements OnInit {
+export class AddEditAccountComponent implements OnInit, AfterViewInit {
   public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
@@ -23,13 +23,17 @@ export class AddEditAccountComponent implements OnInit {
   isLoading = false;
   hide = true;
   phoneFields: string[] = [];
+  @Input('account') readonlyAccount: IAccountEntity | undefined;//used in account table to show account info
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    this.account = history.state.data;
+    if (this.readonlyAccount)
+      this.account = this.readonlyAccount;
+    else
+      this.account = history.state.data;
     for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
       if (this.account?.['phone' + i])
         this.phoneFields.push('phone' + i);
@@ -37,7 +41,6 @@ export class AddEditAccountComponent implements OnInit {
         this.phoneFields.push('phone' + i);
         break;
       }
-
 
     this.person = this.account?.person;
     let pass = this.account?.id ? {} : {
@@ -64,6 +67,15 @@ export class AddEditAccountComponent implements OnInit {
     this.ut.isLoading.subscribe(v => this.isLoading = v);
   }
 
+  ngAfterViewInit(): void {
+    if (this.readonlyAccount && this.personForm) {
+      this.accountForm.disable();
+      this.personForm.formGroup.disable();
+      this.accountForm.setValue(this.ut.extractFrom(this.accountForm.controls, this.readonlyAccount));
+      this.personForm.formGroup.setValue(this.ut.extractFrom(this.personForm.formGroup.controls, this.readonlyAccount.person))
+    }
+  }
+
   async submit() {
     this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
     this.ut.trimFormGroup(this.accountForm);
@@ -73,9 +85,10 @@ export class AddEditAccountComponent implements OnInit {
     if (this.personForm?.formGroup?.valid && this.accountForm?.valid) {
       this.accountForm?.disable();
       this.personForm?.formGroup?.disable();
-      this.ut.isLoading.next(true);
       if (this.account?.id == null) {//Register new account
-        let person = await this.personForm.submit().catch(() => { });
+        this.ut.isLoading.next(true);
+        let person = await this.personForm.submit().catch(() => { this.ut.isLoading.next(false) });
+        this.ut.isLoading.next(false);
         if (typeof person != 'object')
           return;
         try {
@@ -87,7 +100,9 @@ export class AddEditAccountComponent implements OnInit {
           this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
-        await this.personForm.submitEdit().catch(() => { });
+        this.ut.isLoading.next(true);
+        await this.personForm.submitEdit().catch(() => { this.ut.isLoading.next(false) });
+        this.ut.isLoading.next(false);
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
         try {
           if (dirtyFields != null)
@@ -98,15 +113,13 @@ export class AddEditAccountComponent implements OnInit {
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
-      this.ut.isLoading.next(false);
-
     } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
   }
 
 
   resetPassword() {
     this.accountForm.get('password')?.disable();
-    this.dialog.open<ResetChangePasswordComponent, string, string>(ResetChangePasswordComponent,
+    this.dialog.open<PasswordDialogComponent, string, string>(PasswordDialogComponent,
       { data: this.accountForm.get('password')?.value || '' }).afterClosed()
       .subscribe(v => {
         console.log('after close', v)

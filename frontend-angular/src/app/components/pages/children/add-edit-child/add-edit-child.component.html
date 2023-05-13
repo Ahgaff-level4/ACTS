@@ -144,25 +144,37 @@
         </mat-form-field>
       </div>
 
-      <div class="col-md-4 p-2 d-flex justify-content-center align-items-center">
-        <mat-form-field>
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100">
           <mat-label>{{'Parent'|translate}}</mat-label>
           <mat-select formControlName="parentId">
             <mat-option value="null">--&nbsp;{{"None"|translate}}&nbsp;--</mat-option>
             <mat-option *ngFor="let parent of parents" [value]="parent.id">
               <span style="font-size: medium;" class="d-block pt-2">{{parent.person.name}}.</span>
-              <span *ngIf="parent.address" style="font-size: small;"
-                class="opacity-75">&nbsp;{{'Address'|translate}}:&nbsp;{{parent.address}}</span>
+              <span style="font-size: small;" class="opacity-75">{{parent.username}}</span>
             </mat-option>
           </mat-select>
         </mat-form-field>
       </div>
-
+    </div>
+    <div class="row">
+      <div class="col-md-6 p-2">
+        <mat-form-field class="w-100">
+          <mat-label>{{'Teachers'|translate}}</mat-label>
+          <mat-select allow-empty multiple formControlName="teachers">
+            <mat-option *ngFor="let teacher of teachers" [value]="teacher">
+              <span style="font-size: medium;" class="d-block pt-2">{{teacher.person.name}}.</span>
+              <span style="font-size: small;" class="opacity-75">{{teacher.username}}</span>
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
       <div *ngIf="child?.id || readonlyChild?.id" class="col-md-2 p-2 d-flex justify-content-center align-items-center">
         <mat-slide-toggle (change)="archiveChanged()" color="warn"
           formControlName="isArchive">{{'Archive'|translate}}</mat-slide-toggle>
       </div>
     </div>
+
     <div *ngIf="readonlyChild == null" class="d-flex mt-4 mb-5  pb-5">
       <button [disabled]="this.ut.isLoading.value" class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
         {{child?.id == null?'Submit':'Save Changes'|translate}} </button>

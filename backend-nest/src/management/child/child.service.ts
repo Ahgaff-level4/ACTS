@@ -22,6 +22,8 @@ export class ChildService {
       return this.repo
         .createQueryBuilder('child')
         .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
+        .leftJoinAndSelect('child.teachers', 'teacher')
+        .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
         .getMany();
     else
       return this.repo.find()
@@ -56,7 +58,7 @@ export class ChildService {
   }
 
   update(id: number, updateChild: UpdateChild) {
-    return this.repo.update({ id }, updateChild);
+    return this.repo.save({...updateChild,id});
   }
 
   remove(id: number) {

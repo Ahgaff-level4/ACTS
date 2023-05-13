@@ -4,7 +4,6 @@ import { IActivityEntity, IStrengthEntity } from '../../../../../../../interface
 import { StrengthService } from 'src/app/services/strength.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ProgramService } from 'src/app/services/program.service';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 
 @Component({

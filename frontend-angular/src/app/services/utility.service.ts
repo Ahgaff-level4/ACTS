@@ -111,6 +111,8 @@ export class UtilityService {
    */
   public extractFrom(keys: { [key: string]: any }, properties: { [key: string]: any }) {
     let ret: { [key: string]: any } = {};
+    if(!keys || !properties)
+      console.error('Unexpected param!',keys,properties)
     for (let k in keys) {
       ret[k] = properties[k] ?? null;
     }

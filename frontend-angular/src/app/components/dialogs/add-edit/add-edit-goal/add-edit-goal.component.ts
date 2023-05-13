@@ -3,8 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/goal.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { GoalState, IAccountEntity, IActivityEntity, IGoalEntity } from '../../../../../../../interfaces';
-import { ProgramService } from 'src/app/services/program.service';
+import { IActivityEntity, IGoalEntity } from '../../../../../../../interfaces';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 
 @Component({

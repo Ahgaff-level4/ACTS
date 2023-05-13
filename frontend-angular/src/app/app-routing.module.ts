@@ -99,7 +99,7 @@ const routes: Routes = [
   { path: 'evaluations/:id', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
   { path: 'strengths/:id', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
   { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: AH },
-  { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', canActivate: [RoleGuard], data: AHTP },
+  { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', },
   { path: '**', component: Page404Component, title: 'Page Not Found' },
 ];
 

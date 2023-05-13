@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivityService } from 'src/app/services/activity.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { IActivityEntity, IFieldEntity } from '../../../../../../../interfaces';
+import { IActivityEntity } from '../../../../../../../interfaces';
 import { FieldService } from 'src/app/services/field.service';
 
 @Component({

@@ -1,6 +1,6 @@
-import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Put, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
 import { AccountService } from './account.service';
-import { CreateAccount, UpdateAccount, UpdateAccountOldPassword } from './account.entity';
+import { ChangePassword, CreateAccount, UpdateAccount } from './account.entity';
 import { Roles } from 'src/auth/Role.guard';
 
 
@@ -21,13 +21,15 @@ export class AccountController {
     }
 
     @Get(':id')
+    @Roles('Admin','HeadOfDepartment','Teacher','Parent')
     findOne(@Param('id', ParseIntPipe) id: number) {
         return this.accountService.findOne(+id);
     }
 
     @Patch(':id')
-    updateOldPassword(@Param('id', ParseIntPipe) id: number, @Body() updateAccount: UpdateAccountOldPassword) {
-        return this.accountService.updateOldPassword(+id, updateAccount);
+    @Roles('Admin','HeadOfDepartment','Teacher','Parent')
+    updateOldPassword(@Param('id', ParseIntPipe) id: number, @Body() changePassword: ChangePassword) {
+        return this.accountService.updateOldPassword(+id, changePassword);
     }
 
     @Put(':id')

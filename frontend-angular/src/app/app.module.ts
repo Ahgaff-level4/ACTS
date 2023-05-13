@@ -38,7 +38,7 @@ import { AddEditGoalComponent } from './components/dialogs/add-edit/add-edit-goa
 import { SelectActivityComponent } from './components/dialogs/select-activity/select-activity.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
 import { AddEditAccountComponent } from './components/pages/accounts/add-edit-account/add-edit-account.component';
-import { ResetChangePasswordComponent } from './components/dialogs/reset-change-password/reset-change-password.component';
+import { PasswordDialogComponent } from './components/dialogs/password-dialog/password-dialog.component';
 import { EvaluationComponent } from './components/pages/evaluation/evaluation.component';
 import { Page404Component } from './components/pages/404/404.component';
 import { SettingsComponent } from './components/pages/settings/settings.component';
@@ -78,7 +78,7 @@ import { FilterChildrenComponent } from './components/dialogs/filter/filter-chil
     SelectActivityComponent,
     AccountComponent,
     AddEditAccountComponent,
-    ResetChangePasswordComponent,
+    PasswordDialogComponent,
     EvaluationComponent,
     Page404Component,
     SettingsComponent,

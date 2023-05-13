@@ -1,7 +1,7 @@
-import { PartialType } from "@nestjs/mapped-types";
+import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsOptional, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
-import { IAccountEntity, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from './../../../../interfaces.d';
+import { IAccountEntity, IChangePassword, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from './../../../../interfaces.d';
 import { Transform } from "class-transformer";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEntity } from "./role/role.entity";
@@ -83,11 +83,11 @@ export class AccountEntity extends CreateAccount implements IAccountEntity {
 	@JoinColumn()
 	public person: IPersonEntity;//!Account
 
-	@ManyToMany(() => RoleEntity, (role) => role.accounts)
+	@ManyToMany(() => RoleEntity, (role) => role.accounts,{onDelete:"CASCADE"})
 	@JoinTable()
 	public rolesEntities: IRoleEntity[];//!All roles
 
-	@OneToMany(() => ChildEntity, (child) => child.parent)
+	@OneToMany(() => ChildEntity, (child) => child.parent,{onDelete:'SET NULL',nullable:true})
 	public children: IChildEntity[];//!Parent
 
 	@OneToMany(() => EvaluationEntity, (evaluation) => evaluation.teacher)
@@ -96,12 +96,12 @@ export class AccountEntity extends CreateAccount implements IAccountEntity {
 	@OneToMany(() => GoalEntity, (goal) => goal.teacher)
 	public goals: IGoalEntity[];//!Teacher
 
-	@ManyToMany(() => ChildEntity, (child) => child.teachers)
+	@ManyToMany(() => ChildEntity, (child) => child.teachers,{onDelete:'CASCADE'})
 	@JoinTable()
 	public teaches: IChildEntity[];//!Teacher
 }
 
-export class UpdateAccountOldPassword extends PartialType(CreateAccount) {
+export class ChangePassword extends PickType(CreateAccount,['password']) implements IChangePassword {
 	@IsString()
 	oldPassword: string;
 }

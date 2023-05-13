@@ -1,5 +1,7 @@
-<div class="container mt-5  mb-5 pb-5">
-  <h1 class="m-2">{{this.account?.id?'Edit account':'Register new account'|translate}}</h1>
+<div class="container ">
+  <h1 *ngIf="readonlyAccount == null" class="m-2 mt-5">
+    {{this.account?.id?'Edit account':'Register new account'|translate}}
+  </h1>
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
   <form [formGroup]="accountForm" class="container-fluid" (ngSubmit)="submit()">
@@ -19,18 +21,19 @@
           <mat-label>{{'Password'|translate}}</mat-label>
           <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" minlength="4" maxlength="1000">
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-							[attr.aria-pressed]="hide">
-							<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+            [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
           <mat-error>{{getPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
         </mat-form-field>
       </div>
       <div *ngIf="!account?.id" class="col-md-4 p-2"><!--Add new-->
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Repeat password'|translate}}</mat-label>
-          <input [type]="hide ? 'password' : 'text'" matInput formControlName="repeatPassword" minlength="4" maxlength="1000">
+          <input [type]="hide ? 'password' : 'text'" matInput formControlName="repeatPassword" minlength="4"
+            maxlength="1000">
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-							[attr.aria-pressed]="hide">
-							<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+            [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
           <mat-error>{{getRepeatPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
         </mat-form-field>
       </div>
@@ -40,13 +43,15 @@
           <mat-label>{{'Password'|translate}}</mat-label>
           <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" [disabled]="true">
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
-							[attr.aria-pressed]="hide">
-							<mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+            [attr.aria-pressed]="hide">
+            <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
           <mat-error>{{getPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
         </mat-form-field>
       </div>
       <div *ngIf="account?.id" class="col-md-4 p-3"><!--Edit-->
-        <button type="button" mat-stroked-button color="primary" (click)="resetPassword()">{{'Reset password'|translate}}</button>
+        <button type="button" [disabled]="!!this.readonlyAccount" mat-stroked-button color="primary" (click)="resetPassword()">
+          {{'Reset password'|translate}}
+        </button>
       </div>
       <!-- </div> -->
     </div>
@@ -55,13 +60,16 @@
       <div class="col-md-12 p-2">
         <h5>{{'Role'|translate}}</h5>
         <mat-button-toggle-group formControlName="roles" multiple style="flex-wrap: wrap;">
-          <mat-button-toggle [matTooltip]="'Admin has all roles privileges.'|translate" value="Admin">{{'Admin'|translate}}</mat-button-toggle>
-          <mat-button-toggle [matTooltip]="'Head of Department can not access Account page. And can not create child\'s goal or evaluate a goal.'|translate" value="HeadOfDepartment">{{"Head of Department"|translate}}</mat-button-toggle>
-          <mat-button-toggle [matTooltip]="'Teacher can not access Account page. Can not '|translate" value="Teacher">{{'Teacher'|translate}}</mat-button-toggle>
+          <mat-button-toggle [matTooltip]="'Admin has all roles privileges.'|translate"
+            value="Admin">{{'Admin'|translate}}</mat-button-toggle>
+          <mat-button-toggle
+            [matTooltip]="'Head of Department can not access Account page. And can not create child\'s goal or evaluate a goal.'|translate"
+            value="HeadOfDepartment">{{"Head of Department"|translate}}</mat-button-toggle>
+          <mat-button-toggle [matTooltip]="'Teacher can not access Account page. Can not '|translate"
+            value="Teacher">{{'Teacher'|translate}}</mat-button-toggle>
           <mat-button-toggle value="Parent">{{'Parent'|translate}}</mat-button-toggle>
         </mat-button-toggle-group>
-        <mat-icon class="mx-2"
-          [matTooltip]="'Admin has all roles privileges.'|translate">info</mat-icon>
+        <mat-icon class="mx-2" [matTooltip]="'Admin has all roles privileges.'|translate">info</mat-icon>
         <mat-error style="font-size: small;font-weight: 500;"
           class="mx-2 mat-error">{{getRolesErrorMessage()}}</mat-error>
       </div>
@@ -77,12 +85,13 @@
       <div *ngFor="let phoneField of phoneFields; let i = index" class="col-md-4 p-2">
         <mat-form-field>
           <mat-label>{{'Phone'|translate}}&nbsp;{{i+1}}</mat-label>
-          <input matInput formControlName="{{ phoneField }}" (input)="onPhoneChange(i)" placeholder="..." maxlength="15"/>
+          <input matInput formControlName="{{ phoneField }}" (input)="onPhoneChange(i)" placeholder="..."
+            maxlength="15" />
           <mat-error>{{getPhoneErrorMessage(phoneField)|translate:phoneMaxLength}}</mat-error>
         </mat-form-field>
       </div>
     </div>
-    <div class="d-flex mt-4">
+    <div *ngIf="readonlyAccount == null" class="d-flex mt-4 mb-5 pb-5">
       <button [disabled]="isLoading" class="w-75 mx-auto" type="submit" mat-flat-button color="primary">
         {{account?.id == null?'Submit':'Edit'|translate}} </button>
     </div>

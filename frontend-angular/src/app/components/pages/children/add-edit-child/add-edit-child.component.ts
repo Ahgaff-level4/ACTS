@@ -20,6 +20,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
   public selectedParent: IAccountEntity | undefined;
   public parents!: IAccountEntity[];
+  public teachers!: IAccountEntity[];
   public sub!: Subscription;
   maxlength = { maxlength: 512 };
   /**Used to show the add-edit form in children table. If `readonlyChild` exist then do not show title, submit, and every control should be readonly */
@@ -43,21 +44,27 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
       behaviors: [null, [Validators.maxLength(512)]],
       prioritySkills: [null, [Validators.maxLength(512)]],
       parentId: [null],
-      isArchive: [false]
+      isArchive: [false],
+      teachers: [[]]//array of IDs of teacher.
     });
     this.child = history.state.data;
     this.person = this.child?.person;
     this.sub = this.accountService.accounts.subscribe((v) => {
       this.parents = v.filter(v => v.roles.includes('Parent'));
+      this.teachers = v.filter(v => v.roles.includes('Teacher'));
+      if (Array.isArray(this.child?.teachers))
+        for (let t of this.teachers)
+          (this.child as IChildEntity).teachers = (this.child as IChildEntity).teachers.map(c => c.id==t.id?t:c);
+
     });
-    if (this.accountService.accounts.value.length == 0)
-      this.accountService.fetch(true);
+
+
     if (this.child) {
       this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));
     }
   }
 
-  ngAfterViewInit() {
+  async ngAfterViewInit() {
     if (this.readonlyChild && this.personForm) {//if add-edit shows in readonly mode, AKA in children table
       this.childForm.disable();
       this.personForm.formGroup.disable();
@@ -71,9 +78,11 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
       + Number(this.childForm?.get('maleFamilyMembers')?.value ?? 0)
       + 1).toString();
   }
+
   compare = (i: number, str: string): boolean => {
     return i > Number(str ?? 99) ?? 99
   }
+
   add = (str: string | null, bool: boolean): number => {
     if (bool) {
       return 1 + (Number(str || 0) || 0);
@@ -92,6 +101,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
+
       this.ut.isLoading.next(true);
       if (this.child?.id == null) {//Register a child
         let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });

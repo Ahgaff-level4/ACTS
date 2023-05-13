@@ -47,7 +47,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
-    this.childService.fetchChildren();
+    this.childService.fetchChildren(true);
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });

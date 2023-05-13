@@ -54,9 +54,14 @@ export type Role = 'Admin' | 'HeadOfDepartment' | 'Teacher' | 'Parent';
 export interface User {
 	isLoggedIn: boolean;
 	accountId: number;
+	username: string;
 	/** account.person.name */
 	name: string;
 	roles: Role[];
+	address?: string;
+	/**max length is 10 or 0 for not parent */
+	phones: string[];
+	birthdate: string;
 }
 
 export interface ILoginInfo {
@@ -79,7 +84,7 @@ export interface ICreateAccount {
 	phone7?: string;//!Parent
 	phone8?: string;//!Parent
 	phone9?: string;//!Parent
-	[key:string]:any;
+	[key: string]: any;
 	roles: Role[];
 }
 export interface IAccountEntity extends ICreateAccount {
@@ -90,6 +95,12 @@ export interface IAccountEntity extends ICreateAccount {
 	evaluations: IEvaluationEntity[];//!Teacher
 	goals: IGoalEntity[];//!Teacher
 	teaches: IChildEntity[];//!Teacher
+}
+
+export interface IChangePassword {
+	oldPassword: string;
+	/**the new password */
+	password: string;
 }
 
 export interface ICreateChild {
@@ -116,7 +127,7 @@ export interface IChildEntity extends ICreateChild {
 	parent?: IAccountEntity | null;
 	person: IPersonEntity;
 	goals: IGoalEntity[];
-	strengths:IStrengthEntity[];
+	strengths: IStrengthEntity[];
 	teachers: IAccountEntity[];
 	familyMembers?: number | null;
 	/** registerDate: (is person.createdDatetime) */
@@ -157,7 +168,7 @@ export interface ICreateStrength {
 	teacherId: number;
 }
 
-export interface IStrengthEntity extends ICreateStrength{
+export interface IStrengthEntity extends ICreateStrength {
 	id: number;
 	activity: IActivityEntity;
 	child: IChildEntity;
@@ -165,11 +176,11 @@ export interface IStrengthEntity extends ICreateStrength{
 	teacher: IAccountEntity;
 }
 
-export interface ICreateGoal extends ICreateStrength{
+export interface ICreateGoal extends ICreateStrength {
 	state: GoalState;
 }
 
-export interface IGoalEntity extends ICreateGoal,IStrengthEntity {
+export interface IGoalEntity extends ICreateGoal, IStrengthEntity {
 
 }
 
@@ -221,7 +232,7 @@ export interface IRoleEntity {
 export type ITableEntity = IProgramEntity | IFieldEntity | IActivityEntity
 	| IGoalEntity | IPersonEntity | IEvaluationEntity | IChildEntity | IAccountEntity;
 
-	/**Success Response of edit/delete methods (DELETE, PATCH) */
+/**Success Response of edit/delete methods (DELETE, PATCH) */
 export interface SucResEditDel {
 	generatedMaps?: any[],
 	raw?: any[],

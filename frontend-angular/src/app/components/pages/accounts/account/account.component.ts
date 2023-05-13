@@ -20,7 +20,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     ]),
   ],
 })
-export class AccountComponent {
+export class AccountComponent{
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
   @ViewChild(MatTable) table!: MatTable<IAccountEntity>;
@@ -72,8 +72,22 @@ export class AccountComponent {
 
   deleteAccount(account?:IAccountEntity){
     if(account){
+      this.ut.showMsgDialog({
+        content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
+        type: 'confirm',
+        buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
+      }).afterClosed().subscribe(async (v) => {
+        if (v === 'Delete') {
+          try {
+            await this.accountService.delete(account.id, true);
+            this.ut.showSnackbar('The program has been deleted successfully.');
+          } catch (e) { }
+        }
+      })    }
+  }
 
-    }
+  ngOnDestroy(){
+    this.accountService.isLoggerIn = false;
   }
 }
 

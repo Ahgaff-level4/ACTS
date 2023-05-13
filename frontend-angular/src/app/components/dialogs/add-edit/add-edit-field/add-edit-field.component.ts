@@ -22,7 +22,6 @@ export class AddEditFieldComponent {
   }
 
   ngOnInit(): void {
-    //todo if necessary: if(this.personId){//fetch person info}
     if (this.field)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.field));
   }

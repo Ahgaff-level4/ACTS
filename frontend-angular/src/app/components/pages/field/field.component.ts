@@ -72,7 +72,7 @@ export class FieldComponent implements OnInit {
 
   deleteDialog(field: IFieldEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the field: ' + field.name + ' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
+      content: this.ut.translate('You are about to delete the field: ') + field.name + this.ut.translate(' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

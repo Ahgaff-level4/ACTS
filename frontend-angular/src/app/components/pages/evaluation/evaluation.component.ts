@@ -95,7 +95,7 @@ export class EvaluationComponent {
 
   deleteDialog(evaluation: IEvaluationEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the evaluation with description: \"' + + "\" permanently."),
+      content: this.ut.translate('You are about to delete the evaluation with description: \"') + evaluation.description+ this.ut.translate("\" permanently."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

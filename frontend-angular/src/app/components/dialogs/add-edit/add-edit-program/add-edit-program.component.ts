@@ -22,7 +22,6 @@ export class AddEditProgramComponent {
   }
 
   ngOnInit(): void {
-    //todo if necessary: if(this.personId){//fetch person info}
     if (this.program)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.program));
   }

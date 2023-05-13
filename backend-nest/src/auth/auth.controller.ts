@@ -26,7 +26,8 @@ export class AuthController {
 		const account = sel[0];
 		if (!(await bcrypt.compare(loginInfo.password, account.password)))
 			throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
-		const user: User = { isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name };
+
+		const user: User = { isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name, username: account.username, birthdate: account.person.birthDate, address: account.address, phones: [account.phone0, account.phone1, account.phone2, account.phone3, account.phone4, account.phone5, account.phone6, account.phone7, account.phone8, account.phone9] };
 		req.session['user'] = user;//todo specify session age base on loginInfo.isRememberMe user selection to be very short. Or do the right thing 🤷‍♂️
 
 		return { ...user };
@@ -36,11 +37,11 @@ export class AuthController {
 	isLogin(@Session() session: Express_Session) {
 		const user: User = session['user'];
 		// console.log('AuthController : isLogin : user:', user);
-		
+
 		if (user && user.accountId)
 			return { ...user };
 
-		throw new UnauthorizedException({ message: R.string.mustLogin,action: 'login'  });
+		throw new UnauthorizedException({ message: R.string.mustLogin, action: 'login' });
 	}
 
 	@Get('logout')
@@ -49,7 +50,7 @@ export class AuthController {
 			req.session['user'] = undefined;
 			req.session.destroy((e) => {
 				if (e) rej(e);
-				res({ success:true, message: R.string.loggedOutSuccessfully });
+				res({ success: true, message: R.string.loggedOutSuccessfully });
 			});
 		});
 	}

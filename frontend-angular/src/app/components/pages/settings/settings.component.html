@@ -5,10 +5,23 @@
   <mat-card-content class="d-flex justify-content-center">
     <mat-button-toggle-group class="w-75" aria-label="Choose language">
       <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='ar'"
-        (change)="this.translate.use('ar')">{{'عربي'|translate}}</mat-button-toggle>
+        (change)="this.translate.use('ar')">عربي</mat-button-toggle>
       <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='en'"
-        (change)="this.translate.use('en')">{{'English'|translate}}</mat-button-toggle>
+        (change)="this.translate.use('en')">English</mat-button-toggle>
     </mat-button-toggle-group>
+  </mat-card-content>
+</mat-card>
+
+<mat-card class="m-4" *ngIf="ut.user.value">
+  <mat-card-header>
+    <mat-card-title>{{'My Account Information'|translate}}</mat-card-title>
+  </mat-card-header>
+  <mat-card-content>
+    <p class="opacity-75">*{{'Only Admin can change your account information, and you can only change your password.'|translate}}</p>
+    <p>{{'Name'|translate}}:&nbsp;{{ut.user.value.username}}</p>
+    <p *ngIf="ut.user.value.birthdate">{{'Birthdate'|translate}}:&nbsp;{{ut.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{ut.user.value.birthdate|fromNow:true}}</p>
+    <p>{{'Roles'|translate}}:&nbsp;{{ut.displayRoles(ut.user.value.roles)}}</p>
+    <button mat-stroked-button color="primary" (click)="changePassword()">{{'Change my password'|translate}}</button>
   </mat-card-content>
 </mat-card>
 
@@ -28,18 +41,4 @@
     <mat-progress-bar *ngIf="uploadProgress != null" class="mt-2" mode="determinate" [value]="uploadProgress"></mat-progress-bar>
   </mat-card-content>
 </mat-card>
-
-<mat-card class="m-4">
-  <mat-card-header>
-    <mat-card-title>Theme Settings</mat-card-title>
-  </mat-card-header>
-  <mat-card-content>
-    <p>Select your preferred theme:</p>
-    <ul>
-      <li><input type="radio" name="theme" value="indigo-pink"> Indigo/Pink</li>
-      <li><input type="radio" name="theme" value="deeppurple-amber"> Deep Purple/Amber</li>
-      <li><input type="radio" name="theme" value="pink-bluegrey"> Pink/Blue Grey</li>
-      <li><input type="radio" name="theme" value="purple-green"> Purple/Green</li>
-    </ul>
-  </mat-card-content>
-</mat-card>
+<div class="mb-5 pb-5"></div>

@@ -22,8 +22,8 @@ export class ChildService {
    */
   fetchChildren(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true)
-      this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
+      manageLoading && this.ut.isLoading.next(true);
+      this.http.get<IChildEntity[]>(this.isOnlyParent()?this.childURL+'/parent':this.childURL,{ params: { 'FK': true }})
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
@@ -35,6 +35,12 @@ export class ChildService {
           }
         });
     })
+  }
+
+  isOnlyParent() {
+    return this.ut.user.value &&
+      this.ut.user.value.roles.length == 1 &&
+      this.ut.user.value.roles.includes('Parent');
   }
 
   /**

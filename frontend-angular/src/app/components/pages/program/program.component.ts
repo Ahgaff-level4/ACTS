@@ -72,7 +72,7 @@ export class ProgramComponent {
 
   deleteDialog(program: IProgramEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the program: ' + program.name + " permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
+      content: this.ut.translate('You are about to delete the program: ') + program.name + this.ut.translate(" permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

@@ -96,7 +96,7 @@ export class GoalComponent implements OnDestroy {
 
   deleteDialog(goal: IGoalEntity) {
     this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the goal: \"' + goal.activity.name + "\" permanently. If the child has finished the goal then edit the goal state as competed. NOTE: all evaluations of this goal will also be deleted permanently."),
+      content: this.ut.translate('You are about to delete the goal: \"') + goal.activity.name + this.ut.translate("\" permanently. If the child has finished the goal then edit the goal state as competed. NOTE: all evaluations of this goal will also be deleted permanently."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

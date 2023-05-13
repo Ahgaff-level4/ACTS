@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsDate, IsOptional, IsString, MaxLength } from "class-validator";
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
-import { IActivityEntity, ICreateProgram, IProgramEntity } from "../../../../interfaces.d";
+import { IActivityEntity, ICreateProgram } from "../../../../interfaces.d";
 import { Type } from "class-transformer";
 import { ActivityEntity } from "../activity/activity.entity";
 

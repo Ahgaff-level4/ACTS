@@ -39,7 +39,7 @@
         <li *ngIf="ut.userHasAny('Admin')" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/account">{{'Account'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
+        <li (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3" routerLinkActive="active">
           <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
         </li>
         <hr class="text-white my-2 mx-0">
