@@ -28,7 +28,7 @@
       <ng-container matColumnDef="control">
         <th mat-header-cell cdkDrag *matHeaderCellDef> {{'Control'|translate}} </th>
         <td mat-cell *matCellDef="let el">
-          <a [routerLink]="'/activities/'+el.id" mat-button color="primary"><mat-icon>interests</mat-icon>{{'Activities'|translate}}</a>
+          <a [routerLink]="'program/'+el.id+'/activities'" mat-button color="primary"><mat-icon>interests</mat-icon>{{'Activities'|translate}}</a>
           <button *ngIf="canAddEditDelete" (click)="addEdit(el)" mat-button color="primary"><mat-icon>edit</mat-icon>{{'Edit'|translate}}</button>
           <button *ngIf="canAddEditDelete" (click)="deleteDialog(el)" mat-button color="warn"><mat-icon>delete</mat-icon>{{'Delete'|translate}}</button>
         </td>

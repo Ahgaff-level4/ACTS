@@ -25,10 +25,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
   // Each Column Definition results in one Column.
-  //todo: let user select her showed columns.
-  //todo: look for sideBarModule to add sideBar
   //todo: filter archive.
-  //todo: save user preference of how table be shown then apply it in Init
+  //todo: menu
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
    * - headerName will be translated.
@@ -75,23 +73,35 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       type: 'long'//long will set a tooltip with same value. So, user can hover to see the 'long' value even though the cell has no space
     },
     {
-      field: 'femaleFamilyMembers',
-      headerName: 'Number of sisters',
-      onCellValueChanged: this.onChildCellValueChanged,
-      hide: true,
-    },
-    {
-      field: 'maleFamilyMembers',
-      headerName: 'Number of brothers',
-      onCellValueChanged: this.onChildCellValueChanged,
-      hide: true,
-    },
-    {
       field: 'birthOrder',
       headerName: 'Order between siblings',
-      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder]) : '',//todo check the birthOrder value because ordinalNumbers start with First
+      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder-1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
       onCellValueChanged: this.onChildCellValueChanged,
       hide: true,
+    },
+    {
+      field: 'family',
+      headerName: 'Order between siblings',
+      valueGetter: (v) => {
+        let ret = '';
+        if (v.data?.birthOrder)
+          ret += this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1])
+            + ' ' + this.ut.translate('of') + ' ';
+
+        if (v.data?.maleFamilyMembers && v.data?.femaleFamilyMembers)
+          ret += (v.data.maleFamilyMembers + v.data.femaleFamilyMembers + 1)
+            + ' ' + this.ut.translate('siblings');
+        if (typeof v.data?.maleFamilyMembers != 'number' && typeof v.data?.femaleFamilyMembers != 'number')
+          return ret;
+        ret += ' (';
+        if (v.data?.femaleFamilyMembers)
+          ret += (v.data.femaleFamilyMembers + (v.data.person?.gender == 'Female' ? 1 : 0))
+            + ' ' + this.ut.translate('girls') + this.ut.translate(',') + ' ';
+        if (v.data?.maleFamilyMembers)
+          ret += (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
+            + ' ' + this.ut.translate('boys');
+        return ret + ')';
+      }
     },
     {
       field: 'parentsKinship',
@@ -182,7 +192,10 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   }
 
   ngOnInit(): void {
-    this.childService.children.subscribe(v => this.rowData = v);
+    this.childService.children.subscribe(v => {
+      this.rowData = v;
+      this.gridOptions.api?.refreshCells();
+    });
     // this.childService.fetchChildren().then(v => { this.rowData = v; console.log(v[0]) })
 
     this.ut.user.subscribe(v => {

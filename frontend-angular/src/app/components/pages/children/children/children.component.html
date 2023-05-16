@@ -13,8 +13,8 @@
   </div>
   <div class="mat-elevation-z4 table-responsive mb-4">
     <!-- AG Grid Angular Component -->
-    <ag-grid-angular style="width: 100%; height: 80vh" class="ag-theme-material rtl" [gridOptions]="gridOptions"
-     [rowData]="rowData" [quickFilterText]="quickFilter"></ag-grid-angular>
+    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
+      [rowData]="rowData" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
     <!-- <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows cdkDropList
       cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
 
@@ -58,12 +58,12 @@
           <div class="w-100" [@detailExpand]="item == expandedItem ? 'expanded' : 'collapsed'">
             <div class="row">
               <div class="col-md-4 p-3">
-                <a [routerLink]="'/goals/'+item.id" class="w-100" mat-stroked-button color="primary">
+                <a [routerLink]="'child/'+item.id+'/goals'" class="w-100" mat-stroked-button color="primary">
                   {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
                 </a>
               </div>
               <div class="col-md-4 p-3">
-                <a [routerLink]="'/strengths/'+item.id" class="w-100" mat-stroked-button color="primary">
+                <a [routerLink]="'child/'+item.id+'/strengths'" class="w-100" mat-stroked-button color="primary">
                   {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
                 </a>
               </div>

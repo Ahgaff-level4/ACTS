@@ -14,10 +14,9 @@ export class LoginService {
     localStorage.setItem('isRememberMe', isRememberMe + '');
     return this.http.post<User>(env.AUTH + 'login', { username, password }).subscribe({
       next: (res) => {
-        onDone();
         if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {
           this.ut.user.next(res);
-          this.router.navigate(['main']);
+          onDone();
         } else this.ut.errorDefaultDialog();
       }, error:(e)=>{
         onDone();

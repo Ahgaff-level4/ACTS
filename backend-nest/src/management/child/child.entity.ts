@@ -83,7 +83,7 @@ export class CreateChild implements ICreateChild {
 	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
 	public personId: number;
 
-	@IsArray() @Type(() => AccountEntity)
+	@IsArray() @Type(() => AccountEntity) @IsOptional()
 	@ManyToMany(() => AccountEntity, (account) => account.teaches, { onDelete: 'CASCADE' })
 	public teachers: IAccountEntity[];
 }

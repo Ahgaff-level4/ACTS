@@ -1,0 +1,31 @@
+  <div class="pt-5 pb-4">
+    <h1 class="text-center text-white display-4">{{'Welcome'|translate}}</h1>
+  </div>
+  <form class="ps-md-5 pe-md-5 ps-1 pe-1 p-3" [formGroup]="formGroup">
+    <mat-form-field class="w-100" appearance="fill">
+      <mat-label>{{'Username'|translate}}</mat-label>
+      <mat-icon matPrefix class="material-symbols-rounded">person</mat-icon>
+      <input type="username" matInput placeholder="..." [formControl]="formGroup.controls.username" required minlength="4" maxlength="30">
+      <mat-error *ngIf="formGroup.controls.username.errors?.['required']">{{'You must enter a value'|translate}}</mat-error>
+      <mat-error *ngIf="formGroup.controls.username.errors?.['minlength']">{{'Minimum length is '|translate:minlength}}</mat-error>
+    </mat-form-field>
+    <mat-form-field class="w-100" appearance="fill">
+      <mat-label>{{"Password"|translate}}</mat-label>
+      <mat-icon matPrefix class="material-symbols-rounded">lock</mat-icon>
+      <input [type]="hide ? 'password' : 'text'" matInput placeholder="..."
+        [formControl]="formGroup.controls.password" required minlength="4" maxlength="1024">
+      <button mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+        [attr.aria-pressed]="hide">
+        <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+        <mat-error *ngIf="formGroup.controls.password.errors?.['required']">{{'You must enter a value'|translate}}</mat-error>
+        <mat-error *ngIf="formGroup.controls.password.errors?.['minlength']">{{'Minimum length is '|translate:minlength}}</mat-error>
+    </mat-form-field>
+    <div class="w-100 d-flex">
+      <mat-checkbox class="flex-fill text-white"
+        [formControl]="formGroup.controls.isRememberMe">{{'Remember Me'|translate}}</mat-checkbox>
+      <div style="cursor: pointer;" class="flex-fill anchor text-decoration-underline me-0 pe-0  align-self-center text-end text-white" (click)="showForgetPasswordDialog()" mat-button>{{'Forget the password?'|translate}}</div>
+    </div>
+    <br>
+    <button [disabled]="!formGroup.valid" class="w-100 mb-3" mat-raised-button color="accent" type="submit"
+      (click)="submit()">{{'Login'|translate}}</button>
+  </form>

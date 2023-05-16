@@ -51,7 +51,8 @@ import { SpecialActivityComponent } from './components/pages/special-activity/sp
 import { FilterChildrenComponent } from './components/dialogs/filter/filter-children/filter-children.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { CalcAgePipe } from './pipes/calc-age.pipe';
-import 'ag-grid-enterprise';//important to use ag-grid features packages
+import 'ag-grid-enterprise';
+import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';//important to use ag-grid features packages
 
 @NgModule({
   declarations: [
@@ -89,7 +90,8 @@ import 'ag-grid-enterprise';//important to use ag-grid features packages
     StrengthComponent,
     AddEditStrengthComponent,
     SpecialActivityComponent,
-    FilterChildrenComponent
+    FilterChildrenComponent,
+    LoginFormComponent
   ],
   imports: [
     BrowserModule,

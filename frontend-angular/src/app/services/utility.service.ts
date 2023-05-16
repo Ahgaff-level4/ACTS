@@ -35,9 +35,11 @@ export class UtilityService {
   public commonGridOptions = (keyTableName: string, columnDefs: ColDef<any>[], canEdit: boolean, menu: { icon: string, title: string }[] | null): GridOptions => {
     return {/** DefaultColDef sets props common to all Columns*/
       pagination: true,
+      paginationPageSize:10,
       rowSelection: 'single',
       animateRows: true,
       enableBrowserTooltips: true,
+      preventDefaultOnContextMenu: true,
       // sideBar: ['Hello'],//todo how to implement sideBar for columns show/hide
       columnDefs: columnDefs.map(v => {
         v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
@@ -84,7 +86,6 @@ export class UtilityService {
         resizable: true,
         enablePivot: false,
         rowGroup: false,
-
       },
       sideBar: {
         toolPanels: [
@@ -94,8 +95,8 @@ export class UtilityService {
             labelKey: 'columns',
             iconKey: 'columns',
             toolPanel: 'agColumnsToolPanel',
-
-            toolPanelParams: {
+            //todo how to let user select text of the table.
+            toolPanelParams: {//todo check for how to edit default Context Menu. Because it has export ;)
               suppressRowGroups: true,
               suppressValues: true,
               suppressPivots: true,
@@ -117,11 +118,12 @@ export class UtilityService {
       },
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
-        prevState && e.columnApi.applyColumnState({ state: prevState });
+        prevState &&  e.columnApi.applyColumnState({ state: prevState });
+        prevState && e.api.refreshCells();
       },//save table state in Pinned, Moved, and Visible.
-      onColumnPinned: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
-      onColumnMoved: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
-      onColumnVisible: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
+      onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
+      onColumnMoved: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
+      onColumnVisible: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
       // onColumnEverythingChanged: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
     };
   }
