@@ -19,8 +19,8 @@ export class ChildController {
 
   @Get()
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  findAll(@Query('FK', ParseBoolPipe) fk: boolean) {
-    return this.childService.findAll(fk);
+  findAll() {
+    return this.childService.findAll();
   }
 
   @Get('/parent')

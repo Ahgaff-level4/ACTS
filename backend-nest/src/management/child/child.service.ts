@@ -17,16 +17,15 @@ export class ChildService {
     return this.repo.save(this.repo.create(createChild))
   }
 
-  async findAll(fk: boolean) {
-    if (fk)
+  async findAll() {
       return this.repo
         .createQueryBuilder('child')
         .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
         .leftJoinAndSelect('child.teachers', 'teacher')
         .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
+        .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
+        .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
         .getMany();
-    else
-      return this.repo.find()
   }
 
   async findOneItsGoals(id: number) {

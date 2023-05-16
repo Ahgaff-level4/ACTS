@@ -52,12 +52,11 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
     this.sub = this.accountService.accounts.subscribe((v) => {
       this.parents = v.filter(v => v.roles.includes('Parent'));
       this.teachers = v.filter(v => v.roles.includes('Teacher'));
-      if (Array.isArray(this.child?.teachers))
-        for (let t of this.teachers)
-          (this.child as IChildEntity).teachers = (this.child as IChildEntity).teachers.map(c => c.id==t.id?t:c);
-
+      let child = this.readonlyChild ? this.readonlyChild : this.child;
+      if (child?.teachers)
+        for (let c of child.teachers)
+          this.teachers = this.teachers.map(t => c.id == t.id ? c : t);
     });
-
 
     if (this.child) {
       this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));

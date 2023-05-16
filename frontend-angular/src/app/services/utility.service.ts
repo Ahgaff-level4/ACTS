@@ -10,16 +10,123 @@ import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { FromNowPipe } from '../pipes/from-now.pipe';
+import { CalcAgePipe } from '../pipes/calc-age.pipe';
+import { DatePipe } from '../pipes/date.pipe';
+import { ColDef, GridOptions } from 'ag-grid-community';
 @Injectable({
   providedIn: 'root'
 })
 export class UtilityService {
-
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
   public isLoading = new BehaviorSubject<boolean>(false);
+  /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
 
-  constructor(private http: HttpClient, private translatePipe: TranslatePipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
+
+
+  /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.ut.commonGridOptions(...),(add your own options)}
+  * @param keyTableName use to store/restore table state from localStorage.
+  * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
+  * @param canEdit to set editable. And if user double click will show error message.
+  * @param menu right-click menu.
+  * @returns Object of common grid options.
+  */
+  public commonGridOptions = (keyTableName: string, columnDefs: ColDef<any>[], canEdit: boolean, menu: { icon: string, title: string }[] | null): GridOptions => {
+    return {/** DefaultColDef sets props common to all Columns*/
+      pagination: true,
+      rowSelection: 'single',
+      animateRows: true,
+      enableBrowserTooltips: true,
+      // sideBar: ['Hello'],//todo how to implement sideBar for columns show/hide
+      columnDefs: columnDefs.map(v => {
+        v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
+        v.headerName = this.translate(v.headerName);
+        if (v.field?.toLowerCase().includes('date') && typeof v.filter != 'string') {
+          v.filter = 'agDateColumnFilter'
+          v.filterParams = {
+            comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
+              var cellMoment = moment(cellValue, 'YYYY-MM-DD');
+              if (cellMoment.isBefore(filterLocalDateAtMidnight))
+                return -1;
+              else if (cellMoment.isAfter(filterLocalDateAtMidnight))
+                return 1;
+              return 0;
+            }
+          }
+        }
+
+        v.headerTooltip = v.headerName;
+        return v;
+      }),
+      columnTypes: {
+        fromNow: {
+          valueFormatter: (v) => this.fromNow(v.value),//set the presentational value
+          chartDataType: 'time',
+          tooltipValueGetter: (v) => this.toDate(v.value),
+          width: 150,
+        },
+        fromNowNoAgo: {
+          valueFormatter: (v) => this.fromNow(v.value, true),//set the presentational value
+          chartDataType: 'time',
+          tooltipValueGetter: (v) => this.toDate(v.value),
+          width: 100
+        },
+        long: {
+          tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
+        }
+      },
+      defaultColDef: {
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        checkboxSelection: false,
+        // wrapText:true,//true will prevent the three dots for long text `long text...`
+        resizable: true,
+        enablePivot: false,
+        rowGroup: false,
+
+      },
+      sideBar: {
+        toolPanels: [
+          {
+            id: 'columns',
+            labelDefault: this.translate('Columns'),
+            labelKey: 'columns',
+            iconKey: 'columns',
+            toolPanel: 'agColumnsToolPanel',
+
+            toolPanelParams: {
+              suppressRowGroups: true,
+              suppressValues: true,
+              suppressPivots: true,
+              suppressPivotMode: true
+            }
+          }
+        ],
+        // defaultToolPanel: 'columns'//show panel on init
+      },
+      onCellDoubleClicked: async (e) => {
+        if (!canEdit)
+          this.showSnackbar("You don't have sufficient privilege to edit!");
+        else if (e.colDef.editable !== true)
+          this.showSnackbar("You can't edit any row in this column directly!");
+      },
+      onCellContextMenu: (e) => {
+        console.log('show add/edit/delete menu', e)
+        //todo show add/edit/delete menu
+      },
+      onGridReady: e => {//restore table state
+        let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
+        prevState && e.columnApi.applyColumnState({ state: prevState });
+      },//save table state in Pinned, Moved, and Visible.
+      onColumnPinned: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
+      onColumnMoved: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
+      onColumnVisible: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
+      // onColumnEverythingChanged: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
+    };
+  }
+
+  constructor(private http: HttpClient, private translatePipe: TranslatePipe, private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe, private fromNowPipe: FromNowPipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
   }
 
 
@@ -73,11 +180,38 @@ export class UtilityService {
 
   /**
    * We recommend using pipe translate (e.g., `<h1>{{title | translate}}</h1>`)
-   * @param key key inside the ar.json file.
+   * @param key key inside the ar.json file. If `null` or `undefined` returns empty string
    * @returns correspond value of the provided key translation (e.g., 'Login' or 'تسجيل دخول')
    */
-  public translate(key: string, ...args: any[]): string {
+  public translate(key: string | null | undefined, ...args: any[]): string {
+    if (key === null || key === undefined)
+      return '';
     return this.translatePipe.transform(key, args);
+  }
+
+  /**
+  *
+  * @param value date object
+  * @param noAgo boolean|undefined
+  * @returns string user friendly date from now.
+  * - If `noAgo==true` Ex: `4 months`, `2 days`.
+  * - If `noAgo==undefined|false` Ex: `4 months ago`, `2 days ago`.
+  * - If value is not expected returns empty string.
+  */
+  public fromNow(value: string | Date | moment.Moment | null | undefined, noAgo?: boolean): string {
+    return this.fromNowPipe.transform(value, noAgo) ?? '';
+  }
+
+  /**@returns string format as 'yyyy/M/D' */
+  public toDate(value: string | Date | moment.Moment | null | undefined): string {
+    return this.toDatePipe.transform(value);
+  }
+
+  /**
+   * @returns number of years from provided date until now.
+   * NOTE: IF PROVIDED DATE IS INVALID THEN IT RETURNS `0` */
+  public calcAge(value: string | Date | moment.Moment | null | undefined): number {
+    return this.calcAgePipe.transform(value);
   }
 
   /**
@@ -111,8 +245,8 @@ export class UtilityService {
    */
   public extractFrom(keys: { [key: string]: any }, properties: { [key: string]: any }) {
     let ret: { [key: string]: any } = {};
-    if(!keys || !properties)
-      console.error('Unexpected param!',keys,properties)
+    if (!keys || !properties)
+      console.error('Unexpected param!', keys, properties)
     for (let k in keys) {
       ret[k] = properties[k] ?? null;
     }
@@ -161,17 +295,6 @@ export class UtilityService {
   public showSnackbar(message: string, action?: string, duration = 4000) {
     message = this.translate(message);
     return this.snackbar.open(message, action, { duration }).onAction()
-  }
-
-  /**calculate the age of birthdate object from now
-   * @returns age in decimal. ex: 3.141
-   */
-  public calcAge(birthdate: Date | string) {
-    birthdate = new Date(birthdate);
-    const today = new Date();
-    const ageInDays = (today.getTime() - birthdate.getTime()) / (1000 * 60 * 60 * 24);
-    const ageInYears = ageInDays / 365.25;
-    return ageInYears;
   }
 
   public displayRoles(roles: Role[]) {

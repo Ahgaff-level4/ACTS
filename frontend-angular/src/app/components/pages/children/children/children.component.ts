@@ -1,89 +1,205 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { AfterViewInit, Component, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { ChildService } from 'src/app/services/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
-import { MatSort } from '@angular/material/sort';
-import { MatPaginator } from '@angular/material/paginator';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { UtilityService } from 'src/app/services/utility.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterChildrenComponent, FilterChildrenOptions } from 'src/app/components/dialogs/filter/filter-children/filter-children.component';
+import { ColDef, ColumnApi, Events, GridOptions, NewValueParams, } from 'ag-grid-enterprise';
+import { Observable } from 'rxjs';
+// import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
-  animations: [
-    trigger('detailExpand', [
-      state('collapsed', style({ height: '0px', minHeight: '0' })),
-      state('expanded', style({ height: '*' })),
-      transition('expanded <=> collapsed', animate('225ms cubic-bezier(0.4, 0.0, 0.2, 1)')),
-    ]),
-  ],
 })
 export class ChildrenComponent implements OnInit, AfterViewInit {
-  public canAddEdit!: boolean;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<IChildEntity>;
-  public dataSource!: ChildrenDataSource;
-  public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('children table') ?? 'null') ?? ['name', 'age', 'diagnostic', 'gender', 'createdDatetime', 'expand']
+  public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public expandedItem?: IChildEntity;
-  public filter: FilterChildrenOptions = {};
+  public quickFilter: string = '';
+  public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
+    try {
+      await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
+      this.ut.showSnackbar('Edited successfully')
+    } catch (e) {
+      this.gridOptions?.api?.refreshCells();
+    }
+  }
+  // Each Column Definition results in one Column.
+  //todo: let user select her showed columns.
+  //todo: look for sideBarModule to add sideBar
+  //todo: filter archive.
+  //todo: save user preference of how table be shown then apply it in Init
+  /**
+   * - field is property name (accept nested. (e.g.,`person.name`).
+   * - headerName will be translated.
+   * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, and `width`.
+   * - type `long` will set `tooltipValueGetter` to the cell value.
+   * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
+   * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
+   * - if field is number then set `filter='agNumberColumnFilter'`. Default filter is for string.
+   * - if field is enum then set `filter='agSetColumnFilter'` and set values as `filterParams:{values:['Male','Female']})`
+   */
+  public columnDefs: (ColDef<IChildEntity>)[] = [
+    {
+      field: 'person.name',
+      headerName: 'Name',//headerName will be translated
+      type: 'long',
+    },
+    {
+      field: 'person.birthDate',
+      headerName: 'Age',
+      valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
+      type: 'fromNowNoAgo',
+      valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
+      tooltipValueGetter: (v) => v.data?.person.birthDate ? this.ut.translate('Birthdate') + ': ' + this.ut.toDate(v.data?.person.birthDate) : '',
+      filter: 'agNumberColumnFilter'
+    },
+    {
+      field: 'person.gender',
+      headerName: 'Gender',
+      chartDataType: 'category',
+      filter: 'agSetColumnFilter',
+      filterParams: { values: ['Male', 'Female'] },
+      width: 100
+    },
+    {
+      field: 'person.createdDatetime',
+      headerName: 'Register date',
+      type: 'fromNow',
+    },
+    {
+      field: 'diagnostic',
+      headerName: 'Diagnostic',
+      // icons:{'sort':'hello'},//todo how to add `edit` icon so user can know this column is editable
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long'//long will set a tooltip with same value. So, user can hover to see the 'long' value even though the cell has no space
+    },
+    {
+      field: 'femaleFamilyMembers',
+      headerName: 'Number of sisters',
+      onCellValueChanged: this.onChildCellValueChanged,
+      hide: true,
+    },
+    {
+      field: 'maleFamilyMembers',
+      headerName: 'Number of brothers',
+      onCellValueChanged: this.onChildCellValueChanged,
+      hide: true,
+    },
+    {
+      field: 'birthOrder',
+      headerName: 'Order between siblings',
+      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder]) : '',//todo check the birthOrder value because ordinalNumbers start with First
+      onCellValueChanged: this.onChildCellValueChanged,
+      hide: true,
+    },
+    {
+      field: 'parentsKinship',
+      headerName: 'Parent kinship',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+      hide: true,
+    },
+    {
+      field: 'diagnosticDate',
+      headerName: 'Diagnostic date',
+      type: 'fromNow',
+      hide: true,
+    },
+    {
+      field: 'pregnancyState',
+      headerName: 'Pregnancy state',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+      hide: true,
+    },
+    {
+      field: 'birthState',
+      headerName: 'Birth state',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+      hide: true,
+    },
+    {
+      field: 'growthState',
+      headerName: 'Growth state',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+      hide: true,
+    },
+    {
+      field: 'medicine',
+      headerName: 'Medicines',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+      hide: true,
+    },
+    {
+      field: 'behaviors',
+      headerName: 'Behaviors',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+      hide: true,
+    },
+    {
+      field: 'prioritySkills',
+      headerName: 'Priority skills',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type: 'long',
+    },
+    {
+      field: 'parent.person.name',
+      headerName: 'Parent',
+      tooltipValueGetter: (v) => v.data?.parent?.username ? this.ut.translate('Username') + ': ' + v.data.parent.username : '',
+    },
+    {
+      field: 'teachers',
+      headerName: 'Teachers',
+      valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
+      tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
+    }
+  ];
+
+
+
+  // Data that gets displayed in the grid
+  public rowData!: IChildEntity[] | undefined;
+  /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
+  public gridOptions: GridOptions = {
+    ...this.ut.commonGridOptions('children table', this.columnDefs, this.canAddEdit, [{ icon: 'edit', title: 'Edit row' }, { icon: 'person_add', title: 'Register a child' }]),
+
+    onRowClicked: this.onRowClicked,
+
+  }
 
   constructor(private childService: ChildService, public ut: UtilityService, private dialog: MatDialog) {
   }
 
-  ngOnInit(): void {
-    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
 
-    this.dataSource = new ChildrenDataSource();
-    this.ut.isLoading.next(true);
-    this.childService.children.subscribe({
-      next: v => {
-        this.dataSource.setData(v);
-        if (this.table)
-          this.table.renderRows();
-        this.ut.isLoading.next(false);
-      }, error: () => this.ut.isLoading.next(false)
-    });
-    this.childService.fetchChildren(true);
+  // Example of consuming Grid Event
+  onRowClicked(e: any): void {
+    console.log('rowClicked', e.data);
+  }
+
+  ngOnInit(): void {
+    this.childService.children.subscribe(v => this.rowData = v);
+    // this.childService.fetchChildren().then(v => { this.rowData = v; console.log(v[0]) })
+
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
 
-    //!Not working! shows nothing record! Show a record with empty fields what ever search bar typed on!
-    // this.dataSource.filterPredicate = (item: IChildEntity, filter: string) => {
-    //   for (let k in item) {
-    //     if (typeof (item as any)[k] == 'object') {
-    //       for (let k2 in (item as any)[k])
-    //         if (((item as any)[k] as any)[k2]?.toString().toLowerCase().indexOf(filter.toLowerCase()) != -1)
-    //           return true;
-    //     } else if ((item as any)[k]?.toString().toLowerCase().indexOf(filter.toLocaleLowerCase()) != -1)
-    //       return true;
-    //   }
-    //   return false;
-    // }
   }
 
   ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+    // this.dataSource.sort = this.sort;
+    // this.dataSource.paginator = this.paginator;
   }
+
 
   applySearch(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator)
-      this.dataSource.paginator.firstPage();
+    this.quickFilter = (event.target as HTMLInputElement).value;
   }
-
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.columnsKeys, event.previousIndex, event.currentIndex);
-    sessionStorage.setItem('children table', JSON.stringify(this.columnsKeys));
-  }
-
 
   edit(child: IChildEntity | undefined) {
     if (child != undefined) {
@@ -91,49 +207,44 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
 
-  filteredItems: IChildEntity[] = [];
-  showFilterDialog() {
-    this.dialog
-      .open<FilterChildrenComponent, FilterChildrenOptions, FilterChildrenOptions>
-      (FilterChildrenComponent, { data: this.filter }).afterClosed()
-      .subscribe((newFilter) => {
-        if (typeof newFilter == 'object') {
-          this.filter = newFilter;
-          this.filteredItems = this.childService.children.value;
-          if (newFilter.maxRegisterDate)
-            this.filteredItems = this.filteredItems.filter((v) => {
-              if (typeof v.person?.createdDatetime == 'string')
-                return new Date(v.person.createdDatetime) <= (newFilter.maxRegisterDate as Date);
-              else if (v.person?.createdDatetime instanceof Date)
-                return v.person.createdDatetime <= (newFilter.maxRegisterDate as Date);
-              return false;
-            });
-          if (newFilter.minRegisterDate)
-            this.filteredItems = this.filteredItems.filter((v) => {
-              if (typeof v.person?.createdDatetime == 'string')
-                return new Date(v.person.createdDatetime) >= (newFilter.minRegisterDate as Date);
-              else if (v.person?.createdDatetime instanceof Date)
-                return v.person.createdDatetime >= (newFilter.minRegisterDate as Date);
-              return false;
-            });
+  // filteredItems: IChildEntity[] = [];
+  // showFilterDialog() {
+  //   this.dialog
+  //     .open<FilterChildrenComponent, FilterChildrenOptions, FilterChildrenOptions>
+  //     (FilterChildrenComponent, { data: this.filter }).afterClosed()
+  //     .subscribe((newFilter) => {
+  //       if (typeof newFilter == 'object') {
+  //         this.filter = newFilter;
+  //         this.filteredItems = this.childService.children.value;
+  //         if (newFilter.maxRegisterDate)
+  //           this.filteredItems = this.filteredItems.filter((v) => {
+  //             if (typeof v.person?.createdDatetime == 'string')
+  //               return new Date(v.person.createdDatetime) <= (newFilter.maxRegisterDate as Date);
+  //             else if (v.person?.createdDatetime instanceof Date)
+  //               return v.person.createdDatetime <= (newFilter.maxRegisterDate as Date);
+  //             return false;
+  //           });
+  //         if (newFilter.minRegisterDate)
+  //           this.filteredItems = this.filteredItems.filter((v) => {
+  //             if (typeof v.person?.createdDatetime == 'string')
+  //               return new Date(v.person.createdDatetime) >= (newFilter.minRegisterDate as Date);
+  //             else if (v.person?.createdDatetime instanceof Date)
+  //               return v.person.createdDatetime >= (newFilter.minRegisterDate as Date);
+  //             return false;
+  //           });
 
-          this.dataSource.setData(this.filteredItems);
-          if (this.table)
-            this.table.renderRows();
-        }
-      })
+  //         this.dataSource.setData(this.filteredItems);
+  //         if (this.table)
+  //           this.table.renderRows();
+  //       }
+  //     })
+  // }
+
+  // numOfFiltersApplied(): number {
+  //   return Object.keys(this.filter).length;
+  // }
+
+  ngOnDestroy() {
+
   }
-
-  numOfFiltersApplied(): number {
-    return Object.keys(this.filter).length;
-  }
-}
-
-
-class ChildrenDataSource extends MatTableDataSource<IChildEntity>{
-  setData(arr: IChildEntity[]) {
-    this.data = arr.map(v => ({ ...v.person, ...v, }));
-  }
-
-
 }

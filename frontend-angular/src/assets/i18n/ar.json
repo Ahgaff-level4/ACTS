@@ -26,6 +26,7 @@
 	"You must login!":"!يجب تسجيل الدخول اولاً",
 	"Insufficient privilege!":"!ليس لديك صلاحية",
 	"You don't have sufficient privilege to do this action!":"!ليس لديك صلاحية",
+	"You don't have sufficient privilege to edit!":"",
   "Children":"الأطفال",
   "Name":"الاسم",
   "Age":"العمر",
@@ -43,6 +44,7 @@
   "Order between siblings":"ترتيبه بين الاخوه",
   "siblings":"اخوه",
   ",":"،",
+  ", ":"، ",
   "girls":"بنات",
   "boys":"اولاد",
   "Parent kinship":"صلة القرابة بين الوالدين",
@@ -299,5 +301,9 @@
   "Change my password":"",
   "The new password is the same old password!":"",
   "Old password is invalid!":"",
-  "Teachers":""
+  "Teachers":"",
+  "Personal Information":"",
+  "Other Information":"",
+  "Edited successfully":"",
+  "You can't edit any row in this column directly!":""
 }

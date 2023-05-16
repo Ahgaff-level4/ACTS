@@ -1,5 +1,5 @@
 import { Injectable, OnInit } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { IChildEntity, ICreateChild, SucResEditDel } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
@@ -13,22 +13,24 @@ export class ChildService {
   constructor(private http: HttpClient, private ut: UtilityService) {
     // this.children.next(TMP_DATA);
     // this.fetchChildren(); if you need children then first subscribe to children SubjectBehavior then call fetchChildren.
+    this.fetchChildren();
   }
 
-  public children = new BehaviorSubject<IChildEntity[]>([]);
+  public children = new ReplaySubject<IChildEntity[]>(1);
   /**
+   * private 'cause you should only sub. to children it will give you last/new value it guaranteed sub. func. will be called
    * create api request to retrieve children information and broadcast it to `children` BehaviorSubject.
    * @returns `resolve` if request succeeded. Otherwise `reject`.
    */
-  fetchChildren(manageLoading = false): Promise<void> {
+  private fetchChildren(manageLoading = false): Promise<IChildEntity[]> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
-      this.http.get<IChildEntity[]>(this.isOnlyParent()?this.childURL+'/parent':this.childURL,{ params: { 'FK': true }})
+      this.http.get<IChildEntity[]>(this.isOnlyParent() ? this.childURL + '/parent' : this.childURL, { params: { 'FK': true } })
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
             this.children.next(v);
-            res()
+            res(v)
           }, error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e);

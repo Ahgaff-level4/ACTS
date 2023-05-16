@@ -49,6 +49,9 @@ import { WithCredentialsInterceptor } from './interceptors/WithCredentials.inter
 import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
 import { FilterChildrenComponent } from './components/dialogs/filter/filter-children/filter-children.component';
+import { AgGridModule } from 'ag-grid-angular';
+import { CalcAgePipe } from './pipes/calc-age.pipe';
+import 'ag-grid-enterprise';//important to use ag-grid features packages
 
 @NgModule({
   declarations: [
@@ -97,26 +100,30 @@ import { FilterChildrenComponent } from './components/dialogs/filter/filter-chil
     RouterModule,
     BrowserAnimationsModule,
     AppMaterialModule,
+    AgGridModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
-        useFactory: (http:HttpClient)=>new TranslateHttpLoader(http),
+        useFactory: (http: HttpClient) => new TranslateHttpLoader(http),
         deps: [HttpClient],
       },
     })
   ],
-  providers:[
+  providers: [
     TranslatePipe,
-    {provide:DateAdapter,useClass:MomentDateAdapter,deps:[MAT_DATE_LOCALE,MAT_MOMENT_DATE_ADAPTER_OPTIONS]},
+    FromNowPipe,
+    CalcAgePipe,
+    DatePipe,
+    { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
     {
       provide: HTTP_INTERCEPTORS,
       useClass: WithCredentialsInterceptor,
       multi: true
     },
     {
-      provide:HTTP_INTERCEPTORS,
-      useClass:HttpCatchInterceptor,
-      multi:true
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpCatchInterceptor,
+      multi: true
     }
   ],
   bootstrap: [AppComponent]
