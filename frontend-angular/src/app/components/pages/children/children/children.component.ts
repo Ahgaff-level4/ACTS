@@ -30,7 +30,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
    * - headerName will be translated.
-   * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, and `width`.
+   * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, `width`, and `valueGetter`.
    * - type `long` will set `tooltipValueGetter` to the cell value.
    * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
    * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.

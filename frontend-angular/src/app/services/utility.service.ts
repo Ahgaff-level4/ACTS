@@ -35,7 +35,7 @@ export class UtilityService {
   public commonGridOptions = (keyTableName: string, columnDefs: ColDef<any>[], canEdit: boolean, menu: { icon: string, title: string }[] | null): GridOptions => {
     return {/** DefaultColDef sets props common to all Columns*/
       pagination: true,
-      paginationPageSize:10,
+      paginationPageSize: 10,
       rowSelection: 'single',
       animateRows: true,
       enableBrowserTooltips: true,
@@ -44,7 +44,7 @@ export class UtilityService {
       columnDefs: columnDefs.map(v => {
         v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
         v.headerName = this.translate(v.headerName);
-        if (v.field?.toLowerCase().includes('date') && typeof v.filter != 'string') {
+        if (v.type?.includes('fromNow')) {
           v.filter = 'agDateColumnFilter'
           v.filterParams = {
             comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
@@ -66,13 +66,15 @@ export class UtilityService {
           valueFormatter: (v) => this.fromNow(v.value),//set the presentational value
           chartDataType: 'time',
           tooltipValueGetter: (v) => this.toDate(v.value),
+          valueGetter: v => this.toDate(this.getNestedValue(v.data,v.colDef.field!)),
           width: 150,
         },
         fromNowNoAgo: {
           valueFormatter: (v) => this.fromNow(v.value, true),//set the presentational value
           chartDataType: 'time',
           tooltipValueGetter: (v) => this.toDate(v.value),
-          width: 100
+          valueGetter: v => this.toDate(this.getNestedValue(v.data,v.colDef.field!)),
+          width: 100,
         },
         long: {
           tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
@@ -118,7 +120,7 @@ export class UtilityService {
       },
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
-        prevState &&  e.columnApi.applyColumnState({ state: prevState });
+        prevState && e.columnApi.applyColumnState({ state: prevState });
         prevState && e.api.refreshCells();
       },//save table state in Pinned, Moved, and Visible.
       onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
@@ -328,5 +330,24 @@ export class UtilityService {
     }
   }
 
+  /**
+   * @param data any nested object
+   * @param field dot separated key. Ex:`person.name`
+   * @returns the nested value or null.
+   */
+  private getNestedValue(data:any, field:string) {
+    // split the field string by dots
+    let parts = field.split('.');
+    // start with the data object
+    let value = data;
+    // loop through the parts and access the properties
+    for (let part of parts) {
+      value = value[part];
+      // if value is undefined or null, stop the loop
+      if (value == null) break;
+    }
+    // return the final value
+    return value;
+  }
 }
 
