@@ -13,8 +13,8 @@
   </div>
   <div class="mat-elevation-z4 table-responsive mb-4">
     <!-- AG Grid Angular Component -->
-    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
-      [rowData]="rowData" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
+    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData"
+      domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
     <!-- <table mat-table [dataSource]="dataSource" matSort multiTemplateDataRows cdkDropList
       cdkDropListOrientation="horizontal" (cdkDropListDropped)="drop($event)">
 
@@ -93,7 +93,19 @@
     <mat-paginator [pageSizeOptions]="[5, 10, 20,50,100]" showFirstLastButtons>
     </mat-paginator> -->
   </div>
-
-  <a *ngIf="canAddEdit" mat-raised-button color="primary" routerLink="/add-child">
-    {{'Register a child'|translate}}<mat-icon>person_add</mat-icon></a>
+  <div class="row">
+    <a *ngIf="canAddEdit" class="col-md-3" mat-raised-button color="primary" routerLink="/add-child">
+      {{'Register a child'|translate}}<mat-icon>person_add</mat-icon>
+    </a>
+    <div class="">
+      <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate" class="col-md-3" mat-stroked-button
+        color="primary" (click)="edit(this.selectedItem)">
+        <mat-icon>edit</mat-icon>{{'Edit'|translate}}
+      </button>
+    </div>
+    <a [disabled]="selectedItem==null" [matTooltip]="'View goals of the selected child'|translate" [routerLink]="selectedItem?'child/'+selectedItem!.id+'/goals':'#'" class="col-md-3"
+      mat-stroked-button color="primary">
+      {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
+    </a>
+  </div>
 </div>

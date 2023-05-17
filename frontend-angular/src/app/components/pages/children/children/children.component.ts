@@ -14,7 +14,7 @@ import { Observable } from 'rxjs';
 })
 export class ChildrenComponent implements OnInit, AfterViewInit {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-  public expandedItem?: IChildEntity;
+  public selectedItem?: IChildEntity;
   public quickFilter: string = '';
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
@@ -178,18 +178,12 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public gridOptions: GridOptions = {
     ...this.ut.commonGridOptions('children table', this.columnDefs, this.canAddEdit, [{ icon: 'edit', title: 'Edit row' }, { icon: 'person_add', title: 'Register a child' }]),
 
-    onRowClicked: this.onRowClicked,
-
+    onRowClicked: (v)=>this.selectedItem=v.data
   }
 
   constructor(private childService: ChildService, public ut: UtilityService, private dialog: MatDialog) {
   }
 
-
-  // Example of consuming Grid Event
-  onRowClicked(e: any): void {
-    console.log('rowClicked', e.data);
-  }
 
   ngOnInit(): void {
     this.childService.children.subscribe(v => {

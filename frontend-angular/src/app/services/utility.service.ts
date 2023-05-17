@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
-import { TranslatePipe } from '@ngx-translate/core';
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
@@ -40,7 +40,7 @@ export class UtilityService {
       animateRows: true,
       enableBrowserTooltips: true,
       preventDefaultOnContextMenu: true,
-      // sideBar: ['Hello'],//todo how to implement sideBar for columns show/hide
+      enableRtl: this.tran.currentLang == 'ar' ? true : false,
       columnDefs: columnDefs.map(v => {
         v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
         v.headerName = this.translate(v.headerName);
@@ -57,7 +57,6 @@ export class UtilityService {
             }
           }
         }
-
         v.headerTooltip = v.headerName;
         return v;
       }),
@@ -66,14 +65,14 @@ export class UtilityService {
           valueFormatter: (v) => this.fromNow(v.value),//set the presentational value
           chartDataType: 'time',
           tooltipValueGetter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data,v.colDef.field!)),
+          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
           width: 150,
         },
         fromNowNoAgo: {
           valueFormatter: (v) => this.fromNow(v.value, true),//set the presentational value
           chartDataType: 'time',
           tooltipValueGetter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data,v.colDef.field!)),
+          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
           width: 100,
         },
         long: {
@@ -106,7 +105,6 @@ export class UtilityService {
             }
           }
         ],
-        // defaultToolPanel: 'columns'//show panel on init
       },
       onCellDoubleClicked: async (e) => {
         if (!canEdit)
@@ -126,11 +124,18 @@ export class UtilityService {
       onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
       onColumnMoved: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
       onColumnVisible: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      // onColumnEverythingChanged: e => {localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState()));console.log('saved')},
+      getLocaleText: ({ key, defaultValue }) => {
+        const t = this.translate(key);
+        if ((t == key && t != defaultValue) || t.trim() == '') {
+          console.warn(`Unexpected key translation in ag-grid! key=${key}, got translation=${t}. While the defaultValue=${defaultValue}`)
+          return defaultValue;
+        } return t;
+      },
+
     };
   }
 
-  constructor(private http: HttpClient, private translatePipe: TranslatePipe, private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe, private fromNowPipe: FromNowPipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
+  constructor(private http: HttpClient, public tran: TranslateService, private translatePipe: TranslatePipe, private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe, private fromNowPipe: FromNowPipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
   }
 
 
@@ -335,7 +340,7 @@ export class UtilityService {
    * @param field dot separated key. Ex:`person.name`
    * @returns the nested value or null.
    */
-  private getNestedValue(data:any, field:string) {
+  private getNestedValue(data: any, field: string) {
     // split the field string by dots
     let parts = field.split('.');
     // start with the data object
