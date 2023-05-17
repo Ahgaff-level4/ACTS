@@ -1,15 +1,30 @@
 <h1 class="p-4 mx-md-5 pb-0">{{'Children'|translate}}</h1>
 <div class="mx-md-5  mb-5 pb-5">
-  <div class="mt-4 w-100 row">
-    <mat-form-field class="col-md-12">
+  <div class="mt-4 w-100 row" *ngIf="!isPrinting">
+    <mat-form-field class="col-md-11">
       <mat-label>{{'Search'|translate}}</mat-label>
       <input matInput (keyup)="applySearch($event)" placeholder="..." #input>
     </mat-form-field>
-    <!-- <div class="col-1">
-      <button (click)="showFilterDialog()" mat-icon-button [matTooltip]="'Advance filter options'|translate">
-        <mat-icon color="primary" [matBadge]="numOfFiltersApplied()||''" matBadgeColor="warn">filter_alt</mat-icon>
+    <div class="col-1">
+      <button mat-icon-button [matMenuTriggerFor]="menu" [matTooltip]="'Export table'|translate"
+        aria-label="Export button with a menu">
+        <mat-icon color="primary">ios_share</mat-icon>
       </button>
-    </div> -->
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item (click)="ut.exportCSV(gridOptions)">
+          <mat-icon color="primary">table</mat-icon>
+          <span>{{'Export CSV'|translate}}</span>
+        </button>
+        <button mat-menu-item (click)="ut.exportExcel(gridOptions)">
+          <mat-icon color="primary">table</mat-icon>
+          <span>{{'Export Excel'|translate}}</span>
+        </button>
+        <button mat-menu-item (click)="this.printTable()">
+          <mat-icon color="primary">print</mat-icon>
+          <span>{{'Print'|translate}}</span>
+        </button>
+      </mat-menu>
+    </div>
   </div>
   <div class="mat-elevation-z4 table-responsive mb-4">
     <!-- AG Grid Angular Component -->
@@ -93,19 +108,31 @@
     <mat-paginator [pageSizeOptions]="[5, 10, 20,50,100]" showFirstLastButtons>
     </mat-paginator> -->
   </div>
-  <div class="row">
-    <a *ngIf="canAddEdit" class="col-md-3" mat-raised-button color="primary" routerLink="/add-child">
+  <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
+    <!-- <div class="col-md-3 mb-2"> -->
+    <a *ngIf="canAddEdit" class="w-100 mx-3 mb-2" mat-raised-button color="primary" routerLink="/add-child">
       {{'Register a child'|translate}}<mat-icon>person_add</mat-icon>
     </a>
-    <div class="">
-      <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate" class="col-md-3" mat-stroked-button
-        color="primary" (click)="edit(this.selectedItem)">
-        <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-      </button>
-    </div>
-    <a [disabled]="selectedItem==null" [matTooltip]="'View goals of the selected child'|translate" [routerLink]="selectedItem?'child/'+selectedItem!.id+'/goals':'#'" class="col-md-3"
-      mat-stroked-button color="primary">
+    <!-- </div> -->
+    <!-- <div class="col-md-3 mb-2"> -->
+    <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
+      class="w-100 mx-3 mb-2" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
+      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
+    </button>
+    <!-- </div> -->
+    <!-- <div class="col-md-3 mb-2"> -->
+    <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
+      [matTooltip]="'View goals of the selected child'|translate"
+      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/goals':'#'" mat-stroked-button color="primary">
       {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
     </a>
+    <!-- </div> -->
+    <!-- <div class="col-md-3 mb-2"> -->
+    <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
+      [matTooltip]="'View strengths of the selected child'|translate"
+      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" mat-stroked-button color="primary">
+      {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
+    </a>
+    <!-- </div> -->
   </div>
 </div>

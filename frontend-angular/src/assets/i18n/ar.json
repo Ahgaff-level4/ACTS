@@ -281,12 +281,6 @@
   "Please check your network connection and try again.": "",
   "Special Activities": "",
   "This activity is not bind to any child! We strongly recommend deleting it": "",
-  "Filter options": "",
-  "Clear filter": "",
-  "Apply filter": "",
-  "Maximum register date": "",
-  "Minimum register date": "",
-  "Advance filter options": "",
   "My Account Information": "",
   "Only Admin can change your account information, and you can only change your password.": "",
   "Re-enter password": "",
@@ -350,8 +344,11 @@
   "collapseAll": "طي الكل",
   "toolPanel": "لوحة الأدوات",
   "export": "تصدير",
+  "Export table": "تصدير الجدول",
   "csvExport": "تصدير CSV",
+  "Export CSV": "تصدير CSV",
   "excelExport": "تصدير Excel",
+  "Export Excel": "تصدير Excel",
   "pinLeft": "تثبيت يسار",
   "pinRight": "تثبيت يمين",
   "noPin": "لا تثبيت",
@@ -581,5 +578,7 @@
   "thousandSeparator": "،",
   "decimalSeparator": ".",
   "Edit the selected row": "",
-  "View goals of the selected child": ""
+  "View goals of the selected child": "",
+  "View strengths of the selected child":"",
+  "Filters":""
 }

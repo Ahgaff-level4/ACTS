@@ -4,7 +4,7 @@ import { ChildService } from 'src/app/services/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ColDef, ColumnApi, Events, GridOptions, NewValueParams, } from 'ag-grid-enterprise';
+import { ColDef, ColumnApi, Events, GridOptions, NewValueParams, SideBarDef, ToolPanelDef, } from 'ag-grid-enterprise';
 import { Observable } from 'rxjs';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
@@ -16,6 +16,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
+  public isPrinting:boolean = false;
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
@@ -44,13 +45,20 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       type: 'long',
     },
     {
+      colId: 'Age',//assigned `colId` because there are multiple columns with same field.
       field: 'person.birthDate',
       headerName: 'Age',
       valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
       valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
-      tooltipValueGetter: (v) => v.data?.person.birthDate ? this.ut.translate('Birthdate') + ': ' + this.ut.toDate(v.data?.person.birthDate) : '',
       filter: 'agNumberColumnFilter'
+    },
+    {
+      colId: 'birthDate',
+      field: 'person.birthDate',
+      headerName: 'Birthdate',
+      type: 'toDate',
+      hide: true,
     },
     {
       field: 'person.gender',
@@ -71,13 +79,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       // icons:{'sort':'hello'},//todo how to add `edit` icon so user can know this column is editable
       onCellValueChanged: this.onChildCellValueChanged,
       type: 'long'//long will set a tooltip with same value. So, user can hover to see the 'long' value even though the cell has no space
-    },
-    {
-      field: 'birthOrder',
-      headerName: 'Order between siblings',
-      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder-1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
-      onCellValueChanged: this.onChildCellValueChanged,
-      hide: true,
     },
     {
       field: 'family',
@@ -167,7 +168,17 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       headerName: 'Teachers',
       valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
       tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
-    }
+    },
+
+    {
+      field: 'isArchive',
+      headerName: 'Archive',
+      filter:'agSetColumnFilter',
+      filterParams:{values:[true,false]},
+      hide:true,
+
+    },
+
   ];
 
 
@@ -178,11 +189,12 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public gridOptions: GridOptions = {
     ...this.ut.commonGridOptions('children table', this.columnDefs, this.canAddEdit, [{ icon: 'edit', title: 'Edit row' }, { icon: 'person_add', title: 'Register a child' }]),
 
-    onRowClicked: (v)=>this.selectedItem=v.data
+    onRowClicked: (v) => this.selectedItem = v.data
   }
 
   constructor(private childService: ChildService, public ut: UtilityService, private dialog: MatDialog) {
   }
+
 
 
   ngOnInit(): void {
@@ -251,7 +263,24 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   //   return Object.keys(this.filter).length;
   // }
 
-  ngOnDestroy() {
+  printTable() {
+    let isAuto = this.gridOptions.paginationAutoPageSize;
+    this.gridOptions.paginationAutoPageSize = false
+    let size = this.gridOptions.paginationPageSize;
+    this.gridOptions.paginationPageSize = 1000;
+    this.isPrinting = true;
+    this.gridOptions.api?.setDomLayout('print');
+    this.gridOptions.api?.setSideBarVisible(false)
+    this.gridOptions.api?.redrawRows();
+    setTimeout(() => print(), 2000);
+    setTimeout(() => {
+      this.isPrinting = false;
+      this.gridOptions.paginationAutoPageSize = isAuto;
+      this.gridOptions.paginationPageSize = size;
+      this.gridOptions.api?.setSideBarVisible(true)
+      this.gridOptions.api?.refreshCells();
+      this.gridOptions.api?.setDomLayout('autoHeight');
 
+    }, 3000);
   }
 }

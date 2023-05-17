@@ -27,7 +27,7 @@ import {MatSlideToggleModule} from '@angular/material/slide-toggle';
 import {MatMenuModule} from '@angular/material/menu';
 import {MatCardModule} from '@angular/material/card';
 import {MatProgressBarModule} from '@angular/material/progress-bar';
-import {MatBadgeModule} from '@angular/material/badge';
+// import {MatBadgeModule} from '@angular/material/badge';
 
 
 @NgModule({
@@ -59,7 +59,7 @@ import {MatBadgeModule} from '@angular/material/badge';
     MatMenuModule,
     MatCardModule,
     MatProgressBarModule,
-    MatBadgeModule
+    // MatBadgeModule
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

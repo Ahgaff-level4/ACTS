@@ -14,6 +14,7 @@ import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { DatePipe } from '../pipes/date.pipe';
 import { ColDef, GridOptions } from 'ag-grid-community';
+import { SpinnerComponent } from '../components/static/spinner/spinner.component';
 @Injectable({
   providedIn: 'root'
 })
@@ -25,115 +26,7 @@ export class UtilityService {
 
 
 
-  /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.ut.commonGridOptions(...),(add your own options)}
-  * @param keyTableName use to store/restore table state from localStorage.
-  * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
-  * @param canEdit to set editable. And if user double click will show error message.
-  * @param menu right-click menu.
-  * @returns Object of common grid options.
-  */
-  public commonGridOptions = (keyTableName: string, columnDefs: ColDef<any>[], canEdit: boolean, menu: { icon: string, title: string }[] | null): GridOptions => {
-    return {/** DefaultColDef sets props common to all Columns*/
-      pagination: true,
-      paginationPageSize: 10,
-      rowSelection: 'single',
-      animateRows: true,
-      enableBrowserTooltips: true,
-      preventDefaultOnContextMenu: true,
-      enableRtl: this.tran.currentLang == 'ar' ? true : false,
-      columnDefs: columnDefs.map(v => {
-        v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
-        v.headerName = this.translate(v.headerName);
-        if (v.type?.includes('fromNow')) {
-          v.filter = 'agDateColumnFilter'
-          v.filterParams = {
-            comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
-              var cellMoment = moment(cellValue, 'YYYY-MM-DD');
-              if (cellMoment.isBefore(filterLocalDateAtMidnight))
-                return -1;
-              else if (cellMoment.isAfter(filterLocalDateAtMidnight))
-                return 1;
-              return 0;
-            }
-          }
-        }
-        v.headerTooltip = v.headerName;
-        return v;
-      }),
-      columnTypes: {
-        fromNow: {
-          valueFormatter: (v) => this.fromNow(v.value),//set the presentational value
-          chartDataType: 'time',
-          tooltipValueGetter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
-          width: 150,
-        },
-        fromNowNoAgo: {
-          valueFormatter: (v) => this.fromNow(v.value, true),//set the presentational value
-          chartDataType: 'time',
-          tooltipValueGetter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
-          width: 100,
-        },
-        long: {
-          tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
-        }
-      },
-      defaultColDef: {
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        checkboxSelection: false,
-        // wrapText:true,//true will prevent the three dots for long text `long text...`
-        resizable: true,
-        enablePivot: false,
-        rowGroup: false,
-      },
-      sideBar: {
-        toolPanels: [
-          {
-            id: 'columns',
-            labelDefault: this.translate('Columns'),
-            labelKey: 'columns',
-            iconKey: 'columns',
-            toolPanel: 'agColumnsToolPanel',
-            //todo how to let user select text of the table.
-            toolPanelParams: {//todo check for how to edit default Context Menu. Because it has export ;)
-              suppressRowGroups: true,
-              suppressValues: true,
-              suppressPivots: true,
-              suppressPivotMode: true
-            }
-          }
-        ],
-      },
-      onCellDoubleClicked: async (e) => {
-        if (!canEdit)
-          this.showSnackbar("You don't have sufficient privilege to edit!");
-        else if (e.colDef.editable !== true)
-          this.showSnackbar("You can't edit any row in this column directly!");
-      },
-      onCellContextMenu: (e) => {
-        console.log('show add/edit/delete menu', e)
-        //todo show add/edit/delete menu
-      },
-      onGridReady: e => {//restore table state
-        let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
-        prevState && e.columnApi.applyColumnState({ state: prevState });
-        prevState && e.api.refreshCells();
-      },//save table state in Pinned, Moved, and Visible.
-      onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      onColumnMoved: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      onColumnVisible: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      getLocaleText: ({ key, defaultValue }) => {
-        const t = this.translate(key);
-        if ((t == key && t != defaultValue) || t.trim() == '') {
-          console.warn(`Unexpected key translation in ag-grid! key=${key}, got translation=${t}. While the defaultValue=${defaultValue}`)
-          return defaultValue;
-        } return t;
-      },
 
-    };
-  }
 
   constructor(private http: HttpClient, public tran: TranslateService, private translatePipe: TranslatePipe, private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe, private fromNowPipe: FromNowPipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
   }
@@ -335,6 +228,129 @@ export class UtilityService {
     }
   }
 
+  /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.ut.commonGridOptions(...),(add your own options)}
+ * @param keyTableName use to store/restore table state from localStorage.
+ * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
+ * @param canEdit to set editable. And if user double click will show error message.
+ * @param menu right-click menu.
+ * @returns Object of common grid options.
+ */
+  public commonGridOptions = (keyTableName: string, columnDefs: ColDef<any>[], canEdit: boolean, menu: { icon: string, title: string }[] | null): GridOptions => {
+    return {/** DefaultColDef sets props common to all Columns*/
+      pagination: true,
+      paginationPageSize: 10,
+      rowSelection: 'single',
+      animateRows: true,
+      enableBrowserTooltips: true,
+      preventDefaultOnContextMenu: true,
+      enableRtl: this.tran.currentLang == 'ar' ? true : false,
+      columnDefs: columnDefs.map(v => {
+        v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
+        v.headerName = this.translate(v.headerName);
+        if (v.type?.includes('fromNow') || v.type?.includes('toDate')) {
+
+          v.filter = 'agDateColumnFilter'
+          v.filterParams = {
+            comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
+              var cellMoment = moment(cellValue, 'YYYY-MM-DD');
+              if (cellMoment.isBefore(filterLocalDateAtMidnight))
+                return -1;
+              else if (cellMoment.isAfter(filterLocalDateAtMidnight))
+                return 1;
+              return 0;
+            }
+          }
+        }
+        v.headerTooltip = v.headerName;
+        return v;
+      }),
+      columnTypes: {
+        fromNow: {
+          valueFormatter: (v) => this.fromNow(v.value),//set the presentational value
+          chartDataType: 'time',
+          tooltipValueGetter: (v) => this.toDate(v.value),
+          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+          width: 150,
+        },
+        fromNowNoAgo: {
+          valueFormatter: (v) => this.fromNow(v.value, true),//set the presentational value
+          chartDataType: 'time',
+          tooltipValueGetter: (v) => this.toDate(v.value),
+          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+          width: 100,
+        },
+        toDate: {
+          valueFormatter: (v) => this.toDate(v.value),
+          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+          chartDataType: 'time',
+          width: 100,
+        },
+        long: {
+          tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
+        }
+      },
+      defaultColDef: {
+        sortable: true,
+        filter: 'agTextColumnFilter',
+        checkboxSelection: false,
+        // wrapText:true,//true will prevent the three dots for long text `long text...`
+        resizable: true,
+        enablePivot: false,
+        rowGroup: false,
+      },
+      sideBar: {
+        toolPanels: [
+          {
+            id: 'columns',
+            labelDefault: this.translate('Columns'),
+            labelKey: 'columns',
+            iconKey: 'columns',
+            toolPanel: 'agColumnsToolPanel',
+            //todo how to let user select text of the table.
+            toolPanelParams: {//todo check for how to edit default Context Menu. Because it has export ;)
+              suppressRowGroups: true,
+              suppressValues: true,
+              suppressPivots: true,
+              suppressPivotMode: true
+            }
+          },
+          {
+            id: 'filters',
+            labelDefault: this.translate('Filters'),
+            labelKey: 'filters',
+            iconKey: 'filter',
+            toolPanel: 'agFiltersToolPanel',
+          },
+        ],
+      },
+      onCellDoubleClicked: async (e) => {
+        if (!canEdit)
+          this.showSnackbar("You don't have sufficient privilege to edit!");
+        else if (e.colDef.editable !== true)
+          this.showSnackbar("You can't edit any row in this column directly!");
+      },
+      onCellContextMenu: (e) => {
+        console.log('show add/edit/delete menu', e)
+        //todo show add/edit/delete menu
+      },
+      onGridReady: e => {//restore table state
+        let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
+        prevState && e.columnApi.applyColumnState({ state: prevState });
+        prevState && e.api.refreshCells();
+      },//save table state in Pinned, Moved, and Visible.
+      onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
+      onColumnMoved: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
+      onColumnVisible: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
+      getLocaleText: ({ key, defaultValue }) => {
+        const t = this.translate(key);//in english `t` will equal `key`. This is normal
+        if ((t == key && t != defaultValue) || t.trim() == '')
+          return defaultValue;
+        return t;
+      },
+
+    };
+  }
+
   /**
    * @param data any nested object
    * @param field dot separated key. Ex:`person.name`
@@ -353,6 +369,13 @@ export class UtilityService {
     }
     // return the final value
     return value;
+  }
+
+  public exportCSV(gridOptions: GridOptions) {
+    gridOptions.api?.exportDataAsCsv();
+  }
+  public exportExcel(gridOptions: GridOptions) {
+    gridOptions.api?.exportDataAsExcel();
   }
 }
 
