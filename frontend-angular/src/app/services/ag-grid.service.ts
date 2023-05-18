@@ -164,7 +164,7 @@ export class AgGridService {
 * @param printTable a function that will be called on menu>Table>print clicked.
 * @returns Object of common grid options.
 */
-  public commonGridOptions = <IEntity>(keyTableName: string, columnDefs: ColDef<IEntity>[], canEdit: boolean, menu: MenuItemDef[] | null, printTable: () => void, editRowAction?: (item: IEntity | undefined) => void): GridOptions<IEntity> => {
+  public commonGridOptions = <IEntity>(keyTableName: string, columnDefs: ColDef<IEntity>[], canEdit: boolean, menu: MyMenuItem<IEntity>[] | null, printTable: () => void, editRowAction?: (item: IEntity | undefined) => void): GridOptions<IEntity> => {
     return {/** DefaultColDef sets props common to all Columns*/
       ...this.gridOptionsProperties,
       columnDefs: this.tapColumnDefs(columnDefs, canEdit),
@@ -214,7 +214,16 @@ export class AgGridService {
           });
 
         if (menu)
-          items.push(...menu);
+          items.push(...menu.map(item => {
+            let action = item.action;
+            if (typeof action == 'function')
+              item.action = () => action!(v.node?.data);
+            if (item.name)
+              item.name = this.ut.translate(item.name);
+            if (item.tooltip)
+              item.tooltip = this.ut.translate(item.tooltip)
+            return item;
+          }));
 
         return [...items, {
           name: this.ut.translate('Copy'),
@@ -281,4 +290,24 @@ export class AgGridService {
       },
     }
   }
+}
+
+export interface MyMenuItem<IEntity> {
+  /** Name of the menu item. No need for translation, it will be translated */
+  name: string;
+  /** It the item should be enabled / disabled */
+  disabled?: boolean;
+  /** Shortcut (just display text, saying the shortcut here does nothing) */
+  shortcut?: string;
+  /** Function that gets executed when item is chosen */
+  /** Set to true to provide a check beside the option */
+  checked?: boolean;
+  /** The icon to display, either a DOM element or HTML string */
+  icon?: Element | string;
+  /** CSS classes to apply to the menu item */
+  cssClasses?: string[];
+  /** Tooltip for the menu item. It will be translated */
+  tooltip?: string;
+  /** On click action will be called */
+  action?(entity?: IEntity): void
 }

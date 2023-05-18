@@ -3,9 +3,9 @@ import { ChildService } from 'src/app/services/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ColDef, GridOptions, ISetFilterParams, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
+import { ColDef, GridOptions, ISetFilterParams, MenuItemDef, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
 import { MatMenuTrigger } from '@angular/material/menu';
-import { AgGridService } from 'src/app/services/ag-grid.service';
+import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -166,12 +166,12 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     },
 
     ...this.canAddEdit ?//add isArchive column if user can add/edit. We are forced to duplicate teacher column for false closure unless we do a function and make it big deal.
-      [ {
+      [{
         field: 'teachers',
         headerName: 'Teachers',
         valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
         tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
-      },{
+      }, {
         field: 'isArchive',
         headerName: 'Archive',
         filter: 'agSetColumnFilter',
@@ -193,7 +193,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public rowData!: IChildEntity[] | undefined;
 
 
-  constructor(private childService: ChildService, public agGrid:AgGridService, public ut: UtilityService, private dialog: MatDialog) {
+  constructor(private childService: ChildService, public agGrid: AgGridService, public ut: UtilityService, private dialog: MatDialog) {
   }
 
 
@@ -227,7 +227,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
 
-  printTable=() =>{//should be arrow function. Because it called in gridOption>ContextMenu>Table>print
+  printTable = () => {//should be arrow function. Because it's called inside gridOption object
     let isAuto = this.gridOptions.paginationAutoPageSize;
     this.gridOptions.paginationAutoPageSize = false
     let size = this.gridOptions.paginationPageSize;
@@ -248,10 +248,24 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }, 3000);
   }
 
+  private goalsStrengthsMenuItems: MyMenuItem<IChildEntity>[] = [
+    {
+      name:'Goals',
+      icon:`<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">sports_score</mat-icon>`,
+      action:(v)=>v?this.ut.router.navigateByUrl('/child/'+v.id+'/goals'):'',
+      tooltip:'View goals of the selected child',
+    },
+    {
+      name:this.ut.translate('Strengths'),
+      icon:`<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">fitness_center</mat-icon>`,
+      action:(v)=>v?this.ut.router.navigateByUrl('/child/'+v.id+'/strengths'):'',
+      tooltip:'View strengths of the selected child',
+    },
+  ];
+
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IChildEntity> = {
-    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit, null/**todo */,this.printTable,(item)=>{this.edit(item)}),
+    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit, this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) }),
     onRowClicked: (v) => this.selectedItem = v.data,
-    onCellContextMenu: (e) => console.log(),
   }
 }
