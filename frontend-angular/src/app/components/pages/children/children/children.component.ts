@@ -1,11 +1,11 @@
-import { AfterViewInit, Component, OnInit } from '@angular/core';
-import { MatTableDataSource } from '@angular/material/table';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { ChildService } from 'src/app/services/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
-import { ColDef, ColumnApi, Events, GridOptions, NewValueParams, SideBarDef, ToolPanelDef, } from 'ag-grid-enterprise';
-import { Observable } from 'rxjs';
+import { ColDef, GridOptions, ISetFilterParams, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
+import { MatMenuTrigger } from '@angular/material/menu';
+import { AgGridService } from 'src/app/services/ag-grid.service';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -16,7 +16,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
-  public isPrinting:boolean = false;
+  public isPrinting: boolean = false;
+  @ViewChild('rowMenu') rowMenu?: MatMenuTrigger;
+
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
@@ -26,7 +28,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
   // Each Column Definition results in one Column.
-  //todo: filter archive.
   //todo: menu
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
@@ -36,7 +37,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
    * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
    * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
    * - if field is number then set `filter='agNumberColumnFilter'`. Default filter is for string.
-   * - if field is enum then set `filter='agSetColumnFilter'` and set values as `filterParams:{values:['Male','Female']})`
+   * - if field is enum then set `filter='agSetColumnFilter'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, })`
    */
   public columnDefs: (ColDef<IChildEntity>)[] = [
     {
@@ -65,7 +66,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       headerName: 'Gender',
       chartDataType: 'category',
       filter: 'agSetColumnFilter',
-      filterParams: { values: ['Male', 'Female'] },
+      filterParams: { values: ['Male', 'Female'], },
       width: 100
     },
     {
@@ -163,21 +164,26 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       headerName: 'Parent',
       tooltipValueGetter: (v) => v.data?.parent?.username ? this.ut.translate('Username') + ': ' + v.data.parent.username : '',
     },
-    {
-      field: 'teachers',
-      headerName: 'Teachers',
-      valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
-      tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
-    },
 
-    {
-      field: 'isArchive',
-      headerName: 'Archive',
-      filter:'agSetColumnFilter',
-      filterParams:{values:[true,false]},
-      hide:true,
-
-    },
+    ...this.canAddEdit ?//add isArchive column if user can add/edit. We are forced to duplicate teacher column for false closure unless we do a function and make it big deal.
+      [ {
+        field: 'teachers',
+        headerName: 'Teachers',
+        valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
+        tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
+      },{
+        field: 'isArchive',
+        headerName: 'Archive',
+        filter: 'agSetColumnFilter',
+        filterParams: { values: [true, false], valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive') } as ISetFilterParams<IChildEntity, boolean>,
+        valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive'),
+        hide: true,
+      }] as ColDef<IChildEntity>[] : [{
+        field: 'teachers',
+        headerName: 'Teachers',
+        valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
+        tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
+      }] as ColDef<IChildEntity>[],
 
   ];
 
@@ -185,14 +191,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   // Data that gets displayed in the grid
   public rowData!: IChildEntity[] | undefined;
-  /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
-  public gridOptions: GridOptions = {
-    ...this.ut.commonGridOptions('children table', this.columnDefs, this.canAddEdit, [{ icon: 'edit', title: 'Edit row' }, { icon: 'person_add', title: 'Register a child' }]),
 
-    onRowClicked: (v) => this.selectedItem = v.data
-  }
 
-  constructor(private childService: ChildService, public ut: UtilityService, private dialog: MatDialog) {
+  constructor(private childService: ChildService, public agGrid:AgGridService, public ut: UtilityService, private dialog: MatDialog) {
   }
 
 
@@ -226,44 +227,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
 
-  // filteredItems: IChildEntity[] = [];
-  // showFilterDialog() {
-  //   this.dialog
-  //     .open<FilterChildrenComponent, FilterChildrenOptions, FilterChildrenOptions>
-  //     (FilterChildrenComponent, { data: this.filter }).afterClosed()
-  //     .subscribe((newFilter) => {
-  //       if (typeof newFilter == 'object') {
-  //         this.filter = newFilter;
-  //         this.filteredItems = this.childService.children.value;
-  //         if (newFilter.maxRegisterDate)
-  //           this.filteredItems = this.filteredItems.filter((v) => {
-  //             if (typeof v.person?.createdDatetime == 'string')
-  //               return new Date(v.person.createdDatetime) <= (newFilter.maxRegisterDate as Date);
-  //             else if (v.person?.createdDatetime instanceof Date)
-  //               return v.person.createdDatetime <= (newFilter.maxRegisterDate as Date);
-  //             return false;
-  //           });
-  //         if (newFilter.minRegisterDate)
-  //           this.filteredItems = this.filteredItems.filter((v) => {
-  //             if (typeof v.person?.createdDatetime == 'string')
-  //               return new Date(v.person.createdDatetime) >= (newFilter.minRegisterDate as Date);
-  //             else if (v.person?.createdDatetime instanceof Date)
-  //               return v.person.createdDatetime >= (newFilter.minRegisterDate as Date);
-  //             return false;
-  //           });
-
-  //         this.dataSource.setData(this.filteredItems);
-  //         if (this.table)
-  //           this.table.renderRows();
-  //       }
-  //     })
-  // }
-
-  // numOfFiltersApplied(): number {
-  //   return Object.keys(this.filter).length;
-  // }
-
-  printTable() {
+  printTable=() =>{//should be arrow function. Because it called in gridOption>ContextMenu>Table>print
     let isAuto = this.gridOptions.paginationAutoPageSize;
     this.gridOptions.paginationAutoPageSize = false
     let size = this.gridOptions.paginationPageSize;
@@ -282,5 +246,12 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       this.gridOptions.api?.setDomLayout('autoHeight');
 
     }, 3000);
+  }
+
+  /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
+  public gridOptions: GridOptions<IChildEntity> = {
+    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit, null/**todo */,this.printTable,(item)=>{this.edit(item)}),
+    onRowClicked: (v) => this.selectedItem = v.data,
+    onCellContextMenu: (e) => console.log(),
   }
 }

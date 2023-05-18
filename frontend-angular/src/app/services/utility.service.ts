@@ -13,7 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { DatePipe } from '../pipes/date.pipe';
-import { ColDef, GridOptions } from 'ag-grid-community';
+import { ColDef, GridOptions, MenuItemDef } from 'ag-grid-community';
 import { SpinnerComponent } from '../components/static/spinner/spinner.component';
 @Injectable({
   providedIn: 'root'
@@ -28,7 +28,10 @@ export class UtilityService {
 
 
 
-  constructor(private http: HttpClient, public tran: TranslateService, private translatePipe: TranslatePipe, private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe, private fromNowPipe: FromNowPipe, private dialog: MatDialog, public router: Router, private snackbar: MatSnackBar) {
+  constructor(private http: HttpClient, private translatePipe: TranslatePipe,
+    private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
+    private fromNowPipe: FromNowPipe, private dialog: MatDialog,
+    public router: Router, private snackbar: MatSnackBar,private translateService:TranslateService) {
   }
 
 
@@ -189,14 +192,14 @@ export class UtilityService {
 
   /**
    *
-   * @param message text
+   * @param message text. If `undefined` then `message='Something went wrong!'`
    * @param action text of the action button like `Undo` or `Ok`.
    * @param duration before the snackbar automatically dismissed. Value is in milliseconds.
    * @returns on action clicked observable.
    */
-  public showSnackbar(message: string, action?: string, duration = 4000) {
-    message = this.translate(message);
-    return this.snackbar.open(message, action, { duration }).onAction()
+  public showSnackbar(message: string | undefined, action?: string, duration = 4000) {
+    message = this.translate(message ?? 'Something went wrong!');
+    return this.snackbar.open(message, action, { duration }).onAction();
   }
 
   public displayRoles(roles: Role[]) {
@@ -225,157 +228,12 @@ export class UtilityService {
         return 'Minimum length is ';
 
       return '';
-    }
+    },
   }
 
-  /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.ut.commonGridOptions(...),(add your own options)}
- * @param keyTableName use to store/restore table state from localStorage.
- * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
- * @param canEdit to set editable. And if user double click will show error message.
- * @param menu right-click menu.
- * @returns Object of common grid options.
- */
-  public commonGridOptions = (keyTableName: string, columnDefs: ColDef<any>[], canEdit: boolean, menu: { icon: string, title: string }[] | null): GridOptions => {
-    return {/** DefaultColDef sets props common to all Columns*/
-      pagination: true,
-      paginationPageSize: 10,
-      rowSelection: 'single',
-      animateRows: true,
-      enableBrowserTooltips: true,
-      preventDefaultOnContextMenu: true,
-      enableRtl: this.tran.currentLang == 'ar' ? true : false,
-      columnDefs: columnDefs.map(v => {
-        v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
-        v.headerName = this.translate(v.headerName);
-        if (v.type?.includes('fromNow') || v.type?.includes('toDate')) {
-
-          v.filter = 'agDateColumnFilter'
-          v.filterParams = {
-            comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
-              var cellMoment = moment(cellValue, 'YYYY-MM-DD');
-              if (cellMoment.isBefore(filterLocalDateAtMidnight))
-                return -1;
-              else if (cellMoment.isAfter(filterLocalDateAtMidnight))
-                return 1;
-              return 0;
-            }
-          }
-        }
-        v.headerTooltip = v.headerName;
-        return v;
-      }),
-      columnTypes: {
-        fromNow: {
-          valueFormatter: (v) => this.fromNow(v.value),//set the presentational value
-          chartDataType: 'time',
-          tooltipValueGetter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
-          width: 150,
-        },
-        fromNowNoAgo: {
-          valueFormatter: (v) => this.fromNow(v.value, true),//set the presentational value
-          chartDataType: 'time',
-          tooltipValueGetter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
-          width: 100,
-        },
-        toDate: {
-          valueFormatter: (v) => this.toDate(v.value),
-          valueGetter: v => this.toDate(this.getNestedValue(v.data, v.colDef.field!)),
-          chartDataType: 'time',
-          width: 100,
-        },
-        long: {
-          tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
-        }
-      },
-      defaultColDef: {
-        sortable: true,
-        filter: 'agTextColumnFilter',
-        checkboxSelection: false,
-        // wrapText:true,//true will prevent the three dots for long text `long text...`
-        resizable: true,
-        enablePivot: false,
-        rowGroup: false,
-      },
-      sideBar: {
-        toolPanels: [
-          {
-            id: 'columns',
-            labelDefault: this.translate('Columns'),
-            labelKey: 'columns',
-            iconKey: 'columns',
-            toolPanel: 'agColumnsToolPanel',
-            //todo how to let user select text of the table.
-            toolPanelParams: {//todo check for how to edit default Context Menu. Because it has export ;)
-              suppressRowGroups: true,
-              suppressValues: true,
-              suppressPivots: true,
-              suppressPivotMode: true
-            }
-          },
-          {
-            id: 'filters',
-            labelDefault: this.translate('Filters'),
-            labelKey: 'filters',
-            iconKey: 'filter',
-            toolPanel: 'agFiltersToolPanel',
-          },
-        ],
-      },
-      onCellDoubleClicked: async (e) => {
-        if (!canEdit)
-          this.showSnackbar("You don't have sufficient privilege to edit!");
-        else if (e.colDef.editable !== true)
-          this.showSnackbar("You can't edit any row in this column directly!");
-      },
-      onCellContextMenu: (e) => {
-        console.log('show add/edit/delete menu', e)
-        //todo show add/edit/delete menu
-      },
-      onGridReady: e => {//restore table state
-        let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
-        prevState && e.columnApi.applyColumnState({ state: prevState });
-        prevState && e.api.refreshCells();
-      },//save table state in Pinned, Moved, and Visible.
-      onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      onColumnMoved: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      onColumnVisible: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())); console.log('saved') },
-      getLocaleText: ({ key, defaultValue }) => {
-        const t = this.translate(key);//in english `t` will equal `key`. This is normal
-        if ((t == key && t != defaultValue) || t.trim() == '')
-          return defaultValue;
-        return t;
-      },
-
-    };
+  public get currentLang() : 'ar'|'en' {
+    return this.translateService.currentLang=='ar'?'ar':'en'
   }
 
-  /**
-   * @param data any nested object
-   * @param field dot separated key. Ex:`person.name`
-   * @returns the nested value or null.
-   */
-  private getNestedValue(data: any, field: string) {
-    // split the field string by dots
-    let parts = field.split('.');
-    // start with the data object
-    let value = data;
-    // loop through the parts and access the properties
-    for (let part of parts) {
-      value = value[part];
-      // if value is undefined or null, stop the loop
-      if (value == null) break;
-    }
-    // return the final value
-    return value;
-  }
-
-  public exportCSV(gridOptions: GridOptions) {
-    gridOptions.api?.exportDataAsCsv();
-  }
-  public exportExcel(gridOptions: GridOptions) {
-    gridOptions.api?.exportDataAsExcel();
-  }
 }
 
