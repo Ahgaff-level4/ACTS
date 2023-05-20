@@ -11,23 +11,23 @@ import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { AppComponent } from './components/static/app/app.component';
 import { MatSortModule } from '@angular/material/sort';
-import {DragDropModule} from '@angular/cdk/drag-drop';
-import {MatRippleModule} from '@angular/material/core';
-import {MatDatepickerModule} from '@angular/material/datepicker';
+import { DragDropModule } from '@angular/cdk/drag-drop';
+import { MatRippleModule } from '@angular/material/core';
+import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule } from '@angular/material/core';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
-import {MatDividerModule} from '@angular/material/divider';
-import {MatProgressSpinnerModule} from '@angular/material/progress-spinner';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatListModule} from '@angular/material/list';
-import {MatButtonToggleModule} from '@angular/material/button-toggle';
-import {MatTooltipModule} from '@angular/material/tooltip';
-import {MatSlideToggleModule} from '@angular/material/slide-toggle';
-import {MatMenuModule} from '@angular/material/menu';
-import {MatCardModule} from '@angular/material/card';
-import {MatProgressBarModule} from '@angular/material/progress-bar';
-// import {MatBadgeModule} from '@angular/material/badge';
+import { MatDividerModule } from '@angular/material/divider';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatListModule } from '@angular/material/list';
+import { MatButtonToggleModule } from '@angular/material/button-toggle';
+import { MatTooltipModule } from '@angular/material/tooltip';
+import { MatSlideToggleModule } from '@angular/material/slide-toggle';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatCardModule } from '@angular/material/card';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { ClipboardModule } from '@angular/cdk/clipboard';
 
 
 @NgModule({
@@ -59,7 +59,7 @@ import {MatProgressBarModule} from '@angular/material/progress-bar';
     MatMenuModule,
     MatCardModule,
     MatProgressBarModule,
-    // MatBadgeModule
+    ClipboardModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

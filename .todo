@@ -2,10 +2,11 @@
 
 - in children page show only isArchive=false children. And there should be an option for showing isArchive=true children, using filter button in the children page depends on your preference.
 
-- optimize button that will delete any activity dose not connected to a child AND dose not have programId. Made when user create special activity but dose not continue to fill the goal form to add goal with special activity.
-
 - In big forms the user before leaving should have dialog says 'Your changes will be lost!'
 
-- Fix sort of columns that their sort not working. Ex: Age column in children table.
-
 - Translate server error messages.
+
+- solve this:Warning: C:\ACTS\frontend-angular\node_modules\@angular\material-moment-adapter\fesm2020\material-moment-adapter.mjs depends on 'moment'. CommonJS or AMD dependencies can cause optimization bailouts.
+For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
+
+- parent can view only his children

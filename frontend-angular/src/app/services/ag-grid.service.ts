@@ -1,13 +1,15 @@
 import { Injectable } from '@angular/core';
 import { UtilityService } from './utility.service';
-import { ColDef, GetLocaleTextParams, GridApi, GridOptions, MenuItemDef, SideBarDef } from 'ag-grid-community';
+import { ColDef, GetContextMenuItemsParams, GetLocaleTextParams, GridApi, GridOptions, MenuItemDef, SideBarDef } from 'ag-grid-enterprise';
+import { GridReadyEvent } from 'ag-grid-community';
+import { Clipboard } from '@angular/cdk/clipboard';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AgGridService {
 
-  constructor(public ut: UtilityService,) { }
+  constructor(public ut: UtilityService, private clipboard: Clipboard) { }
 
   /**
    * @param data any nested object
@@ -44,13 +46,6 @@ export class AgGridService {
     } else this.ut.showSnackbar(undefined);
   }
 
-  // public copySelectedRow(gridApi: GridApi<any>|undefined|null, includeHeaders: boolean) {
-  //   if (gridApi) {
-  //     gridApi.copySelectedRowsToClipboard({ includeHeaders });
-  //     this.ut.showSnackbar('Copied to clipboard');
-  //   } else this.ut.showSnackbar(undefined);
-  // }
-
   private gridOptionsProperties: GridOptions = {
     pagination: true,
     paginationPageSize: 10,
@@ -61,6 +56,8 @@ export class AgGridService {
     suppressClipboardPaste: true,
     suppressCutToClipboard: true,
     enableRtl: this.ut.currentLang == 'ar' ? true : false,
+    enableCellTextSelection: true,
+    ensureDomOrder: true,
   }
 
   private tapColumnDefs(columnDefs: ColDef<any>[], canEdit: boolean): ColDef<any>[] {
@@ -81,6 +78,10 @@ export class AgGridService {
           }
         }
       }
+
+      if (v.filter == 'agSetColumnFilter')
+        v.filterParams.suppressMiniFilter = true;
+
       v.headerTooltip = v.headerName;
       return v;
     })
@@ -160,11 +161,15 @@ export class AgGridService {
 * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
 * @param canEdit to set editable. And if user double click will show error message.
 * @param menu right-click menu. There are default items (e.g., `Copy row`, `Table > ...`,etc) your menu items will be appended before default items
-* @param editRowAction if provided then do not provide `Edit row` item in `menu` param. This will add `Edit row` menu item with the action provided.
 * @param printTable a function that will be called on menu>Table>print clicked.
+* @param editRowAction if provided then do not provide `Edit row` item in `menu` param. This will add `Edit row` menu item with the action provided.
+* @param onGridReady USE THIS if you want to use onGridReady. Using `onGridReady` on your `GridOptions` will overwrite the `onGridReady` used in `commonGridOptions`
 * @returns Object of common grid options.
 */
-  public commonGridOptions = <IEntity>(keyTableName: string, columnDefs: ColDef<IEntity>[], canEdit: boolean, menu: MyMenuItem<IEntity>[] | null, printTable: () => void, editRowAction?: (item: IEntity | undefined) => void): GridOptions<IEntity> => {
+  public commonGridOptions = <IEntity>(keyTableName: string, columnDefs: ColDef<IEntity>[],
+    canEdit: boolean, menu: MyMenuItem<IEntity>[] | null | undefined, printTable: () => void | null,
+    editRowAction?: (item: IEntity | undefined) => void, onGridReady?: (event: GridReadyEvent) => void,
+  ): GridOptions<IEntity> => {
     return {/** DefaultColDef sets props common to all Columns*/
       ...this.gridOptionsProperties,
       columnDefs: this.tapColumnDefs(columnDefs, canEdit),
@@ -181,21 +186,21 @@ export class AgGridService {
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
         prevState && e.columnApi.applyColumnState({ state: prevState });
         prevState && e.api.refreshCells();
+        onGridReady && onGridReady(e);
       },//save table state in Pinned, Moved, and Visible.
       onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())) },
       onColumnMoved: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())) },
       onColumnVisible: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())) },
       getLocaleText: this.getLocaleText,
       getContextMenuItems: v => {
-
-        console.log('getContextMenuItems : v=', v);
         /** Menu structure:
+         * Edit row <<if `editRowAction` is Function>>
          * <<menu param items>>
          * Copy =>
          *          Copy cell
          *          Copy row     Ctrl+C
          *          Copy row (with headers)
-         * separator --------
+         * -------- separator --------
          * table =>
          *          Export as CSV
          *          Export as Excel
@@ -205,7 +210,7 @@ export class AgGridService {
         */
         const copyIcon = '<mat-icon _ngcontent-xxc-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">content_copy</mat-icon>';
         const items: MenuItemDef[] = [];
-        if (editRowAction)
+        if (typeof editRowAction == 'function')
           items.push({
             name: this.ut.translate('Edit row'),
             icon: '<mat-icon _ngcontent-cen-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">edit</mat-icon>',
@@ -213,82 +218,88 @@ export class AgGridService {
             disabled: !canEdit
           });
 
-        if (menu)
-          items.push(...menu.map(item => {
-            let action = item.action;
-            if (typeof action == 'function')
-              item.action = () => action!(v.node?.data);
-            if (item.name)
-              item.name = this.ut.translate(item.name);
-            if (item.tooltip)
-              item.tooltip = this.ut.translate(item.tooltip)
-            return item;
-          }));
+        if (Array.isArray(menu))
+          items.push(...menu.map(this.mapMyMenuItemToMenuItemDef(v.node?.data)));
 
         return [...items, {
           name: this.ut.translate('Copy'),
           icon: copyIcon,
-          subMenu: [{
-            name: this.ut.translate('Copy cell'),
-            icon: copyIcon,
-            // action:()=>{}//todo set e.value into clipboard aka copy
-          },
-          {
-            name: this.ut.translate('Copy row'),
-            icon: copyIcon,
-            shortcut: 'Ctrl + C',
-            action: v.api.copyToClipboard,
-          },
-          {
-            name: this.ut.translate('Copy row (with headers)'),
-            icon: copyIcon,
-            action: () => v.api.copyToClipboard({ includeHeaders: true })
-          },
-          {
-            name: this.ut.translate('Copy table'),
-            icon: copyIcon,
-            action: () => this.exportClipboard(v.api, false),
-          },
-          {
-            name: this.ut.translate('Copy table (with headers)'),
-            icon: `<mat-icon _ngcontent-ceh-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">table_view</mat-icon>`,
-            action: () => this.exportClipboard(v.api, true),
-          },]
-        }, 'separator',
+          subMenu: this.copySubMenu(v, copyIcon),
+        },
+          'separator',
         {
           name: this.ut.translate('Export table'),
           icon: '<mat-icon _ngcontent-qgp-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">ios_share</mat-icon>',
-          subMenu: [
-            {
-              name: this.ut.translate('Export as CSV'),
-              icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
-              action: () => this.exportCSV(v.api),
-            },
-            {
-              name: this.ut.translate('Export as Excel'),
-              icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
-              action: () => this.exportExcel(v.api),
-            },
-            {
-              name: this.ut.translate('Print'),
-              icon: `<mat-icon _ngcontent-xhr-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">print</mat-icon>`,
-              action: printTable,
-            },
-
-          ],
+          subMenu: this.exportTableSubMenu(v.api, printTable),
         },
         ]
-        // name: string, // name of menu item
-        // disabled?: boolean, // if item should be enabled / disabled
-        // shortcut?: string, // shortcut (just display text, saying the shortcut here does nothing)
-        // action?: ()=>void, // function that gets executed when item is chosen
-        // checked?: boolean, // set to true to provide a check beside the option
-        // icon?: HTMLElement|string, // the icon to display beside the icon, either a DOM element or HTML string
-        // subMenu?: MenuItemDef[] // if this menu is a sub menu, contains a list of sub menu item definitions
-        // cssClasses?: string[]; //Additional CSS classes to be applied to the menu item
-        // tooltip?: string; //Optional tooltip for the menu item
       },
     }
+  }
+  /*Used inside map of MyMenuItem[] array. Convert array items from `MyMenuItem` to `MenuItemDef` AND translate `name` and `tooltip` properties. */
+  private mapMyMenuItemToMenuItemDef<E>(data: E): (item: MyMenuItem<E>) => MenuItemDef {
+    return (item) => {
+      let action = item.action;
+      if (typeof action == 'function')
+        item.action = () => action!(data);
+      if (item.name)
+        item.name = this.ut.translate(item.name);
+      if (item.tooltip)
+        item.tooltip = this.ut.translate(item.tooltip);
+      return item;
+    }
+  }
+
+  private copySubMenu(menuParam: GetContextMenuItemsParams, copyIcon: string): (string | MenuItemDef)[] {
+    const api = menuParam.api;
+    return [{
+      name: this.ut.translate('Copy cell'),
+      icon: copyIcon,
+      action: () => {
+        this.clipboard.copy(menuParam.value) == false ? this.ut.showSnackbar(undefined) : '';
+      }
+    },
+    {
+      name: this.ut.translate('Copy row'),
+      icon: copyIcon,
+      shortcut: 'Ctrl + C',
+      action: api.copyToClipboard,
+    },
+    {
+      name: this.ut.translate('Copy row (with headers)'),
+      icon: copyIcon,
+      action: () => api.copyToClipboard({ includeHeaders: true })
+    }, 'separator',
+    {
+      name: this.ut.translate('Copy table'),
+      icon: copyIcon,
+      action: () => this.exportClipboard(api, false),
+    },
+    {
+      name: this.ut.translate('Copy table (with headers)'),
+      icon: `<mat-icon _ngcontent-ceh-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">table_view</mat-icon>`,
+      action: () => this.exportClipboard(api, true),
+    },]
+  }
+
+  private exportTableSubMenu(api: GridApi, printTable: () => void | null): (string | MenuItemDef)[] {
+    const tableMenu = [{
+      name: this.ut.translate('Export as CSV'),
+      icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
+      action: () => this.exportCSV(api),
+    },
+    {
+      name: this.ut.translate('Export as Excel'),
+      icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
+      action: () => this.exportExcel(api),
+    },];
+    if (printTable)
+      tableMenu.push({
+        name: this.ut.translate('Print'),
+        icon: `<mat-icon _ngcontent-xhr-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">print</mat-icon>`,
+        action: printTable,
+      });
+    return tableMenu;
   }
 }
 

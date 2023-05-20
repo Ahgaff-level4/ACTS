@@ -13,8 +13,6 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { DatePipe } from '../pipes/date.pipe';
-import { ColDef, GridOptions, MenuItemDef } from 'ag-grid-community';
-import { SpinnerComponent } from '../components/static/spinner/spinner.component';
 @Injectable({
   providedIn: 'root'
 })

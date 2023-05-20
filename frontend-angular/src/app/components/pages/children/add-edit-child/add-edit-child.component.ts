@@ -137,7 +137,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.childForm.get('isArchive')?.value === true) {
       this.ut.showMsgDialog({
         title: { text: `Are you sure you want to archive this child?` },
-        content: `Archiving a child will hide their information from other pages, such as goals and parents. You can only view archived children in the Children page by applying the ‘Show archived children’ filter. This action requires admin privilege.`,
+        content: `Archiving a child will hide the child information from all pages and won't count their data in most report, such as children page. Only Admin can view archived children in the Children page by applying ‘Archive’ filter. Note: a parent of this child won't be able to view its information.`,
         type: 'confirm',
         buttons: [{ type: 'Cancel', color: 'primary' }, { type: 'Archive', color: 'warn' }]
       }).afterClosed().subscribe(v => {

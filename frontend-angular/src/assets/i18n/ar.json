@@ -247,7 +247,7 @@
   "Are you sure you want to archive this child?": "",
   "Archive":"",
   "Not Archive":"",
-  "Archiving a child will hide their information from other pages, such as goals and parents. You can only view archived children in the Children page by applying the ‘Show archived children’ filter. This action requires admin privilege.": "",
+  "Archiving a child will hide the child information from all pages and won't count their data in most report, such as children page. Only Admin can view archived children in the Children page by applying ‘Archive’ filter. Note: a parent of this child won't be able to view its information.": "",
   "GO BACK HOME": "",
   "Looks like you are lost": "",
   "Settings": "",

@@ -40,9 +40,7 @@ body {
   margin: 0;
   font-family: Roboto, "Helvetica Neue", sans-serif;
 }
-// .rtl{ if you don't uncomment this. then you may want to delete the imported file bootstrap.rtl.min.css
-//   @import url(./assets/bootstrap.rtl.min.css);
-// }
+
 mat-checkbox.text-white div label {
   color: white !important;
 }
@@ -52,3 +50,10 @@ mat-checkbox.text-white div label {
   font-weight: 500;
 }
 
+.ag-header-cell{
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+.ag-header-viewport{
+  border-bottom: 1px solid black !important;
+}

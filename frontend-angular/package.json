@@ -27,7 +27,7 @@
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "ag-grid-angular": "^29.3.4",
-    "ag-grid-community": "^29.3.4",
+    "ag-grid-community": "^29.3.5",
     "ag-grid-enterprise": "^29.3.4",
     "bootstrap": "^5.2.3",
     "material-design-icons": "^3.0.1",

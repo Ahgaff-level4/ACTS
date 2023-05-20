@@ -28,7 +28,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
   // Each Column Definition results in one Column.
-  //todo: menu
+  //todo: on init filter archive.
+  //todo: chart reports.
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
    * - headerName will be translated.
@@ -77,7 +78,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     {
       field: 'diagnostic',
       headerName: 'Diagnostic',
-      // icons:{'sort':'hello'},//todo how to add `edit` icon so user can know this column is editable
       onCellValueChanged: this.onChildCellValueChanged,
       type: 'long'//long will set a tooltip with same value. So, user can hover to see the 'long' value even though the cell has no space
     },
@@ -175,7 +175,10 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         field: 'isArchive',
         headerName: 'Archive',
         filter: 'agSetColumnFilter',
-        filterParams: { values: [true, false], valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive') } as ISetFilterParams<IChildEntity, boolean>,
+        filterParams: {
+          values: [true, false],
+          valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive')
+        } as ISetFilterParams<IChildEntity, boolean>,
         valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive'),
         hide: true,
       }] as ColDef<IChildEntity>[] : [{
@@ -200,7 +203,9 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   ngOnInit(): void {
     this.childService.children.subscribe(v => {
-      this.rowData = v;
+      if (this.canAddEdit)
+        this.rowData = v;
+      else this.rowData = v.filter(v => v.isArchive == false)//Parent with archived child can not be viewed
       this.gridOptions.api?.refreshCells();
     });
     // this.childService.fetchChildren().then(v => { this.rowData = v; console.log(v[0]) })
@@ -250,22 +255,27 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
   private goalsStrengthsMenuItems: MyMenuItem<IChildEntity>[] = [
     {
-      name:'Goals',
-      icon:`<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">sports_score</mat-icon>`,
-      action:(v)=>v?this.ut.router.navigateByUrl('/child/'+v.id+'/goals'):'',
-      tooltip:'View goals of the selected child',
+      name: 'Goals',
+      icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">sports_score</mat-icon>`,
+      action: (v) => v ? this.ut.router.navigateByUrl('/child/' + v.id + '/goals') : '',
+      tooltip: 'View goals of the selected child',
     },
     {
-      name:this.ut.translate('Strengths'),
-      icon:`<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">fitness_center</mat-icon>`,
-      action:(v)=>v?this.ut.router.navigateByUrl('/child/'+v.id+'/strengths'):'',
-      tooltip:'View strengths of the selected child',
+      name: this.ut.translate('Strengths'),
+      icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">fitness_center</mat-icon>`,
+      action: (v) => v ? this.ut.router.navigateByUrl('/child/' + v.id + '/strengths') : '',
+      tooltip: 'View strengths of the selected child',
     },
   ];
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IChildEntity> = {
-    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit, this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) }),
+    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit,
+      this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) },
+      (e) => {
+        e.api.getFilterInstance('isArchive')?.setModel({values:['false']})
+      }
+    ),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 }

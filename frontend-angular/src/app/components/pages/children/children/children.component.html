@@ -38,56 +38,24 @@
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData"
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
-    <!-- <mat-menu #rowMenu="matMenu" [matMenuTriggerFor]="rowMenu">
-      <button mat-menu-item (click)="ut.copySelectedRow(gridOptions,false)">
-        <mat-icon color="primary">copy</mat-icon>
-        <span>{{'Copy row'|translate}}</span>
-      </button>
-      <button mat-menu-item (click)="ut.copySelectedRow(gridOptions,true)">
-        <mat-icon color="primary">table_chart</mat-icon>
-        <span>{{'Copy row (with headers)'|translate}}</span>
-      </button>
-      <mat-divider></mat-divider>
-      <button mat-menu-item (click)="ut.exportClipboard(gridOptions,false)">
-        <mat-icon color="primary">content_copy</mat-icon>
-        <span>{{'Copy table'|translate}}</span>
-      </button>
-      <button mat-menu-item (click)="ut.exportClipboard(gridOptions,false)">
-        <mat-icon color="primary">table_view</mat-icon>
-        <span>{{'Copy table (with headers)'|translate}}</span>
-      </button>
-      <button mat-menu-item [matMenuTriggerFor]="exportMenu">
-        <mat-icon color="primary">ios_share</mat-icon>
-        <span>{{'Export table'|translate}}</span>
-      </button>
-    </mat-menu> -->
-
   </div>
   <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
-    <!-- <div class="col-md-3 mb-2"> -->
     <a *ngIf="canAddEdit" class="w-100 mx-3 mb-2" mat-raised-button color="primary" routerLink="/add-child">
       {{'Register a child'|translate}}<mat-icon>person_add</mat-icon>
     </a>
-    <!-- </div> -->
-    <!-- <div class="col-md-3 mb-2"> -->
     <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
       class="w-100 mx-3 mb-2" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
       <mat-icon>edit</mat-icon>{{'Edit'|translate}}
     </button>
-    <!-- </div> -->
-    <!-- <div class="col-md-3 mb-2"> -->
     <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
       [matTooltip]="'View goals of the selected child'|translate"
       [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/goals':'#'" mat-stroked-button color="primary">
       {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
     </a>
-    <!-- </div> -->
-    <!-- <div class="col-md-3 mb-2"> -->
     <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
       [matTooltip]="'View strengths of the selected child'|translate"
       [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" mat-stroked-button color="primary">
       {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
     </a>
-    <!-- </div> -->
   </div>
 </div>
