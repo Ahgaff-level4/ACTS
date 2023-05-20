@@ -4,7 +4,7 @@
     <h5 class="pt-3 fw-normal pb-0 mb-0">{{'Choose a program'|translate}}</h5>
     <mat-selection-list #listProgram [multiple]="false"
       (selectionChange)="onSelectionChangeProgram(listProgram?.selectedOptions?.selected?.[0]?.value)">
-      <mat-list-option *ngFor="let program of this.programService.programs.value" [value]="program">
+      <mat-list-option *ngFor="let program of this.programs" [value]="program">
         {{program.name}}
       </mat-list-option>
     </mat-selection-list>

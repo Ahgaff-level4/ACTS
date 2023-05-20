@@ -10,13 +10,12 @@ import { UtilityService } from './utility.service';
 })
 export class ChildService {
   public childURL = env.API + 'child';
+  public children = new ReplaySubject<IChildEntity[]>(1);
+
   constructor(private http: HttpClient, private ut: UtilityService) {
-    // this.children.next(TMP_DATA);
-    // this.fetchChildren(); if you need children then first subscribe to children SubjectBehavior then call fetchChildren.
     this.fetchChildren();
   }
 
-  public children = new ReplaySubject<IChildEntity[]>(1);
   /**
    * private 'cause you should only sub. to children it will give you last/new value it guaranteed sub. func. will be called
    * create api request to retrieve children information and broadcast it to `children` BehaviorSubject.

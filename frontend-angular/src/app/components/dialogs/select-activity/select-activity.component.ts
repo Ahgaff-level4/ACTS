@@ -16,13 +16,13 @@ export class SelectActivityComponent implements OnInit {
   public chosenProgram: IProgramEntity | undefined;
   public filter: 'age' | 'all' = 'age';
   public activities: IActivityEntity[] | [] = [];
+  public programs: IProgramEntity[] | undefined;
 
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService, private ut: UtilityService, private goalService: GoalService, private activityService: ActivityService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
-    if (this.programService.programs.value.length === 0)
-      this.programService.fetch(true)
+    this.programService.programs.subscribe(v => this.programs = v);
   }
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {

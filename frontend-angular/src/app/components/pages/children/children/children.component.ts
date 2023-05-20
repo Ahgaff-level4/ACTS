@@ -17,7 +17,6 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  @ViewChild('rowMenu') rowMenu?: MatMenuTrigger;
 
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
@@ -28,8 +27,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
   // Each Column Definition results in one Column.
-  //todo: on init filter archive.
   //todo: chart reports.
+  //todo: delete MatTableModule
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
    * - headerName will be translated.
@@ -261,7 +260,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       tooltip: 'View goals of the selected child',
     },
     {
-      name: this.ut.translate('Strengths'),
+      name: 'Strengths',
       icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">fitness_center</mat-icon>`,
       action: (v) => v ? this.ut.router.navigateByUrl('/child/' + v.id + '/strengths') : '',
       tooltip: 'View strengths of the selected child',

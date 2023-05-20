@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { ICreateProgram, IProgramEntity, SucResEditDel } from '../../../../interfaces';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
@@ -10,14 +10,15 @@ import { UtilityService } from './utility.service';
 })
 export class ProgramService {
 
-  public programs = new BehaviorSubject<IProgramEntity[]>([]);
+  public programs = new ReplaySubject<IProgramEntity[]>(1);
   public URL = env.API + 'program';
 
   constructor(private http: HttpClient, private ut: UtilityService) {
+    this.fetch();
   }
 
   /** fetch programs from DB and emit it to programs */
-  fetch(manageLoading = false): Promise<void> {
+  private fetch(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IProgramEntity[]>(this.URL)

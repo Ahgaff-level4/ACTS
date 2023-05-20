@@ -8,6 +8,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
+import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
+import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 
 @Component({
   selector: 'app-program',
@@ -15,54 +17,118 @@ import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program
   styleUrls: ['./program.component.scss']
 })
 export class ProgramComponent {
-  public canAddEditDelete!: boolean;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<IProgramEntity>;
-  public dataSource!: MatTableDataSource<IProgramEntity>;
-  public columnsKeys!: string[];
+  public canAddEditDelete: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');;
+  public selectedItem?: IProgramEntity;
+  public quickFilter: string = '';
+  public isPrinting: boolean = false;
+  public rowData: IProgramEntity[] | undefined;
 
-  constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog) {
+  private onCellValueChange = async (e: NewValueParams<IProgramEntity>) => {
+    try {
+      await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
+      this.ut.showSnackbar('Edited successfully')
+    } catch (e) {
+      this.gridOptions?.api?.refreshCells();
+    }
+  }
+
+  /**
+  * - field is property name (accept nested. (e.g.,`person.name`).
+  * - headerName will be translated.
+  * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, `width`, and `valueGetter`.
+  * - type `long` will set `tooltipValueGetter` to the cell value.
+  * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
+  * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
+  * - if field is number then set `filter='agNumberColumnFilter'`. Default filter is for string.
+  * - if field is enum then set `filter='agSetColumnFilter'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, })`
+  */
+  public columnDefs: (ColDef<IProgramEntity>)[] = [
+    {
+      field: 'name',
+      headerName: 'Program name',//headerName will be translated
+      type: 'long',
+      onCellValueChanged:this.onCellValueChange,
+    },
+    {
+      field: 'activityCount',
+      headerName: 'Number of Activities',
+      filter: 'agNumberColumnFilter',
+    },
+    {
+      field: 'createdDatetime',
+      headerName: 'Created Date',
+      type: 'fromNow',
+      onCellValueChanged:this.onCellValueChange,
+    },
+  ];
+
+  printTable = () => {//should be arrow function. Because it's called inside gridOption object
+    let isAuto = this.gridOptions.paginationAutoPageSize;
+    this.gridOptions.paginationAutoPageSize = false
+    let size = this.gridOptions.paginationPageSize;
+    this.gridOptions.paginationPageSize = 1000;
+    this.isPrinting = true;
+    this.gridOptions.api?.setDomLayout('print');
+    this.gridOptions.api?.setSideBarVisible(false)
+    this.gridOptions.api?.redrawRows();
+    setTimeout(() => print(), 2000);
+    setTimeout(() => {
+      this.isPrinting = false;
+      this.gridOptions.paginationAutoPageSize = isAuto;
+      this.gridOptions.paginationPageSize = size;
+      this.gridOptions.api?.setSideBarVisible(true)
+      this.gridOptions.api?.refreshCells();
+      this.gridOptions.api?.setDomLayout('autoHeight');
+    }, 3000);
+  }
+
+  private menuItems: MyMenuItem<IProgramEntity>[] = [
+    {
+      name: 'Activities',
+      icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">interests</mat-icon>`,
+      action: (v) => v ? this.ut.router.navigateByUrl('/program/'+v.id+'/activities') : '',
+      tooltip: 'View activities of the selected program',
+    },
+    {
+      name: 'Delete',
+      icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
+      action: (v) => this.deleteDialog(v),
+      tooltip: 'Delete the selected program',
+    },
+  ];
+
+    /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
+  public gridOptions: GridOptions<IProgramEntity> = {
+    ...this.agGrid.commonGridOptions('programs table', this.columnDefs, this.canAddEditDelete,
+      this.menuItems, this.printTable, (item) => { this.addEdit(item) },
+      (e)=>e.api.sizeColumnsToFit()
+    ),
+    onRowClicked: (v) => this.selectedItem = v.data,
+
+  }
+
+  constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog, public agGrid:AgGridService) {
   }
 
   ngOnInit(): void {
-    this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('programs table') ?? 'null') ?? ['name', 'activityCount', 'createdDatetime', 'control'];
 
-    this.dataSource = new MatTableDataSource<IProgramEntity>();
-    this.ut.isLoading.next(true);
     this.service.programs.subscribe({
       next: v => {
-        this.dataSource.data = v;
-        if (this.table)
-          this.table.renderRows();
-        this.ut.isLoading.next(false);
-      }, error: () => this.ut.isLoading.next(false)
+        this.rowData = v;
+      }
     });
-    this.service.fetch();
+
     this.ut.user.subscribe(v => {
       this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+
+
+  applySearch(event: Event) {
+    this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator)
-      this.dataSource.paginator.firstPage();
-  }
-
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.columnsKeys, event.previousIndex, event.currentIndex);
-    sessionStorage.setItem('programs table', JSON.stringify(this.columnsKeys));
-  }
 
   /** if `data` param passed then it is Edit. Otherwise will be Add */
   addEdit(data?: IProgramEntity) {
@@ -70,7 +136,11 @@ export class ProgramComponent {
       .open<AddEditProgramComponent, IProgramEntity>(AddEditProgramComponent, { data });
   }
 
-  deleteDialog(program: IProgramEntity) {
+  deleteDialog(program: IProgramEntity | undefined) {
+    if (program == null) {
+      this.ut.showSnackbar(undefined);
+      return;
+    }
     this.ut.showMsgDialog({
       content: this.ut.translate('You are about to delete the program: ') + program.name + this.ut.translate(" permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
       type: 'confirm',
