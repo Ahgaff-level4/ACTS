@@ -4,30 +4,47 @@ import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from './utility.service';
 import { ProgramService } from './program.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject, first, last } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
 export class ActivityService {
   public URL = env.API + 'activity';
-  public programItsActivities = new BehaviorSubject<IProgramEntity | undefined>(undefined);
-  public specialActivities = new BehaviorSubject<IActivityEntity[] | undefined>(undefined);
-  constructor(private http: HttpClient, private ut: UtilityService, private programService: ProgramService) { }
+  public programItsActivities = new ReplaySubject<IProgramEntity | undefined>(1);
+  public specialActivities = new ReplaySubject<IActivityEntity[]>(1);
+  constructor(private http: HttpClient, private ut: UtilityService,
+    private programService: ProgramService) {
+    this.fetchSpecialActivities();
+    this.programItsActivities.next(undefined);//to call next for first subscriber. Should then check if next's value is the Program needed or call `fetchProgramItsActivities` with needed programId
+  }
+
+  public async postSpecialActivities(field: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
+    if (typeof field.programId == 'number')
+      throw 'Error: you just called postSpecialActivities for activity with program!!!!';
+    const posted = await this._post(field, manageLoading);
+    this.fetchSpecialActivities();
+    return posted;
+  }
+
+  public async postProgramItsActivities(field: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
+    if (typeof field.programId != 'number')
+      throw 'Error: you just called postProgramItsActivities for specialActivity!!!!';
+    const posted = await this._post(field, manageLoading);
+    this.fetchProgramItsActivities(posted.programId!);
+    return posted;
+  }
+
 
   /**
   * @returns if request succeeded, `resolve` with the added entity, and call fetchProgramItsActivities() to emit the new entities. Otherwise show error dialog only.
   */
-  post(field: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
+  private _post(field: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.post<IActivityEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.programItsActivities.value)
-              this.fetchProgramItsActivities(this.programItsActivities.value.id);
-            if (this.specialActivities.value)
-              this.fetchSpecialActivities();
             res(v);
           },
           error: (e) => {
@@ -39,17 +56,34 @@ export class ActivityService {
     });
   }
 
-  patch(id: number, child: Partial<IActivityEntity>, manageLoading = false): Promise<SucResEditDel> {
+  /**
+   * @param id activity's id
+   * @param updateActivity partial activity body
+   */
+  public async patchInSpecialActivities(id: number, updateActivity: Partial<IActivityEntity>, manageLoading = false): Promise<SucResEditDel> {
+    const posted = await this._patch(id, updateActivity, manageLoading);
+    this.fetchSpecialActivities();
+    return posted;
+  }
+
+  /**
+ * @param id activity's id
+ * @param updateActivity partial activity body
+ */
+  public async patchInProgramItsActivities(id: number, updateActivity: Partial<IActivityEntity>, manageLoading = false): Promise<SucResEditDel> {
+    const res = await this._patch(id, updateActivity, manageLoading);
+    this.programItsActivities.pipe(last(), first())
+      .subscribe(v => v ? this.fetchProgramItsActivities(v.id) : '');
+    return res;
+  }
+
+  private _patch(id: number, updateActivity: Partial<IActivityEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true)
-      this.http.patch<SucResEditDel>(this.URL + '/' + id, child)
+      this.http.patch<SucResEditDel>(this.URL + '/' + id, updateActivity)
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.programItsActivities.value)
-              this.fetchProgramItsActivities(this.programItsActivities.value.id);
-            if (this.specialActivities.value)
-              this.fetchSpecialActivities();
             res(v);
           },
           error: e => {
@@ -61,17 +95,32 @@ export class ActivityService {
     })
   }
 
-  delete(id: number, manageLoading = false): Promise<SucResEditDel> {
+  /**
+   * @param id activity's id
+   */
+  public async deleteInSpecialActivities(id: number, manageLoading = false): Promise<SucResEditDel> {
+    const posted = await this._delete(id, manageLoading);
+    this.fetchSpecialActivities();
+    return posted;
+  }
+
+  /**
+   * @param id activity's id
+   */
+  public async deleteInProgramItsActivities(id: number, manageLoading = false): Promise<SucResEditDel> {
+    const res = await this._delete(id, manageLoading);
+    this.programItsActivities.pipe(last(), first())
+      .subscribe(v => v ? this.fetchProgramItsActivities(v.id) : '');
+    return res;
+  }
+
+  private _delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true)
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.programItsActivities.value)
-              this.fetchProgramItsActivities(this.programItsActivities.value.id);
-            if (this.specialActivities.value)
-              this.fetchSpecialActivities();
             res(v);
           },
           error: (e) => {
@@ -82,7 +131,8 @@ export class ActivityService {
     })
   }
 
-  fetchProgramItsActivities(programId: number, manageLoading: boolean = false):Promise<IProgramEntity> {
+  /**NEVER use it before checking `programItsActivities` buffer! */
+  public fetchProgramItsActivities(programId: number, manageLoading: boolean = false): Promise<IProgramEntity> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IProgramEntity[]>(this.programService.URL + '/' + programId)
@@ -100,7 +150,7 @@ export class ActivityService {
     })
   }
 
-  fetchSpecialActivities(manageLoading = false):Promise<IActivityEntity> {
+  private fetchSpecialActivities(manageLoading = false): Promise<IActivityEntity> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IActivityEntity[]>(this.URL + '/special')

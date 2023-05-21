@@ -1,6 +1,6 @@
-<h1 class="p-4 mx-md-5 pb-0">{{'Fields'|translate}}</h1>
-<div class="mx-md-5  mb-5 pb-5">
-  <div class="mt-4 w-100 row" *ngIf="!isPrinting">
+<h1 class="p-4 mx-md-5 pb-4">{{'Fields'|translate}}</h1>
+<div class="mx-md-5 mb-5 pb-5">
+  <div class="w-100 row" *ngIf="!isPrinting">
     <mat-form-field class="col-md-11">
       <mat-label>{{'Search'|translate}}</mat-label>
       <input matInput (keyup)="applySearch($event)" placeholder="..." #input>

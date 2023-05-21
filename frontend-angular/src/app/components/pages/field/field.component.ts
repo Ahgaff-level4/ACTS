@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-field',
@@ -24,12 +25,15 @@ export class FieldComponent implements OnInit {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IFieldEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.gridOptions?.api?.refreshCells();
+      this.service.fields.pipe(first()).subscribe(v => {
+        this.rowData = v.map(n=>({...n}));
+        this.gridOptions.api?.setRowData(this.rowData);
+      });
     }
   }
 
   /**
-  * @see ag-grid.service.ts for more information of how to set the columnDef properties.
+* @see [ag-grid.service](./../../../services/ag-grid.service.ts) for more information of how to set the columnDef properties.
   */
   public columnDefs: (ColDef<IFieldEntity>)[] = [
     {
@@ -57,7 +61,7 @@ export class FieldComponent implements OnInit {
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected field',
-      disabled:!this.canAddEdit,
+      disabled: !this.canAddEdit,
     },
   ];
 
@@ -65,16 +69,16 @@ export class FieldComponent implements OnInit {
     private dialog: MatDialog, public agGrid: AgGridService) {
   }
 
-  applySearch(event: Event) {
-    this.quickFilter = (event.target as HTMLInputElement).value;
-  }
-
   ngOnInit(): void {
-    this.service.fields.subscribe({ next: v => this.rowData = v });
+    this.service.fields.subscribe({ next: v => this.rowData = v.map(n=>({...n})) });
 
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
+  }
+
+  applySearch(event: Event) {
+    this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
   printTable = () => {//should be arrow function. Because it's called inside gridOption object

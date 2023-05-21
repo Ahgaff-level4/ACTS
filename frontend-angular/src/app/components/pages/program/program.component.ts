@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
+import { first } from 'rxjs';
 
 @Component({
   selector: 'app-program',
@@ -24,19 +25,22 @@ export class ProgramComponent {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.gridOptions?.api?.refreshCells();
+      this.service.programs.pipe(first()).subscribe(v => {
+        this.rowData = v.map(n => ({ ...n }));
+        this.gridOptions?.api?.refreshCells();
+      });
     }
   }
 
   /**
-  * @see ag-grid.service.ts for more information of how to set the columnDef properties.
+* @see [ag-grid.service](./../../../services/ag-grid.service.ts) for more information of how to set the columnDef properties.
   */
   public columnDefs: (ColDef<IProgramEntity>)[] = [
     {
       field: 'name',
       headerName: 'Program name',//headerName will be translated
       type: 'long',
-      onCellValueChanged:this.onCellValueChange,
+      onCellValueChanged: this.onCellValueChange,
     },
     {
       field: 'activityCount',
@@ -47,7 +51,7 @@ export class ProgramComponent {
       field: 'createdDatetime',
       headerName: 'Created Date',
       type: 'fromNow',
-      onCellValueChanged:this.onCellValueChange,
+      onCellValueChanged: this.onCellValueChange,
     },
   ];
 
@@ -75,7 +79,7 @@ export class ProgramComponent {
     {
       name: 'Activities',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">interests</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('/program/'+v.id+'/activities') : '',
+      action: (v) => v ? this.ut.router.navigateByUrl('/program/' + v.id + '/activities') : '',
       tooltip: 'View activities of the selected program',
     },
     {
@@ -83,27 +87,27 @@ export class ProgramComponent {
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected program',
-      disabled:!this.canAddEditDelete,
+      disabled: !this.canAddEditDelete,
     },
   ];
 
-    /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
+  /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IProgramEntity> = {
     ...this.agGrid.commonGridOptions('programs table', this.columnDefs, this.canAddEditDelete,
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
-      (e)=>e.api.sizeColumnsToFit()
+      (e) => e.api.sizeColumnsToFit()
     ),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 
-  constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog, public agGrid:AgGridService) {
+  constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog, public agGrid: AgGridService) {
   }
 
   ngOnInit(): void {
 
     this.service.programs.subscribe({
       next: v => {
-        this.rowData = v;
+        this.rowData = v.map(n => ({ ...n }));
       }
     });
 

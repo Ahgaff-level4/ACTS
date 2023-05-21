@@ -6,6 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ColDef, GridOptions, ISetFilterParams, MenuItemDef, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
+import { first } from 'rxjs';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -23,12 +24,15 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.gridOptions?.api?.refreshCells();
+      this.childService.children.pipe(first()).subscribe(v=>{
+        this.rowData = v.map(n=>({...n}));
+        this.gridOptions?.api?.refreshCells();
+      });
     }
   }
 
   /**
-* @see ag-grid.service.ts for more information of how to set the columnDef properties.
+* @see [ag-grid.service](../../../../services/ag-grid.service.ts) for more information of how to set the columnDef properties.
 */
   public columnDefs: (ColDef<IChildEntity>)[] = [
     {
@@ -194,8 +198,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
   ngOnInit(): void {
     this.childService.children.subscribe(v => {
       if (this.canAddEdit)
-        this.rowData = v;
-      else this.rowData = v.filter(v => v.isArchive == false)//Parent with archived child can not be viewed
+        this.rowData = v.map(n=>({...n}));
+      else this.rowData = v.filter(v => v.isArchive == false).map(n=>({...n}));//Parent with archived child can not be viewed
       this.gridOptions.api?.refreshCells();
     });
     // this.childService.fetchChildren().then(v => { this.rowData = v; console.log(v[0]) })

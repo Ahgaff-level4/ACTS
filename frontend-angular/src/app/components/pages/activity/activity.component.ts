@@ -11,6 +11,9 @@ import { ProgramService } from 'src/app/services/program.service';
 import { BehaviorSubject } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
+import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
+import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
+import { FieldService } from 'src/app/services/field.service';
 
 @Component({
   selector: 'app-activity',
@@ -18,63 +21,142 @@ import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activi
   styleUrls: ['./activity.component.scss']
 })
 export class ActivityComponent {
-  public canAddEdit!: boolean;
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<IActivityEntity>;
-  public dataSource!: MatTableDataSource<IActivityEntity>;
-  public columnsKeys!: string[];
+  public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+  public selectedItem?: IActivityEntity;
+  public quickFilter: string = '';
+  public isPrinting: boolean = false;
+  /**don't use `rowData` 'cause Program has activities of `rowData`*/
+  public program: IProgramEntity | undefined;
 
-  constructor(public service: ActivityService, public ut: UtilityService, private dialog: MatDialog, private route: ActivatedRoute,) {
+  private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
+    try {
+      await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
+      this.ut.showSnackbar('Edited successfully')
+    } catch (e) {
+      if (this.program)
+        await this.service.fetchProgramItsActivities(this.program.id).catch(() => { });
+      this.gridOptions?.api?.refreshCells();
+    }
+  }
+
+  /**
+  * @see ag-grid.service.ts for more information of how to set the columnDef properties.
+  */
+  public columnDefs: (ColDef<IActivityEntity>)[] = [
+    {
+      field: 'name',
+      headerName: 'Activity',
+      type: 'long',
+      onCellValueChanged: this.onCellValueChange,
+    },
+    {
+      field: 'ageRange',
+      headerName: 'Age Range',
+      type: 'long',
+      valueGetter: (v) => typeof v.data?.minAge == 'number' && typeof v.data?.maxAge == 'number' ? (v.data.minAge + '–' + v.data.maxAge) : '',
+    },
+    {
+      field: 'minAge',
+      headerName: 'Minimum age',
+      type: 'number',
+      onCellValueChanged: this.onCellValueChange,
+      hide: true,
+    },
+    {
+      field: 'maxAge',
+      headerName: 'Maximum age',
+      type: 'number',
+      onCellValueChanged: this.onCellValueChange,
+      hide: true,
+    },
+    {
+      field: 'field.name',
+      headerName: 'Field',
+      type: 'enum',
+      // filterParams: assigned on init
+    },
+    {
+      field: 'createdDatetime',
+      headerName: 'Created Date',
+      type: 'fromNow',
+      onCellValueChanged: this.onCellValueChange,
+    },
+  ];
+
+  private menuItems: MyMenuItem<IActivityEntity>[] = [
+    {
+      name: 'Delete',
+      icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
+      action: (v) => this.deleteDialog(v),
+      tooltip: 'Delete the selected field',
+      disabled: !this.canAddEdit,
+    },
+  ];
+
+
+  constructor(public service: ActivityService, public ut: UtilityService,
+    private dialog: MatDialog, private route: ActivatedRoute,
+    private fieldService: FieldService, public agGrid: AgGridService,) {
 
   }
 
 
 
   ngOnInit(): void {
-    this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    this.columnsKeys = JSON.parse(sessionStorage.getItem('activities table') ?? 'null') ?? (this.canAddEdit ? ['name', 'ageRange', 'field', 'createdDatetime', 'control'] : ['name', 'ageRange', 'field', 'createdDatetime']);
-    this.ut.isLoading.next(true);
     this.route.paramMap.subscribe({
       next: async params => {
         let programId = params.get('id');
         if (typeof programId == 'string')
-          await this.service.fetchProgramItsActivities(+programId, true).catch(() => { });
+          this.service.programItsActivities.subscribe(v => {
+            if (v && v.id == +(programId as string))
+              this.program = v;
+            else this.service.fetchProgramItsActivities(+(programId as string), true);
+          })
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
-    this.dataSource = new MatTableDataSource<IActivityEntity>();
-    this.service.specialActivities.next(undefined);//prevent unnecessary loading when: (create,update,delete) activity
-    this.service.programItsActivities.subscribe((v) => {
-      if (v == null)
-        return;
-      this.dataSource.data = v.activities;
-      if (this.table)
-        this.table.renderRows();
+    this.fieldService.fields.subscribe(v => {
+      let col = this.gridOptions.api?.getColumnDef('field.name');
+      if (col)
+        col.filterParams = { values: v.map(n => n.name) }
     });
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     });
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+  applySearch(event: Event) {
+    this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator)
-      this.dataSource.paginator.firstPage();
+  printTable = () => {//should be arrow function. Because it's called inside gridOption object
+    let isAuto = this.gridOptions.paginationAutoPageSize;
+    this.gridOptions.paginationAutoPageSize = false
+    let size = this.gridOptions.paginationPageSize;
+    this.gridOptions.paginationPageSize = 1000;
+    this.isPrinting = true;
+    this.gridOptions.api?.setDomLayout('print');
+    this.gridOptions.api?.setSideBarVisible(false)
+    this.gridOptions.api?.redrawRows();
+    setTimeout(() => print(), 2000);
+    setTimeout(() => {
+      this.isPrinting = false;
+      this.gridOptions.paginationAutoPageSize = isAuto;
+      this.gridOptions.paginationPageSize = size;
+      this.gridOptions.api?.setSideBarVisible(true)
+      this.gridOptions.api?.refreshCells();
+      this.gridOptions.api?.setDomLayout('autoHeight');
+    }, 3000);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.columnsKeys, event.previousIndex, event.currentIndex);
-    sessionStorage.setItem('activities table', JSON.stringify(this.columnsKeys));
+  /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
+  public gridOptions: GridOptions<IActivityEntity> = {
+    ...this.agGrid.commonGridOptions('fields table', this.columnDefs, this.canAddEdit,
+      this.menuItems, this.printTable, (item) => { this.addEdit(item) },
+      (e) => e.api.sizeColumnsToFit()
+    ),
+    onRowClicked: (v) => this.selectedItem = v.data,
   }
 
   /** `data` is either Activity to be Edit. Or programId to be Add */
@@ -83,25 +165,27 @@ export class ActivityComponent {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data })
-    // .afterClosed().subscribe(v => { service will fetch when add/edit/delete
-    //   if (v === 'added' || v === 'edited')
-    //     this.fetch();
-    // });
+        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data });
   }
 
-  deleteDialog(activity: IActivityEntity) {
-    this.ut.showMsgDialog({
-      content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
-      type: 'confirm',
-      buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
-    }).afterClosed().subscribe(async (v) => {
-      if (v === 'Delete') {
-        try {
-          await this.service.delete(activity.id, true);
-          this.ut.showSnackbar('The activity has been deleted successfully.');
-        } catch (e) { }
-      }
-    });
+  deleteDialog(activity: IActivityEntity | undefined) {
+    if (activity == null)
+      this.ut.showSnackbar(undefined);
+    else
+      this.ut.showMsgDialog({
+        content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
+        type: 'confirm',
+        buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
+      }).afterClosed().subscribe(async (v) => {
+        if (v === 'Delete') {
+          try {
+            if (typeof activity.programId == 'number')
+              await this.service.deleteInProgramItsActivities(activity.id, true);
+            else
+              await this.service.deleteInSpecialActivities(activity.id, true);
+            this.ut.showSnackbar('The activity has been deleted successfully.');
+          } catch (e) { }
+        }
+      });
   }
 }

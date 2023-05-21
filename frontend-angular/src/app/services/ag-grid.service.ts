@@ -18,7 +18,7 @@ export class AgGridService {
    * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
    * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
    * - if field is number then set `type='number'`. Default filter is for string.
-   * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, })`
+   * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, },`
    */
   constructor(public ut: UtilityService, private clipboard: Clipboard) { }
 
@@ -102,6 +102,7 @@ export class AgGridService {
       width: 150,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
+      valueParser:v=>new Date(v.newValue),
     },
     fromNowNoAgo: {
       valueFormatter: (v) => this.ut.fromNow(v.value, true),//set the presentational value
@@ -131,6 +132,7 @@ export class AgGridService {
     number: {
       filter: 'agNumberColumnFilter',
       chartDataType: 'series',
+      valueParser:(v)=>Number(v.newValue),
     }
   }
 

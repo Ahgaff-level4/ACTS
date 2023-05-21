@@ -49,18 +49,26 @@ export class AddEditActivityComponent {
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
-      if (typeof this.activityProgramId == 'number' || !this.activityProgramId) {//add new
+      if (typeof this.activityProgramId == 'number' || !this.activityProgramId) {//add new. activityProgramId type in this scope is `number|undefined`
         try {
-          let newActivity = await this.service.post({ ...this.formGroup.value, programId: this.activityProgramId }, true);
+          let newActivity: IActivityEntity;
+          if (this.activityProgramId)
+            newActivity = await this.service.postProgramItsActivities({ ...this.formGroup.value, programId: this.activityProgramId }, true);
+          else
+            newActivity = await this.service.postSpecialActivities({ ...this.formGroup.value, });
           this.ut.showSnackbar('The activity has been added successfully.');
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
         } catch (e) { }
-      } else if (typeof this.activityProgramId == 'object') {//edit
+      } else if (typeof this.activityProgramId == 'object') {//edit. activityProgramId type in this scope `IActivityEntity` and its programId type `number|undefined`
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         try {
 
-          if (dirtyControls != null)
-            await this.service.patch(this.activityProgramId.id, dirtyControls, true);
+          if (dirtyControls != null) {
+            if (this.activityProgramId.programId)
+              await this.service.patchInProgramItsActivities(this.activityProgramId.id, dirtyControls, true);
+            else
+              await this.service.patchInSpecialActivities(this.activityProgramId.id, dirtyControls, true);
+          }
           this.ut.showSnackbar('The activity has been edited successfully.');
           this.dialogRef.close('edited');
         } catch (e) { }
