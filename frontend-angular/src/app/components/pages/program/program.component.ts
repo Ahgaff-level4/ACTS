@@ -80,9 +80,10 @@ export class ProgramComponent {
     },
     {
       name: 'Delete',
-      icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
+      icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected program',
+      disabled:!this.canAddEditDelete,
     },
   ];
 
@@ -93,7 +94,6 @@ export class ProgramComponent {
       (e)=>e.api.sizeColumnsToFit()
     ),
     onRowClicked: (v) => this.selectedItem = v.data,
-
   }
 
   constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog, public agGrid:AgGridService) {

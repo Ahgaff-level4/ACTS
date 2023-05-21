@@ -59,7 +59,7 @@
             <mat-label>{{'Field'|translate}}</mat-label>
             <mat-icon matPrefix class="material-symbols-rounded">bookmark</mat-icon>
             <mat-select formControlName="fieldId">
-              <mat-option *ngFor="let field of fieldService.fields.value" [value]="field.id">{{field.name}}</mat-option>
+              <mat-option *ngFor="let field of fields??[]" [value]="field.id">{{field.name}}</mat-option>
             </mat-select>
             <mat-error *ngIf="formGroup.get('fieldId')?.errors?.['required']">
               {{'You must choose a value'|translate}}

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs'
+import { BehaviorSubject, ReplaySubject } from 'rxjs'
 import { ICreateField, IFieldEntity, SucResEditDel } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
@@ -9,14 +9,15 @@ import { UtilityService } from './utility.service';
   providedIn: 'root'
 })
 export class FieldService {
-  public fields = new BehaviorSubject<IFieldEntity[]>([]);
+  public fields = new ReplaySubject<IFieldEntity[]>(1);
   public URL = env.API + 'field';
 
   constructor(private http: HttpClient, private ut: UtilityService) {
+    this.fetch();
   }
 
   /** fetch fields from DB and emit it to fields */
-  fetch(manageLoading = false): Promise<void> {
+  private fetch(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IFieldEntity[]>(this.URL)

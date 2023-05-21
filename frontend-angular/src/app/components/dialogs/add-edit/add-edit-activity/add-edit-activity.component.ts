@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivityService } from 'src/app/services/activity.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { IActivityEntity } from '../../../../../../../interfaces';
+import { IActivityEntity, IFieldEntity } from '../../../../../../../interfaces';
 import { FieldService } from 'src/app/services/field.service';
 
 @Component({
@@ -15,7 +15,8 @@ export class AddEditActivityComponent {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  public isSpecialActivity!: boolean
+  public isSpecialActivity!: boolean;
+  public fields: IFieldEntity[] | undefined;
   constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     /**passed data could be:
      * 1- `activity` to be edit. If activity.programId == null THEN it is special activity
@@ -36,8 +37,7 @@ export class AddEditActivityComponent {
       fieldId: [null, [Validators.required, Validators.min(0)]],
       createdDatetime: [new Date(), [Validators.required]],
     });
-    if (this.fieldService.fields.value.length === 0)
-      this.fieldService.fetch(true);
+    this.fieldService.fields.subscribe(v => this.fields = v);
     if (typeof this.activityProgramId === 'object' && typeof this.activityProgramId != 'number' && this.activityProgramId)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.activityProgramId));
   }
