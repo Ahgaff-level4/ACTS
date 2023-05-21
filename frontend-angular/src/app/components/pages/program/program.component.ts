@@ -1,12 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Component } from '@angular/core';
 import { IProgramEntity } from '../../../../../../interfaces';
 import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -33,14 +29,7 @@ export class ProgramComponent {
   }
 
   /**
-  * - field is property name (accept nested. (e.g.,`person.name`).
-  * - headerName will be translated.
-  * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, `width`, and `valueGetter`.
-  * - type `long` will set `tooltipValueGetter` to the cell value.
-  * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
-  * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
-  * - if field is number then set `filter='agNumberColumnFilter'`. Default filter is for string.
-  * - if field is enum then set `filter='agSetColumnFilter'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, })`
+  * @see ag-grid.service.ts for more information of how to set the columnDef properties.
   */
   public columnDefs: (ColDef<IProgramEntity>)[] = [
     {
@@ -52,7 +41,7 @@ export class ProgramComponent {
     {
       field: 'activityCount',
       headerName: 'Number of Activities',
-      filter: 'agNumberColumnFilter',
+      type: 'number',
     },
     {
       field: 'createdDatetime',

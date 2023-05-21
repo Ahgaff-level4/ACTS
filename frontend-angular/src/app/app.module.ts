@@ -52,7 +52,8 @@ import { FilterChildrenComponent } from './components/dialogs/filter/filter-chil
 import { AgGridModule } from 'ag-grid-angular';
 import { CalcAgePipe } from './pipes/calc-age.pipe';
 import 'ag-grid-enterprise';
-import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';//important to use ag-grid features packages
+import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
+import { StaticsComponent } from './components/pages/main/statics/statics.component';//important to use ag-grid features packages
 
 @NgModule({
   declarations: [
@@ -91,7 +92,8 @@ import { LoginFormComponent } from './components/pages/login/login-form/login-fo
     AddEditStrengthComponent,
     SpecialActivityComponent,
     FilterChildrenComponent,
-    LoginFormComponent
+    LoginFormComponent,
+    StaticsComponent
   ],
   imports: [
     BrowserModule,

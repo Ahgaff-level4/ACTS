@@ -26,19 +26,10 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       this.gridOptions?.api?.refreshCells();
     }
   }
-  // Each Column Definition results in one Column.
-  //todo: chart reports.
-  //todo: delete MatTableModule
+
   /**
-   * - field is property name (accept nested. (e.g.,`person.name`).
-   * - headerName will be translated.
-   * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, `width`, and `valueGetter`.
-   * - type `long` will set `tooltipValueGetter` to the cell value.
-   * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
-   * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
-   * - if field is number then set `filter='agNumberColumnFilter'`. Default filter is for string.
-   * - if field is enum then set `filter='agSetColumnFilter'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, })`
-   */
+* @see ag-grid.service.ts for more information of how to set the columnDef properties.
+*/
   public columnDefs: (ColDef<IChildEntity>)[] = [
     {
       field: 'person.name',
@@ -52,7 +43,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
       valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
-      filter: 'agNumberColumnFilter'
+      filter: 'agNumberColumnFilter',
     },
     {
       colId: 'birthDate',
@@ -64,8 +55,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     {
       field: 'person.gender',
       headerName: 'Gender',
-      chartDataType: 'category',
-      filter: 'agSetColumnFilter',
+      type: 'enum',
       filterParams: { values: ['Male', 'Female'], },
       width: 100
     },
@@ -102,7 +92,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
           ret += (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
             + ' ' + this.ut.translate('boys');
         return ret + ')';
-      }
+      },
+      type: 'long',
     },
     {
       field: 'parentsKinship',
@@ -173,7 +164,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       }, {
         field: 'isArchive',
         headerName: 'Archive',
-        filter: 'agSetColumnFilter',
+        type: 'enum',
         filterParams: {
           values: [true, false],
           valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive')
@@ -272,7 +263,10 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit,
       this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) },
       (e) => {
-        e.api.getFilterInstance('isArchive')?.setModel({values:['false']})
+        e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
+        // e.api.refreshCells();
+        console.log('filter applied', e.api.getFilterInstance('isArchive')?.isFilterActive());
+
       }
     ),
     onRowClicked: (v) => this.selectedItem = v.data,

@@ -28,6 +28,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import {MatGridListModule} from '@angular/material/grid-list';
 
 
 @NgModule({
@@ -60,6 +61,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     MatCardModule,
     MatProgressBarModule,
     ClipboardModule,
+    MatGridListModule,
   ],
   providers: [
     { provide: MatPaginatorIntl, useClass: AppComponent }

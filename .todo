@@ -10,3 +10,5 @@
 For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
 
 - parent can view only his children
+
+- in ag-grid when edit a cell of type date then make it date picker instead of text input.

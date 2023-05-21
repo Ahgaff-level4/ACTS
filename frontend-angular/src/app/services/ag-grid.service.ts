@@ -3,12 +3,23 @@ import { UtilityService } from './utility.service';
 import { ColDef, GetContextMenuItemsParams, GetLocaleTextParams, GridApi, GridOptions, MenuItemDef, SideBarDef } from 'ag-grid-enterprise';
 import { GridReadyEvent } from 'ag-grid-community';
 import { Clipboard } from '@angular/cdk/clipboard';
-
+import * as moment from 'moment';
 @Injectable({
   providedIn: 'root'
 })
 export class AgGridService {
-
+//todo: chart reports.
+  //todo: delete MatTableModule
+  /**
+   * - field is property name (accept nested. (e.g.,`person.name`).
+   * - headerName will be translated.
+   * - type `fromNow` and `fromNowNoAgo` will change `valueFormatter`, `tooltipValueGetter`, `chartDataType`, `width`, and `valueGetter`.
+   * - type `long` will set `tooltipValueGetter` to the cell value.
+   * - if field contains `date` (e.g., `createdDatetime`) AND no `filter`, it will set filter=`agDateColumnFilter`. Also, will set comparator function because our date is string.
+   * - if `onCellValueChanged` exist and user `canEdit` then `editable=true`.
+   * - if field is number then set `type='number'`. Default filter is for string.
+   * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, })`
+   */
   constructor(public ut: UtilityService, private clipboard: Clipboard) { }
 
   /**
@@ -64,27 +75,22 @@ export class AgGridService {
     return columnDefs.map(v => {
       v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
       v.headerName = this.ut.translate(v.headerName);
-      if (v.type?.includes('fromNow') || v.type?.includes('toDate')) {
-
-        v.filter = 'agDateColumnFilter'
-        v.filterParams = {
-          comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
-            var cellMoment = this.ut.moment(cellValue, 'YYYY-MM-DD');
-            if (cellMoment.isBefore(filterLocalDateAtMidnight))
-              return -1;
-            else if (cellMoment.isAfter(filterLocalDateAtMidnight))
-              return 1;
-            return 0;
-          }
-        }
-      }
-
-      if (v.filter == 'agSetColumnFilter')
-        v.filterParams.suppressMiniFilter = true;
-
       v.headerTooltip = v.headerName;
+
+
       return v;
     })
+  }
+
+  private dateFilterParam = {
+    comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
+      var cellMoment = moment(cellValue, 'YYYY/M/D');
+      if (cellMoment.isBefore(filterLocalDateAtMidnight))
+        return -1;
+      else if (cellMoment.isAfter(filterLocalDateAtMidnight))
+        return 1;
+      return 0;
+    }
   }
 
   private columnTypes: { [key: string]: ColDef<any> } = {
@@ -94,6 +100,8 @@ export class AgGridService {
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
       valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
       width: 150,
+      filter: 'agDateColumnFilter',
+      filterParams: this.dateFilterParam,
     },
     fromNowNoAgo: {
       valueFormatter: (v) => this.ut.fromNow(v.value, true),//set the presentational value
@@ -101,15 +109,28 @@ export class AgGridService {
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
       valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
       width: 100,
+      filter: 'agDateColumnFilter',
+      filterParams: this.dateFilterParam,
     },
     toDate: {
       valueFormatter: (v) => this.ut.toDate(v.value),
       valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
       chartDataType: 'time',
       width: 100,
+      filter: 'agDateColumnFilter',
+      filterParams: this.dateFilterParam,
     },
     long: {
       tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
+    },
+    enum: {
+      filter: 'agSetColumnFilter',
+      chartDataType: 'category',
+      filterParams: { suppressMiniFilter: true },
+    },
+    number: {
+      filter: 'agNumberColumnFilter',
+      chartDataType: 'series',
     }
   }
 
@@ -117,7 +138,6 @@ export class AgGridService {
     sortable: true,
     filter: 'agTextColumnFilter',
     checkboxSelection: false,
-    // wrapText:true,//true will prevent the three dots for long text `long text...`
     resizable: true,
     enablePivot: false,
     rowGroup: false,
@@ -234,6 +254,18 @@ export class AgGridService {
         },
         ]
       },
+      chartToolPanelsDef:{
+        // Customisations for the settings panel and chart menu items in the Context Menu.
+        settingsPanel: {chartGroupsDef:{lineGroup:['line']}},
+        // Customisations for the format panel
+        formatPanel: {groups:[{type:'chart'}]},
+        // Customisations for the data panel
+        dataPanel: undefined,
+        // The ordered list of panels to show in the chart tool panels. If none specified, all panels are shown
+        panels: undefined,
+        // The panel to open by default when the chart loads. If none specified, the tool panel is hidden by default and the first panel is open when triggered.
+        defaultToolPanel: undefined,
+      }
     }
   }
   /*Used inside map of MyMenuItem[] array. Convert array items from `MyMenuItem` to `MenuItemDef` AND translate `name` and `tooltip` properties. */
