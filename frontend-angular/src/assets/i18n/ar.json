@@ -593,5 +593,9 @@
   "View activities of the selected program":"",
   "Delete the selected program":"",
   "Delete the selected activity":"",
-  "Delete the selected field":""
+  "Delete the selected field":"",
+  "Delete the selected goal":"",
+  "State":"",
+  "View evaluations of the selected goal":"",
+  "Evaluate the selected goal":""
 }

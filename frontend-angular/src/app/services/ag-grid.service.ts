@@ -10,6 +10,8 @@ import * as moment from 'moment';
 export class AgGridService {
 //todo: chart reports.
   //todo: delete MatTableModule
+  //todo: cell editor base on its type (e.g., date type should have date picker). Hint: i think CellEditor is the way...
+  //todo: date picker for filter dose not translate to Arabic!
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
    * - headerName will be translated.
@@ -133,6 +135,9 @@ export class AgGridService {
       filter: 'agNumberColumnFilter',
       chartDataType: 'series',
       valueParser:(v)=>Number(v.newValue),
+    },
+    madeUp:{
+      chartDataType:'excluded',
     }
   }
 
@@ -356,3 +361,5 @@ export interface MyMenuItem<IEntity> {
   /** On click action will be called */
   action?(entity?: IEntity): void
 }
+
+export type MyColType='fromNow'|'fromNowNoAge'|'long'|'toDate'|'enum'|'number'|'madeUp'

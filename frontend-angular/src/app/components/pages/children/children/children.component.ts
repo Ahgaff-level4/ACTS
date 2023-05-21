@@ -97,7 +97,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
             + ' ' + this.ut.translate('boys');
         return ret + ')';
       },
-      type: 'long',
+      type: ['long','madeUp'],
     },
     {
       field: 'parentsKinship',

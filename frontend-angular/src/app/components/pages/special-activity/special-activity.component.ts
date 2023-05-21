@@ -40,7 +40,7 @@ export class SpecialActivityComponent {
   }
 
   /**
-  * @see ag-grid.service.ts for more information of how to set the columnDef properties.
+* @see [ag-grid.service](./../../../services/ag-grid.service.ts) for more information of how to set the columnDef properties.
   */
   public columnDefs: (ColDef<IActivityEntity>)[] = [
     {

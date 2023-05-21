@@ -40,7 +40,7 @@ export class ActivityComponent {
   }
 
   /**
-  * @see ag-grid.service.ts for more information of how to set the columnDef properties.
+* @see [ag-grid.service](./../../../services/ag-grid.service.ts) for more information of how to set the columnDef properties.
   */
   public columnDefs: (ColDef<IActivityEntity>)[] = [
     {
@@ -52,7 +52,7 @@ export class ActivityComponent {
     {
       field: 'ageRange',
       headerName: 'Age Range',
-      type: 'long',
+      type: ['long','madeUp'],
       valueGetter: (v) => typeof v.data?.minAge == 'number' && typeof v.data?.maxAge == 'number' ? (v.data.minAge + '–' + v.data.maxAge) : '',
     },
     {
@@ -88,7 +88,7 @@ export class ActivityComponent {
       name: 'Delete',
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
-      tooltip: 'Delete the selected field',
+      tooltip: 'Delete the selected activity',
       disabled: !this.canAddEdit,
     },
   ];

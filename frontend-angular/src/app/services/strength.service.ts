@@ -96,7 +96,7 @@ export class StrengthService {
         .subscribe({
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
-            if (Array.isArray(v)) {
+            if (Array.isArray(v) && v.length != 0) {
               this.childItsStrengths.next(v[0]);
               res(v[0]);
             }

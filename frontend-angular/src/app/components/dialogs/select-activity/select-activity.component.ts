@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { IActivityEntity, IProgramEntity } from '../../../../../../interfaces';
+import { IActivityEntity, IChildEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/goal.service';
 import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit-activity.component';
@@ -17,12 +17,14 @@ export class SelectActivityComponent implements OnInit {
   public filter: 'age' | 'all' = 'age';
   public activities: IActivityEntity[] | [] = [];
   public programs: IProgramEntity[] | undefined;
+  public child: IChildEntity | undefined;
 
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService, private ut: UtilityService, private goalService: GoalService, private activityService: ActivityService, private dialog: MatDialog) {
   }
 
   ngOnInit(): void {
     this.programService.programs.subscribe(v => this.programs = v);
+    this.goalService.childItsGoals.subscribe(v => this.child = v);
   }
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {
@@ -46,11 +48,11 @@ export class SelectActivityComponent implements OnInit {
     else this.filter = filter;
     if (filter !== 'all' &&
       this.chosenProgram?.activities &&
-      this.goalService.childItsGoals.value?.person?.birthDate) { //filter by age
-      var age = this.ut.calcAge(this.goalService.childItsGoals.value.person.birthDate)
+      this.child?.person?.birthDate) { //filter by age
+      var age = this.ut.calcAge(this.child?.person?.birthDate);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
-          if (v.maxAge != null && v.minAge != null && age < v.maxAge && age > v.minAge)
+          if (v.maxAge == null || v.minAge == null || (age < v.maxAge && age > v.minAge))
             return true;
           return false;
         });

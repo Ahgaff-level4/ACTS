@@ -3,7 +3,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/goal.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { IActivityEntity, IGoalEntity } from '../../../../../../../interfaces';
+import { IActivityEntity, IChildEntity, IGoalEntity } from '../../../../../../../interfaces';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 
 @Component({
@@ -16,10 +16,14 @@ export class AddEditGoalComponent {
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
+  /**Used when adding new goal */
+  public child: IChildEntity | undefined;
 
+  /** used to add/edit goal base on `goalOrChildId` type:
+   * - Either goal to be edit.
+   * - Or childId to add the new goal into it */
   constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
-    /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
   }
 
@@ -32,8 +36,11 @@ export class AddEditGoalComponent {
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    if (typeof this.goalService.childItsGoals.value != 'object')
-      this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
+    this.goalService.childItsGoals.subscribe(v => {
+      if (v == null && typeof this.goalOrChildId != 'object')
+        this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
+      else this.child = v;
+    });
 
     if (typeof this.goalOrChildId === 'object') {
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.goalOrChildId));
@@ -49,10 +56,10 @@ export class AddEditGoalComponent {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.goalOrChildId == 'number') {//add new
-        if (this.goalService.childItsGoals.value?.id == null || this.ut.user.value?.accountId == null)
+        if (this.child?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.goalService.childItsGoals.value?.id, teacherId: this.ut.user.value?.accountId });
+          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId },true);
           this.ut.showSnackbar('The goal has been added successfully.');
           this.dialogRef.close('added');
         } catch (e) { }
@@ -60,7 +67,7 @@ export class AddEditGoalComponent {
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
-            await this.service.patch(this.goalOrChildId.id, dirtyControls);
+            await this.service.patch(this.goalOrChildId.id, dirtyControls,true);
           this.ut.showSnackbar('The goal has been edited successfully.');
           this.dialogRef.close('edited');
         } catch (e) { }

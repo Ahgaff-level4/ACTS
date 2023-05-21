@@ -43,15 +43,15 @@
     <button *ngIf="canAddEditDelete" (click)="addEdit()" class="w-100 mx-3 mb-2" mat-raised-button color="primary">
       {{'Add new program'|translate}}<mat-icon>add</mat-icon>
     </button>
-    <button *ngIf="canAddEditDelete" [disabled]="selectedItem==null" (click)="addEdit(selectedItem)" [matTooltip]="'Edit the selected row'|translate"
-      class="w-100 mx-3 mb-2" mat-stroked-button color="primary">
-      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-    </button>
     <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
       [matTooltip]="'View activities of the selected program'|translate"
       [routerLink]="selectedItem?'/program/'+selectedItem.id+'/activities':'#'" mat-stroked-button color="primary">
       {{'Activities'|translate}}<mat-icon>interests</mat-icon>
     </a>
+    <button *ngIf="canAddEditDelete" [disabled]="selectedItem==null" (click)="addEdit(selectedItem)" [matTooltip]="'Edit the selected row'|translate"
+      class="w-100 mx-3 mb-2" mat-stroked-button color="primary">
+      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
+    </button>
     <button [disabled]="selectedItem==null" *ngIf="canAddEditDelete" class="w-100 mx-3 mb-2"
     (click)="deleteDialog(selectedItem)"
       [matTooltip]="'Delete the selected program'|translate"
