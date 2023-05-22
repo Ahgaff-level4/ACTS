@@ -76,7 +76,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     },
     {
       field: 'family',
-      headerName: 'Order between siblings',
+      headerName: 'Family information',
       valueGetter: (v) => {
         let ret = '';
         if (v.data?.birthOrder)
@@ -98,6 +98,27 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
         return ret + ')';
       },
       type: ['long','madeUp'],
+    },
+    {
+      field: 'femaleFamilyMembers',
+      headerName: 'Number of sisters',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type:'number',
+      hide: true,
+    },
+    {
+      field: 'maleFamilyMembers',
+      headerName: 'Number of brothers',
+      onCellValueChanged: this.onChildCellValueChanged,
+      type:'number',
+      hide: true,
+    },
+    {
+      field: 'birthOrder',
+      headerName: 'Order between siblings',
+      type:'number',
+      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder-1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
+      hide: true,
     },
     {
       field: 'parentsKinship',

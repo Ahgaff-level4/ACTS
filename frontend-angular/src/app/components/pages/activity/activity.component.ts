@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { IActivityEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MatPaginator } from '@angular/material/paginator';
@@ -8,7 +8,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { ProgramService } from 'src/app/services/program.service';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
@@ -20,13 +20,14 @@ import { FieldService } from 'src/app/services/field.service';
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.scss']
 })
-export class ActivityComponent {
+export class ActivityComponent implements OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IActivityEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause Program has activities of `rowData`*/
   public program: IProgramEntity | undefined;
+  public sub = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
@@ -52,7 +53,7 @@ export class ActivityComponent {
     {
       field: 'ageRange',
       headerName: 'Age Range',
-      type: ['long','madeUp'],
+      type: ['long', 'madeUp'],
       valueGetter: (v) => typeof v.data?.minAge == 'number' && typeof v.data?.maxAge == 'number' ? (v.data.minAge + '–' + v.data.maxAge) : '',
     },
     {
@@ -103,15 +104,16 @@ export class ActivityComponent {
 
 
   ngOnInit(): void {
+    this.ut.isLoading.next(true);
     this.route.paramMap.subscribe({
       next: async params => {
         let programId = params.get('id');
         if (typeof programId == 'string')
-          this.service.programItsActivities.subscribe(v => {
+          this.sub.add(this.service.programItsActivities.subscribe(async v => {
             if (v && v.id == +(programId as string))
               this.program = v;
-            else this.service.fetchProgramItsActivities(+(programId as string), true);
-          })
+            else await this.service.fetchProgramItsActivities(+(programId as string), true).catch(() => { });
+          }));
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
@@ -187,5 +189,9 @@ export class ActivityComponent {
           } catch (e) { }
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

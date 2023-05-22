@@ -21,7 +21,7 @@ import { ProgramService } from 'src/app/services/program.service';
   templateUrl: './goal.component.html',
   styleUrls: ['./goal.component.scss']
 })
-export class GoalComponent {
+export class GoalComponent implements OnDestroy {
   public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
   public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
   public selectedItem?: IGoalEntity;
@@ -29,6 +29,7 @@ export class GoalComponent {
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause child has goals for `rowData`*/
   public childItsGoals: IChildEntity | undefined;
+  public sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IGoalEntity>) => {
     try {
@@ -65,7 +66,7 @@ export class GoalComponent {
       field: 'completed',//not property of Goal
       headerName: 'Completed',
       type: ['long', 'madeUp'],
-      
+
       // valueFormatter: 'asdf',//todo: set <mat-icon> as continual in the cell base on state property
     },
     {
@@ -114,7 +115,7 @@ export class GoalComponent {
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
-      action: (v) => v?this.ut.router.navigate(['goal',v.id,'evaluations']):'',
+      action: (v) => v ? this.ut.router.navigate(['goal', v.id, 'evaluations']) : '',
       tooltip: 'View evaluations of the selected goal',
     },
     {
@@ -129,21 +130,22 @@ export class GoalComponent {
 
   constructor(public service: GoalService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute, public agGrid: AgGridService,
-    private fieldService:FieldService,private programService:ProgramService) {
+    private fieldService: FieldService, private programService: ProgramService) {
   }
 
 
 
   ngOnInit(): void {
-    this.route.paramMap.subscribe({
+    this.route.paramMap.pipe(first()).subscribe({
       next: async params => {
         let childId = params.get('id');
+        console.log('childId', childId);
         if (typeof childId == 'string')
-          this.service.childItsGoals.subscribe(v => {
+          this.sub.add(this.service.childItsGoals.subscribe(async v => {
             if (v && v.id == +(childId as string))
               this.childItsGoals = v;
-            else this.service.fetchChildItsGoals(+(childId as string), true);
-          });
+            else await this.service.fetchChildItsGoals(+(childId as string), true).catch(() => { });
+          }));
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
       },
     });
@@ -155,7 +157,7 @@ export class GoalComponent {
     this.programService.programs.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.program.name');
       if (col)
-        col.filterParams = { values: [...v.map(n => n.name),this.ut.translate('«Special activity»')] };
+        col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };
     });
 
     this.ut.user.subscribe(v => {
@@ -235,6 +237,10 @@ export class GoalComponent {
     else
       this.dialog
         .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId });
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 
 }
