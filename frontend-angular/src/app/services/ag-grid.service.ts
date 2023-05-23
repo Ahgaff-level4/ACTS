@@ -8,10 +8,11 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class AgGridService {
-//todo: chart reports.
+  //todo: chart reports.
   //todo: delete MatTableModule
   //todo: cell editor base on its type (e.g., date type should have date picker). Hint: i think CellEditor is the way...
   //todo: date picker for filter dose not translate to Arabic!
+  //todo: stop pagination in printing the table.
   /**
    * - field is property name (accept nested. (e.g.,`person.name`).
    * - headerName will be translated.
@@ -104,7 +105,7 @@ export class AgGridService {
       width: 150,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
-      valueParser:v=>new Date(v.newValue),
+      valueParser: v => new Date(v.newValue),
     },
     fromNowNoAgo: {
       valueFormatter: (v) => this.ut.fromNow(v.value, true),//set the presentational value
@@ -134,10 +135,10 @@ export class AgGridService {
     number: {
       filter: 'agNumberColumnFilter',
       chartDataType: 'series',
-      valueParser:(v)=>Number(v.newValue),
+      valueParser: (v) => Number(v.newValue),
     },
-    madeUp:{
-      chartDataType:'excluded',
+    madeUp: {
+      chartDataType: 'excluded',
     }
   }
 
@@ -183,6 +184,52 @@ export class AgGridService {
     return t;
   }
 
+  /**
+   * print a table by calling _getPrintTableFunc
+   * @see {@link getPrintTableFunc}
+   */
+  public printTable(gridOptions: GridOptions, printTableArgs: PrintTableArg | null){
+    this.getPrintTableFunc(gridOptions,printTableArgs)();
+  }
+
+  /**
+   * @param gridOptions
+   * @param isPrintingArgs
+   * @returns a void function to be called. NOTE: if you want instant print then call it as `printTable(...,...)();`
+   */
+  private getPrintTableFunc(gridOptions: GridOptions, printTableArgs: PrintTableArg | null) {//should be arrow function. Because it's called inside gridOption object
+
+    return () => {
+      let isAuto = gridOptions.paginationAutoPageSize;
+      gridOptions.paginationAutoPageSize = false
+      let size = gridOptions.paginationPageSize;
+      gridOptions.paginationPageSize = 1000;
+      gridOptions.api?.setDomLayout('print');
+      gridOptions.api?.setSideBarVisible(false)
+      gridOptions.api?.redrawRows();
+      if (typeof printTableArgs == 'function')
+        printTableArgs(true);
+      else {
+        printTableArgs?.isPrintingNext(true);
+        printTableArgs?.before?.();
+      }
+      setTimeout(() => print(), 2000);
+      setTimeout(() => {
+        gridOptions.paginationAutoPageSize = isAuto;
+        gridOptions.paginationPageSize = size;
+        gridOptions.api?.setSideBarVisible(true)
+        gridOptions.api?.refreshCells();
+        gridOptions.api?.setDomLayout('autoHeight');
+        if (typeof printTableArgs == 'function')
+          printTableArgs(false);
+        else {
+          printTableArgs?.isPrintingNext(false);
+          printTableArgs?.after?.();
+        }
+      }, 3000);
+    }
+  }
+
   /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.ut.commonGridOptions(...),(add your own options)}
 * @param keyTableName use to store/restore table state from localStorage.
 * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
@@ -194,7 +241,7 @@ export class AgGridService {
 * @returns Object of common grid options.
 */
   public commonGridOptions = <IEntity>(keyTableName: string, columnDefs: ColDef<IEntity>[],
-    canEdit: boolean, menu: MyMenuItem<IEntity>[] | null | undefined, printTable: () => void | null,
+    canEdit: boolean, menu: MyMenuItem<IEntity>[] | null | undefined, printTableArgs: PrintTableArg | null,
     editRowAction?: (item: IEntity | undefined) => void, onGridReady?: (event: GridReadyEvent) => void,
   ): GridOptions<IEntity> => {
     return {/** DefaultColDef sets props common to all Columns*/
@@ -257,15 +304,15 @@ export class AgGridService {
         {
           name: this.ut.translate('Export table'),
           icon: '<mat-icon _ngcontent-qgp-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">ios_share</mat-icon>',
-          subMenu: this.exportTableSubMenu(v.api, printTable),
+          subMenu: this.exportTableSubMenu(v, printTableArgs),
         },
         ]
       },
-      chartToolPanelsDef:{
+      chartToolPanelsDef: {
         // Customisations for the settings panel and chart menu items in the Context Menu.
-        settingsPanel: {chartGroupsDef:{lineGroup:['line']}},
+        settingsPanel: { chartGroupsDef: { lineGroup: ['line'] } },
         // Customisations for the format panel
-        formatPanel: {groups:[{type:'chart'}]},
+        formatPanel: { groups: [{ type: 'chart' }] },
         // Customisations for the data panel
         dataPanel: undefined,
         // The ordered list of panels to show in the chart tool panels. If none specified, all panels are shown
@@ -275,6 +322,7 @@ export class AgGridService {
       }
     }
   }
+
   /*Used inside map of MyMenuItem[] array. Convert array items from `MyMenuItem` to `MenuItemDef` AND translate `name` and `tooltip` properties. */
   private mapMyMenuItemToMenuItemDef<E>(data: E): (item: MyMenuItem<E>) => MenuItemDef {
     return (item) => {
@@ -321,22 +369,22 @@ export class AgGridService {
     },]
   }
 
-  private exportTableSubMenu(api: GridApi, printTable: () => void | null): (string | MenuItemDef)[] {
+  private exportTableSubMenu(gridOptions: GridOptions, printTableArgs: PrintTableArg | null): (string | MenuItemDef)[] {
     const tableMenu = [{
       name: this.ut.translate('Export as CSV'),
       icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
-      action: () => this.exportCSV(api),
+      action: () => this.exportCSV(gridOptions.api),
     },
     {
       name: this.ut.translate('Export as Excel'),
       icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
-      action: () => this.exportExcel(api),
+      action: () => this.exportExcel(gridOptions.api),
     },];
-    if (printTable)
+    if (printTableArgs != null)
       tableMenu.push({
         name: this.ut.translate('Print'),
         icon: `<mat-icon _ngcontent-xhr-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">print</mat-icon>`,
-        action: printTable,
+        action: this.getPrintTableFunc(gridOptions, printTableArgs),
       });
     return tableMenu;
   }
@@ -362,4 +410,13 @@ export interface MyMenuItem<IEntity> {
   action?(entity?: IEntity): void
 }
 
-export type MyColType='fromNow'|'fromNowNoAge'|'long'|'toDate'|'enum'|'number'|'madeUp'
+export type MyColType = 'fromNow' | 'fromNowNoAge' | 'long' | 'toDate' | 'enum' | 'number' | 'madeUp';
+
+/**
+ * @property before - a function will be called before `print()` happen.
+ * @property after  - a function will be called after  `print()` happen.
+ * @property isPrintingNext - a next (callback) function will be called when ever `isPrinting` boolean value changed. This function can be the PrintTableArg itself
+ */
+export type PrintTableArg = { before?: () => void, after?: () => void, isPrintingNext: (isPrinting: boolean) => void } | ((isPrinting: boolean) => void);
+
+

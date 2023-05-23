@@ -55,24 +55,8 @@ export class ProgramComponent {
     },
   ];
 
-  printTable = () => {//should be arrow function. Because it's called inside gridOption object
-    let isAuto = this.gridOptions.paginationAutoPageSize;
-    this.gridOptions.paginationAutoPageSize = false
-    let size = this.gridOptions.paginationPageSize;
-    this.gridOptions.paginationPageSize = 1000;
-    this.isPrinting = true;
-    this.gridOptions.api?.setDomLayout('print');
-    this.gridOptions.api?.setSideBarVisible(false)
-    this.gridOptions.api?.redrawRows();
-    setTimeout(() => print(), 2000);
-    setTimeout(() => {
-      this.isPrinting = false;
-      this.gridOptions.paginationAutoPageSize = isAuto;
-      this.gridOptions.paginationPageSize = size;
-      this.gridOptions.api?.setSideBarVisible(true)
-      this.gridOptions.api?.refreshCells();
-      this.gridOptions.api?.setDomLayout('autoHeight');
-    }, 3000);
+  printTable(){
+    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
   }
 
   private menuItems: MyMenuItem<IProgramEntity>[] = [

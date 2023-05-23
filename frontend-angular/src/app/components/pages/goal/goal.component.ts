@@ -170,31 +170,14 @@ export class GoalComponent implements OnDestroy {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  printTable = () => {//should be arrow function. Because it's called inside gridOption object
-    let isAuto = this.gridOptions.paginationAutoPageSize;
-    this.gridOptions.paginationAutoPageSize = false
-    let size = this.gridOptions.paginationPageSize;
-    this.gridOptions.paginationPageSize = 1000;
-    this.isPrinting = true;
-    this.gridOptions.api?.setDomLayout('print');
-    this.gridOptions.api?.setSideBarVisible(false)
-    this.gridOptions.api?.redrawRows();
-    setTimeout(() => print(), 2000);
-    setTimeout(() => {
-      this.isPrinting = false;
-      this.gridOptions.paginationAutoPageSize = isAuto;
-      this.gridOptions.paginationPageSize = size;
-      this.gridOptions.api?.setSideBarVisible(true)
-      this.gridOptions.api?.refreshCells();
-      this.gridOptions.api?.setDomLayout('autoHeight');
-    }, 3000);
+  printTable(){
+    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
   }
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IGoalEntity> = {
-    ...this.agGrid.commonGridOptions('fields table', this.columnDefs, this.canEditDelete,
+    ...this.agGrid.commonGridOptions('goals table', this.columnDefs, this.canEditDelete,
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
-      // (e) => e.api.sizeColumnsToFit()
     ),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
