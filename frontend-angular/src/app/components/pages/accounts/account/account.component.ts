@@ -7,6 +7,8 @@ import { MatSort } from '@angular/material/sort';
 import { AccountService } from 'src/app/services/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
+import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
+import { ColDef, GridOptions, SetFilterParams } from 'ag-grid-community';
 
 @Component({
   selector: 'app-account',
@@ -20,45 +22,110 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
     ]),
   ],
 })
-export class AccountComponent{
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
-  @ViewChild(MatTable) table!: MatTable<IAccountEntity>;
-  public dataSource!: AccountDataSource;
-  public columnsKeys: string[] = JSON.parse(sessionStorage.getItem('accounts table') ?? 'null') ?? ['name','username', 'age', 'roles', 'createdDatetime', 'expand'];
-  public expandedItem?: IAccountEntity;
+export class AccountComponent {
+  public selectedItem?: IAccountEntity;
+  public quickFilter: string = '';
+  public isPrinting: boolean = false;
+  /**don't use `rowData` 'cause child has goals for `rowData`*/
+  public rowData: IAccountEntity[] | undefined;
 
-  constructor(private accountService: AccountService, public ut: UtilityService) {
+  /**
+* @see [ag-grid.service](./../../../services/ag-grid.service.ts) for more information of how to set the columnDef properties.
+  */
+  public columnDefs: (ColDef<IAccountEntity>)[] = [
+    {
+      field: 'person.name',
+      headerName: 'Name',
+      type: 'long',
+    },
+    {
+      colId: 'Age',//assigned `colId` because there are multiple columns with same field.
+      field: 'person.birthDate',
+      headerName: 'Age',
+      valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
+      type: 'fromNowNoAgo',
+      valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
+      filter: 'agNumberColumnFilter',
+    },
+    {
+      field: 'person.gender',
+      headerName: 'Gender',
+      type: 'enum',
+      filterParams: { values: ['Male', 'Female'], },
+      width: 100
+    },
+    {
+      colId: 'birthDate',
+      field: 'person.birthDate',
+      headerName: 'Birthdate',
+      type: 'toDate',
+      hide: true,
+    },
+    {
+      field: 'username',
+      headerName: 'Username',
+      type: 'long',
+    },
+    {
+      field: 'roles',
+      headerName: 'Roles',
+      type: 'enum',//filterParams in init
+      valueGetter: v => v.data?.roles ? this.ut.displayRoles(v.data.roles) : '',
+      filterParams: {
+        values: [this.ut.translate('Admin'), this.ut.translate('Head of Department'), this.ut.translate('Teacher'), this.ut.translate('Parent')],
+        comparator: function (a: string, b: string) {
+          // return a.includes(b) ? 1 : (b.includes(a) ? -1 : 0);
+          return 1;//todo fix filtering for multi-role. `comparator` used for sort :/
+        }
+      } as SetFilterParams
+    },
+    {
+      field: 'createdDatetime',
+      headerName: 'Created Date',
+      type: 'fromNow',
+    },
+    {
+      field: 'phones',
+      headerName: 'Phone',
+      type: 'long',
+      valueGetter: v => v.data ? this.displayPhones(v.data) : '',
+    },
+    {
+      field: 'address',
+      headerName: 'Address',
+      type: 'long',
+    }
+  ];
+
+  private menuItems: MyMenuItem<IAccountEntity>[] = [
+    {
+      name: 'Delete',
+      icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
+      action: (v) => this.deleteAccount(v),
+      tooltip: 'Delete the selected account',
+    },
+  ];
+
+  constructor(private accountService: AccountService, public ut: UtilityService, public agGrid: AgGridService) {
   }
 
   ngOnInit(): void {
-    this.dataSource = new AccountDataSource();
-    this.accountService.accounts.subscribe({
-      next: v => {
-        this.dataSource.setData(v);
-        if(this.table)
-          this.table.renderRows();
-      }
-    });
-    this.accountService.fetch(true);
+    this.accountService.accounts.subscribe(v => this.rowData = v.map(n => ({ ...n })));
   }
 
-  ngAfterViewInit(): void {
-    this.dataSource.sort = this.sort;
-    this.dataSource.paginator = this.paginator;
+  applySearch(event: Event) {
+    this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  applyFilter(event: Event) {
-    const filterValue = (event.target as HTMLInputElement).value;
-    this.dataSource.filter = filterValue.trim().toLowerCase();
-
-    if (this.dataSource.paginator)
-      this.dataSource.paginator.firstPage();
+  printTable(){
+    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
   }
 
-  drop(event: CdkDragDrop<string[]>) {
-    moveItemInArray(this.columnsKeys, event.previousIndex, event.currentIndex);
-    sessionStorage.setItem('accounts table', JSON.stringify(this.columnsKeys));
+  /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
+  public gridOptions: GridOptions<IAccountEntity> = {
+    ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
+      this.menuItems, {isPrintingNext:v=>this.isPrinting=v}, (item) => { this.edit(item) }),
+    onRowClicked: (v) => this.selectedItem = v.data,
   }
 
   edit(account: IAccountEntity | undefined) {
@@ -66,12 +133,15 @@ export class AccountComponent{
       this.ut.router.navigate(['edit-account'], { state: { data: account } });
   }
 
-  displayPhones(phones:string[]){
-    return phones.filter(v=>!!v).join(', ');
+  displayPhones(account: IAccountEntity) {
+    const phones = [];
+    for (let i = 0; i < 10; i++)
+      phones.push(account['phone' + i]);
+    return phones.filter(v => !!v).join(this.ut.translate(', '));
   }
 
-  deleteAccount(account?:IAccountEntity){
-    if(account){
+  deleteAccount(account?: IAccountEntity) {
+    if (account) {
       this.ut.showMsgDialog({
         content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
         type: 'confirm',
@@ -83,17 +153,11 @@ export class AccountComponent{
             this.ut.showSnackbar('The program has been deleted successfully.');
           } catch (e) { }
         }
-      })    }
+      })
+    } else this.ut.showSnackbar(undefined);
   }
 
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.accountService.isLoggerIn = false;
-  }
-}
-
-
-class AccountDataSource extends MatTableDataSource<IAccountEntity>{
-  setData(arr: IAccountEntity[]) {
-    this.data = arr.map(v => ({ ...v.person, ...v, }));
   }
 }

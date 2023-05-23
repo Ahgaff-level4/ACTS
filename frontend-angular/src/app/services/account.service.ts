@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from './utility.service';
-import { BehaviorSubject, Observable, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../components/dialogs/password-dialog/password-dialog.component';
@@ -12,11 +12,12 @@ import { PasswordDialogComponent } from '../components/dialogs/password-dialog/p
 })
 export class AccountService implements OnInit {
   public URL = env.API + 'account';
-  public accounts = new BehaviorSubject<IAccountEntity[]>([]);
+  public accounts = new ReplaySubject<IAccountEntity[]>();
   public isLoggerIn: boolean = false;
 
   constructor(private http: HttpClient, private ut: UtilityService, private dialog: MatDialog) {
-    this.fetch();
+    if (this.ut.userHasAny('Admin'))
+      this.fetch();
   }
 
   ngOnInit(): void {
@@ -27,7 +28,7 @@ export class AccountService implements OnInit {
    * create api request to retrieve accounts information and broadcast it to `accounts` BehaviorSubject.
    * @returns `resolve` if request succeeded. Otherwise `reject`.
    */
-  fetch(manageLoading = false): Promise<void> {
+  private fetch(manageLoading = false): Promise<void> {
     return new Promise(async (res, rej) => {
       manageLoading && this.ut.isLoading.next(true)
       this.http.get<IAccountEntity[]>(this.URL, { params: { 'FK': true } })
@@ -50,7 +51,7 @@ export class AccountService implements OnInit {
  */
   post(account: ICreateAccount, manageLoading = false): Promise<IAccountEntity> {
     return new Promise(async (res, rej) => {
-      if((await this.sensitive().catch(()=>false)!==true)){
+      if ((await this.sensitive().catch(() => false) !== true)) {
         this.ut.errorDefaultDialog('Something went wrong!');
         return rej();
       }
@@ -59,7 +60,7 @@ export class AccountService implements OnInit {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.fetch(manageLoading);
+            this.fetch();
             res(v);
           },
           error: (e) => {
@@ -71,7 +72,7 @@ export class AccountService implements OnInit {
     });
   }
 
-  changePassword(changePassword:IChangePassword, manageLoading = false): Promise<SucResEditDel> {
+  changePassword(changePassword: IChangePassword, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.URL + '/' + this.ut.user.value?.accountId, changePassword)
@@ -93,7 +94,7 @@ export class AccountService implements OnInit {
   /**Used only by Admin (can reset password without providing the old password) */
   put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
-      if((await this.sensitive().catch(()=>false)!==true)){
+      if ((await this.sensitive().catch(() => false) !== true)) {
         this.ut.errorDefaultDialog('Something went wrong!');
         return rej();
       }
@@ -102,7 +103,7 @@ export class AccountService implements OnInit {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.fetch(manageLoading);
+            this.fetch();
             res(v);
           },
           error: e => {
@@ -116,7 +117,7 @@ export class AccountService implements OnInit {
 
   delete(id: number, manageLoading = false) {
     return new Promise(async (res, rej) => {
-      if((await this.sensitive().catch(()=>false)!==true)){
+      if ((await this.sensitive().catch(() => false) !== true)) {
         this.ut.errorDefaultDialog('Something went wrong!');
         return rej();
       }

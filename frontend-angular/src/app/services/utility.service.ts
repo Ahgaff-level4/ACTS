@@ -29,7 +29,7 @@ export class UtilityService {
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
     private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
     private fromNowPipe: FromNowPipe, private dialog: MatDialog,
-    public router: Router, private snackbar: MatSnackBar,private translateService:TranslateService) {
+    public router: Router, private snackbar: MatSnackBar, private translateService: TranslateService) {
   }
 
 
@@ -196,12 +196,14 @@ export class UtilityService {
    * @returns on action clicked observable.
    */
   public showSnackbar(message: string | undefined, action?: string, duration = 4000) {
+    if (message == null)
+      console.trace('Snackbar message is `undefined`!');
     message = this.translate(message ?? 'Something went wrong!');
     return this.snackbar.open(message, action, { duration }).onAction();
   }
 
   public displayRoles(roles: Role[]) {
-    return roles.map(v => this.translate(v === 'HeadOfDepartment' ? 'Head of Department' : v)).join(this.translate(',') + ' ');
+    return roles.map(v => this.translate(v === 'HeadOfDepartment' ? 'Head of Department' : v)).join(this.translate(', '));
   }
 
   public validation = {//used in FormControl validators
@@ -229,8 +231,8 @@ export class UtilityService {
     },
   }
 
-  public get currentLang() : 'ar'|'en' {
-    return this.translateService.currentLang=='ar'?'ar':'en'
+  public get currentLang(): 'ar' | 'en' {
+    return this.translateService.currentLang == 'ar' ? 'ar' : 'en'
   }
 
 }
