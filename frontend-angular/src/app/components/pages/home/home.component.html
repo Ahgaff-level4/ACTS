@@ -1,0 +1,26 @@
+<div class="my-primary-bg position-absolute top">
+</div>
+<div class="container-fluid">
+  <div dir="ltr" class="d-flex flex-wrap justify-content-md-between justify-content-center container mb-5 pb-5 mt-5 ">
+    <div class="text-white mb-5 text-center text-md-start">
+      <h1 class="display-1">{{'ACTS'|translate}}</h1>
+      <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
+    </div>
+    <img src="assets/img/teacher-teach-child.svg" width="350wv" alt="Teacher teach a child">
+  </div>
+  <div class="py-3"></div>
+  <mat-divider class="mx-5 mb-3"></mat-divider>
+
+  <!-- <app-statistics class="w-100"></app-statistics> -->
+  <div class="d-flex flex-wrap justify-content-center">
+    <mat-card *ngFor="let card of cards" [routerLink]="card.link" style="cursor: pointer;"
+    class="card m-3 justify-content-center d-flex p-3 mdc-elevation--z7" >
+      <img  style="max-width:250px; max-height: 200px;" [src]="card.img"
+      [alt]="card.alt??'image represent card\'s content'">
+        <div class="text-center mt-3">
+          <h4 class="card-title">{{card.title|translate}}</h4>
+          <p class="card-text">{{card.desc}}</p>
+        </div>
+    </mat-card>
+  </div>
+</div>

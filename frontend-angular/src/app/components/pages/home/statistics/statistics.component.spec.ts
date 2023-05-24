@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StaticsComponent } from './statics.component';
+import { StaticsComponent } from './statistics.component';
 
 describe('StaticsComponent', () => {
   let component: StaticsComponent;

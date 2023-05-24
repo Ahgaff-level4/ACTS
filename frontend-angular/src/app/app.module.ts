@@ -11,7 +11,7 @@ import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 
 import { AppComponent } from './components/static/app/app.component';
-import { MainComponent } from './components/pages/main/main.component';
+import { HomeComponent } from './components/pages/home/home.component';
 import { FieldComponent } from './components/pages/field/field.component';
 import { NavBarComponent } from './components/static/nav-bar/nav-bar.component';
 import { LoginComponent } from './components/pages/login/login.component';
@@ -53,12 +53,12 @@ import { AgGridModule } from 'ag-grid-angular';
 import { CalcAgePipe } from './pipes/calc-age.pipe';
 import 'ag-grid-enterprise';
 import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
-import { StaticsComponent } from './components/pages/main/statics/statics.component';//important to use ag-grid features packages
+import { StatisticsComponent } from './components/pages/home/statistics/statistics.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    MainComponent,
+    HomeComponent,
     FieldComponent,
     NavBarComponent,
     LoginComponent,
@@ -93,7 +93,7 @@ import { StaticsComponent } from './components/pages/main/statics/statics.compon
     SpecialActivityComponent,
     FilterChildrenComponent,
     LoginFormComponent,
-    StaticsComponent
+    StatisticsComponent,
   ],
   imports: [
     BrowserModule,

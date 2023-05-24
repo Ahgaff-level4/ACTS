@@ -1,0 +1,17 @@
+.top {
+  z-index: -1;
+  top: -450px;
+  right: -3200px;
+  height: 1170px;
+  width: 5000px;
+  border-radius: 50%;
+}
+@media (min-width: 768px) {
+  .top {
+    height: 1000px;
+  }
+}
+
+.card {
+  width:250px;
+}

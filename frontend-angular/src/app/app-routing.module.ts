@@ -1,12 +1,12 @@
-import { Injectable, NgModule, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, CanActivate, RouterModule, RouterStateSnapshot, Routes, UrlTree } from '@angular/router';
-import { MainComponent } from './components/pages/main/main.component';
+import { NgModule, inject } from '@angular/core';
+import { ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
+import { HomeComponent } from './components/pages/home/home.component';
 import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children/children.component';
 import { AddEditChildComponent } from './components/pages/children/add-edit-child/add-edit-child.component';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
@@ -82,7 +82,7 @@ const AHTP = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] }
 const titlePrefix = 'ACTS - ';
 
 const routes: Routes = [
-  { path: '', component: MainComponent, title: titlePrefix + 'Home', pathMatch: 'full' },
+  { path: '', component: HomeComponent, title: titlePrefix + 'Home', pathMatch: 'full' },
   { path: 'main', redirectTo: '' },
   { path: 'home', redirectTo: '' },
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
