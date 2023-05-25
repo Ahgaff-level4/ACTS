@@ -3,7 +3,7 @@ import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from './utility.service';
 import { IGoalEntity, ICreateEvaluation, IEvaluationEntity, SucResEditDel } from '../../../../interfaces';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { ChildService } from './child.service';
 import { GoalService } from './goal.service';
 @Injectable({
@@ -11,10 +11,12 @@ import { GoalService } from './goal.service';
 })
 export class EvaluationService {
   URL = env.API + 'evaluation';
-  /**Child object with its goals. The idea is that: this child will be replaced every time user check another child goals. And it is in service so it is shared with other components */
-  public goalItsEvaluations = new BehaviorSubject<IGoalEntity | undefined>(undefined)
+  public goalItsEvaluations = new ReplaySubject<IGoalEntity | undefined>(1);
+  private _goalItsEvaluations: undefined | IGoalEntity;
 
-  constructor(private http: HttpClient, private ut: UtilityService, private goalService: GoalService) { }
+  constructor(private http: HttpClient, private ut: UtilityService, private goalService: GoalService) {
+    this.goalItsEvaluations.next(undefined);
+  }
 
   /**
   * @returns if request succeeded, `resolve` with the added entity, and call fetch() to emit the new entities. Otherwise show error dialog and `reject`.
@@ -26,8 +28,8 @@ export class EvaluationService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.goalItsEvaluations.value?.id)
-              this.fetchGoalItsEvaluations(this.goalItsEvaluations.value.id);
+            if (this._goalItsEvaluations)
+              this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
             res(v);
           },
           error: (e) => {
@@ -46,8 +48,8 @@ export class EvaluationService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.goalItsEvaluations.value?.id)
-              this.fetchGoalItsEvaluations(this.goalItsEvaluations.value.id);
+            if (this._goalItsEvaluations)
+              this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
             res(v)
           },
           error: e => {
@@ -66,8 +68,8 @@ export class EvaluationService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.goalItsEvaluations.value?.id)
-              this.fetchGoalItsEvaluations(this.goalItsEvaluations.value.id);
+            if (this._goalItsEvaluations)
+              this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
             res(v);
           },
           error: (e) => {
@@ -92,6 +94,7 @@ export class EvaluationService {
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
             if (Array.isArray(v) && v.length != 0) {
+              this._goalItsEvaluations = v[0];
               this.goalItsEvaluations.next(v[0]);
               res(v[0]);
             }

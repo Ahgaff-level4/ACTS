@@ -101,7 +101,7 @@ export class AgGridService {
       valueFormatter: (v) => this.ut.fromNow(v.value),//set the presentational value
       chartDataType: 'time',
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+      // valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
       width: 150,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,

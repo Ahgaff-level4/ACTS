@@ -10,8 +10,8 @@ import { ChildService } from './child.service';
 })
 export class GoalService {
   URL = env.API + 'goal';
-  /**Child object with its goals. The idea is that: this child will be replaced every time user check another child goals. And it is in service so it is shared with other components */
-  public childItsGoals = new ReplaySubject<IChildEntity | undefined>(1)
+  public childItsGoals = new ReplaySubject<IChildEntity | undefined>(1);
+  private _childItsGoals: undefined | IChildEntity;
 
   constructor(private http: HttpClient, private ut: UtilityService, private childService: ChildService) {
     this.childItsGoals.next(undefined);
@@ -27,8 +27,8 @@ export class GoalService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.childItsGoals.subscribe(v => v && this.fetchChildItsGoals(v.id))
-            res(v);
+            if (this._childItsGoals)
+              this.fetchChildItsGoals(this._childItsGoals.id); res(v);
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
@@ -46,8 +46,8 @@ export class GoalService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.childItsGoals.subscribe(v => v && this.fetchChildItsGoals(v.id))
-            res(v)
+            if (this._childItsGoals)
+              this.fetchChildItsGoals(this._childItsGoals.id); res(v)
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
@@ -65,7 +65,8 @@ export class GoalService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.childItsGoals.subscribe(v => v && this.fetchChildItsGoals(v.id))
+            if (this._childItsGoals)
+              this.fetchChildItsGoals(this._childItsGoals.id);
             res(v);
           },
           error: (e) => {
@@ -88,7 +89,8 @@ export class GoalService {
         .subscribe({
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
-            if (Array.isArray(v) && v.length !=0) {
+            if (Array.isArray(v) && v.length != 0) {
+              this._childItsGoals = v[0];
               this.childItsGoals.next(v[0]);
               res(v[0]);
             }

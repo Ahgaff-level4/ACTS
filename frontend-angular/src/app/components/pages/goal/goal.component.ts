@@ -1,14 +1,10 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Component, OnDestroy } from '@angular/core';
 import { IChildEntity, IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
 import { Subscription, first } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { UtilityService } from 'src/app/services/utility.service';
 import { GoalService } from 'src/app/services/goal.service';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditGoalComponent } from '../../dialogs/add-edit/add-edit-goal/add-edit-goal.component';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-community';
@@ -139,39 +135,40 @@ export class GoalComponent implements OnDestroy {
     this.route.paramMap.pipe(first()).subscribe({
       next: async params => {
         let childId = params.get('id');
-        console.log('childId', childId);
         if (typeof childId == 'string')
           this.sub.add(this.service.childItsGoals.subscribe(async v => {
             if (v && v.id == +(childId as string))
               this.childItsGoals = v;
             else await this.service.fetchChildItsGoals(+(childId as string), true).catch(() => { });
           }));
-        else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
+        else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
       },
     });
+
     this.fieldService.fields.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.field.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
     });
+    
     this.programService.programs.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.program.name');
       if (col)
         col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };
     });
 
-    this.ut.user.subscribe(v => {
+    this.sub.add(this.ut.user.subscribe(v => {
       this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
       this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    });
+    }));
   }
 
   applySearch(event: Event) {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  printTable(){
-    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
