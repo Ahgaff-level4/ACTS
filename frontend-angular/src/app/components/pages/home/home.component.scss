@@ -1,10 +1,11 @@
 .top {
   z-index: -1;
   top: -450px;
-  right: -3200px;
+  right: -3000px;
   height: 1170px;
   width: 5000px;
   border-radius: 50%;
+  overflow: hidden;
 }
 @media (min-width: 768px) {
   .top {

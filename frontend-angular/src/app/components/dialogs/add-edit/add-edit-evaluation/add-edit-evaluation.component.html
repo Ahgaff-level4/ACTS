@@ -68,9 +68,9 @@
     </div>
 
     <div mat-dialog-actions>
-      <button type="button" mat-button (click)="dialogRef.close()" color="accent"
+      <button type="button" mat-button (click)="dialogRef.close()" color="accent" class=" rounded-5"
         cdkFocusInitial>{{'Cancel'|translate}}</button>
-      <button [disabled]="!formGroup.valid" type="submit" mat-button color="primary">
+      <button [disabled]="!formGroup.valid" type="submit" mat-button color="primary" class=" rounded-5">
         <mat-icon>{{(evaluationOrGoalId|type:'number')?'rate_review':'edit'}}</mat-icon>
         {{(evaluationOrGoalId|type:'number')?'Evaluate':'Edit'|translate}}
       </button>

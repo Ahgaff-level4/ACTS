@@ -21,7 +21,7 @@
     <p>{{'Name'|translate}}:&nbsp;{{ut.user.value.username}}</p>
     <p *ngIf="ut.user.value.birthdate">{{'Birthdate'|translate}}:&nbsp;{{ut.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{ut.user.value.birthdate|fromNow:true}}</p>
     <p>{{'Roles'|translate}}:&nbsp;{{ut.displayRoles(ut.user.value.roles)}}</p>
-    <button mat-stroked-button color="primary" (click)="changePassword()">{{'Change my password'|translate}}</button>
+    <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">{{'Change my password'|translate}}</button>
   </mat-card-content>
 </mat-card>
 
@@ -33,10 +33,10 @@
     <p>{{'Backup and recovery is a process of creating and storing copies of the system data that can be used to protect your system information in case of a system failure, malware attack, or accidental deletion.'|translate}}</p>
     <p>{{'Click on Create Backup File button to create a backup of the entire database and download it as a backup file. You can also use this file to restore your database to its previous state if something goes wrong.'|translate}}</p>
     <p>{{'Click on Restore Database button to restore the database from a backup, choose the backup file you want to use. Your database will be overwritten with the data from the backup file. The restore process will replace your current database with the backup version. You will be able to access your data as it was before the failure.'|translate}}</p>
-    <a [disabled]="uploadProgress!=null" class="mx-2" mat-stroked-button [href]="this.API+'backup'" download color="primary">{{'Create Backup File'|translate}}</a>
+    <a [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button [href]="this.API+'backup'" download color="primary">{{'Create Backup File'|translate}}</a>
 
     <input #fileInput type="file" name="backup" (change)="onFileSelected($event)" accept=".sql.gz" hidden>
-    <button [disabled]="uploadProgress!=null" class="mx-2" mat-stroked-button (click)="restore()" color="warn">{{'Restore Database'|translate}}</button>
+    <button [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button (click)="restore()" color="warn">{{'Restore Database'|translate}}</button>
 
     <mat-progress-bar *ngIf="uploadProgress != null" class="mt-2" mode="determinate" [value]="uploadProgress"></mat-progress-bar>
   </mat-card-content>

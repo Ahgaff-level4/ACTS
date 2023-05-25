@@ -5,7 +5,7 @@
       <div class="mb-3">
         <div class="row">
           <div class="col-md-12">
-            <button class="w-100" type="button" mat-flat-button color="primary"
+            <button class="w-100 rounded-5" type="button" mat-flat-button color="primary"
               (click)="selectActivity()">{{selectedActivity?'Change the activity':'Choose an activity'|translate}}</button>
             <mat-error *ngIf="formGroup.get('activityId')?.errors?.['dirty']" style="font-size: small;font-weight: 500;" class="mx-2 mat-error">{{'You must choose an activity'|translate}}</mat-error>
           </div>
@@ -34,7 +34,7 @@
           </mat-form-field>
         </div>
       </div>
-      
+
       <div class="row mt-2">
         <div class="col-md-12">
           <mat-form-field style="max-width: 250px;width:100%">
@@ -52,9 +52,9 @@
 
 
     <div mat-dialog-actions>
-      <button type="button" mat-button (click)="dialogRef.close()" color="accent"
+      <button type="button" mat-button (click)="dialogRef.close()" color="accent" class=" rounded-5"
         cdkFocusInitial>{{'Cancel'|translate}}</button>
-      <button [disabled]="!formGroup.valid" type="submit" mat-button
+      <button [disabled]="!formGroup.valid" type="submit" mat-button class=" rounded-5"
         color="primary">{{(strengthOrChildId|type:'object')?'Edit':'Add'|translate}}</button>
     </div>
   </form>

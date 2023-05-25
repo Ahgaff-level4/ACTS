@@ -34,23 +34,23 @@
       </mat-menu>
     </div>
   </div>
-  <div class="mat-elevation-z4 table-responsive mb-4">
+  <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
       [rowData]="rowData" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
   <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
-    <a class="w-100 mx-3 mb-2" mat-raised-button color="primary" routerLink="/add-account">
+    <a class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary" routerLink="/add-account">
       {{'Register new account'|translate}}<mat-icon>person_add</mat-icon>
     </a>
 
     <button [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
-    class="w-100 mx-3 mb-2" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
+    class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
     <mat-icon>edit</mat-icon>{{'Edit'|translate}}
   </button>
 
-    <button [disabled]="selectedItem==null" class="w-100 mx-3 mb-2" mat-stroked-button
+    <button [disabled]="selectedItem==null" class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button
     color="warn" (click)="deleteAccount(this.selectedItem)"
     [matTooltip]="'Delete the selected account'|translate"><mat-icon>person_remove</mat-icon>
       {{'Delete'|translate}}</button>

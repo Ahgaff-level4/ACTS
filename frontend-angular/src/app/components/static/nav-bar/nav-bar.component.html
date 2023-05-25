@@ -13,7 +13,7 @@
   <div class="container mx-0 w-100 pe-0">
     <a routerLink="/"><img class="image" src="../../../assets/img/logo.png" alt="ACTS logo" /></a>
     <a routerLink="/" class="icon-name text-white text-decoration-none"><span>{{'ACTS'|translate}}</span></a>
-    <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler" type="button" data-toggle="collapse"
+    <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler rounded-5" type="button" data-toggle="collapse"
       data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
@@ -44,8 +44,8 @@
         </li>
         <hr class="text-white my-2 mx-0">
         <div  style="min-width:150px" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-lg-none d-block" routerLinkActive="active">
-          <a class="nav-link" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
-          <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link"
+          <a class="nav-link rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
+          <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link rounded-5"
             *ngIf="isLoggedIn">
             {{'Logout'|translate}}</button>
         </div>
@@ -53,8 +53,8 @@
     </div>
   </div>
   <div style="min-width:150px" (click)="isShowDivIf=!isShowDivIf" class="nav-item px-3 d-none d-lg-block" routerLinkActive="active">
-    <a class="nav-link" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
-    <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link"
+    <a class="nav-link rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn" routerLink="/login">{{'Login'|translate}}</a>
+    <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;" class="nav-link rounded-5"
       *ngIf="isLoggedIn">
       {{'Logout'|translate}}</button>
   </div>

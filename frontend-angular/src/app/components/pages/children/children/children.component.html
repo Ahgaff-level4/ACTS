@@ -34,25 +34,25 @@
       </mat-menu>
     </div>
   </div>
-  <div class="mat-elevation-z4 table-responsive mb-4">
+  <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData"
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
-  <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
-    <a *ngIf="canAddEdit" class="w-100 mx-3 mb-2" mat-raised-button color="primary" routerLink="/add-child">
+  <div class="d-md-flex justify-content-between rounded-5" *ngIf="!isPrinting">
+    <a *ngIf="canAddEdit" class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary" routerLink="/add-child">
       {{'Register a child'|translate}}<mat-icon>person_add</mat-icon>
     </a>
     <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
-      class="w-100 mx-3 mb-2" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
+      class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
       <mat-icon>edit</mat-icon>{{'Edit'|translate}}
     </button>
-    <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
+    <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2 rounded-5"
       [matTooltip]="'View goals of the selected child'|translate"
       [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/goals':'#'" mat-stroked-button color="primary">
       {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
     </a>
-    <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2"
+    <a [disabled]="selectedItem==null" class="w-100 mx-3 mb-2 rounded-5"
       [matTooltip]="'View strengths of the selected child'|translate"
       [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" mat-stroked-button color="primary">
       {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
