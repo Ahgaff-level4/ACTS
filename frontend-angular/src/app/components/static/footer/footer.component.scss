@@ -1,3 +1,13 @@
 hr{
 	margin-top: 200px!important;
 }
+
+footer{
+  //todo add linear from $my-primary to #000 from top to bottom
+  // background-image: linear-gradient(#000);
+  // @extend .my-primary-bg
+
+}
+li:hover{
+  color:#f9f9f9;
+}

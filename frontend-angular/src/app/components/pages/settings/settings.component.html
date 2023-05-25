@@ -1,4 +1,4 @@
-<mat-card class="m-4">
+<mat-card class="m-4 rounded-5">
   <mat-card-header>
     <mat-card-title><p>{{'Application Language'|translate}}</p></mat-card-title>
   </mat-card-header>
@@ -12,7 +12,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="m-4" *ngIf="ut.user.value">
+<mat-card class="m-4 rounded-5" *ngIf="ut.user.value">
   <mat-card-header>
     <mat-card-title>{{'My Account Information'|translate}}</mat-card-title>
   </mat-card-header>
@@ -25,7 +25,7 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="m-4" *ngIf="this.ut.userHasAny('Admin')">
+<mat-card class="m-4 rounded-5" *ngIf="this.ut.userHasAny('Admin')">
   <mat-card-header>
     <mat-card-title>{{'Backup & Recovery'|translate}}</mat-card-title>
   </mat-card-header>
@@ -41,4 +41,3 @@
     <mat-progress-bar *ngIf="uploadProgress != null" class="mt-2" mode="determinate" [value]="uploadProgress"></mat-progress-bar>
   </mat-card-content>
 </mat-card>
-<div class="mb-5 pb-5"></div>

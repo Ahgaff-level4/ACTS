@@ -1,13 +1,40 @@
-<footer class="my-primary-bg text-white">
-  <div class="d-flex flex-wrap justify-content-md-between justify-content-center container mb-5 pb-5 mt-5 ">
-    <div class="mb-5 text-center mt-md-5">
-      <h1 class="display-1">{{'ACTS'|translate}}</h1>
-      <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
+<footer class="text-white text-opacity-75 my-primary-bg shadow"
+style="border-top-left-radius:1.4rem; border-top-right-radius:1.4rem;">
+  <div class="d-flex flex-wrap justify-content-md-center justify-content-between mt-5 pt-5 mt-5 pb-5 container">
+    <div class="d-flex flex-md-grow-0 flex-grow-1 flex-column flex-shrink-1 align-items-center">
+      <img src="assets/img/logo.png" width="200wv" height="200wv" class="mb-4" alt="ACTS logo">
+      <div class="text-center">
+        <h1 class="display-1">{{'ACTS'|translate}}</h1>
+        <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
+      </div>
     </div>
-    <div>
 
+    <div class="flex-fill">
+      <mat-divider class="d-md-none bg-white mb-3 mx-5"></mat-divider>
+      <ul class="navbar-nav text-center" (click)="scrollTop()">
+        <li  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
+        </li>
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')"  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
+        </li>
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher')"  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/program">{{'Programs'|translate}}</a>
+        </li>
+        <li *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment','Teacher')"  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/field">{{'Fields'|translate}}</a>
+        </li>
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')"  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
+        </li>
+        <li *ngIf="ut.userHasAny('Admin')"  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
+        </li>
+        <li  class="px-3 nav-item" routerLinkActive="active">
+          <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
+        </li>
+      </ul>
     </div>
-    <img src="assets/img/teacher-teach-child.svg" width="350wv" alt="Teacher teach a child">
   </div>
 <!--
   <div class="top-footer-area">
