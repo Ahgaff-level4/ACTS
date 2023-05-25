@@ -4,13 +4,15 @@ import { LoginService } from 'src/app/services/login.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
-  selector: 'app-nav-bar',
-  templateUrl: './nav-bar.component.html',
-  styleUrls: ['./nav-bar.component.scss']
+  selector: 'app-header',
+  templateUrl: './header.component.html',
+  styleUrls: ['./header.component.scss']
 })
-export class NavBarComponent implements OnInit {
-  constructor(public ut: UtilityService, public loginService: LoginService, public translate: TranslateService) { }
-  isShowDivIf = true;
+export class HeaderComponent implements OnInit {
+  public isShowDivIf = true;
+
+  constructor(public ut: UtilityService, public loginService: LoginService, public translate: TranslateService) {
+  }
 
   ngOnInit(): void {
     this.ut.user.subscribe((v) => {

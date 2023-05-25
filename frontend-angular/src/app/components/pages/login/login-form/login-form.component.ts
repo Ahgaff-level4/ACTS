@@ -30,9 +30,7 @@ export class LoginFormComponent {
     this.formGroup.disable();
     this.loginService.login(username.value.trim(), password.value, isRememberMe.value || true, () => {
       this.formGroup.enable();
-      // if (this.dialogRef)
-      //   this.dialogRef.close();
-      // else
+      //todo redirect to previous page ?? '/main'
         this.ut.router.navigate(['main']);
     })
   }

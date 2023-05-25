@@ -1,0 +1,61 @@
+<nav style="border-bottom-left-radius:1.4rem; border-bottom-right-radius:1.4rem;"
+  [ngClass]="{'shadow':ut.router.url!='/'}"
+  class="navbar navbar-expand-lg navbar-dark my-primary-bg w-100 flex-fill flex-grow-1 px-0 justify-content-between">
+  <div class=" mx-2 d-flex w-100 justify-content-between align-items-center" [ngClass]="!isShowDivIf?'flex-wrap':'flex-nowrap'">
+    <a routerLink="/"><img class="image" src="/assets/img/logo.png" alt="ACTS logo" /></a>
+    <a routerLink="/"
+      class="icon-name justify-self-md-start justify-self-center text-white text-decoration-none"><span>{{'ACTS'|translate}}</span></a>
+      <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler align-self-baseline rounded-5" type="button"
+      data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+      aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <!-- *ngIf="!isShowDivIf" --- hide and show -->
+    <ul id="navbarResponsive" [ngClass]="!isShowDivIf?'d-block':'d-none'"
+      class="navbar-nav w-100 collapse navbar-collapse ms-lg-5 me-lg-5 mt-lg-0 mt-3 justify-content-center">
+      <li (click)="isShowDivIf=true" class="nav-item px-3" routerLinkActive="active">
+        <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
+      </li>
+      <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')" (click)="isShowDivIf=true"
+        class="nav-item px-3" routerLinkActive="active">
+        <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
+      </li>
+      <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher')" (click)="isShowDivIf=true"
+        class="nav-item px-3" routerLinkActive="active">
+        <a class="nav-link" routerLink="/program">{{'Programs'|translate}}</a>
+      </li>
+      <li *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment','Teacher')" (click)="isShowDivIf=true"
+        class="nav-item px-3" routerLinkActive="active">
+        <a class="nav-link" routerLink="/field">{{'Fields'|translate}}</a>
+      </li>
+      <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')" (click)="isShowDivIf=true" class="nav-item px-3"
+        routerLinkActive="active">
+        <a class="nav-link" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
+      </li>
+      <li *ngIf="ut.userHasAny('Admin')" (click)="isShowDivIf=true" class="nav-item px-3"
+        routerLinkActive="active">
+        <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
+      </li>
+      <li (click)="isShowDivIf=true" class="nav-item px-3" routerLinkActive="active">
+        <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
+      </li>
+      <hr class="text-white my-2 mx-0">
+      <div (click)="isShowDivIf=true" class="nav-item px-2 d-lg-none d-block"
+        routerLinkActive="active">
+        <a class="nav-link min-width rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn"
+          routerLink="/login">{{'Login'|translate}}</a>
+        <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;"
+          class="nav-link min-width rounded-5" *ngIf="isLoggedIn">
+          {{'Logout'|translate}}</button>
+      </div>
+    </ul>
+
+    <div (click)="isShowDivIf=true" class="nav-idtem mt-1 px-3 d-none d-lg-block" routerLinkActive="active">
+      <a class="nav-link min-width rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn"
+        routerLink="/login">{{'Login'|translate}}</a>
+      <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;"
+        class="nav-link rounded-5 min-width" *ngIf="isLoggedIn">
+        {{'Logout'|translate}}</button>
+    </div>
+  </div>
+</nav>

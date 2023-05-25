@@ -13,7 +13,7 @@ import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/
 import { AppComponent } from './components/static/app/app.component';
 import { HomeComponent } from './components/pages/home/home.component';
 import { FieldComponent } from './components/pages/field/field.component';
-import { NavBarComponent } from './components/static/nav-bar/nav-bar.component';
+import { HeaderComponent } from './components/static/header/header.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { FooterComponent } from './components/static/footer/footer.component';
 import { ProgramComponent } from './components/pages/program/program.component';
@@ -60,7 +60,7 @@ import { StatisticsComponent } from './components/pages/home/statistics/statisti
     AppComponent,
     HomeComponent,
     FieldComponent,
-    NavBarComponent,
+    HeaderComponent,
     LoginComponent,
     FooterComponent,
     ProgramComponent,

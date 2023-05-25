@@ -1,7 +1,7 @@
-<footer class="text-white text-opacity-75 my-primary-bg shadow"
-style="border-top-left-radius:1.4rem; border-top-right-radius:1.4rem;">
+<footer class=" my-primary-bg shadow"
+  style="border-top-left-radius:1.4rem; border-top-right-radius:1.4rem;">
   <div class="d-flex flex-wrap justify-content-md-center justify-content-between mt-5 pt-5 mt-5 pb-5 container">
-    <div class="d-flex flex-md-grow-0 flex-grow-1 flex-column flex-shrink-1 align-items-center">
+    <div class="text-white d-flex flex-md-grow-0 flex-grow-1 flex-column flex-shrink-1 align-items-center">
       <img src="assets/img/logo.png" width="200wv" height="200wv" class="mb-4" alt="ACTS logo">
       <div class="text-center">
         <h1 class="display-1">{{'ACTS'|translate}}</h1>
@@ -10,65 +10,32 @@ style="border-top-left-radius:1.4rem; border-top-right-radius:1.4rem;">
     </div>
 
     <div class="flex-fill">
-      <mat-divider class="d-md-none bg-white mb-3 mx-5"></mat-divider>
-      <ul class="navbar-nav text-center" (click)="scrollTop()">
-        <li  class="px-3 nav-item" routerLinkActive="active">
+      <mat-divider class="d-md-none bg-white opacity-50 mb-3 mx-5"></mat-divider>
+      <ul class="navbar-nav text-center text-white-50" (click)="scrollTop()">
+        <li class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')"  class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')" class="px-3 nav-item"
+          routerLinkActive="active">
           <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher')"  class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/program">{{'Programs'|translate}}</a>
         </li>
-        <li *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment','Teacher')"  class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment','Teacher')" class="px-3 nav-item"
+          routerLinkActive="active">
           <a class="nav-link" routerLink="/field">{{'Fields'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')"  class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin')"  class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="ut.userHasAny('Admin')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
         </li>
-        <li  class="px-3 nav-item" routerLinkActive="active">
+        <li class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
         </li>
       </ul>
     </div>
   </div>
-<!--
-  <div class="top-footer-area">
-    <div class="container">
-      <div class="row">
-        <div class="col-12">
-
-          <div class="footer-logo">
-            <a href="index.html"><img src="img/core-img/logo2.png" alt=""></a>
-          </div>
-
-          <p><a href="#">
-              Copyright ©
-              <script>document.write(new Date().getFullYear());</script>2023 All rights reserved | This template is made
-              with <i class="fa fa-heart-o" aria-hidden="true"></i> by
-            </a><a href="https://colorlib.com" target="_blank">Colorlib</a>
-          </p>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <div class="bottom-footer-area d-flex justify-content-between align-items-center">
-
-    <div class="contact-info">
-      <a href="#"><span>Phone:</span> +44 300 303 0266</a>
-      <a href="#"><span>Email:</span> info@clever.com</a>
-    </div>
-
-    <div class="follow-us">
-      <span>Follow us</span>
-      <a href="#"><i class="fa fa-facebook" aria-hidden="true"></i></a>
-      <a href="#"><i class="fa fa-instagram" aria-hidden="true"></i></a>
-      <a href="#"><i class="fa fa-twitter" aria-hidden="true"></i></a>
-    </div>
-  </div> -->
 </footer>
