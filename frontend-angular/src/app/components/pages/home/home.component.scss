@@ -1,15 +1,17 @@
 .top {
   z-index: -1;
-  top: -450px;
-  right: -3000px;
-  height: 1170px;
-  width: 5000px;
-  border-radius: 50%;
-  overflow: hidden;
+  top: -50px;
+  // right: -500px;
+  height: 670px;
+  width: 100%;
+  border-bottom-left-radius: 3.3rem;
+  border-bottom-right-radius: 3.3rem;
+  // border-radius: 50%;
+  overflow: hidden !important;
 }
 @media (min-width: 768px) {
   .top {
-    height: 1000px;
+    height: 500px;
   }
 }
 

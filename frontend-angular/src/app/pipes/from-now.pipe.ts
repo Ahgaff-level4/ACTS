@@ -19,7 +19,7 @@ export class FromNowPipe implements PipeTransform {
    */
   transform(value: unknown, ...args: unknown[]): string {
     var date;
-    if (value == undefined || value === '')
+    if (value == null || value === '')
       return '';
     if (typeof value === 'string' || typeof value === 'number' || value instanceof Date)
       date = new Date(value);
@@ -33,7 +33,6 @@ export class FromNowPipe implements PipeTransform {
 
       return moment(date).fromNow();
     }
-    console.warn('DatePipe: called with unexpected value=', date);
     return '';
   }
 

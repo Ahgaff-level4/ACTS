@@ -39,6 +39,7 @@ export class AccountComponent {
       type: 'fromNowNoAgo',
       valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
+      tooltipValueGetter: (v) => this.ut.toDate(v.data?.person.birthDate),
     },
     {
       field: 'person.gender',
@@ -73,8 +74,8 @@ export class AccountComponent {
       } as SetFilterParams
     },
     {
-      field: 'createdDatetime',
-      headerName: 'Created Date',
+      field: 'person.createdDatetime',
+      headerName: 'Register date',
       type: 'fromNow',
     },
     {
@@ -103,7 +104,8 @@ export class AccountComponent {
   }
 
   ngOnInit(): void {
-    this.accountService.accounts.subscribe(v => this.rowData = v.map(n => ({ ...n })));
+    this.accountService.fetch();
+    this.accountService.accounts.subscribe(v => this.rowData = this.ut.deepClone(v));
   }
 
   applySearch(event: Event) {

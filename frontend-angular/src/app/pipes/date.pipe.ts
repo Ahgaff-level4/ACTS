@@ -17,7 +17,6 @@ export class DatePipe implements PipeTransform {
 
     if (date)
       return moment(date).format('yyyy/M/D');
-    console.warn('DatePipe: called with unexpected value=', date);
     return '';
   }
 

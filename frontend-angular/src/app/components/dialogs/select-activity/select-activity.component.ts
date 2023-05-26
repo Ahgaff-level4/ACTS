@@ -1,11 +1,12 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Inject, OnInit } from '@angular/core';
 import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IProgramEntity } from '../../../../../../interfaces';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/goal.service';
 import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit-activity.component';
 import { ActivityService } from 'src/app/services/activity.service';
+import { StrengthService } from 'src/app/services/strength.service';
 
 @Component({
   selector: 'app-select-activity',
@@ -19,12 +20,22 @@ export class SelectActivityComponent implements OnInit {
   public programs: IProgramEntity[] | undefined;
   public child: IChildEntity | undefined;
 
-  constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService, private ut: UtilityService, private goalService: GoalService, private activityService: ActivityService, private dialog: MatDialog) {
+  /**
+   * This dialog is used in the following state:
+   * - 'goal' for choosing the goal's activity.
+   * - 'strength' for choosing the strength's activity.
+   */
+  constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService,
+    private ut: UtilityService, private goalService: GoalService, private strengthService: StrengthService,
+    private activityService: ActivityService, private dialog: MatDialog,
+    @Inject(MAT_DIALOG_DATA) public state: 'goal' | 'strength') {
   }
 
   ngOnInit(): void {
     this.programService.programs.subscribe(v => this.programs = v);
-    this.goalService.childItsGoals.subscribe(v => this.child = v);
+    if (this.state == 'goal')
+      this.goalService.childItsGoals.subscribe(v => this.child = v);
+    else this.strengthService.childItsStrengths.subscribe(v => this.child = v);
   }
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {
@@ -46,10 +57,12 @@ export class SelectActivityComponent implements OnInit {
     if (filter == null)
       filter = this.filter;
     else this.filter = filter;
-    if (filter !== 'all' &&
+    console.log('filter', filter);
+    if (filter == 'age' &&
       this.chosenProgram?.activities &&
       this.child?.person?.birthDate) { //filter by age
       var age = this.ut.calcAge(this.child?.person?.birthDate);
+      console.log('age', age);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
           if (v.maxAge == null || v.minAge == null || (age < v.maxAge && age > v.minAge))

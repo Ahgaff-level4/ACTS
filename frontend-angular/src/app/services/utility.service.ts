@@ -235,5 +235,31 @@ export class UtilityService {
     return this.translateService.currentLang == 'ar' ? 'ar' : 'en'
   }
 
+  /**
+   * @param obj array or object
+   * @returns the same array or object with different reference address AKA ` obj != deepClone(obj)` and its properties object/array
+   */
+  public deepClone<T>(obj: object | object[]): T {
+    let ret: T;
+    if (Array.isArray(obj))
+      ret = [...obj] as T;
+    else if (typeof obj === 'object')
+      ret = { ...obj } as T;
+    else
+      return obj;
+
+    for (let i in ret)
+      if (typeof ret[i] == 'object' || Array.isArray(ret[i]))
+        ret[i] = this.deepClone(ret[i] as object | object[]);
+    return ret;
+  }
+
+  /**
+   * scroll user to the top.
+   */
+  public scrollTop() {
+    window.scrollTo({ top: 0 })
+  }
+
 }
 

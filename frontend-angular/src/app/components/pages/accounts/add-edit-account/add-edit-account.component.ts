@@ -23,7 +23,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
   isLoading = false;
   hide = true;
   phoneFields: string[] = [];
-  @Input('account') readonlyAccount: IAccountEntity | undefined;//used in account table to show account info
+  @Input('account') readonlyAccount: IAccountEntity | undefined;//was used in account table to show account info
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
@@ -55,7 +55,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
       address: [null, [Validators.maxLength(64)]],
     });
     for (let i = 0; i < 10; i++)
-      this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15), Validators.pattern(/^\+?\d+$/)]));
+      this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15), ]));
 
     if (this.account) {
       this.account.address = this.account.address ?? undefined;//the field should be as a key property in the account object even if it has value of undefined
@@ -96,6 +96,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
           await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
           this.ut.showSnackbar('The new account has been registered successfully.');
           this.ut.router.navigate(['/account']);
+          this.ut.scrollTop();
         } catch (e) {
           this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
@@ -109,11 +110,12 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
             await this.accountService.put(this.account.id, dirtyFields, true);
           this.ut.showSnackbar('The account has been edited successfully.');
           this.ut.router.navigate(['/account']);
+          this.ut.scrollTop();
         } catch (e) { }
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' }),console.log(this.personForm?.formGroup.errors,this.accountForm.errors,this.personForm?.formGroup?.valid ,this.accountForm.controls)
   }
 
 

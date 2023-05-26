@@ -25,9 +25,10 @@ export class ProgramComponent {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.service.programs.pipe(first()).subscribe(v => {
+      let sub = this.service.programs.subscribe(v => {
         this.rowData = v.map(n => ({ ...n }));
         this.gridOptions?.api?.refreshCells();
+        sub.unsubscribe();
       });
     }
   }
@@ -88,7 +89,7 @@ export class ProgramComponent {
   }
 
   ngOnInit(): void {
-
+    this.service.fetch();
     this.service.programs.subscribe({
       next: v => {
         this.rowData = v.map(n => ({ ...n }));

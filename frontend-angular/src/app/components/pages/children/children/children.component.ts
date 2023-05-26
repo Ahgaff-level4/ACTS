@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ChildService } from 'src/app/services/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -6,27 +6,29 @@ import { MatDialog } from '@angular/material/dialog';
 import { ColDef, GridOptions, ISetFilterParams, MenuItemDef, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
 })
-export class ChildrenComponent implements OnInit, AfterViewInit {
+export class ChildrenComponent implements OnInit,OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
+  public sub:Subscription = new Subscription();
 
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.childService.children.pipe(first()).subscribe(v=>{
-        this.rowData = v.map(n=>({...n}));
+      let sub = this.childService.children.subscribe(v=>{
+        this.rowData = this.ut.deepClone(v);
         this.gridOptions?.api?.refreshCells();
+        sub.unsubscribe();
       });
     }
   }
@@ -48,6 +50,7 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       type: 'fromNowNoAgo',
       valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
+      tooltipValueGetter: (v) => this.ut.toDate(v.data?.person.birthDate),
     },
     {
       colId: 'birthDate',
@@ -217,23 +220,18 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
 
 
   ngOnInit(): void {
-    this.childService.children.subscribe(v => {
+    this.childService.fetchChildren();
+    this.sub.add(this.childService.children.subscribe(v => {
       if (this.canAddEdit)
-        this.rowData = v.map(n=>({...n}));
-      else this.rowData = v.filter(v => v.isArchive == false).map(n=>({...n}));//Parent with archived child can not be viewed
+        this.rowData = this.ut.deepClone(v);
+      else this.rowData = this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
       this.gridOptions.api?.refreshCells();
-    });
-    // this.childService.fetchChildren().then(v => { this.rowData = v; console.log(v[0]) })
+    }));
 
-    this.ut.user.subscribe(v => {
+    this.sub.add(this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    });
+    }));
 
-  }
-
-  ngAfterViewInit(): void {
-    // this.dataSource.sort = this.sort;
-    // this.dataSource.paginator = this.paginator;
   }
 
 
@@ -247,25 +245,8 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
     }
   }
 
-  printTable = () => {//should be arrow function. Because it's called inside gridOption object
-    let isAuto = this.gridOptions.paginationAutoPageSize;
-    this.gridOptions.paginationAutoPageSize = false
-    let size = this.gridOptions.paginationPageSize;
-    this.gridOptions.paginationPageSize = 1000;
-    this.isPrinting = true;
-    this.gridOptions.api?.setDomLayout('print');
-    this.gridOptions.api?.setSideBarVisible(false)
-    this.gridOptions.api?.redrawRows();
-    setTimeout(() => print(), 2000);
-    setTimeout(() => {
-      this.isPrinting = false;
-      this.gridOptions.paginationAutoPageSize = isAuto;
-      this.gridOptions.paginationPageSize = size;
-      this.gridOptions.api?.setSideBarVisible(true)
-      this.gridOptions.api?.refreshCells();
-      this.gridOptions.api?.setDomLayout('autoHeight');
-
-    }, 3000);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   private goalsStrengthsMenuItems: MyMenuItem<IChildEntity>[] = [
@@ -290,10 +271,14 @@ export class ChildrenComponent implements OnInit, AfterViewInit {
       (e) => {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
         // e.api.refreshCells();
-        console.log('filter applied', e.api.getFilterInstance('isArchive')?.isFilterActive());
+        // console.log('filter applied', e.api.getFilterInstance('isArchive')?.isFilterActive());
 
       }
     ),
     onRowClicked: (v) => this.selectedItem = v.data,
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

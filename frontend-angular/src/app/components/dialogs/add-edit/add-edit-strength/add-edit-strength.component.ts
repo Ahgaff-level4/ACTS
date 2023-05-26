@@ -77,7 +77,7 @@ export class AddEditStrengthComponent implements OnDestroy {
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, null, IActivityEntity>(SelectActivityComponent)
+    this.dialog.open<SelectActivityComponent, 'goal'|'strength', IActivityEntity>(SelectActivityComponent,{data:'strength'})
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);

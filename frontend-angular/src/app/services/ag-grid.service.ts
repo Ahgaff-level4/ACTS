@@ -101,7 +101,7 @@ export class AgGridService {
       valueFormatter: (v) => this.ut.fromNow(v.value),//set the presentational value
       chartDataType: 'time',
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      // valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data,v.colDef.field!)))?this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)):new Date(this.getNestedValue(v.data, v.colDef.field!)),
       width: 150,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
@@ -111,14 +111,14 @@ export class AgGridService {
       valueFormatter: (v) => this.ut.fromNow(v.value, true),//set the presentational value
       chartDataType: 'time',
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data,v.colDef.field!)))?this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)):new Date(this.getNestedValue(v.data, v.colDef.field!)),
       width: 100,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
     },
     toDate: {
       valueFormatter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data,v.colDef.field!)))?this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)):new Date(this.getNestedValue(v.data, v.colDef.field!)),
       chartDataType: 'time',
       width: 100,
       filter: 'agDateColumnFilter',

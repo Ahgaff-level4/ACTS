@@ -17,7 +17,7 @@ export class FieldService {
   }
 
   /** fetch fields from DB and emit it to fields */
-  private fetch(manageLoading = false): Promise<void> {
+  public fetch(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IFieldEntity[]>(this.URL)

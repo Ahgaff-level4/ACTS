@@ -20,7 +20,6 @@ export class DateTimeWeekPipe implements PipeTransform {
       moment.locale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
       return moment(date).format('yyyy/M/D. h:mm A. dddd');
     }
-    console.warn('DatePipe: called with unexpected value=', date);
     return '';
   }
 

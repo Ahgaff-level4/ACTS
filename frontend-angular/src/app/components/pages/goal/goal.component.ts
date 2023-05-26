@@ -137,8 +137,10 @@ export class GoalComponent implements OnDestroy {
         let childId = params.get('id');
         if (typeof childId == 'string')
           this.sub.add(this.service.childItsGoals.subscribe(async v => {
-            if (v && v.id == +(childId as string))
-              this.childItsGoals = v;
+            if (v && v.id == +(childId as string)){
+              v.goals = v.goals.map(v=>({...v}));
+              this.childItsGoals = {...v};
+            }
             else await this.service.fetchChildItsGoals(+(childId as string), true).catch(() => { });
           }));
         else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")

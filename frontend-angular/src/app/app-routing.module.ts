@@ -32,7 +32,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   if (ut.user.value == null) {
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (ut.user.value == null && isRememberMe !== 'false')
-      ut.isLogin().finally(() => console.log('RoleGuard : isLogin:', ut.user.value));
+      ut.isLogin()//.finally(() => console.log('RoleGuard : isLogin:', ut.user.value));
 
     let sub: Subscription;
     sub = ut.user.subscribe((user) => {
@@ -48,7 +48,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
     if (hasRole(r))
       return true;
 
-  console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', ut.user.value?.roles)
+  // console.warn('canActivate : allowRoles=', allowRoles, ': userRoles=', ut.user.value?.roles)
   showUnauthorizeDialog();
   return false;
   //----------------------------------------

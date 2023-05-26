@@ -18,7 +18,7 @@ export class ProgramService {
   }
 
   /** fetch programs from DB and emit it to programs */
-  private fetch(manageLoading = false): Promise<void> {
+  public fetch(manageLoading = false): Promise<void> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IProgramEntity[]>(this.URL)

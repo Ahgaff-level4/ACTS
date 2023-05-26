@@ -19,7 +19,6 @@ export class CalcAgePipe implements PipeTransform {
     if (date) {
       return moment().diff(date, 'years');
     }
-    console.warn('DatePipe: called with unexpected value=', date);
     return 0;
   }
 

@@ -28,7 +28,7 @@ export class AccountService implements OnInit {
    * create api request to retrieve accounts information and broadcast it to `accounts` BehaviorSubject.
    * @returns `resolve` if request succeeded. Otherwise `reject`.
    */
-  private fetch(manageLoading = false): Promise<void> {
+  public fetch(manageLoading = false): Promise<void> {
     return new Promise(async (res, rej) => {
       manageLoading && this.ut.isLoading.next(true)
       this.http.get<IAccountEntity[]>(this.URL, { params: { 'FK': true } })

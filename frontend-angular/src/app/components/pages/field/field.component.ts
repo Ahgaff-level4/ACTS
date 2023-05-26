@@ -26,7 +26,7 @@ export class FieldComponent implements OnInit {
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
       this.service.fields.pipe(first()).subscribe(v => {
-        this.rowData = v.map(n=>({...n}));
+        this.rowData = v.map(n => ({ ...n }));
         this.gridOptions.api?.setRowData(this.rowData);
       });
     }
@@ -70,7 +70,8 @@ export class FieldComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.service.fields.subscribe({ next: v => this.rowData = v.map(n=>({...n})) });
+    this.service.fetch();
+    this.service.fields.subscribe({ next: v => this.rowData = v.map(n => ({ ...n })) });
 
     this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
@@ -81,8 +82,8 @@ export class FieldComponent implements OnInit {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  printTable(){
-    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */

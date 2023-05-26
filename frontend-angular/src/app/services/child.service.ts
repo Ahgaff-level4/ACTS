@@ -21,7 +21,7 @@ export class ChildService {
    * create api request to retrieve children information and broadcast it to `children` BehaviorSubject.
    * @returns `resolve` if request succeeded. Otherwise `reject`.
    */
-  private fetchChildren(manageLoading = false): Promise<IChildEntity[]> {
+  public fetchChildren(manageLoading = false): Promise<IChildEntity[]> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IChildEntity[]>(this.isOnlyParent() ? this.childURL + '/parent' : this.childURL, { params: { 'FK': true } })

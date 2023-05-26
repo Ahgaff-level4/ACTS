@@ -9,7 +9,5 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class FooterComponent {
   constructor(public ut: UtilityService) { }
 
-  scrollTop() {
-    window.scrollTo({top:0})
-  }
+
 }
