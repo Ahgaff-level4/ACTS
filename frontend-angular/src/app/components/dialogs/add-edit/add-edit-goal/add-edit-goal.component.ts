@@ -1,23 +1,25 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/goal.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IGoalEntity } from '../../../../../../../interfaces';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-goal',
   templateUrl: './add-edit-goal.component.html',
   styleUrls: ['./add-edit-goal.component.scss']
 })
-export class AddEditGoalComponent {
+export class AddEditGoalComponent implements OnDestroy {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new goal */
   public child: IChildEntity | undefined;
+  public sub: Subscription = new Subscription();
 
   /** used to add/edit goal base on `goalOrChildId` type:
    * - Either goal to be edit.
@@ -36,11 +38,11 @@ export class AddEditGoalComponent {
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    this.goalService.childItsGoals.subscribe(v => {
+    this.sub.add(this.goalService.childItsGoals.subscribe(v => {
       if (v == null && typeof this.goalOrChildId != 'object')
         this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
       else this.child = v;
-    });
+    }));
 
     if (typeof this.goalOrChildId === 'object') {
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.goalOrChildId));
@@ -59,7 +61,7 @@ export class AddEditGoalComponent {
         if (this.child?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId },true);
+          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
           this.ut.showSnackbar('The goal has been added successfully.');
           this.dialogRef.close('added');
         } catch (e) { }
@@ -67,7 +69,7 @@ export class AddEditGoalComponent {
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
-            await this.service.patch(this.goalOrChildId.id, dirtyControls,true);
+            await this.service.patch(this.goalOrChildId.id, dirtyControls, true);
           this.ut.showSnackbar('The goal has been edited successfully.');
           this.dialogRef.close('edited');
         } catch (e) { }
@@ -87,5 +89,7 @@ export class AddEditGoalComponent {
         else this.formGroup.get('activityId')?.setErrors({ dirty: true })
       });
   }
-
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }

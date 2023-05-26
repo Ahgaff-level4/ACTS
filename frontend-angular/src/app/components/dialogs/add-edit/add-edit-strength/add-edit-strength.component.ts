@@ -1,21 +1,25 @@
-import { Component, Inject } from '@angular/core';
+import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { IActivityEntity, IStrengthEntity } from '../../../../../../../interfaces';
+import { IActivityEntity, IChildEntity, IStrengthEntity } from '../../../../../../../interfaces';
 import { StrengthService } from 'src/app/services/strength.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-strength',
   templateUrl: './add-edit-strength.component.html',
   styleUrls: ['./add-edit-strength.component.scss']
 })
-export class AddEditStrengthComponent {
+export class AddEditStrengthComponent implements OnDestroy {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
+  /**Used when adding new strength */
+  public child: IChildEntity | undefined;
+  public sub: Subscription = new Subscription();
 
   constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
@@ -32,8 +36,11 @@ export class AddEditStrengthComponent {
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    if (typeof this.strengthService.childItsStrengths.value != 'object')
-      this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
+    this.sub.add(this.strengthService.childItsStrengths.subscribe(v=>{
+      if(v==null)
+      this.ut.errorDefaultDialog().afterClosed().subscribe(()=>this.dialogRef.close());
+      else this.child = v;
+    }));
 
     if (typeof this.strengthOrChildId === 'object') {
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.strengthOrChildId));
@@ -49,10 +56,10 @@ export class AddEditStrengthComponent {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.strengthOrChildId == 'number') {//add new
-        if (this.strengthService.childItsStrengths.value?.id == null || this.ut.user.value?.accountId == null)
+        if (this.child?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.strengthService.childItsStrengths.value?.id, teacherId: this.ut.user.value?.accountId });
+          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId },true);
           this.ut.showSnackbar('The strength has been added successfully.');
           this.dialogRef.close('added');
         } catch (e) { }
@@ -60,7 +67,7 @@ export class AddEditStrengthComponent {
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
-            await this.service.patch(this.strengthOrChildId.id, dirtyControls);
+            await this.service.patch(this.strengthOrChildId.id, dirtyControls,true);
           this.ut.showSnackbar('The strength has been edited successfully.');
           this.dialogRef.close('edited');
         } catch (e) { }
@@ -81,4 +88,7 @@ export class AddEditStrengthComponent {
       });
   }
 
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
 import { IChildEntity, ICreateStrength, IStrengthEntity, SucResEditDel } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
@@ -10,7 +10,7 @@ import { GoalService } from './goal.service';
   providedIn: 'root'
 })
 /**
- * Strength is Goal in DB and Server.
+ * Strength is Goal in the DB.
  * The only difference is when fetching the "goals" if we want child's goals then `where goal.state != 'strength'`.
  * When we want child's strengths then `where goal.state == 'strength'`.
  * This is done in the server depends on the url:
@@ -19,9 +19,12 @@ import { GoalService } from './goal.service';
  */
 export class StrengthService {
   /**Child object with its strengths. The idea is that: this child will be replaced every time user check another child strengths. And it is in service so it is shared with other components */
-  public childItsStrengths = new BehaviorSubject<IChildEntity | undefined>(undefined)
+  public childItsStrengths = new ReplaySubject<IChildEntity | undefined>(1)
+  private _childItsStrengths: undefined | IChildEntity;
 
-  constructor(private http: HttpClient, private ut: UtilityService, private childService: ChildService, private goalService:GoalService) { }
+  constructor(private http: HttpClient, private ut: UtilityService, private childService: ChildService, private goalService: GoalService) {
+    this.childItsStrengths.next(undefined);
+  }
   /**
   * @returns if request succeeded, `resolve` with the added entity, and call fetch() to emit the new entities. Otherwise show error dialog and `reject`.
   */
@@ -32,8 +35,8 @@ export class StrengthService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.childItsStrengths.value?.id)
-              this.fetchChildItsStrengths(this.childItsStrengths.value.id);
+            if (this._childItsStrengths)
+              this.fetchChildItsStrengths(this._childItsStrengths.id);
             res(v);
           },
           error: (e) => {
@@ -52,8 +55,8 @@ export class StrengthService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.childItsStrengths.value?.id)
-              this.fetchChildItsStrengths(this.childItsStrengths.value.id);
+            if (this._childItsStrengths)
+              this.fetchChildItsStrengths(this._childItsStrengths.id);
             res(v)
           },
           error: e => {
@@ -72,8 +75,8 @@ export class StrengthService {
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
-            if (this.childItsStrengths.value?.id)
-              this.fetchChildItsStrengths(this.childItsStrengths.value.id);
+            if (this._childItsStrengths)
+              this.fetchChildItsStrengths(this._childItsStrengths.id);
             res(v);
           },
           error: (e) => {
@@ -92,11 +95,12 @@ export class StrengthService {
   public fetchChildItsStrengths(id: number, manageLoading = false): Promise<IChildEntity> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
-      this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id+'/strengths')
+      this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id + '/strengths')
         .subscribe({
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
             if (Array.isArray(v) && v.length != 0) {
+              this._childItsStrengths = v[0];
               this.childItsStrengths.next(v[0]);
               res(v[0]);
             }

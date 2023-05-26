@@ -7,7 +7,6 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatIconModule } from '@angular/material/icon'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDialogModule } from '@angular/material/dialog'
-import { MatTableModule } from '@angular/material/table';
 import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { AppComponent } from './components/static/app/app.component';
 import { MatSortModule } from '@angular/material/sort';
@@ -41,7 +40,6 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatIconModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatTableModule,
     MatPaginatorModule,
     MatSortModule,
     DragDropModule,
