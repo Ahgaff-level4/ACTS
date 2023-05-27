@@ -13,19 +13,19 @@ import { Subscription, first } from 'rxjs';
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
 })
-export class ChildrenComponent implements OnInit,OnDestroy {
+export class ChildrenComponent implements OnInit, OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  public sub:Subscription = new Subscription();
+  public sub: Subscription = new Subscription();
 
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      let sub = this.childService.children.subscribe(v=>{
+      let sub = this.childService.children.subscribe(v => {
         this.rowData = this.ut.deepClone(v);
         this.gridOptions?.api?.refreshCells();
         sub.unsubscribe();
@@ -82,45 +82,45 @@ export class ChildrenComponent implements OnInit,OnDestroy {
       headerName: 'Family information',
       valueGetter: (v) => {
         let ret = '';
-        if (v.data?.birthOrder)
-          ret += this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1])
-            + ' ' + this.ut.translate('of') + ' ';
-
-        if (v.data?.maleFamilyMembers && v.data?.femaleFamilyMembers)
-          ret += (v.data.maleFamilyMembers + v.data.femaleFamilyMembers + 1)
+        if (v.data?.birthOrder != null)
+          ret += this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1]);
+console.log(v.data?.person.name,'birthOrder',v.data?.birthOrder)
+        if (v.data?.maleFamilyMembers!=null && v.data?.femaleFamilyMembers!=null)
+          ret += (v.data?.birthOrder?' ' + this.ut.translate('of'):'') + ' ' + (v.data.maleFamilyMembers + v.data.femaleFamilyMembers + 1)
             + ' ' + this.ut.translate('siblings');
         if (typeof v.data?.maleFamilyMembers != 'number' && typeof v.data?.femaleFamilyMembers != 'number')
           return ret;
         ret += ' (';
-        if (v.data?.femaleFamilyMembers)
-          ret += (v.data.femaleFamilyMembers + (v.data.person?.gender == 'Female' ? 1 : 0))
-            + ' ' + this.ut.translate('girls') + this.ut.translate(',') + ' ';
-        if (v.data?.maleFamilyMembers)
-          ret += (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
+        if (v.data?.femaleFamilyMembers != null)
+          ret += (v.data.femaleFamilyMembers + (v.data.person?.gender == 'Female' ? 1 : 0))+' '
+            + this.ut.translate('girls');
+
+        if (v.data?.maleFamilyMembers!=null)
+          ret += (v.data?.femaleFamilyMembers!=null ? this.ut.translate(',') + ' ' : '') + (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
             + ' ' + this.ut.translate('boys');
         return ret + ')';
       },
-      type: ['long','madeUp'],
+      type: ['long', 'madeUp'],
     },
     {
       field: 'femaleFamilyMembers',
       headerName: 'Number of sisters',
       onCellValueChanged: this.onChildCellValueChanged,
-      type:'number',
+      type: 'number',
       hide: true,
     },
     {
       field: 'maleFamilyMembers',
       headerName: 'Number of brothers',
       onCellValueChanged: this.onChildCellValueChanged,
-      type:'number',
+      type: 'number',
       hide: true,
     },
     {
       field: 'birthOrder',
       headerName: 'Order between siblings',
-      type:'number',
-      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder-1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
+      type: 'number',
+      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
       hide: true,
     },
     {
