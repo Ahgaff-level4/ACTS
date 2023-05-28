@@ -52,7 +52,6 @@ export class ProgramComponent {
       field: 'createdDatetime',
       headerName: 'Created Date',
       type: 'fromNow',
-      onCellValueChanged: this.onCellValueChange,
     },
   ];
 

@@ -51,7 +51,6 @@ export class FieldComponent implements OnInit {
       field: 'createdDatetime',
       headerName: 'Created Date',
       type: 'fromNow',
-      onCellValueChanged: this.onCellValueChange,
     },
   ];
 

@@ -239,7 +239,7 @@ export class UtilityService {
    * @param obj array or object
    * @returns the same array or object with different reference address AKA ` obj != deepClone(obj)` and its properties object/array
    */
-  public deepClone<T>(obj: object | object[]): T {
+  public deepClone<T extends object>(obj: T): T {
     let ret: T;
     if (Array.isArray(obj))
       ret = [...obj] as T;
@@ -250,7 +250,7 @@ export class UtilityService {
 
     for (let i in ret)
       if (typeof ret[i] == 'object' || Array.isArray(ret[i]))
-        ret[i] = this.deepClone(ret[i] as object | object[]);
+        ret[i] = this.deepClone(ret[i] as T) as any;
     return ret;
   }
 

@@ -65,7 +65,6 @@ export class SpecialActivityComponent {
       field: 'createdDatetime',
       headerName: 'Created Date',
       type: 'fromNow',
-      onCellValueChanged: this.onCellValueChange,
     },
   ];
 

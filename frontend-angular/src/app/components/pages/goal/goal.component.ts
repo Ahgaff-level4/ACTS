@@ -7,7 +7,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { GoalService } from 'src/app/services/goal.service';
 import { AddEditGoalComponent } from '../../dialogs/add-edit/add-edit-goal/add-edit-goal.component';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
-import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-community';
+import { ColDef, GridOptions, ICellRendererParams, ISetFilterParams, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/field.service';
 import { ProgramService } from 'src/app/services/program.service';
@@ -61,14 +61,36 @@ export class GoalComponent implements OnDestroy {
     {
       field: 'completed',//not property of Goal
       headerName: 'Completed',
-      type: ['long', 'madeUp'],
-
-      // valueFormatter: 'asdf',//todo: set <mat-icon> as continual in the cell base on state property
+      type: ['enum', 'madeUp'],
+      filterParams: {
+        values: ['Checked', 'Unchecked'],
+        valueFormatter:v=>this.ut.translate(v.value),
+      }as ISetFilterParams<IGoalEntity, string>,
+      cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
+        console.log(params)
+        if (params.data?.state == 'completed')
+          return '<div class="d-flex justify-content-center mt-2"><mat-icon _ngcontent-xxc-c62="" role="img" class="mat-icon notranslate  material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">done</mat-icon></div>';
+        return '';
+      },
+      valueGetter:v=>v.data?.state=='completed'?'Checked':'Unchecked',
+      valueFormatter:v=>this.ut.translate(v.value),
     },
     {
       field: 'continual',//not property of Goal
       headerName: 'Continual',
-      type: ['long', 'madeUp'],
+      type: ['enum', 'madeUp'],
+      filterParams: {
+        values: ['Checked', 'Unchecked'],
+        valueFormatter:v=>this.ut.translate(v.value),
+      }as ISetFilterParams<IGoalEntity, string>,
+      cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
+        console.log(params)
+        if (params.data?.state == 'continual')
+          return '<div class="d-flex justify-content-center mt-2"><mat-icon _ngcontent-xxc-c62="" role="img" class="mat-icon notranslate  material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">done</mat-icon></div>';
+        return '';
+      },
+      valueGetter:v=>v.data?.state=='continual'?'Checked':'Unchecked',
+      valueFormatter:v=>this.ut.translate(v.value),
       // cellRenderer: '<mat-icon _ngcontent-xxc-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">done</mat-icon>',
     },
     {
@@ -92,7 +114,6 @@ export class GoalComponent implements OnDestroy {
       field: 'assignDatetime',
       headerName: 'Assign Date',
       type: 'fromNow',
-      onCellValueChanged: this.onCellValueChange,
     },
     {
       field: 'teacher.person.name',
@@ -137,9 +158,9 @@ export class GoalComponent implements OnDestroy {
         let childId = params.get('id');
         if (typeof childId == 'string')
           this.sub.add(this.service.childItsGoals.subscribe(async v => {
-            if (v && v.id == +(childId as string)){
-              v.goals = v.goals.map(v=>({...v}));
-              this.childItsGoals = {...v};
+            if (v && v.id == +(childId as string)) {
+              this.childItsGoals = this.ut.deepClone(v);
+              this.gridOptions?.api?.refreshCells();
             }
             else await this.service.fetchChildItsGoals(+(childId as string), true).catch(() => { });
           }));

@@ -69,6 +69,8 @@ export class AccountComponent {
         values: [this.ut.translate('Admin'), this.ut.translate('Head of Department'), this.ut.translate('Teacher'), this.ut.translate('Parent')],
         comparator: function (a: string, b: string) {
           // return a.includes(b) ? 1 : (b.includes(a) ? -1 : 0);
+          console.log('a', a, 'b', b);
+
           return 1;//todo fix filtering for multi-role. `comparator` used for sort :/
         }
       } as SetFilterParams
@@ -105,21 +107,24 @@ export class AccountComponent {
 
   ngOnInit(): void {
     this.accountService.fetch();
-    this.accountService.accounts.subscribe(v => this.rowData = this.ut.deepClone(v));
+    this.accountService.accounts.subscribe(v => {
+      this.rowData = this.ut.deepClone(v);
+      this.gridOptions?.api?.refreshCells()
+    });
   }
 
   applySearch(event: Event) {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  printTable(){
-    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
-      this.menuItems, {isPrintingNext:v=>this.isPrinting=v}, (item) => { this.edit(item) }),
+      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { this.edit(item) }),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 

@@ -7,9 +7,7 @@ import { MatToolbarModule } from '@angular/material/toolbar'
 import { MatIconModule } from '@angular/material/icon'
 import { MatCheckboxModule } from '@angular/material/checkbox'
 import { MatDialogModule } from '@angular/material/dialog'
-import { MatPaginatorIntl, MatPaginatorModule } from '@angular/material/paginator';
 import { AppComponent } from './components/static/app/app.component';
-import { MatSortModule } from '@angular/material/sort';
 import { DragDropModule } from '@angular/cdk/drag-drop';
 import { MatRippleModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -27,7 +25,6 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ClipboardModule } from '@angular/cdk/clipboard';
-import {MatGridListModule} from '@angular/material/grid-list';
 
 
 @NgModule({
@@ -40,8 +37,6 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatIconModule,
     MatCheckboxModule,
     MatDialogModule,
-    MatPaginatorModule,
-    MatSortModule,
     DragDropModule,
     MatRippleModule,
     MatDatepickerModule,
@@ -59,11 +54,7 @@ import {MatGridListModule} from '@angular/material/grid-list';
     MatCardModule,
     MatProgressBarModule,
     ClipboardModule,
-    MatGridListModule,
   ],
-  providers: [
-    { provide: MatPaginatorIntl, useClass: AppComponent }
-  ]
 })
 export class AppMaterialModule {
 }

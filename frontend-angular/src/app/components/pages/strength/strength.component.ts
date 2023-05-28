@@ -68,7 +68,6 @@ export class StrengthComponent {
       field: 'assignDatetime',
       headerName: 'Assign Date',
       type: 'fromNow',
-      onCellValueChanged: this.onCellValueChange,
     },
     {
       field: 'teacher.person.name',

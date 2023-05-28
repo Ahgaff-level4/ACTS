@@ -603,5 +603,7 @@
   "Family information":"",
   "Delete the selected account":"",
   "ACTS - Login":"ACTS - تسجيل الدخول",
-  "ACTS - Home":"الرئيسية - ACTS"
+  "ACTS - Home":"الرئيسية - ACTS",
+  "Checked":"مختار",
+  "Unchecked":"غير مختار"
 }

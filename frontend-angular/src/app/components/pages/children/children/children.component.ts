@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ColDef, GridOptions, ISetFilterParams, MenuItemDef, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { Subscription, first } from 'rxjs';
+import { Observable, Subscription, finalize, first, map, tap } from 'rxjs';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -25,11 +25,7 @@ export class ChildrenComponent implements OnInit, OnDestroy {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      let sub = this.childService.children.subscribe(v => {
-        this.rowData = this.ut.deepClone(v);
-        this.gridOptions?.api?.refreshCells();
-        sub.unsubscribe();
-      });
+      this.childService.fetchChildren();
     }
   }
 
@@ -83,22 +79,21 @@ export class ChildrenComponent implements OnInit, OnDestroy {
       valueGetter: (v) => {
         let ret = '';
         if (v.data?.birthOrder != null)
-          ret += this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1]);
-console.log(v.data?.person.name,'birthOrder',v.data?.birthOrder)
-        if (v.data?.maleFamilyMembers!=null && v.data?.femaleFamilyMembers!=null)
-          ret += (v.data?.birthOrder?' ' + this.ut.translate('of'):'') + ' ' + (v.data.maleFamilyMembers + v.data.femaleFamilyMembers + 1)
-            + ' ' + this.ut.translate('siblings');
+        ret += this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1]);
+        if (v.data?.maleFamilyMembers != null && v.data?.femaleFamilyMembers != null)
+        ret += (v.data?.birthOrder ? ' ' + this.ut.translate('of') : '') + ' ' + (v.data.maleFamilyMembers + v.data.femaleFamilyMembers + 1)
+        + ' ' + this.ut.translate('siblings');
         if (typeof v.data?.maleFamilyMembers != 'number' && typeof v.data?.femaleFamilyMembers != 'number')
           return ret;
-        ret += ' (';
-        if (v.data?.femaleFamilyMembers != null)
-          ret += (v.data.femaleFamilyMembers + (v.data.person?.gender == 'Female' ? 1 : 0))+' '
-            + this.ut.translate('girls');
+          ret += ' (';
+          if (v.data?.femaleFamilyMembers != null)
+          ret += (v.data.femaleFamilyMembers + (v.data.person?.gender == 'Female' ? 1 : 0)) + ' '
+          + this.ut.translate('girls');
 
-        if (v.data?.maleFamilyMembers!=null)
-          ret += (v.data?.femaleFamilyMembers!=null ? this.ut.translate(',') + ' ' : '') + (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
+          if (v.data?.maleFamilyMembers != null)
+          ret += (v.data?.femaleFamilyMembers != null ? this.ut.translate(',') + ' ' : '') + (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
             + ' ' + this.ut.translate('boys');
-        return ret + ')';
+            return ret + ')';
       },
       type: ['long', 'madeUp'],
     },
@@ -135,6 +130,7 @@ console.log(v.data?.person.name,'birthOrder',v.data?.birthOrder)
       headerName: 'Diagnostic date',
       type: 'fromNow',
       hide: true,
+      onCellValueChanged: this.onChildCellValueChanged,
     },
     {
       field: 'pregnancyState',
@@ -270,9 +266,6 @@ console.log(v.data?.person.name,'birthOrder',v.data?.birthOrder)
       this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) },
       (e) => {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
-        // e.api.refreshCells();
-        // console.log('filter applied', e.api.getFilterInstance('isArchive')?.isFilterActive());
-
       }
     ),
     onRowClicked: (v) => this.selectedItem = v.data,

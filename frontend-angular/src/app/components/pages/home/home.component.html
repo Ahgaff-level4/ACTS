@@ -13,7 +13,7 @@
   <div class="py-3"></div>
   <mat-divider class="mx-5 mb-3"></mat-divider>
   <div class="d-flex flex-wrap justify-content-evenly">
-    <mat-card *ngFor="let card of cards" [routerLink]="card.link" style="cursor: pointer;"
+    <mat-card *ngFor="let card of cards" (click)="ut.scrollTop()" [routerLink]="card.link" style="cursor: pointer;"
       class="card m-3 shadow mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
       <img style="max-width:220px; max-height: 220px;" class="p-2" [src]="card.img"
         [alt]="card.alt??'image represent card\'s content'">

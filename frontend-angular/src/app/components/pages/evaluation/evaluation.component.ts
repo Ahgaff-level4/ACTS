@@ -75,7 +75,6 @@ export class EvaluationComponent {
       field: 'evaluationDatetime',
       headerName: 'Assign Date',
       type: 'fromNow',
-      onCellValueChanged: this.onCellValueChange,
     },
     {
       field: 'teacher.person.name',

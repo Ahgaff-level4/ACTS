@@ -9,7 +9,6 @@ import * as moment from 'moment';
 })
 export class AgGridService {
   //todo: chart reports.
-  //todo: delete MatTableModule
   //todo: cell editor base on its type (e.g., date type should have date picker). Hint: i think CellEditor is the way...
   //todo: date picker for filter dose not translate to Arabic!
   //todo: stop pagination in printing the table.
@@ -79,8 +78,6 @@ export class AgGridService {
       v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
       v.headerName = this.ut.translate(v.headerName);
       v.headerTooltip = v.headerName;
-
-
       return v;
     })
   }
@@ -93,7 +90,7 @@ export class AgGridService {
       else if (cellMoment.isAfter(filterLocalDateAtMidnight))
         return 1;
       return 0;
-    }
+    },
   }
 
   private columnTypes: { [key: string]: ColDef<any> } = {
@@ -101,7 +98,7 @@ export class AgGridService {
       valueFormatter: (v) => this.ut.fromNow(v.value),//set the presentational value
       chartDataType: 'time',
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data,v.colDef.field!)))?this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)):new Date(this.getNestedValue(v.data, v.colDef.field!)),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
       width: 150,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
@@ -111,14 +108,14 @@ export class AgGridService {
       valueFormatter: (v) => this.ut.fromNow(v.value, true),//set the presentational value
       chartDataType: 'time',
       tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data,v.colDef.field!)))?this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)):new Date(this.getNestedValue(v.data, v.colDef.field!)),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
       width: 100,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
     },
     toDate: {
       valueFormatter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data,v.colDef.field!)))?this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)):new Date(this.getNestedValue(v.data, v.colDef.field!)),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
       chartDataType: 'time',
       width: 100,
       filter: 'agDateColumnFilter',
@@ -126,11 +123,13 @@ export class AgGridService {
     },
     long: {
       tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
+      cellEditor: 'agLargeTextCellEditor',
     },
     enum: {
       filter: 'agSetColumnFilter',
       chartDataType: 'category',
       filterParams: { suppressMiniFilter: true },
+      cellEditor: 'agSelectCellEditor',
     },
     number: {
       filter: 'agNumberColumnFilter',
@@ -149,6 +148,9 @@ export class AgGridService {
     resizable: true,
     enablePivot: false,
     rowGroup: false,
+    filterParams: {
+      buttons: ['clear']
+    }
   }
 
   private sideBar: SideBarDef = {
@@ -188,8 +190,8 @@ export class AgGridService {
    * print a table by calling _getPrintTableFunc
    * @see {@link getPrintTableFunc}
    */
-  public printTable(gridOptions: GridOptions, printTableArgs: PrintTableArg | null){
-    this.getPrintTableFunc(gridOptions,printTableArgs)();
+  public printTable(gridOptions: GridOptions, printTableArgs: PrintTableArg | null) {
+    this.getPrintTableFunc(gridOptions, printTableArgs)();
   }
 
   /**
