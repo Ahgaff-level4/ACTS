@@ -6,7 +6,7 @@ import { AuthService } from './auth.service';
 import { R } from 'src/utility.service';
 import { AccountEntity, CreateAccount } from 'src/management/account/account.entity';
 import { Session as Express_Session } from 'express-session';
-import { User, ILoginInfo } from '../../../interfaces';
+import { User, ILoginInfo, IPersonEntity } from '../../../interfaces';
 import { PickType } from '@nestjs/mapped-types';
 
 export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
@@ -15,7 +15,7 @@ export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 
 @Controller('api/auth')
 export class AuthController {
-	constructor(private authService: AuthService) { }
+	constructor(private authService: AuthService,) { }
 
 	@Post('login')
 	async login(@Req() req: Request, @Body() loginInfo: LoginInfo) {
@@ -26,8 +26,7 @@ export class AuthController {
 		const account = sel[0];
 		if (!(await bcrypt.compare(loginInfo.password, account.password)))
 			throw new UnauthorizedException(R.string.invalidUsernameOrPassword);
-
-		const user: User = { isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name, username: account.username, birthdate: account.person.birthDate, address: account.address, phones: [account.phone0, account.phone1, account.phone2, account.phone3, account.phone4, account.phone5, account.phone6, account.phone7, account.phone8, account.phone9] };
+		const user: User = {person:account.person, isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name, username: account.username, birthdate: account.person.birthDate, address: account.address, phones: [account.phone0, account.phone1, account.phone2, account.phone3, account.phone4, account.phone5, account.phone6, account.phone7, account.phone8, account.phone9] };
 		req.session['user'] = user;//todo specify session age base on loginInfo.isRememberMe user selection to be very short. Or do the right thing 🤷‍♂️
 
 		return { ...user };

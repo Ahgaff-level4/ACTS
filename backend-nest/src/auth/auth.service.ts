@@ -39,10 +39,11 @@ export class AuthService {
 	async findAccountsBy(username: string): Promise<AccountEntity[]> {
 		return (await this.dataSource.manager.getRepository(AccountEntity)
 			.createQueryBuilder('account')
-			.leftJoinAndMapOne('account.person',PersonView,'person','person.id=account.personId')
+			.leftJoinAndMapOne('account.person', PersonView, 'person', 'person.id=account.personId')
 			.leftJoinAndSelect('account.rolesEntities', 'roles')
 			.where('account.username = :username', { username })
 			.getMany())
 			.map(this.accountService.extractRoles);
 	}
+
 }

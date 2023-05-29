@@ -55,7 +55,7 @@ const SESSION_OPTIONS: SessionOptions = {
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet())
-  app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.1.4:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
+  app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.0.139:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor())

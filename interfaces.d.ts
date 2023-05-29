@@ -62,6 +62,7 @@ export interface User {
 	/**max length is 10 or 0 for not parent */
 	phones: string[];
 	birthdate: string;
+	person:IPersonEntity;
 }
 
 export interface ILoginInfo {

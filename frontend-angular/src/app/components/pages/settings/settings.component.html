@@ -1,6 +1,6 @@
-<mat-card class="m-4 rounded-5">
+<h4 class="m-4 mb-0 p-4 pb-0">{{'Application Language'|translate}}</h4>
+<mat-card class="m-4 shadow rounded-5">
   <mat-card-header>
-    <mat-card-title><p>{{'Application Language'|translate}}</p></mat-card-title>
   </mat-card-header>
   <mat-card-content class="d-flex justify-content-center">
     <mat-button-toggle-group class="w-75" aria-label="Choose language">
@@ -12,22 +12,23 @@
   </mat-card-content>
 </mat-card>
 
-<mat-card class="m-4 rounded-5" *ngIf="ut.user.value">
+<h4 class="m-4 mb-0 p-4 pb-0">{{'My Account Information'|translate}}</h4>
+<mat-card class="m-4 shadow rounded-5" *ngIf="ut.user.value">
   <mat-card-header>
-    <mat-card-title>{{'My Account Information'|translate}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <p class="opacity-75">*{{'Only Admin can change your account information, and you can only change your password.'|translate}}</p>
-    <p>{{'Name'|translate}}:&nbsp;{{ut.user.value.username}}</p>
+    <p>{{'Name'|translate}}:&nbsp;{{ut.user.value.person.name}}</p>
+    <p>{{'Username'|translate}}:&nbsp;{{ut.user.value.username}}</p>
     <p *ngIf="ut.user.value.birthdate">{{'Birthdate'|translate}}:&nbsp;{{ut.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{ut.user.value.birthdate|fromNow:true}}</p>
     <p>{{'Roles'|translate}}:&nbsp;{{ut.displayRoles(ut.user.value.roles)}}</p>
     <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">{{'Change my password'|translate}}</button>
   </mat-card-content>
 </mat-card>
 
-<mat-card class="m-4 rounded-5" *ngIf="this.ut.userHasAny('Admin')">
+<h4 class="m-4 mb-0 p-4 pb-0">{{'Backup & Recovery'|translate}}</h4>
+<mat-card class="m-4 shadow rounded-5" *ngIf="this.ut.userHasAny('Admin')">
   <mat-card-header>
-    <mat-card-title>{{'Backup & Recovery'|translate}}</mat-card-title>
   </mat-card-header>
   <mat-card-content>
     <p>{{'Backup and recovery is a process of creating and storing copies of the system data that can be used to protect your system information in case of a system failure, malware attack, or accidental deletion.'|translate}}</p>
