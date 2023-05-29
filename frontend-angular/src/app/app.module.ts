@@ -54,6 +54,7 @@ import { CalcAgePipe } from './pipes/calc-age.pipe';
 import 'ag-grid-enterprise';
 import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
 import { StatisticsComponent } from './components/pages/home/statistics/statistics.component';
+import { YouTubePlayerModule } from '@angular/youtube-player';
 
 @NgModule({
   declarations: [
@@ -105,6 +106,7 @@ import { StatisticsComponent } from './components/pages/home/statistics/statisti
     BrowserAnimationsModule,
     AppMaterialModule,
     AgGridModule,
+    YouTubePlayerModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

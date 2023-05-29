@@ -19,7 +19,6 @@ export class LoginService {
           onDone();
         } else this.ut.errorDefaultDialog();
       }, error:(e)=>{
-        onDone();
         this.ut.errorDefaultDialog(e);
       }
     });

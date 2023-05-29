@@ -11,7 +11,18 @@
     <img class="align-self-center" src="assets/img/teacher-teach-child.svg" width="auto" height="330px" alt="Teacher teach a child">
   </div>
   <div class="py-3"></div>
-  <mat-divider class="mx-5 mb-3"></mat-divider>
+  <mat-divider class="mx-5"></mat-divider>
+  <div class=" mb-4 text-center">
+<h2 class=" mt-4 pb-2">{{'Watch this video to see how Autism Children works'|translate}}</h2>
+    <youtube-player
+    videoId="PeIN-Fe7DQo"
+    [width]="560"
+    [height]="315"
+    [playerVars]="{
+      autoplay: 0,
+    }"></youtube-player>
+  </div>
+    <mat-divider class="mx-5 mb-3"></mat-divider>
   <div class="d-flex flex-wrap justify-content-evenly">
     <mat-card *ngFor="let card of cards" (click)="ut.scrollTop()" [routerLink]="card.link" style="cursor: pointer;"
       class="card m-3 shadow mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
