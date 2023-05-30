@@ -57,5 +57,10 @@
       [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" mat-stroked-button color="primary">
       {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
     </a>
+    <a *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')" [disabled]="selectedItem==null" class="w-100 mx-3 mb-2 rounded-5"
+      [matTooltip]="'View report of the selected child'|translate"
+      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/report':'#'" mat-stroked-button color="primary">
+      {{'Report'|translate}}<mat-icon>analytics</mat-icon>
+    </a>
   </div>
 </div>

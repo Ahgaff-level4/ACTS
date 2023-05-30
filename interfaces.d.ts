@@ -244,5 +244,8 @@ export interface SucResEditDel {
 
 export interface IChildReport{
 	child:IChildEntity;
+	goal:{completeCount:number,continualCount:number},
 	
 }
+
+export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';

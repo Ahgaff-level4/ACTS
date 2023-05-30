@@ -258,6 +258,12 @@ export class ChildrenComponent implements OnInit, OnDestroy {
       action: (v) => v ? this.ut.router.navigateByUrl('/child/' + v.id + '/strengths') : '',
       tooltip: 'View strengths of the selected child',
     },
+    {
+      name: 'Report',
+      icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">analytics</mat-icon>`,
+      action: (v) => v ? this.ut.router.navigateByUrl('/child/' + v.id + '/report') : '',
+      tooltip: 'View report of the selected child',
+    },
   ];
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */

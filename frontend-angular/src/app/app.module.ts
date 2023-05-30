@@ -56,6 +56,7 @@ import { LoginFormComponent } from './components/pages/login/login-form/login-fo
 import { StatisticsComponent } from './components/pages/home/statistics/statistics.component';
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
+import { AgChartsAngularModule } from 'ag-charts-angular';
 
 @NgModule({
   declarations: [
@@ -109,6 +110,7 @@ import { ReportChildComponent } from './components/pages/children/report-child/r
     AppMaterialModule,
     AgGridModule,
     YouTubePlayerModule,
+    AgChartsAngularModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,

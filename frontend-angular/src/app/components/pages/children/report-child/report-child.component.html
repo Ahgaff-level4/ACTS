@@ -1,4 +1,18 @@
 <div class="container">
   <h1 class="mt-4">{{'Child Report'|translate}}</h1>
-  <h4>{{(childReport|async)?.child?.person?.name}}</h4>
+  <h5 class="fw-normal mx-md-5 pb-4">
+    {{'Child name'|translate}}:&nbsp;{{(childReport$ |async)?.child?.person?.name}}
+  </h5>
+  <mat-card class="m-4 shadow d-flex rounded-5">
+    <mat-form-field class="align-self-end mt-3 mx-3 timeframe" appearance="outline">
+      <mat-label>{{'Timeframe'|translate}}</mat-label>
+      <mat-select (selectionChange)="updateGoalChart($event.value)" class="mt-2">
+        <mat-option selected value="All Time">{{'All time'|translate}}</mat-option>
+        <mat-option value="Yearly">{{'Yearly'|translate}}</mat-option>
+        <mat-option value="Monthly">{{'Monthly'|translate}}</mat-option>
+        <mat-option value="Weekly">{{'Weekly'|translate}}</mat-option>
+      </mat-select>
+    </mat-form-field>
+    <ag-charts-angular class="align-self-center mb-1" style="height: 100%;width: 85%;" [options]="options"></ag-charts-angular>
+  </mat-card>
 </div>

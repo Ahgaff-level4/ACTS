@@ -607,5 +607,14 @@
   "Copy row (with headers)": "نسخ الصف (مع الرؤوس)",
   "Edit row": "تحرير الصف",
   "Delete the selected goal": "حذف الهدف المحدد",
-  "Watch this video to see how Autism Children Technical System works":""
+  "Watch this video to see how Autism Children Technical System works":"",
+  "Child name":"",
+  "All time":"",
+  "Yearly":"",
+  "Monthly":"",
+  "Weekly":"",
+  "Timeframe":"",
+  "Total":"",
+  "View report of the selected child":"",
+  "Report":""
 }
