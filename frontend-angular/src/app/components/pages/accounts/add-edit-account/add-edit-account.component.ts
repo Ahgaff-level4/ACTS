@@ -34,13 +34,14 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
       this.account = this.readonlyAccount;
     else
       this.account = history.state.data;
+
+    let maxPhone = -1;
     for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
       if (this.account?.['phone' + i])
-        this.phoneFields.push('phone' + i);
-      else {
-        this.phoneFields.push('phone' + i);
-        break;
-      }
+        maxPhone = i;
+    for (let j = 0; j <= maxPhone + 1; j++) {
+      this.phoneFields.push('phone' + j)
+    }
 
     this.person = this.account?.person;
     let pass = this.account?.id ? {} : {
@@ -48,21 +49,32 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
       repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],
     };
 
-    this.accountForm = this.fb.group({
-      username: [null, [Validators.required, this.ut.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
-      ...pass,
-      roles: [[], [this.rolesValidator]],
-      address: [null, [Validators.maxLength(64)]],
-    });
-    for (let i = 0; i < 10; i++)
-      this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15), ]));
-
     if (this.account) {
       this.account.address = this.account.address ?? undefined;//the field should be as a key property in the account object even if it has value of undefined
       for (let i = 0; i < 10; i++)
         this.account['phone' + i] = this.account['phone' + i] ?? undefined;
-      this.accountForm?.setValue(this.ut.extractFrom(this.accountForm.controls, { ...this.account, password: '', repeatPassword: '' }));
+      // this.accountForm?.setValue(this.ut.extractFrom(this.accountForm.controls, { ...this.account, password: '', repeatPassword: '' }));
     }
+
+    this.accountForm = this.fb.group({
+      username: [this.account?.username ?? null, [Validators.required, this.ut.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
+      ...pass,
+      roles: [this.account?.roles ?? [], [this.rolesValidator]],
+      address: [this.account?.address ?? null, [Validators.maxLength(64)]],
+      phone0: [this.account?.phone0 ?? null, [Validators.maxLength(15),]],
+      phone1: [this.account?.phone1 ?? null, [Validators.maxLength(15),]],
+      phone2: [this.account?.phone2 ?? null, [Validators.maxLength(15),]],
+      phone3: [this.account?.phone3 ?? null, [Validators.maxLength(15),]],
+      phone4: [this.account?.phone4 ?? null, [Validators.maxLength(15),]],
+      phone5: [this.account?.phone5 ?? null, [Validators.maxLength(15),]],
+      phone6: [this.account?.phone6 ?? null, [Validators.maxLength(15),]],
+      phone7: [this.account?.phone7 ?? null, [Validators.maxLength(15),]],
+      phone8: [this.account?.phone8 ?? null, [Validators.maxLength(15),]],
+      phone9: [this.account?.phone9 ?? null, [Validators.maxLength(15),]],
+    });
+    // for (let i = 0; i < 10; i++)
+    //   this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15),]));
+
 
     this.ut.isLoading.subscribe(v => this.isLoading = v);
   }
@@ -105,6 +117,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
         await this.personForm.submitEdit().catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
+        console.log(dirtyFields)
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
@@ -115,7 +128,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' }),console.log(this.personForm?.formGroup.errors,this.accountForm.errors,this.personForm?.formGroup?.valid ,this.accountForm.controls)
+    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' }), console.log(this.personForm?.formGroup.errors, this.accountForm.errors, this.personForm?.formGroup?.valid, this.accountForm.controls)
   }
 
 

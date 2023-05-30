@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { IProgramEntity } from '../../../../../../interfaces';
 import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -6,30 +6,30 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 
 @Component({
   selector: 'app-program',
   templateUrl: './program.component.html',
   styleUrls: ['./program.component.scss']
 })
-export class ProgramComponent {
+export class ProgramComponent implements OnDestroy {
   public canAddEditDelete: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');;
   public selectedItem?: IProgramEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   public rowData: IProgramEntity[] | undefined;
+  public sub:Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IProgramEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      let sub = this.service.programs.subscribe(v => {
+      this.sub.add(this.service.programs.subscribe(v => {
         this.rowData = v.map(n => ({ ...n }));
         this.gridOptions?.api?.refreshCells();
-        sub.unsubscribe();
-      });
+      }));
     }
   }
 
@@ -88,16 +88,15 @@ export class ProgramComponent {
   }
 
   ngOnInit(): void {
-    this.service.fetch();
-    this.service.programs.subscribe({
+    this.sub.add(this.service.programs.subscribe({
       next: v => {
-        this.rowData = v.map(n => ({ ...n }));
+        this.rowData = this.ut.deepClone(v);
       }
-    });
+    }));
 
-    this.ut.user.subscribe(v => {
+    this.sub.add(this.ut.user.subscribe(v => {
       this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    });
+    }));
   }
 
 
@@ -130,6 +129,8 @@ export class ProgramComponent {
         } catch (e) { }
       }
     })
-
+  }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

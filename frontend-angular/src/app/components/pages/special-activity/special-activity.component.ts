@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
@@ -12,30 +12,30 @@ import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activi
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/field.service';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 
 @Component({
   selector: 'app-special-activity',
   templateUrl: './special-activity.component.html',
   styleUrls: ['./special-activity.component.scss']
 })
-export class SpecialActivityComponent {
+export class SpecialActivityComponent implements OnDestroy {
   public canEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IActivityEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   public rowData: IActivityEntity[] | undefined;
+  public sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.service.specialActivities.pipe(first())
-        .subscribe(v => {
-          this.rowData = v.map(n => ({ ...n }));
-          this.gridOptions?.api?.refreshCells();
-        });
+      this.sub.add(this.service.specialActivities.subscribe(v => {
+        this.rowData = this.ut.deepClone(v);
+        this.gridOptions?.api?.refreshCells();
+      }));
     }
   }
 
@@ -83,23 +83,23 @@ export class SpecialActivityComponent {
   }
 
   ngOnInit(): void {
-    this.fieldService.fields.subscribe(v => {
+    this.sub.add(this.fieldService.fields.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('field.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
-    });
-    this.service.specialActivities.subscribe(v => this.rowData = v.map(n => ({ ...n })));
-    this.ut.user.subscribe(v => {
+    }));
+    this.sub.add(this.service.specialActivities.subscribe(v => this.rowData = this.ut.deepClone(v)));
+    this.sub.add(this.ut.user.subscribe(v => {
       this.canEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    });
+    }));
   }
 
   applySearch(event: Event) {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  printTable(){
-    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
@@ -136,5 +136,9 @@ export class SpecialActivityComponent {
           } catch (e) { }
         }
       });
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

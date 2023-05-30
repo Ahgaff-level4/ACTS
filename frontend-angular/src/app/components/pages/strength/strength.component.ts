@@ -99,11 +99,10 @@ export class StrengthComponent {
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
-        console.log('childId=',childId)
         if (typeof childId === 'string')
           this.sub.add(this.service.childItsStrengths.subscribe(async v => {
             if (v && v.id == +(childId as string))
-              this.childItsStrengths = v;
+              this.childItsStrengths = this.ut.deepClone(v);
             else await this.service.fetchChildItsStrengths(+(childId as string), true).catch(() => { });
           }));
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.")

@@ -109,7 +109,7 @@ export class EvaluationComponent {
         if (typeof goalId === 'string')
           this.sub.add(this.service.goalItsEvaluations.subscribe(async v => {
             if (v && v.id == +(goalId as string))
-              this.goalItsEvaluations = v;
+              this.goalItsEvaluations = this.ut.deepClone(v);
             else await this.service.fetchGoalItsEvaluations(+(goalId as string));
           }));
         else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");

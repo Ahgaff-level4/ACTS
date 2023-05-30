@@ -1,9 +1,9 @@
 <h1 class="p-4 mx-md-5 pb-4">{{'Children'|translate}}</h1>
 <div class="mx-md-5  mb-5 pb-5">
   <div class="w-100 row" *ngIf="!isPrinting">
-    <mat-form-field class="col-md-11">
+    <mat-form-field class="col-11">
       <mat-label>{{'Search'|translate}}</mat-label>
-      <input matInput (keyup)="applySearch($event)" placeholder="..." #input>
+      <input matInput (keyup)="applySearch($event)" placeholder="...">
     </mat-form-field>
     <div class="col-1">
       <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"

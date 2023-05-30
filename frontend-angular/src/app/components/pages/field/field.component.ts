@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IFieldEntity } from '../../../../../../interfaces';
 import { FieldService } from 'src/app/services/field.service';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -6,29 +6,30 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { first } from 'rxjs';
+import { Subscription, first } from 'rxjs';
 
 @Component({
   selector: 'app-field',
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss']
 })
-export class FieldComponent implements OnInit {
+export class FieldComponent implements OnInit, OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IFieldEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   public rowData: IFieldEntity[] | undefined;
+  public sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IFieldEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IFieldEntity]: e.newValue });
       this.ut.showSnackbar('Edited successfully')
     } catch (e) {
-      this.service.fields.pipe(first()).subscribe(v => {
-        this.rowData = v.map(n => ({ ...n }));
+      this.sub.add(this.service.fields.subscribe(v => {
+        this.rowData = this.ut.deepClone(v);
         this.gridOptions.api?.setRowData(this.rowData);
-      });
+      }));
     }
   }
 
@@ -70,11 +71,11 @@ export class FieldComponent implements OnInit {
 
   ngOnInit(): void {
     this.service.fetch();
-    this.service.fields.subscribe({ next: v => this.rowData = v.map(n => ({ ...n })) });
+    this.sub.add(this.service.fields.subscribe({ next: v => this.rowData = this.ut.deepClone(v) }));
 
-    this.ut.user.subscribe(v => {
+    this.sub.add(this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    });
+    }));
   }
 
   applySearch(event: Event) {
@@ -115,7 +116,9 @@ export class FieldComponent implements OnInit {
             this.ut.showSnackbar('The field has been deleted successfully.');
           } catch (e) { }
         }
-      })
-
+      });
+  }
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
   }
 }

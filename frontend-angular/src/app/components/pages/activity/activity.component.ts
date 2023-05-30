@@ -111,7 +111,7 @@ export class ActivityComponent implements OnDestroy {
         if (typeof programId == 'string')
           this.sub.add(this.service.programItsActivities.subscribe(async v => {
             if (v && v.id == +(programId as string))
-              this.program = v;
+              this.program = this.ut.deepClone(v);
             else await this.service.fetchProgramItsActivities(+(programId as string), true).catch(() => { });
           }));
         else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
