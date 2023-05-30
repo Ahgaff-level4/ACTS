@@ -12,6 +12,7 @@ export class ActivityService {
   public URL = env.API + 'activity';
   public programItsActivities = new ReplaySubject<IProgramEntity | undefined>(1);
   public specialActivities = new ReplaySubject<IActivityEntity[]>(1);
+  private _programItsActivities: undefined | IProgramEntity;
   constructor(private http: HttpClient, private ut: UtilityService,
     private programService: ProgramService) {
     this.fetchSpecialActivities();
@@ -26,10 +27,10 @@ export class ActivityService {
     return posted;
   }
 
-  public async postProgramItsActivities(field: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
-    if (typeof field.programId != 'number')
-      throw 'Error: you just called postProgramItsActivities for specialActivity!!!!';
-    const posted = await this._post(field, manageLoading);
+  public async postProgramItsActivities(activity: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
+    if (typeof activity.programId != 'number')
+      throw 'Error: you just called postProgramItsActivities for specialActivity!';
+    const posted = await this._post(activity, manageLoading);
     this.fetchProgramItsActivities(posted.programId!);
     return posted;
   }
@@ -72,8 +73,8 @@ export class ActivityService {
  */
   public async patchInProgramItsActivities(id: number, updateActivity: Partial<IActivityEntity>, manageLoading = false): Promise<SucResEditDel> {
     const res = await this._patch(id, updateActivity, manageLoading);
-    this.programItsActivities.pipe(last(), first())
-      .subscribe(v => v ? this.fetchProgramItsActivities(v.id) : '');
+    if (this._programItsActivities)
+      this.fetchProgramItsActivities(this._programItsActivities.id);
     return res;
   }
 
@@ -109,8 +110,8 @@ export class ActivityService {
    */
   public async deleteInProgramItsActivities(id: number, manageLoading = false): Promise<SucResEditDel> {
     const res = await this._delete(id, manageLoading);
-    this.programItsActivities.pipe(last(), first())
-      .subscribe(v => v ? this.fetchProgramItsActivities(v.id) : '');
+    if (this._programItsActivities)
+      this.fetchProgramItsActivities(this._programItsActivities.id);
     return res;
   }
 
@@ -140,6 +141,7 @@ export class ActivityService {
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
             this.programItsActivities.next(v[0]);
+            this._programItsActivities = v[0];
             res(v[0]);
           },
           error: e => {
@@ -158,6 +160,7 @@ export class ActivityService {
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
             this.specialActivities.next(v);
+            this.fetchSpecialActivities();
             res(v[0]);
           },
           error: e => {

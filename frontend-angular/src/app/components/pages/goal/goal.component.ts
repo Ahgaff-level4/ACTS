@@ -64,16 +64,16 @@ export class GoalComponent implements OnDestroy {
       type: ['enum', 'madeUp'],
       filterParams: {
         values: ['Checked', 'Unchecked'],
-        valueFormatter:v=>this.ut.translate(v.value),
-      }as ISetFilterParams<IGoalEntity, string>,
+        valueFormatter: v => this.ut.translate(v.value),
+      } as ISetFilterParams<IGoalEntity, string>,
       cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
         console.log(params)
         if (params.data?.state == 'completed')
           return '<div class="d-flex justify-content-center mt-2"><mat-icon _ngcontent-xxc-c62="" role="img" class="mat-icon notranslate  material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">done</mat-icon></div>';
         return '';
       },
-      valueGetter:v=>v.data?.state=='completed'?'Checked':'Unchecked',
-      valueFormatter:v=>this.ut.translate(v.value),
+      valueGetter: v => v.data?.state == 'completed' ? 'Checked' : 'Unchecked',
+      valueFormatter: v => this.ut.translate(v.value),
     },
     {
       field: 'continual',//not property of Goal
@@ -81,16 +81,16 @@ export class GoalComponent implements OnDestroy {
       type: ['enum', 'madeUp'],
       filterParams: {
         values: ['Checked', 'Unchecked'],
-        valueFormatter:v=>this.ut.translate(v.value),
-      }as ISetFilterParams<IGoalEntity, string>,
+        valueFormatter: v => this.ut.translate(v.value),
+      } as ISetFilterParams<IGoalEntity, string>,
       cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
         console.log(params)
         if (params.data?.state == 'continual')
           return '<div class="d-flex justify-content-center mt-2"><mat-icon _ngcontent-xxc-c62="" role="img" class="mat-icon notranslate  material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">done</mat-icon></div>';
         return '';
       },
-      valueGetter:v=>v.data?.state=='continual'?'Checked':'Unchecked',
-      valueFormatter:v=>this.ut.translate(v.value),
+      valueGetter: v => v.data?.state == 'continual' ? 'Checked' : 'Unchecked',
+      valueFormatter: v => this.ut.translate(v.value),
       // cellRenderer: '<mat-icon _ngcontent-xxc-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">done</mat-icon>',
     },
     {
@@ -153,7 +153,7 @@ export class GoalComponent implements OnDestroy {
 
 
   ngOnInit(): void {
-    this.route.paramMap.pipe(first()).subscribe({
+    this.sub.add(this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
         if (typeof childId == 'string')
@@ -166,7 +166,7 @@ export class GoalComponent implements OnDestroy {
           }));
         else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
       },
-    });
+    }));
 
     this.sub.add(this.fieldService.fields.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.field.name');

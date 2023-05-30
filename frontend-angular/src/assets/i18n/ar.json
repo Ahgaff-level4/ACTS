@@ -488,6 +488,7 @@
   "Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.": "عذرا ، حدثت مشكلة في جلب أنشطة البرنامج. يرجى إعادة المحاولة لاحقا أو التحقق من اتصالك.",
   "Sorry, there was a problem fetching the special activities. Please try again later or check your connection.": "عذرا ، حدثت مشكلة في جلب الأنشطة الخاصة. يرجى إعادة المحاولة لاحقا أو التحقق من اتصالك.",
   "Sorry, there was a problem deleting the account. Please try again later or check your connection.": "عذرا، حدثت مشكلة في حذف الحساب. يرجى إعادة المحاولة لاحقا أو التحقق من اتصالك.",
+  "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.": "عذرا، حدثت مشكلة في جلب تقرير الطفل. يرجى إعادة المحاولة لاحقا أو التحقق من اتصالك.",
   "Minimum age": "الحد الأدنى للسن",
   "Maximum age": "الحد الأقصى للعمر",
   "Goals of": "أهداف",
@@ -606,5 +607,5 @@
   "Copy row (with headers)": "نسخ الصف (مع الرؤوس)",
   "Edit row": "تحرير الصف",
   "Delete the selected goal": "حذف الهدف المحدد",
-  "Watch this video to see how Autism Children works":""
+  "Watch this video to see how Autism Children Technical System works":""
 }

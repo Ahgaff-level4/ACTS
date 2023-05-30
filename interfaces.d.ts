@@ -241,3 +241,8 @@ export interface SucResEditDel {
 	affected: number
 
 }
+
+export interface IChildReport{
+	child:IChildEntity;
+	
+}

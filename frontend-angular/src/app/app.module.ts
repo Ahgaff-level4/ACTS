@@ -55,6 +55,7 @@ import 'ag-grid-enterprise';
 import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
 import { StatisticsComponent } from './components/pages/home/statistics/statistics.component';
 import { YouTubePlayerModule } from '@angular/youtube-player';
+import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 
 @NgModule({
   declarations: [
@@ -95,6 +96,7 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
     FilterChildrenComponent,
     LoginFormComponent,
     StatisticsComponent,
+    ReportChildComponent,
   ],
   imports: [
     BrowserModule,

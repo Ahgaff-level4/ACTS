@@ -22,6 +22,7 @@ import { EvaluationEntity } from './management/evaluation/evaluation.entity';
 import { GoalEntity } from './management/goal/Goal.entity';
 import { ProgramEntity } from './management/program/program.entity';
 import { OtherModule } from './management/other/other.module';
+import { ReportModule } from './management/report/report.module';
 config();
 
 @Module({
@@ -43,7 +44,8 @@ config();
     }),
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,
-    PersonModule, ProgramModule, AuthModule,OtherModule
+    PersonModule, ProgramModule, AuthModule,OtherModule,
+    ReportModule
   ],
   providers: [{
     provide: APP_GUARD,

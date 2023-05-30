@@ -20,6 +20,7 @@ import { StrengthComponent } from './components/pages/strength/strength.componen
 import { ButtonType, MessageDialogComponent } from './components/dialogs/message/message.component';
 import { MatDialogRef } from '@angular/material/dialog';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
+import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -100,6 +101,7 @@ const routes: Routes = [
   { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
   { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: AH },
   { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', },
+  { path: 'child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: AH },
   { path: '**', component: Page404Component, title: 'Page Not Found' },
 ];
 
