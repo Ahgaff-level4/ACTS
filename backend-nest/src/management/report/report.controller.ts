@@ -34,13 +34,13 @@ export class ReportController {
 		else if (query.timeframe == 'Yearly')
 			timeframe = new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate());
 		else timeframe = new Date(0);
-		const completeCount = await this.dataSource.getRepository(GoalEntity)
+		const completedCount = await this.dataSource.getRepository(GoalEntity)
 			.countBy({
 				childId: id, state: 'completed', assignDatetime: MoreThanOrEqual(timeframe)
 			});
 		const continualCount = await this.dataSource.getRepository(GoalEntity)
 			.countBy({ childId: id, state: 'continual', assignDatetime: MoreThanOrEqual(timeframe) });
 			
-		return { child, goal: { completeCount, continualCount } };
+		return { child, goal: { completedCount, continualCount } };
 	}
 }

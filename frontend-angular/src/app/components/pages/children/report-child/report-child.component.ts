@@ -1,11 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription } from 'rxjs';
+import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
 import { ReportService, } from 'src/app/services/report.service';
 import { IChildReport, Timeframe } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AgChartOptions, AgDoughnutInnerLabel, AgPolarSeriesOptions } from 'ag-charts-community';
-
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',
@@ -15,11 +14,12 @@ export class ReportChildComponent implements OnInit, OnDestroy {
   public sub: Subscription = new Subscription();
   public childReport$ = new BehaviorSubject<IChildReport | null>(null);
   public options!: AgChartOptions;
-
-  constructor(private route: ActivatedRoute, public service: ReportService, private ut: UtilityService) { }
+  public nowDatetime = '';
+  constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { }
 
   ngOnInit(): void {
-
+    this.nowDatetime = this.ut.toDateTimeWeek(new Date());
+    this.sub.add(interval(1000).subscribe(() => this.nowDatetime = this.ut.toDateTimeWeek(new Date())));
     this.sub.add(this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
@@ -33,22 +33,25 @@ export class ReportChildComponent implements OnInit, OnDestroy {
 
     this.sub.add(this.childReport$.subscribe((v) => {
       if (v == null) return;
-      this.options.data[0].count = v.goal.completeCount;
+      this.options.data[0].count = v.goal.completedCount;
       this.options.data[1].count = v.goal.continualCount;
-      ((this.options.series?.[0] as AgPolarSeriesOptions).innerLabels?.[0] as AgDoughnutInnerLabel).text = v.goal.completeCount + v.goal.continualCount + '';
+      ((this.options.series?.[0] as AgPolarSeriesOptions).innerLabels?.[0] as AgDoughnutInnerLabel).text = v.goal.completedCount + v.goal.continualCount + '';
       this.options = { ...this.options };
     }));
 
     this.options = {
       autoSize: true,
+      theme: 'ag-material',
       data: [
-        { type: this.ut.translate('Complete'), },
+        { type: this.ut.translate('Completed'), },
         { type: this.ut.translate('Continual'), },
       ],
       title: {
-        text: 'Goals',
-        fontSize: 20,
+        text: this.ut.translate('Goals state'),
+        fontWeight: 'normal',
+        fontSize: 24,
         spacing: 25,
+        fontFamily: 'Roboto',
       },
       series: [
         {
@@ -62,6 +65,7 @@ export class ReportChildComponent implements OnInit, OnDestroy {
           },
           sectorLabel: {
             color: 'white',
+            fontFamily: 'Roboto',
             // fontWeight: 'bold',
             formatter: (param) => {
               // const value = datum[calloutLabelKey!];
@@ -81,10 +85,12 @@ export class ReportChildComponent implements OnInit, OnDestroy {
             {
               text: '',//total count
               fontSize: 24,
+              fontFamily: 'Roboto',
               fontWeight: 'bold',
             },
             {
               text: this.ut.translate('Total'),
+              fontFamily: 'Roboto',
               fontSize: 16,
             },
           ],
@@ -109,14 +115,20 @@ export class ReportChildComponent implements OnInit, OnDestroy {
   }
 
 
-  updateGoalChart(timeframe:Timeframe) {
+  updateGoalChart(timeframe: Timeframe) {
     if (this.childReport$.value) {
       this.sub.add(this.service.fetchChildReport(this.childReport$.value.child.id, { timeframe })
         .subscribe(v => {
           this.childReport$.next(v);
-          console.log('updated',v);
+          console.log('updated', v);
         }));
     }
+  }
+
+  getTeachers(childReport: IChildReport): string {
+    if (Array.isArray(childReport.child.teachers))
+      return childReport.child.teachers?.map(v => v.person.name).join(this.ut.translate(', '))
+    else return '';
   }
 
   ngOnDestroy(): void {

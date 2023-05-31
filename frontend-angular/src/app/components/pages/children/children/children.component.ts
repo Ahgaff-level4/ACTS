@@ -76,25 +76,7 @@ export class ChildrenComponent implements OnInit, OnDestroy {
     {
       field: 'family',
       headerName: 'Family information',
-      valueGetter: (v) => {
-        let ret = '';
-        if (v.data?.birthOrder != null)
-        ret += this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1]);
-        if (v.data?.maleFamilyMembers != null && v.data?.femaleFamilyMembers != null)
-        ret += (v.data?.birthOrder ? ' ' + this.ut.translate('of') : '') + ' ' + (v.data.maleFamilyMembers + v.data.femaleFamilyMembers + 1)
-        + ' ' + this.ut.translate('siblings');
-        if (typeof v.data?.maleFamilyMembers != 'number' && typeof v.data?.femaleFamilyMembers != 'number')
-          return ret;
-          ret += ' (';
-          if (v.data?.femaleFamilyMembers != null)
-          ret += (v.data.femaleFamilyMembers + (v.data.person?.gender == 'Female' ? 1 : 0)) + ' '
-          + this.ut.translate('girls');
-
-          if (v.data?.maleFamilyMembers != null)
-          ret += (v.data?.femaleFamilyMembers != null ? this.ut.translate(',') + ' ' : '') + (v.data.maleFamilyMembers + (v.data.person?.gender == 'Male' ? 1 : 0))
-            + ' ' + this.ut.translate('boys');
-            return ret + ')';
-      },
+      valueGetter: (v) => v.data ? this.ut.familyInformation(v.data) : '',
       type: ['long', 'madeUp'],
     },
     {

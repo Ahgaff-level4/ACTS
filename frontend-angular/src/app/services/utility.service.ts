@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Role, SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
+import { Role, SuccessResponse, User, ErrorResponse, IChildEntity } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { DatePipe } from '../pipes/date.pipe';
+import { DateTimeWeekPipe } from '../pipes/date-time-week.pipe';
 @Injectable({
   providedIn: 'root'
 })
@@ -29,7 +30,8 @@ export class UtilityService {
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
     private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
     private fromNowPipe: FromNowPipe, private dialog: MatDialog,
-    public router: Router, private snackbar: MatSnackBar, private translateService: TranslateService) {
+    public router: Router, private snackbar: MatSnackBar,
+    private translateService: TranslateService, private dateTimeWeekPipe:DateTimeWeekPipe) {
   }
 
 
@@ -108,6 +110,11 @@ export class UtilityService {
   /**@returns string format as 'yyyy/M/D' */
   public toDate(value: string | Date | moment.Moment | null | undefined): string {
     return this.toDatePipe.transform(value);
+  }
+
+  /**@returns string format as 'yyyy/M/D. h:mm A. dddd' */
+  public toDateTimeWeek(value:string|Date|moment.Moment|null|undefined):string{
+    return this.dateTimeWeekPipe.transform(value);
   }
 
   /**
@@ -261,5 +268,25 @@ export class UtilityService {
     window.scrollTo({ top: 0 })
   }
 
+  /**@returns ex: `Third of 5 siblings (2 girls, 3 boys)` */
+  familyInformation(child:IChildEntity){
+      let ret = '';
+      if (child.birthOrder != null)
+      ret += this.translate(this.ordinalNumbers[child.birthOrder - 1]);
+      if (child.maleFamilyMembers != null && child.femaleFamilyMembers != null)
+      ret += (child.birthOrder ? ' ' + this.translate('of') : '') + ' ' + (child.maleFamilyMembers + child.femaleFamilyMembers + 1)
+      + ' ' + this.translate('siblings');
+      if (typeof child.maleFamilyMembers != 'number' && typeof child.femaleFamilyMembers != 'number')
+        return ret;
+        ret += ' (';
+        if (child.femaleFamilyMembers != null)
+        ret += (child.femaleFamilyMembers + (child.person?.gender == 'Female' ? 1 : 0)) + ' '
+        + this.translate('girls');
+
+        if (child.maleFamilyMembers != null)
+        ret += (child.femaleFamilyMembers != null ? this.translate(',') + ' ' : '') + (child.maleFamilyMembers + (child.person?.gender == 'Male' ? 1 : 0))
+          + ' ' + this.translate('boys');
+          return ret + ')';
+  }
 }
 

@@ -7,7 +7,8 @@ import * as moment from 'moment';
 })
 export class DateTimeWeekPipe implements PipeTransform {
   constructor(private translate: TranslateService) { }
-  transform(value: unknown, ...args: unknown[]): unknown {
+
+  transform(value: unknown, ...args: unknown[]): string {
     var date;
     if (value == undefined || value === '')
       return '';

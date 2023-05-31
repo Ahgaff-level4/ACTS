@@ -244,7 +244,7 @@ export interface SucResEditDel {
 
 export interface IChildReport{
 	child:IChildEntity;
-	goal:{completeCount:number,continualCount:number},
+	goal:{completedCount:number,continualCount:number},
 	
 }
 
