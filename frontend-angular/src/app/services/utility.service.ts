@@ -249,7 +249,7 @@ export class UtilityService {
       return obj;
 
     for (let i in ret)
-      if (typeof ret[i] == 'object' || Array.isArray(ret[i]))
+      if ((typeof ret[i] == 'object' && ret[i] !== null) || Array.isArray(ret[i]))
         ret[i] = this.deepClone(ret[i] as T) as any;
     return ret;
   }

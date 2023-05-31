@@ -8,7 +8,6 @@ import * as moment from 'moment';
   providedIn: 'root'
 })
 export class AgGridService {
-  //!todo: FIX the null property shown as '[object Object]'!
   //todo: chart reports.
   //todo: cell editor base on its type (e.g., date type should have date picker). Hint: i think CellEditor is the way...
   //todo: date picker for filter dose not translate to Arabic!
@@ -125,7 +124,6 @@ export class AgGridService {
     long: {
       tooltipValueGetter: function (v) { return v.value },//To show what the cell can't, because of the cell size but the text is long.
       cellEditor: 'agLargeTextCellEditor',
-
     },
     enum: {
       filter: 'agSetColumnFilter',
