@@ -16,7 +16,7 @@ export class ProgramController {
   }
 
   @Get()
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher','Parent')
   findAll() {
     return this.repo.createQueryBuilder('program')
     .loadRelationCountAndMap('program.activityCount','program.activities')

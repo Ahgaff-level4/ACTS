@@ -11,6 +11,29 @@ import { ProgramEntity } from '../program/program.entity';
 
 @Injectable()
 export class ChildService {
+  findAllTeacherChildren(accountId: number) {
+    return this.repo
+      .createQueryBuilder('child')
+      .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
+      .leftJoinAndSelect('child.teachers', 'teacher')
+      .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
+      .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
+      .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
+      .where('teacher.id=:accountId', { accountId })
+      .getMany();
+  }
+  
+  findAllParentChildren(accountId: number) {
+    return this.repo
+      .createQueryBuilder('child')
+      .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
+      .leftJoinAndSelect('child.teachers', 'teacher')
+      .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
+      .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
+      .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
+      .where('child.parentId=:accountId', { accountId })
+      .getMany();
+  }
   constructor(@InjectRepository(ChildEntity) private repo: Repository<ChildEntity>) { }
 
   create(createChild: CreateChild) {
@@ -18,14 +41,14 @@ export class ChildService {
   }
 
   async findAll() {
-      return this.repo
-        .createQueryBuilder('child')
-        .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
-        .leftJoinAndSelect('child.teachers', 'teacher')
-        .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
-        .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
-        .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
-        .getMany();
+    return this.repo
+      .createQueryBuilder('child')
+      .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
+      .leftJoinAndSelect('child.teachers', 'teacher')
+      .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
+      .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
+      .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
+      .getMany();
   }
 
   async findOneItsGoals(id: number) {
@@ -57,7 +80,7 @@ export class ChildService {
   }
 
   update(id: number, updateChild: UpdateChild) {
-    return this.repo.save({...updateChild,id});
+    return this.repo.save({ ...updateChild, id });
   }
 
   remove(id: number) {

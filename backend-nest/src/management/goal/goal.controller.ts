@@ -24,7 +24,6 @@ export class GoalController {
   @Get(':id')
   @Roles('Admin','HeadOfDepartment','Teacher','Parent')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    id = +id;
     return this.repo.createQueryBuilder('goal')
       // .leftJoinAndMapOne('goal.teacher', AccountEntity, 'goalTeacher', 'goal.teacherId=goalTeacher.id')
       // .leftJoinAndMapOne('goalTeacher.person', PersonEntity, 'personGoalTeacher', 'goalTeacher.personId=personGoalTeacher.id')
@@ -34,7 +33,7 @@ export class GoalController {
       .leftJoinAndMapOne('goal.activity', ActivityEntity, 'activity', "goal.activityId=activity.id")
       .leftJoinAndMapOne('goal.child',ChildEntity,'child','goal.childId=child.id')
       .leftJoinAndMapOne('child.person',PersonEntity,'personChild','child.personId=personChild.id')
-      .where('goal.id=:id', { id })
+      .where('goal.id=:id', { id:+id })
       .getMany();
   }
 

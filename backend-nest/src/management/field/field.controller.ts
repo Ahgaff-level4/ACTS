@@ -15,7 +15,7 @@ export class FieldController {
   }
 
   @Get()
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher','Parent')
   findAll() {
     return this.repo.createQueryBuilder('field')
       .loadRelationCountAndMap('field.activityCount', 'field.activities')

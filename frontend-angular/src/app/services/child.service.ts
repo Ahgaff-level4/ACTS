@@ -24,7 +24,7 @@ export class ChildService {
   public fetchChildren(manageLoading = false): Promise<IChildEntity[]> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
-      this.http.get<IChildEntity[]>(this.isOnlyParent() ? this.childURL + '/parent' : this.childURL, { params: { 'FK': true } })
+      this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
         .subscribe({
           next: (v) => {
             manageLoading && this.ut.isLoading.next(false);
@@ -38,11 +38,6 @@ export class ChildService {
     })
   }
 
-  isOnlyParent() {
-    return this.ut.user.value &&
-      this.ut.user.value.roles.length == 1 &&
-      this.ut.user.value.roles.includes('Parent');
-  }
 
   /**
  * api request to post a child information. Then append the new child with previous `children` BehaviorSubject and emit the new children array.

@@ -30,7 +30,8 @@ export class AddEditEvaluationComponent {
   ngOnInit(): void {
     if (typeof this.evaluationOrGoalId === 'object')
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.evaluationOrGoalId));
-    else this.formGroup.addControl('goalId', this.fb.control(this.evaluationOrGoalId))
+    else this.formGroup.addControl('goalId', this.fb.control(this.evaluationOrGoalId));
+    console.log(this.formGroup)
   }
 
 

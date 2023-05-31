@@ -86,12 +86,13 @@ export class ReportChildComponent implements OnInit, OnDestroy {
               text: '',//total count
               fontSize: 24,
               fontFamily: 'Roboto',
-              fontWeight: 'bold',
+              fontWeight: 'normal',
             },
             {
               text: this.ut.translate('Total'),
               fontFamily: 'Roboto',
               fontSize: 16,
+              fontWeight:'lighter',
             },
           ],
           highlightStyle: {

@@ -27,8 +27,8 @@ export class ReportController {
 			.where('child.id=:id', { id })
 			.getMany())[0];
 		let timeframe: Date
-		if(query.timeframe == 'Weekly')
-		timeframe = new Date();//todo weekly
+		if (query.timeframe == 'Weekly')
+			timeframe = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000)
 		else if (query.timeframe == 'Monthly')
 			timeframe = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate());
 		else if (query.timeframe == 'Yearly')
@@ -40,7 +40,7 @@ export class ReportController {
 			});
 		const continualCount = await this.dataSource.getRepository(GoalEntity)
 			.countBy({ childId: id, state: 'continual', assignDatetime: MoreThanOrEqual(timeframe) });
-			
+
 		return { child, goal: { completedCount, continualCount } };
 	}
 }

@@ -90,7 +90,7 @@ export const UserSession = createParamDecorator(
  */
 export const UserMust = createParamDecorator((data: unknown, ctx: ExecutionContext): User => {
     const req = ctx.switchToHttp().getRequest();
-    if (req && req.session && req.session.user)
+    if (req?.session?.user)
         return req.session.user;
     throw new UnauthorizedException(R.string.mustLogin)
 })
