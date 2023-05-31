@@ -140,15 +140,12 @@ export class EvaluationComponent {
 
   /** @param data is either a evaluation to be Edit. Or goalId to be Add */
   addEdit(data?: IEvaluationEntity | number) {
+    console.log({data})
     if (typeof data != 'object' && typeof data != 'number')
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data })
-        .afterClosed().subscribe(v => {
-          // if (v === 'added' || v === 'edited')//has been
-          //    this.fetch(); we don't need fetch goal's evaluations; evaluationService will fetch when added/edited, and we've subscribed to it
-        });
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data });
   }
 
   deleteDialog(evaluation?: IEvaluationEntity) {
