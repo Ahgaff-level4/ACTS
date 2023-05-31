@@ -1,12 +1,12 @@
-import { NgModule, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
+import { Injectable, NgModule, inject } from '@angular/core';
+import { ActivatedRouteSnapshot, CanDeactivate, RouterModule, RouterStateSnapshot, Routes } from '@angular/router';
 import { HomeComponent } from './components/pages/home/home.component';
 import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
 import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children/children.component';
 import { AddEditChildComponent } from './components/pages/children/add-edit-child/add-edit-child.component';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { Role } from '../../../interfaces';
 import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
@@ -21,6 +21,33 @@ import { ButtonType, MessageDialogComponent } from './components/dialogs/message
 import { MatDialogRef } from '@angular/material/dialog';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
+import { Component } from 'ag-grid-community';
+
+export interface ComponentCanDeactivate {
+  /**@returns false to prevent user navigating. true otherwise */
+  canDeactivate: () => boolean
+}
+
+function isComponentCanDeactivate(arg: any): arg is ComponentCanDeactivate {
+  return (arg as ComponentCanDeactivate).canDeactivate !== undefined;
+}
+
+export function PendingChangesGuard(component: Component, state: RouterStateSnapshot) {
+  // if there are no pending changes, just allow deactivation; else confirm first
+  if (isComponentCanDeactivate(component)) {//same as (component instanceof ComponentCanDeactivate)
+    // NOTE: this warning message will only be shown when navigating elsewhere within your angular app;
+    // when navigating away from your angular app, the browser will show a generic warning message
+    // see http://stackoverflow.com/a/42207299/7307355
+    if (component.canDeactivate())
+      return true
+    else {
+      const ut = inject(UtilityService);
+      return confirm(ut.translate('Changes you made may not be saved.'));
+    }
+  }
+  return true;
+}
+
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
@@ -90,12 +117,12 @@ const routes: Routes = [
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
   { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: A },
-  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canActivate: [RoleGuard], data: A },
-  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canActivate: [RoleGuard], data: A },
+  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: A },
+  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: A },
   { path: 'program/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: AHT },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
-  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canActivate: [RoleGuard], data: AH },
-  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canActivate: [RoleGuard], data: AH },
+  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: AH },
+  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: AH },
   { path: 'child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
   { path: 'goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
   { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },

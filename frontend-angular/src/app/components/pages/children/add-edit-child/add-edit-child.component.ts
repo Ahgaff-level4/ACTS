@@ -1,18 +1,19 @@
-import { AfterViewChecked, AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { AfterViewChecked, AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, HostListener } from '@angular/core';
 import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ChildService } from 'src/app/services/child.service';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
-import { Subscription } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/services/account.service';
+import { ComponentCanDeactivate } from 'src/app/app-routing.module';
 
 @Component({
   selector: 'app-add-edit-child',
   templateUrl: './add-edit-child.component.html',
   styleUrls: ['./add-edit-child.component.scss']
 })
-export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
+export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, ComponentCanDeactivate {
   public childForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
@@ -30,6 +31,18 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
   }
 
   ngOnInit(): void {
+    // window.onload = ()=> {
+    // var confirmationMessage = this.ut.translate('Changes you made may not be saved.');
+    // window.addEventListener("beforeunload", function (e) {
+    //   if (false) {//do not prevent leaving the page
+    //     return undefined;
+    //   }
+
+
+    //   (e || window.event).returnValue = confirmationMessage; //Gecko + IE
+    //   return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
+    // });
+    // };
     this.childForm = this.fb.group({
       femaleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
       maleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
@@ -149,6 +162,16 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit {
 
   ngOnDestroy(): void {
     this.sub.unsubscribe();
+  }
+
+  @HostListener('window:beforeunload')
+  public canDeactivate(): boolean{//should NOT be arrow function
+    // insert logic to check if there are pending changes here;
+    // returning true will navigate without confirmation
+    // returning false will show a confirm dialog before navigating away
+    if ((()=>this.childForm.dirty || this.personForm?.formGroup.dirty)())//to access `this`
+      return false;
+    return true;
   }
 
 }

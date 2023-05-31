@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, HostListener, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
@@ -6,13 +6,14 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from 'src/app/services/account.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dialog/password-dialog.component';
+import { ComponentCanDeactivate } from 'src/app/app-routing.module';
 
 @Component({
   selector: 'app-add-edit-account',
   templateUrl: './add-edit-account.component.html',
   styleUrls: ['./add-edit-account.component.scss']
 })
-export class AddEditAccountComponent implements OnInit, AfterViewInit {
+export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentCanDeactivate {
   public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
@@ -204,5 +205,15 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
     if (this.accountForm.get(`phone${index}`)?.value && this.phoneFields.length <= index + 1 && index < 10 - 1) {
       this.phoneFields.push(`phone${index + 1}`);
     }
+  }
+
+  @HostListener('window:beforeunload')
+  public canDeactivate(): boolean{//should NOT be arrow function
+    // insert logic to check if there are pending changes here;
+    // returning true will navigate without confirmation
+    // returning false will show a confirm dialog before navigating away
+    if ((()=>this.accountForm.dirty || this.personForm?.formGroup.dirty)())//to access `this`
+      return false;
+    return true;
   }
 }
