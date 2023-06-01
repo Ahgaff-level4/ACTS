@@ -62,7 +62,7 @@
     <div mat-dialog-actions>
       <button type="button" mat-button (click)="dialogRef.close()" color="accent" class=" rounded-5"
         cdkFocusInitial>{{'Cancel'|translate}}</button>
-      <button [disabled]="!formGroup.valid" type="submit" mat-button class=" rounded-5"
+      <button type="submit" mat-button class=" rounded-5"
         color="primary">{{(goalOrChildId|type:'object')?'Edit':'Add'|translate}}</button>
     </div>
   </form>

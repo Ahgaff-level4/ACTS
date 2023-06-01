@@ -36,7 +36,7 @@ export class AddEditProgramComponent {
       if (this.program?.id == null) {//add new
         try {
           await this.service.post(this.formGroup.value);
-          this.ut.showSnackbar('The program has been added successfully.')
+          this.ut.notify("Added successfully",'The program has been added successfully','success');
           this.dialogRef.close();
         } catch (e) { }
       } else {//edit
@@ -44,12 +44,12 @@ export class AddEditProgramComponent {
         try {
           if (dirtyProgram != null)
             await this.service.patch(this.program.id, dirtyProgram);
-          this.ut.showSnackbar('The program has been edited successfully.');
+          this.ut.notify("Edited successfully",'The program has been edited successfully','success');
           this.dialogRef.close();
         } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }

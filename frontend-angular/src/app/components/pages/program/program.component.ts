@@ -24,7 +24,7 @@ export class ProgramComponent implements OnDestroy {
   private onCellValueChange = async (e: NewValueParams<IProgramEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
-      this.ut.showSnackbar('Edited successfully')
+      this.ut.notify('Edited successfully',undefined,'success')
     } catch (e) {
       this.sub.add(this.service.programs.subscribe(v => {
         this.rowData = v.map(n => ({ ...n }));
@@ -114,7 +114,7 @@ export class ProgramComponent implements OnDestroy {
 
   deleteDialog(program: IProgramEntity | undefined) {
     if (program == null) {
-      this.ut.showSnackbar(undefined);
+      this.ut.notify(undefined);
       return;
     }
     this.ut.showMsgDialog({
@@ -125,7 +125,7 @@ export class ProgramComponent implements OnDestroy {
       if (v === 'Delete') {
         try {
           await this.service.delete(program.id, true);
-          this.ut.showSnackbar('The program has been deleted successfully.');
+          this.ut.notify("Deleted successfully",'The program has been deleted successfully','success');
         } catch (e) { }
       }
     })

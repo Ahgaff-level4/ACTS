@@ -62,12 +62,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
    */
   showNetworkErrorDialog(): Promise<boolean> {
     return new Promise((res) => {
-      this.ut.showMsgDialog({
-        type: 'error',
-        title: { text: 'Network Error!' },
-        content: `Please check your network connection and try again.`,
-        // buttons: [{ color: 'primary', type: 'Resend' }, { color: 'accent', type: 'Cancel' },]
-      })
+      this.ut.notify('Network Error!', `Please check your network connection and try again.`, 'error');
       // .afterClosed().subscribe(v => {
       //   if (v === 'Resend')
       //     return res(true);
@@ -86,7 +81,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
     }).afterClosed().subscribe(v => {
       if (v === 'Login')
         this.ut.router.navigateByUrl('login');
-      else this.ut.router.navigateByUrl('/')
+      // else this.ut.router.navigateByUrl('/')
     });
   }
 }

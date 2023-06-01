@@ -150,11 +150,11 @@ export class AccountComponent {
         if (v === 'Delete') {
           try {
             await this.accountService.delete(account.id, true);
-            this.ut.showSnackbar('The program has been deleted successfully.');
+            this.ut.notify("Deleted successfully",'The account has been deleted successfully','success');
           } catch (e) { }
         }
       })
-    } else this.ut.showSnackbar(undefined);
+    } else this.ut.notify(null);
   }
 
   ngOnDestroy() {

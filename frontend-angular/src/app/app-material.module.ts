@@ -16,7 +16,6 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatTooltipModule } from '@angular/material/tooltip';
@@ -25,6 +24,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ClipboardModule } from '@angular/cdk/clipboard';
+import { NzNotificationModule } from 'ng-zorro-antd/notification';
 
 
 @NgModule({
@@ -45,7 +45,6 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     MatMomentDateModule,
     MatDividerModule,
     MatProgressSpinnerModule,
-    MatSnackBarModule,
     MatListModule,
     MatButtonToggleModule,
     MatTooltipModule,
@@ -54,6 +53,7 @@ import { ClipboardModule } from '@angular/cdk/clipboard';
     MatCardModule,
     MatProgressBarModule,
     ClipboardModule,
+    NzNotificationModule,
   ],
 })
 export class AppMaterialModule {

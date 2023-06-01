@@ -22,12 +22,6 @@ export class FieldController {
       .getMany();
   }
 
-  // @Get(':id')
-  // @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  // findOne(@Param('id', ParseIntPipe) id: number) {
-  //   return this.repo.findBy({ id });
-  // }
-
   @Patch(':id')
   @Roles('Admin', 'HeadOfDepartment')
   update(@Param('id', ParseIntPipe) id: number, @Body() updateField: UpdateField) {

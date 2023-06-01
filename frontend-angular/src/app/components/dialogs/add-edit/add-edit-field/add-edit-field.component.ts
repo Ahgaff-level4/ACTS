@@ -37,7 +37,7 @@ export class AddEditFieldComponent {
         try {
 
           await this.service.post(this.formGroup.value);
-          this.ut.showSnackbar('The field has been added successfully.')
+          this.ut.notify("Added successfully",'The field has been added successfully','success')
           this.dialogRef.close();
         } catch (e) { }
       } else {//edit
@@ -45,12 +45,12 @@ export class AddEditFieldComponent {
         try {
           if (dirtyFields != null)
             await this.service.patch(this.field.id, dirtyFields);
-          this.ut.showSnackbar('The field has been edited successfully.')
+          this.ut.notify("Edited successfully",'The field has been edited successfully','success')
           this.dialogRef.close();
         } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }

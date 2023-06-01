@@ -62,7 +62,7 @@ export interface User {
 	/**max length is 10 or 0 for not parent */
 	phones: string[];
 	birthdate: string;
-	person:IPersonEntity;
+	person: IPersonEntity;
 }
 
 export interface ILoginInfo {
@@ -242,10 +242,25 @@ export interface SucResEditDel {
 
 }
 
-export interface IChildReport{
-	child:IChildEntity;
-	goal:{completedCount:number,continualCount:number},
-	
+export interface IChildReport {
+	child: IChildEntity;
+	goal: { completedCount: number, continualCount: number },
+
 }
 
 export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
+
+/**todo notification should not send to all users:
+* - if parent get a notification of new goal then indeed that goal have been added to one of the parent's children.
+* - if teacher ... then ... have been added to one of his teaching children.
+* - if Admin/HeadOfDepartment ... then it means nothing only system's data changed.
+*/
+export interface INotification {
+	by: User;
+	method: 'POST' | 'DELETE' | 'PATCH' | 'PUT';
+	controller: 'account' | 'activity' | 'child' | 'evaluation' | 'field' | 'goal' | 'backup' | 'restore' | 'program';
+	/**id of the posted/deleted/patched/putted entity */
+	payloadId:number;
+	payload?:any;
+	datetime:Date;
+}

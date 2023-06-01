@@ -55,8 +55,8 @@ export class AgGridService {
     if (gridApi) {
       gridApi.selectAll();
       gridApi.copySelectedRowsToClipboard({ includeHeaders });
-      this.ut.showSnackbar('Copied to clipboard');
-    } else this.ut.showSnackbar(undefined);
+      this.ut.notify('Copied to clipboard',undefined,'success');
+    } else this.ut.notify(undefined);
   }
 
   private gridOptionsProperties: GridOptions = {
@@ -254,9 +254,9 @@ export class AgGridService {
       sideBar: this.sideBar,
       onCellDoubleClicked: async (e) => {
         if (!canEdit)
-          this.ut.showSnackbar("You don't have sufficient privilege to edit!");
+          this.ut.notify('Error!',"You don't have sufficient privilege to edit!",'error');
         else if (e.colDef.editable !== true)
-          this.ut.showSnackbar("You can't edit any row in this column directly!");
+          this.ut.notify("You can't edit any row in this column directly!",undefined,'warning');
       },
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
@@ -345,7 +345,7 @@ export class AgGridService {
       name: this.ut.translate('Copy cell'),
       icon: copyIcon,
       action: () => {
-        this.clipboard.copy(menuParam.value) == false ? this.ut.showSnackbar(undefined) : '';
+        this.clipboard.copy(menuParam.value) == false ? this.ut.notify(undefined) : '';
       }
     },
     {

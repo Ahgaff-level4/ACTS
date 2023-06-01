@@ -23,7 +23,7 @@ export class ChildrenComponent implements OnInit, OnDestroy {
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
-      this.ut.showSnackbar('Edited successfully')
+      this.ut.notify('Edited successfully',undefined,'success')
     } catch (e) {
       this.childService.fetchChildren();
     }

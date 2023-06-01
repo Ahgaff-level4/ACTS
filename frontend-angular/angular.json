@@ -32,7 +32,8 @@
             "styles": [
               "src/styles.scss",
               "./node_modules/bootstrap/scss/bootstrap.scss",
-              "./node_modules/bootstrap/scss/bootstrap-utilities.scss"
+              "./node_modules/bootstrap/scss/bootstrap-utilities.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
             ],
             "scripts": []
           },
@@ -100,7 +101,8 @@
             "styles": [
               "src/styles.scss",
               "./node_modules/bootstrap/scss/bootstrap.scss",
-              "./node_modules/bootstrap/scss/bootstrap-utilities.scss"
+              "./node_modules/bootstrap/scss/bootstrap-utilities.scss",
+              "node_modules/ng-zorro-antd/ng-zorro-antd.min.css"
             ],
             "scripts": []
           }

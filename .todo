@@ -1,14 +1,11 @@
 - when user changing route/page there should be sort of loader/spinner. Loading until the page is loaded. Also, check for animation when transporting between pages
 
-- in children page show only isArchive=false children. And there should be an option for showing isArchive=true children, using filter button in the children page depends on your preference.
-
-- In big forms the user before leaving should have dialog says 'Your changes will be lost!'
 
 - Translate server error messages.
 
 - solve this:Warning: C:\ACTS\frontend-angular\node_modules\@angular\material-moment-adapter\fesm2020\material-moment-adapter.mjs depends on 'moment'. CommonJS or AMD dependencies can cause optimization bailouts.
 For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
 
-- parent can view only his children
-
 - in ag-grid when edit a cell of type date then make it date picker instead of text input.
+
+- add back button (<-) for nested pages. like child info and goals.

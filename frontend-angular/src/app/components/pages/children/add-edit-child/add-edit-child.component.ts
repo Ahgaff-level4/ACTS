@@ -122,7 +122,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
-          this.ut.showSnackbar('The new child has been registered successfully.');
+          this.ut.notify("Added successfully",'The new child has been registered successfully','success');
           this.ut.router.navigate(['/children']);
         } catch (e) {
           this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
@@ -133,7 +133,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
         try {
           if (dirtyFields != null)
             await this.childService.patchChild(this.child.id, dirtyFields, true);
-          this.ut.showSnackbar('The child has been edited successfully.');
+          this.ut.notify("Edited successfully",'The child has been edited successfully','success');
           this.ut.router.navigate(['/children']);
         } catch (e) { }
       }
@@ -141,7 +141,7 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
 
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
     // this.personForm.valid; do not submit if person field
   }
 

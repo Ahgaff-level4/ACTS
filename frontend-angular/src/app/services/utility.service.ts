@@ -9,11 +9,11 @@ import { ButtonType, MessageDialogComponent, MessageDialogData } from '../compon
 import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { Router } from '@angular/router';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { DatePipe } from '../pipes/date.pipe';
 import { DateTimeWeekPipe } from '../pipes/date-time-week.pipe';
+import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Injectable({
   providedIn: 'root'
 })
@@ -30,8 +30,8 @@ export class UtilityService {
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
     private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
     private fromNowPipe: FromNowPipe, private dialog: MatDialog,
-    public router: Router, private snackbar: MatSnackBar,
-    private translateService: TranslateService, private dateTimeWeekPipe:DateTimeWeekPipe) {
+    public router: Router, private translateService: TranslateService,
+    private dateTimeWeekPipe: DateTimeWeekPipe, private notificationService: NzNotificationService) {
   }
 
 
@@ -113,7 +113,7 @@ export class UtilityService {
   }
 
   /**@returns string format as 'yyyy/M/D. h:mm A. dddd' */
-  public toDateTimeWeek(value:string|Date|moment.Moment|null|undefined):string{
+  public toDateTimeWeek(value: string | Date | moment.Moment | null | undefined): string {
     return this.dateTimeWeekPipe.transform(value);
   }
 
@@ -195,18 +195,21 @@ export class UtilityService {
       });
   }
 
+
+
   /**
-   *
-   * @param message text. If `undefined` then `message='Something went wrong!'`
-   * @param action text of the action button like `Undo` or `Ok`.
-   * @param duration before the snackbar automatically dismissed. Value is in milliseconds.
-   * @returns on action clicked observable.
+   * If title is null then show error message of something went wrong!
+   * @param title will be translated
+   * @param content will be translated
+   * @param type icon type or no icon if not provided
    */
-  public showSnackbar(message: string | undefined, action?: string, duration = 4000) {
-    if (message == null)
-      console.trace('Snackbar message is `undefined`!');
-    message = this.translate(message ?? 'Something went wrong!');
-    return this.snackbar.open(message, action, { duration }).onAction();
+  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error',) {
+    if (title == null) {
+      console.trace('notify title is `undefined`!');
+      title = 'Error!';
+      content = 'Something went wrong!';
+    }
+    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration: 4000, nzClass: 'rounded-4', nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   public displayRoles(roles: Role[]) {
@@ -269,24 +272,24 @@ export class UtilityService {
   }
 
   /**@returns ex: `Third of 5 siblings (2 girls, 3 boys)` */
-  familyInformation(child:IChildEntity){
-      let ret = '';
-      if (child.birthOrder != null)
+  familyInformation(child: IChildEntity) {
+    let ret = '';
+    if (child.birthOrder != null)
       ret += this.translate(this.ordinalNumbers[child.birthOrder - 1]);
-      if (child.maleFamilyMembers != null && child.femaleFamilyMembers != null)
+    if (child.maleFamilyMembers != null && child.femaleFamilyMembers != null)
       ret += (child.birthOrder ? ' ' + this.translate('of') : '') + ' ' + (child.maleFamilyMembers + child.femaleFamilyMembers + 1)
-      + ' ' + this.translate('siblings');
-      if (typeof child.maleFamilyMembers != 'number' && typeof child.femaleFamilyMembers != 'number')
-        return ret;
-        ret += ' (';
-        if (child.femaleFamilyMembers != null)
-        ret += (child.femaleFamilyMembers + (child.person?.gender == 'Female' ? 1 : 0)) + ' '
+        + ' ' + this.translate('siblings');
+    if (typeof child.maleFamilyMembers != 'number' && typeof child.femaleFamilyMembers != 'number')
+      return ret;
+    ret += ' (';
+    if (child.femaleFamilyMembers != null)
+      ret += (child.femaleFamilyMembers + (child.person?.gender == 'Female' ? 1 : 0)) + ' '
         + this.translate('girls');
 
-        if (child.maleFamilyMembers != null)
-        ret += (child.femaleFamilyMembers != null ? this.translate(',') + ' ' : '') + (child.maleFamilyMembers + (child.person?.gender == 'Male' ? 1 : 0))
-          + ' ' + this.translate('boys');
-          return ret + ')';
+    if (child.maleFamilyMembers != null)
+      ret += (child.femaleFamilyMembers != null ? this.translate(',') + ' ' : '') + (child.maleFamilyMembers + (child.person?.gender == 'Male' ? 1 : 0))
+        + ' ' + this.translate('boys');
+    return ret + ')';
   }
 }
 

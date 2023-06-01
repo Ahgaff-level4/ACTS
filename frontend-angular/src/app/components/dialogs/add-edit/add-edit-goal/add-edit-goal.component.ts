@@ -62,7 +62,7 @@ export class AddEditGoalComponent implements OnDestroy {
           return this.ut.errorDefaultDialog();
         try {
           await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
-          this.ut.showSnackbar('The goal has been added successfully.');
+          this.ut.notify("Added successfully",'The goal has been added successfully','success');
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.goalOrChildId == 'object') {//edit
@@ -70,12 +70,12 @@ export class AddEditGoalComponent implements OnDestroy {
         try {
           if (dirtyControls != null)
             await this.service.patch(this.goalOrChildId.id, dirtyControls, true);
-          this.ut.showSnackbar('The goal has been edited successfully.');
+          this.ut.notify("Edited successfully",'The goal has been edited successfully','success');
           this.dialogRef.close('edited');
         } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
   selectActivity() {

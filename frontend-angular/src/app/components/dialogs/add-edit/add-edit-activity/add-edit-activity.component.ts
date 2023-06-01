@@ -56,7 +56,7 @@ export class AddEditActivityComponent {
             newActivity = await this.service.postProgramItsActivities({ ...this.formGroup.value, programId: this.activityProgramId }, true);
           else
             newActivity = await this.service.postSpecialActivities({ ...this.formGroup.value, });
-          this.ut.showSnackbar('The activity has been added successfully.');
+          this.ut.notify('Added successfully','The activity has been added successfully','success');
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
         } catch (e) { }
       } else if (typeof this.activityProgramId == 'object') {//edit. activityProgramId type in this scope `IActivityEntity` and its programId type `number|undefined`
@@ -69,12 +69,12 @@ export class AddEditActivityComponent {
             else
               await this.service.patchInSpecialActivities(this.activityProgramId.id, dirtyControls, true);
           }
-          this.ut.showSnackbar('The activity has been edited successfully.');
+          this.ut.notify('Edited successfully', 'The activity has been edited successfully','success');
           this.dialogRef.close('edited');
         } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }

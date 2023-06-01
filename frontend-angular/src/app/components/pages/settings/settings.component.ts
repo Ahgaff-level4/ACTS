@@ -47,7 +47,7 @@ export class SettingsComponent {
           if (typeof event.loaded == 'number') {
             this.uploadProgress = Math.round(100 * (event.loaded / (event.total ?? 1)));
           } else if (event instanceof HttpResponse && event.body.success) {
-            this.ut.showSnackbar('Database restored successfully');
+            this.ut.notify("Restore successfully",'Database restored successfully','success');
             this.uploadProgress = null;
           }
           console.log('response', event);

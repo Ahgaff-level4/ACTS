@@ -70,7 +70,7 @@
     <div mat-dialog-actions>
       <button type="button" mat-button (click)="dialogRef.close()" color="accent" class=" rounded-5"
         cdkFocusInitial>{{'Cancel'|translate}}</button>
-      <button [disabled]="!formGroup.valid" type="submit" mat-button color="primary" class=" rounded-5">
+      <button type="submit" mat-button color="primary" class=" rounded-5">
         <mat-icon>{{(evaluationOrGoalId|type:'object')?'edit':'rate_review'}}</mat-icon>
         {{(evaluationOrGoalId|type:'object')?'Edit':'Evaluate'|translate}}
       </button>

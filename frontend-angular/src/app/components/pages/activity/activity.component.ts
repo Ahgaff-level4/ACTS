@@ -32,7 +32,7 @@ export class ActivityComponent implements OnDestroy {
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
-      this.ut.showSnackbar('Edited successfully')
+      this.ut.notify('Edited successfully',undefined,'success')
     } catch (e) {
       if (this.program)
         await this.service.fetchProgramItsActivities(this.program.id).catch(() => { });
@@ -156,7 +156,7 @@ export class ActivityComponent implements OnDestroy {
 
   deleteDialog(activity: IActivityEntity | undefined) {
     if (activity == null)
-      this.ut.showSnackbar(undefined);
+      this.ut.notify(undefined);
     else
       this.ut.showMsgDialog({
         content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
@@ -169,7 +169,7 @@ export class ActivityComponent implements OnDestroy {
               await this.service.deleteInProgramItsActivities(activity.id, true);
             else
               await this.service.deleteInSpecialActivities(activity.id, true);
-            this.ut.showSnackbar('The activity has been deleted successfully.');
+            this.ut.notify("Deleted successfully",'The activity has been deleted successfully','success');
           } catch (e) { }
         }
       });

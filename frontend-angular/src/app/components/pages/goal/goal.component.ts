@@ -30,7 +30,7 @@ export class GoalComponent implements OnDestroy {
   private onCellValueChange = async (e: NewValueParams<IGoalEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IGoalEntity]: e.newValue });
-      this.ut.showSnackbar('Edited successfully')
+      this.ut.notify('Edited successfully',undefined,'success')
     } catch (e) {
       if (this.childItsGoals)
         await this.service.fetchChildItsGoals(this.childItsGoals.id).catch(() => { });
@@ -218,7 +218,7 @@ export class GoalComponent implements OnDestroy {
 
   deleteDialog(goal: IGoalEntity | undefined) {
     if (goal == null)
-      this.ut.showSnackbar(undefined);
+      this.ut.notify(undefined);
     else
       this.ut.showMsgDialog({
         content: this.ut.translate('You are about to delete the goal: \"') + goal.activity.name + this.ut.translate("\" permanently. If the child has finished the goal then edit the goal state as competed. NOTE: all evaluations of this goal will also be deleted permanently."),
@@ -228,7 +228,7 @@ export class GoalComponent implements OnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(goal.id, true);
-            this.ut.showSnackbar('The goal has been deleted successfully.');
+            this.ut.notify("Deleted successfully",'The goal has been deleted successfully','success');
           } catch (e) { }
         }
       })
@@ -236,7 +236,7 @@ export class GoalComponent implements OnDestroy {
 
   evaluate(goalId: number | undefined) {
     if (goalId == null)
-      this.ut.showSnackbar(undefined);
+      this.ut.notify(undefined);
     else
       this.dialog
         .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId });

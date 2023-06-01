@@ -51,14 +51,11 @@ export class PasswordDialogComponent {
         this.dialogRef.close(this.formGroup.get('password')?.value?.toString());
       } else if (this.getState() == 'change') {//change
         if (this.formGroup.get('password')?.value == this.formGroup.get('oldPassword')?.value)
-          this.ut.showMsgDialog({
-            type: 'error',
-            content: `The new password is the same old password!`
-          })
+          this.ut.notify('Invalid Field', `The new password is the same old password!`, 'error');
         else {
           try {
             await this.accountService.changePassword({ oldPassword: this.formGroup.get('oldPassword')?.value, password: this.formGroup.get('password')?.value })
-            this.ut.showSnackbar('The password have been changed successfully.');
+            this.ut.notify("Edited successfully", 'The password have been changed successfully', 'success');
             this.dialogRef.close();
           } catch (e) { }
         }
@@ -80,7 +77,7 @@ export class PasswordDialogComponent {
       }
       this.formGroup.enable();
     } else
-      this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' });
+      this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
 
   }
 

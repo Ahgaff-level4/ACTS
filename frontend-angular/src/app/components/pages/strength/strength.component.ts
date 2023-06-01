@@ -29,7 +29,7 @@ export class StrengthComponent {
   private onCellValueChange = async (e: NewValueParams<IStrengthEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IStrengthEntity]: e.newValue });
-      this.ut.showSnackbar('Edited successfully')
+      this.ut.notify('Edited successfully',undefined,'success')
     } catch (e) {
       if (this.childItsStrengths)
         await this.service.fetchChildItsStrengths(this.childItsStrengths.id).catch(() => { });
@@ -154,7 +154,7 @@ export class StrengthComponent {
 
   deleteDialog(strength?: IStrengthEntity) {
     if (strength == null)
-      this.ut.showSnackbar(undefined);
+      this.ut.notify(undefined);
     else
       this.ut.showMsgDialog({
         content: this.ut.translate('You are about to delete the strength: \"') + strength.activity.name + this.ut.translate("\" permanently."),
@@ -164,7 +164,7 @@ export class StrengthComponent {
         if (v === 'Delete') {
           try {
             await this.service.delete(strength.id, true);
-            this.ut.showSnackbar('The strength has been deleted successfully.');
+            this.ut.notify("Deleted successfully",'The strength has been deleted successfully','success');
           } catch (e) { }
         }
       })

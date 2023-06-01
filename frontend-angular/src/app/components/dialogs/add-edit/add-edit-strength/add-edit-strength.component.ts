@@ -36,9 +36,9 @@ export class AddEditStrengthComponent implements OnDestroy {
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    this.sub.add(this.strengthService.childItsStrengths.subscribe(v=>{
-      if(v==null)
-      this.ut.errorDefaultDialog().afterClosed().subscribe(()=>this.dialogRef.close());
+    this.sub.add(this.strengthService.childItsStrengths.subscribe(v => {
+      if (v == null)
+        this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
       else this.child = v;
     }));
 
@@ -59,25 +59,25 @@ export class AddEditStrengthComponent implements OnDestroy {
         if (this.child?.id == null || this.ut.user.value?.accountId == null)
           return this.ut.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId },true);
-          this.ut.showSnackbar('The strength has been added successfully.');
+          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
+          this.ut.notify("Added successfully", 'The strength has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.strengthOrChildId == 'object') {//edit
         let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
-            await this.service.patch(this.strengthOrChildId.id, dirtyControls,true);
-          this.ut.showSnackbar('The strength has been edited successfully.');
+            await this.service.patch(this.strengthOrChildId.id, dirtyControls, true);
+          this.ut.notify("Edited successfully", 'The strength has been edited successfully', 'success');
           this.dialogRef.close('edited');
         } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, 'goal'|'strength', IActivityEntity>(SelectActivityComponent,{data:'strength'})
+    this.dialog.open<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, { data: 'strength' })
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);

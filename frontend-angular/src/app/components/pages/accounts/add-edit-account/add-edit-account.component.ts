@@ -107,7 +107,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
           await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
-          this.ut.showSnackbar('The new account has been registered successfully.');
+          this.ut.notify("Added successfully",'The new account has been registered successfully','success');
           this.ut.router.navigate(['/account']);
           this.ut.scrollTop();
         } catch (e) {
@@ -122,14 +122,14 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
-          this.ut.showSnackbar('The account has been edited successfully.');
+          this.ut.notify("Edited successfully",'The account has been edited successfully','success');
           this.ut.router.navigate(['/account']);
           this.ut.scrollTop();
         } catch (e) { }
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' }), console.log(this.personForm?.formGroup.errors, this.accountForm.errors, this.personForm?.formGroup?.valid, this.accountForm.controls)
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 

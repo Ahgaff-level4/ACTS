@@ -24,7 +24,7 @@ export class FieldComponent implements OnInit, OnDestroy {
   private onCellValueChange = async (e: NewValueParams<IFieldEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IFieldEntity]: e.newValue });
-      this.ut.showSnackbar('Edited successfully')
+      this.ut.notify('Edited successfully',undefined,'success')
     } catch (e) {
       this.sub.add(this.service.fields.subscribe(v => {
         this.rowData = this.ut.deepClone(v);
@@ -103,7 +103,7 @@ export class FieldComponent implements OnInit, OnDestroy {
 
   deleteDialog(field: IFieldEntity | undefined) {
     if (field == null)
-      this.ut.showSnackbar(undefined);
+      this.ut.notify(undefined);
     else
       this.ut.showMsgDialog({
         content: this.ut.translate('You are about to delete the field: ') + field.name + this.ut.translate(' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
@@ -113,7 +113,7 @@ export class FieldComponent implements OnInit, OnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(field.id, true);
-            this.ut.showSnackbar('The field has been deleted successfully.');
+            this.ut.notify("Deleted successfully",'The field has been deleted successfully','success');
           } catch (e) { }
         }
       });

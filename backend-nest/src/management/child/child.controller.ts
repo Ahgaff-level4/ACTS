@@ -31,16 +31,6 @@ export class ChildController {
     else throw new UnauthorizedException(R.string.insufficientPrivilege);
   }
 
-  // @Get('/parent')
-  // @Roles('Parent','Admin','HeadOfDepartment','Teacher')
-  // findChildrenOfParent(@Session() session: ExpressSession) {
-  //   const user: User = session && session['user'];
-  //   if (session['user'] && (session['user'] as User).roles.includes('Parent')) {
-  //     return this.childService.findChildrenOfParent(user.accountId)
-  //   }
-  //   throw new UnauthorizedException(R.string.onlyParent)
-  // }
-
   @Get(':id/goals')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher', 'Parent')
   findOneItsGoals(@Param('id', ParseIntPipe) id: number) {

@@ -45,7 +45,7 @@ export class AddEditEvaluationComponent {
         try {
 
           await this.service.post(this.formGroup.value);
-          this.ut.showSnackbar('The evaluation has been added successfully.')
+          this.ut.notify('Added successfully','The evaluation has been added successfully','success')
           this.dialogRef.close();
         } catch (e) { }
       } else if (typeof this.evaluationOrGoalId === 'object') {//edit
@@ -53,12 +53,12 @@ export class AddEditEvaluationComponent {
         try {
           if (dirtyFields != null)
             await this.service.patch(this.evaluationOrGoalId.id, dirtyFields);
-          this.ut.showSnackbar('The evaluation has been edited successfully.')
+          this.ut.notify('Edited successfully','The evaluation has been edited successfully','success')
           this.dialogRef.close();
         } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.showMsgDialog({ title: { text: 'Invalid Field' }, type: 'error', content: 'There are invalid fields!' })
+    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }
