@@ -151,7 +151,7 @@ export class ActivityComponent implements OnDestroy {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data });
+        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data ,direction:this.ut.getDirection()});
   }
 
   deleteDialog(activity: IActivityEntity | undefined) {

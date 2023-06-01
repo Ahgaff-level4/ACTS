@@ -136,7 +136,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
   resetPassword() {
     this.accountForm.get('password')?.disable();
     this.dialog.open<PasswordDialogComponent, string, string>(PasswordDialogComponent,
-      { data: this.accountForm.get('password')?.value || '' }).afterClosed()
+      { data: this.accountForm.get('password')?.value || '' ,direction:this.ut.getDirection()}).afterClosed()
       .subscribe(v => {
         console.log('after close', v)
         if (typeof v === 'string') {

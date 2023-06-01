@@ -149,7 +149,7 @@ export class StrengthComponent {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId })
+        .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId ,direction:this.ut.getDirection()})
   }
 
   deleteDialog(strength?: IStrengthEntity) {

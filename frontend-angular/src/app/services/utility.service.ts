@@ -131,7 +131,7 @@ export class UtilityService {
    */
   public showMsgDialog(data: MessageDialogData) {
     return this.dialog
-      .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data });
+      .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data,direction:this.getDirection() });
   }
 
   /**
@@ -290,6 +290,10 @@ export class UtilityService {
       ret += (child.femaleFamilyMembers != null ? this.translate(',') + ' ' : '') + (child.maleFamilyMembers + (child.person?.gender == 'Male' ? 1 : 0))
         + ' ' + this.translate('boys');
     return ret + ')';
+  }
+
+  public getDirection():'ltr'|'rtl'{
+    return this.currentLang.includes('ar')?'rtl':'ltr';
   }
 }
 

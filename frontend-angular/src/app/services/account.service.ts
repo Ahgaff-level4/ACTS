@@ -147,7 +147,7 @@ export class AccountService implements OnInit {
     return new Promise((res, rej) => {
       if (this.isLoggerIn === true)
         res(true);
-      else this.dialog.open<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, { data: false })
+      else this.dialog.open<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, { data: false,direction:this.ut.getDirection() })
         .afterClosed().subscribe((v) => {
           if (v === true) {
             this.isLoggerIn = v;

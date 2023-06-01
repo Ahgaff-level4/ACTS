@@ -209,7 +209,7 @@ export class GoalComponent implements OnDestroy {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId })
+        .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId,direction:this.ut.getDirection() })
         .afterClosed().subscribe(v => {
           // if (v === 'added' || v === 'edited')//has been
           // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
@@ -239,7 +239,7 @@ export class GoalComponent implements OnDestroy {
       this.ut.notify(undefined);
     else
       this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId });
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId,direction:this.ut.getDirection() });
   }
 
   ngOnDestroy(): void {

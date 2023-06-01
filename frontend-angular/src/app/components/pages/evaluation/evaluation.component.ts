@@ -145,7 +145,7 @@ export class EvaluationComponent {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data });
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data ,direction:this.ut.getDirection()});
   }
 
   deleteDialog(evaluation?: IEvaluationEntity) {

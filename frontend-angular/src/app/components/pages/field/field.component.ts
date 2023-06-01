@@ -98,7 +98,7 @@ export class FieldComponent implements OnInit, OnDestroy {
   /** if `data` param passed then it is Edit. Otherwise will be Add */
   addEdit(data?: IFieldEntity) {
     this.dialog
-      .open<AddEditFieldComponent, IFieldEntity>(AddEditFieldComponent, { data });
+      .open<AddEditFieldComponent, IFieldEntity>(AddEditFieldComponent, { data,direction:this.ut.getDirection() });
   }
 
   deleteDialog(field: IFieldEntity | undefined) {

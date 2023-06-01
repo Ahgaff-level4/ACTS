@@ -79,7 +79,7 @@ export class AddEditGoalComponent implements OnDestroy {
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, 'goal'|'strength', IActivityEntity>(SelectActivityComponent,{data:'goal'})
+    this.dialog.open<SelectActivityComponent, 'goal'|'strength', IActivityEntity>(SelectActivityComponent,{data:'goal',direction:this.ut.getDirection()})
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);

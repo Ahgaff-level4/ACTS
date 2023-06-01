@@ -109,7 +109,7 @@ export class ProgramComponent implements OnDestroy {
   /** if `data` param passed then it is Edit. Otherwise will be Add */
   addEdit(data?: IProgramEntity) {
     this.dialog
-      .open<AddEditProgramComponent, IProgramEntity>(AddEditProgramComponent, { data });
+      .open<AddEditProgramComponent, IProgramEntity>(AddEditProgramComponent, { data ,direction:this.ut.getDirection()});
   }
 
   deleteDialog(program: IProgramEntity | undefined) {

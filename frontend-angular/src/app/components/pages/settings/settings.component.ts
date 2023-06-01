@@ -58,7 +58,7 @@ export class SettingsComponent {
   }
 
   changePassword() {
-    this.dialog.open(PasswordDialogComponent);
+    this.dialog.open(PasswordDialogComponent,{direction:this.ut.getDirection()});
   }
 
 }

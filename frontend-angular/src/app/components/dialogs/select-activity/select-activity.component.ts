@@ -77,7 +77,7 @@ export class SelectActivityComponent implements OnInit {
   }
 
   createSpecialActivity() {
-    this.dialog.open<AddEditActivityComponent, undefined, IActivityEntity>(AddEditActivityComponent)
+    this.dialog.open<AddEditActivityComponent, undefined, IActivityEntity>(AddEditActivityComponent,{direction:this.ut.getDirection()})
       .afterClosed().subscribe(v => {
         if (typeof v === 'object')
           this.dialogRef.close(v);
