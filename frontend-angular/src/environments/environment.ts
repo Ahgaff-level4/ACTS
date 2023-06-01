@@ -1,6 +1,6 @@
-const domain = 'http://localhost:3000';
 export const environment = {
-	SERVER_URL: domain,
-	API: domain+'/api/',
-	AUTH: domain+'/api/auth/',
+	SERVER_URL: 'http://localhost:3000',
+	API: 'http://localhost:3000'+'/api/',
+	AUTH: 'http://localhost:3000'+'/api/auth/',
+  // WEB_SOCKET:'wss://localhost:3000',
 }

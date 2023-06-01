@@ -2,14 +2,27 @@ import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patc
 import { ActivityService } from './activity.service';
 import { Roles } from 'src/auth/Role.guard';
 import { CreateActivity, UpdateActivity } from './activity.entity';
+import { UserMust } from 'src/utility.service';
+import { User } from '../../../../interfaces';
+import { NotificationGateway } from 'src/websocket/notification.gateway';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/activity')
 export class ActivityController {
-    constructor(private activityService: ActivityService) { }
+    constructor(private activityService: ActivityService, private notify: NotificationGateway) { }
 
     @Post()
-    async create(@Body() createActivity: CreateActivity) {
-        return this.activityService.create(createActivity)
+    @Roles('Admin', 'HeadOfDepartment')
+    async create(@Body() createActivity: CreateActivity, @UserMust() user: User) {
+        const ret = await this.activityService.create(createActivity)
+        this.notify.emitNewNotification({
+            by: user,
+            controller: 'activity',
+            datetime: new Date(),
+            method: 'POST',
+            payloadId: ret.id,
+            payload: ret,
+        });
+        return ret;
     }
 
     @Get('/special')
@@ -25,12 +38,32 @@ export class ActivityController {
     }
 
     @Patch(':id')
-    async update(@Param('id', ParseIntPipe) id: string, @Body() updateActivity: UpdateActivity) {
-        return this.activityService.update(+id, updateActivity);
+    @Roles('Admin', 'HeadOfDepartment')
+    async update(@Param('id', ParseIntPipe) id: number, @Body() updateActivity: UpdateActivity, @UserMust() user: User) {
+        const ret = await this.activityService.update(+id, updateActivity);
+        this.notify.emitNewNotification({
+            by: user,
+            controller: 'activity',
+            datetime: new Date(),
+            method: 'PATCH',
+            payloadId: +id,
+            payload: updateActivity,
+        });
+        return ret;
     }
 
     @Delete(':id')
-    remove(@Param('id', ParseIntPipe) id: string) {
-        return this.activityService.remove(+id);
+    @Roles('Admin', 'HeadOfDepartment')
+    async remove(@Param('id', ParseIntPipe) id: string,@UserMust() user:User) {
+        const ret =await this.activityService.remove(+id);
+        this.notify.emitNewNotification({
+            by: user,
+            controller: 'activity',
+            datetime: new Date(),
+            method: 'DELETE',
+            payloadId: +id,
+            payload:ret,
+        });
+        return ret;
     }
 }

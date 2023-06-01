@@ -113,16 +113,17 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
+      this.isSubmitting = true;
 
       this.ut.isLoading.next(true);
-      if (this.child?.id == null) {//Register a child
+      FLAG:if (this.child?.id == null) {//Register a child
         let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
         if (typeof p != 'object')
-          return;
+          break FLAG;
         try {
           let dirtyFields = this.ut.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
-          this.ut.notify("Added successfully",'The new child has been registered successfully','success');
+          this.ut.notify("Added successfully", 'The new child has been registered successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) {
           this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
@@ -133,13 +134,14 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
         try {
           if (dirtyFields != null)
             await this.childService.patchChild(this.child.id, dirtyFields, true);
-          this.ut.notify("Edited successfully",'The child has been edited successfully','success');
+          this.ut.notify("Edited successfully", 'The child has been edited successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) { }
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
+      this.isSubmitting = false;
 
     } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
     // this.personForm.valid; do not submit if person field
@@ -164,14 +166,15 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
     this.sub.unsubscribe();
   }
 
+  private isSubmitting: boolean = false;
   @HostListener('window:beforeunload')
-  public canDeactivate(): boolean{//should NOT be arrow function
+  public canDeactivate(): boolean {//should NOT be arrow function
     // insert logic to check if there are pending changes here;
     // returning true will navigate without confirmation
     // returning false will show a confirm dialog before navigating away
-    if ((()=>this.childForm.dirty || this.personForm?.formGroup.dirty)())//to access `this`
+    if ((() => this.childForm.dirty || this.personForm?.formGroup.dirty)())//to access `this`
       return false;
-    return true;
+    return (() => !this.isSubmitting)();
   }
 
 }

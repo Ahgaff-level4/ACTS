@@ -7,9 +7,12 @@ import { createReadStream, unlink } from 'fs';
 import mysqldump from 'mysqldump';
 import { createInterface } from 'readline/promises';
 import { Roles } from 'src/auth/Role.guard';
+import { UserMust } from 'src/utility.service';
+import { NotificationGateway } from 'src/websocket/notification.gateway';
 import { Readable } from 'stream';
 import { DataSource } from 'typeorm';
 import { createGunzip, createGzip } from 'zlib';
+import { User } from '../../../../interfaces';
 
 
 @Controller('api')
@@ -17,11 +20,11 @@ export class OtherController {
 	// Create a mutex instance to lock the flow. So that backup/recovery process will be async
 	private mutex = new Mutex();
 
-	constructor(@InjectDataSource() private dataSource: DataSource) { }
+	constructor(@InjectDataSource() private dataSource: DataSource, private notify: NotificationGateway) { }
 
 	@Get('backup')
 	@Roles('Admin')
-	async backup(@Res() res: Response) {
+	async backup(@Res() res: Response,@UserMust() user:User) {
 		// Acquire the lock
 		const release = await this.mutex.acquire();
 		try {
@@ -57,6 +60,14 @@ export class OtherController {
 					if (e) { console.log(e); throw e; }
 				})
 			});
+			this.notify.emitNewNotification({
+				by: user,
+				controller: 'backup',
+				datetime: new Date(),
+				method: 'POST',//segregation design pattern :/
+				payloadId: -1,//segregation design pattern :/
+				payload: undefined,//segregation design pattern :/
+			});
 		} catch (e) {
 			console.error(e);
 			throw e;
@@ -69,7 +80,7 @@ export class OtherController {
 	@Post('restore')
 	@Roles('Admin')
 	@UseInterceptors(FileInterceptor('backup'))
-	async restore(@UploadedFile() file: Express.Multer.File) {
+	async restore(@UploadedFile() file: Express.Multer.File,@UserMust() user:User) {
 		// Acquire the lock
 		const release = await this.mutex.acquire();
 		return await new Promise(async (res, rej) => {
@@ -87,39 +98,48 @@ export class OtherController {
 
 				//! Recreate the Database
 				const dbName = this.dataSource.options.database.toString();
-				const queryRunner = this.dataSource.createQueryRunner();
-				await queryRunner.dropDatabase(dbName, true);
-				await queryRunner.createDatabase(dbName, true);
-				await queryRunner.query('USE ' + dbName);
-
-				// create a readline interface to read the stream line by line
-				const readline = createInterface({
-					input: gunzip,
-					crlfDelay: Infinity
-				});
-
-				let buffer = '';
-				for await (const line of readline) {
-					// if line is empty or sql comment ignore it.
-					if (line.trim().length == 0 || line.substring(0, 2) == '/*' || line.substring(0, 2) == '# ')
+				this.dataSource.transaction(async (manager)=>{
+					const queryRunner = manager.queryRunner;
+					await queryRunner.dropDatabase(dbName, true);
+					await queryRunner.createDatabase(dbName, true);
+					await queryRunner.query('USE ' + dbName);
+					
+					// create a readline interface to read the stream line by line
+					const readline = createInterface({
+						input: gunzip,
+						crlfDelay: Infinity
+					});
+					
+					let buffer = '';
+					for await (const line of readline) {
+						// if line is empty or sql comment ignore it.
+						if (line.trim().length == 0 || line.substring(0, 2) == '/*' || line.substring(0, 2) == '# ')
 						continue;
-
-					buffer += line;
-					// check if the buffer ends with a semicolon, indicating a complete statement
-					if (buffer.trimEnd().endsWith(';')) {
-						// execute the statement
-						console.log('execute chunk:', buffer);
-						await queryRunner.query(buffer);
-						// clear the buffer
-						buffer = '';
-					} else buffer += '\n';
-				}
-				
-				//Reconnect to the database; because database was dropped
-				await this.dataSource.destroy();
-				await this.dataSource.initialize();
-
-				res({ success: true });
+						
+						buffer += line;
+						// check if the buffer ends with a semicolon, indicating a complete statement
+						if (buffer.trimEnd().endsWith(';')) {
+							// execute the statement
+							console.log('execute chunk:', buffer);
+							await queryRunner.query(buffer);
+							// clear the buffer
+							buffer = '';
+						} else buffer += '\n';
+					}
+					
+					//Reconnect to the database; because database was dropped
+					await this.dataSource.destroy();
+					await this.dataSource.initialize();
+					this.notify.emitNewNotification({
+						by: user,
+						controller: 'restore',
+						datetime: new Date(),
+						method: 'POST',
+						payloadId: -1,//segregation design pattern :/
+						payload: undefined,//segregation design pattern :/
+					});
+					res({ success: true });
+				});
 			} catch (e) {
 				console.error(e);
 				rej(e);

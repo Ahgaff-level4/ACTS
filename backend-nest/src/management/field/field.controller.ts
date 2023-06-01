@@ -3,19 +3,31 @@ import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateField, FieldEntity, UpdateField } from './field.entity';
+import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { UserMust } from 'src/utility.service';
+import { User } from '../../../../interfaces';
 @Controller('api/field')
 export class FieldController {
 
-  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>) { }
+  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>, private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')
-  create(@Body() createField: CreateField) {
-    return this.repo.save(this.repo.create(createField))
+  async create(@Body() createField: CreateField, @UserMust() user: User) {
+    const ret = await this.repo.save(this.repo.create(createField))
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'field',
+      datetime: new Date(),
+      method: 'POST',
+      payloadId: ret.id,
+      payload: ret,
+    });
+    return ret;
   }
 
   @Get()
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher','Parent')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher', 'Parent')
   findAll() {
     return this.repo.createQueryBuilder('field')
       .loadRelationCountAndMap('field.activityCount', 'field.activities')
@@ -24,13 +36,31 @@ export class FieldController {
 
   @Patch(':id')
   @Roles('Admin', 'HeadOfDepartment')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateField: UpdateField) {
-    return this.repo.update(+id, updateField);
+  async update(@Param('id', ParseIntPipe) id: string, @Body() updateField: UpdateField,@UserMust() user:User) {
+    const ret = await this.repo.update(+id, updateField);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'field',
+      datetime: new Date(),
+      method: 'PATCH',
+      payloadId: +id,
+      payload: updateField,
+    });
+    return ret;
   }
 
   @Delete(':id')
   @Roles('Admin', 'HeadOfDepartment')
-  remove(@Param('id', ParseIntPipe) id: string) {
-    return this.repo.delete(+id);
+  async remove(@Param('id', ParseIntPipe) id: string,@UserMust() user:User) {
+    const ret =await this.repo.delete(+id);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'field',
+      datetime: new Date(),
+      method: 'DELETE',
+      payloadId: +id,
+      payload: ret,
+    });
+    return ret;
   }
 }

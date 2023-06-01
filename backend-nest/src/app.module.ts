@@ -23,6 +23,9 @@ import { GoalEntity } from './management/goal/Goal.entity';
 import { ProgramEntity } from './management/program/program.entity';
 import { OtherModule } from './management/other/other.module';
 import { ReportModule } from './management/report/report.module';
+import { NotificationModule } from './websocket/notification.module';
+// import { WebSocketModule } from '@nestjs/platform-socket.io';
+
 config();
 
 @Module({
@@ -45,7 +48,8 @@ config();
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,
     PersonModule, ProgramModule, AuthModule,OtherModule,
-    ReportModule
+    ReportModule,
+    NotificationModule
   ],
   providers: [{
     provide: APP_GUARD,

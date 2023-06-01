@@ -624,5 +624,18 @@
   "Goals analytics": "تحليلات الأهداف",
   "Goals state":"",
   "Changes you made may not be saved.":"",
-  "Restore successfully":""
+  "Restore successfully":"",
+  "Created new":"",
+  "Edited":"",
+  "Deleted":"",
+  ". Click to see the child information":"",
+  "account": "",
+  "activity": "",
+  "child": "",
+  "evaluation": "",
+  "field": "",
+  "goal": "",
+  "backup": "",
+  "restore": "",
+  "Account":""
 }

@@ -9,3 +9,7 @@ For more info see: https://angular.io/guide/build#configuring-commonjs-dependenc
 - in ag-grid when edit a cell of type date then make it date picker instead of text input.
 
 - add back button (<-) for nested pages. like child info and goals.
+
+- show (readonly) pages for child/account information.
+
+- prevent new line in header.

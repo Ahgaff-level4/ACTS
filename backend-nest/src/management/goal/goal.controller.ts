@@ -9,16 +9,28 @@ import { AccountEntity } from '../account/account.entity';
 import { PersonEntity } from '../person/person.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { ChildEntity } from '../child/child.entity';
+import { UserMust } from 'src/utility.service';
+import { User } from '../../../../interfaces';
+import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 @Controller('api/goal')
 export class GoalController {
   
-  constructor(@InjectRepository(GoalEntity) private repo: Repository<GoalEntity>) { }
+  constructor(@InjectRepository(GoalEntity) private repo: Repository<GoalEntity>, private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'Teacher')
-  create(@Body() createGoal: CreateGoal) {
-    return this.repo.save(this.repo.create(createGoal))
+  async create(@Body() createGoal: CreateGoal,@UserMust() user:User) {
+    const ret = await this.repo.save(this.repo.create(createGoal));
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'goal',
+      datetime: new Date(),
+      method: 'POST',
+      payloadId: ret.id,
+      payload: ret,
+    });
+    return ret;
   }
 
   @Get(':id')
@@ -39,13 +51,31 @@ export class GoalController {
 
   @Patch(':id')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateGoal: UpdateGoal) {
-    return this.repo.update(+id, updateGoal);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateGoal: UpdateGoal,@UserMust() user:User) {
+    const ret = await this.repo.update(+id, updateGoal);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'goal',
+      datetime: new Date(),
+      method: 'PATCH',
+      payloadId: +id,
+      payload: updateGoal,
+    });
+    return ret;
   }
 
   @Delete(':id')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.repo.delete(+id);
+  async remove(@Param('id', ParseIntPipe) id: number,@UserMust() user:User) {
+    const ret = await this.repo.delete(+id);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'goal',
+      datetime: new Date(),
+      method: 'DELETE',
+      payloadId: +id,
+      payload: ret,
+    });
+    return ret;
   }
 }

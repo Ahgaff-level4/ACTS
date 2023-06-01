@@ -261,6 +261,6 @@ export interface INotification {
 	controller: 'account' | 'activity' | 'child' | 'evaluation' | 'field' | 'goal' | 'backup' | 'restore' | 'program';
 	/**id of the posted/deleted/patched/putted entity */
 	payloadId:number;
-	payload?:any;
-	datetime:Date;
+	payload:any;
+	datetime:string|Date;
 }

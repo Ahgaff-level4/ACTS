@@ -4,19 +4,29 @@ import { CreateChild, UpdateChild } from './child.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { R, UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
+import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 @Controller('api/child')
 export class ChildController {
-  constructor(private readonly childService: ChildService) { }
+  constructor(private readonly childService: ChildService, private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')
-  create(@Body() createChild: CreateChild) {
-    return this.childService.create(createChild);
+  async create(@Body() createChild: CreateChild, @UserMust() user: User) {
+    const ret = await this.childService.create(createChild);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'child',
+      datetime: new Date(),
+      method: 'POST',
+      payloadId: ret.id,
+      payload: ret,
+    });
+    return ret;
   }
 
   @Get()
-  @Roles('Admin', 'HeadOfDepartment', 'Teacher','Parent')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher', 'Parent')
   /** findAll will check user privilege then will return the children base on:
   * - if Admin or HeadOfDepartment then return all children.
   * - if Teacher then return all children that taught by that teacher.
@@ -24,10 +34,10 @@ export class ChildController {
   findAll(@UserMust() user: User) {
     if (user.roles.includes('Admin') || user.roles.includes('HeadOfDepartment'))
       return this.childService.findAll();
-    else if(user.roles.includes('Parent'))
-    return this.childService.findAllParentChildren(user.accountId);
-    else if(user.roles.includes('Teacher'))
-    return this.childService.findAllTeacherChildren(user.accountId);
+    else if (user.roles.includes('Parent'))
+      return this.childService.findAllParentChildren(user.accountId);
+    else if (user.roles.includes('Teacher'))
+      return this.childService.findAllTeacherChildren(user.accountId);
     else throw new UnauthorizedException(R.string.insufficientPrivilege);
   }
 
@@ -45,13 +55,32 @@ export class ChildController {
 
   @Patch(':id')
   @Roles('Admin', 'HeadOfDepartment')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateChild: UpdateChild) {
-    return this.childService.update(+id, updateChild);
+  async update(@Param('id', ParseIntPipe) id: number, @Body() updateChild: UpdateChild, @UserMust() user: User) {
+
+    const ret = await this.childService.update(+id, updateChild);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'child',
+      datetime: new Date(),
+      method: 'PATCH',
+      payloadId: +id,
+      payload: updateChild,
+    });
+    return ret;
   }
 
   @Delete(':id')
   @Roles('Admin', 'HeadOfDepartment')
-  remove(@Param('id', ParseIntPipe) id: number) {
-    return this.childService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number, @UserMust() user: User) {
+    const ret = await this.childService.remove(+id);
+    this.notify.emitNewNotification({
+      by: user,
+      controller: 'child',
+      datetime: new Date(),
+      method: 'DELETE',
+      payloadId: +id,
+      payload:ret,
+    });
+    return ret;
   }
 }
