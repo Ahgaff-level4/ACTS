@@ -17,11 +17,11 @@ export class AppComponent {
 
   private sub: Subscription = new Subscription();
   public isLoading: boolean = true;
-  constructor(public translate: TranslateService,private websocket:SocketService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
-    websocket.connect();
+  constructor(public translate: TranslateService, private websocket: SocketService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
   }
 
   ngOnInit() {
+    this.ut.user.subscribe(v => v && this.websocket.connect(v));//just to initialize it.
     // Register translation languages
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');

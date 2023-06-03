@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors, Inject } from '@nestjs/common';
 import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -9,7 +9,7 @@ import { User } from '../../../../interfaces';
 @Controller('api/field')
 export class FieldController {
 
-  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>, private notify: NotificationGateway) { }
+  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>, @Inject('Notification') private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')

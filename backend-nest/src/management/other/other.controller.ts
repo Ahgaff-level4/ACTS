@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Inject, Post, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Mutex } from 'async-mutex';
@@ -20,7 +20,7 @@ export class OtherController {
 	// Create a mutex instance to lock the flow. So that backup/recovery process will be async
 	private mutex = new Mutex();
 
-	constructor(@InjectDataSource() private dataSource: DataSource, private notify: NotificationGateway) { }
+	constructor(@InjectDataSource() private dataSource: DataSource, @Inject('Notification') private notify: NotificationGateway) { }
 
 	@Get('backup')
 	@Roles('Admin')
@@ -64,7 +64,7 @@ export class OtherController {
 				by: user,
 				controller: 'backup',
 				datetime: new Date(),
-				method: 'POST',//segregation design pattern :/
+				method: null,
 				payloadId: -1,//segregation design pattern :/
 				payload: undefined,//segregation design pattern :/
 			});
@@ -134,7 +134,7 @@ export class OtherController {
 						by: user,
 						controller: 'restore',
 						datetime: new Date(),
-						method: 'POST',
+						method: null,
 						payloadId: -1,//segregation design pattern :/
 						payload: undefined,//segregation design pattern :/
 					});

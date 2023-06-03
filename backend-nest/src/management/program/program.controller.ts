@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UseInterceptors, Inject } from '@nestjs/common';
 import { CreateProgram, ProgramEntity, UpdateProgram } from './program.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -11,7 +11,7 @@ import { User } from '../../../../interfaces';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/program')
 export class ProgramController {
-  constructor(@InjectRepository(ProgramEntity) private repo: Repository<ProgramEntity>, private notify: NotificationGateway) { }
+  constructor(@InjectRepository(ProgramEntity) private repo: Repository<ProgramEntity>,  @Inject('Notification')private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')

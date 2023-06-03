@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UnauthorizedException } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, ParseIntPipe, UnauthorizedException, Inject } from '@nestjs/common';
 import { ChildService } from './child.service';
 import { CreateChild, UpdateChild } from './child.entity';
 import { Roles } from 'src/auth/Role.guard';
@@ -8,7 +8,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 @Controller('api/child')
 export class ChildController {
-  constructor(private readonly childService: ChildService, private notify: NotificationGateway) { }
+  constructor(private readonly childService: ChildService,  @Inject('Notification')private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')

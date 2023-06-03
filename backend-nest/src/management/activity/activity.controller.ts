@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Inject, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { Roles } from 'src/auth/Role.guard';
 import { CreateActivity, UpdateActivity } from './activity.entity';
@@ -8,7 +8,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/activity')
 export class ActivityController {
-    constructor(private activityService: ActivityService, private notify: NotificationGateway) { }
+    constructor(private activityService: ActivityService,  @Inject('Notification')private notify: NotificationGateway) { }
 
     @Post()
     @Roles('Admin', 'HeadOfDepartment')

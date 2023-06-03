@@ -4,7 +4,8 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 @Module({
 	controllers: [OtherController],
-	providers:[NotificationGateway]
+	providers:[{provide:'Notification',useClass:NotificationGateway}]
+
 })
 export class OtherModule {
 }

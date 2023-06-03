@@ -9,6 +9,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 @Module({
   imports:[TypeOrmModule.forFeature([ChildEntity])],
   controllers: [ChildController],
-  providers: [ChildService,UtilityService,NotificationGateway]
+  providers: [ChildService,UtilityService,{provide:'Notification',useClass:NotificationGateway}],
+  
 })
 export class ChildModule {}

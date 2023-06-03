@@ -1,63 +1,138 @@
-import { Injectable } from '@angular/core';
+import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
-import { INotification } from '../../../../interfaces';
+import { INotification, User } from '../../../../interfaces';
 import { UtilityService } from './utility.service';
-import { Subscription } from 'rxjs';
+import { Subscription, filter, first } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
-export class SocketService {
-  private socket: Socket;
-
+export class SocketService implements OnDestroy {
+  private sub = new Subscription();
+  private socket!: Socket;
+  private _user: null | User = null;
+  /**
+   * Notification will be passed to Admin and Parent:
+   * - Admin:
+   *  will receive all `POST/PATCH/PUT/DELETE methods`of `ALL entities` and `LOGIN/LOGOUT/BACKUP/RESTORE`.
+   *  Notification structure: TITLE=`Account {{account.username}}`, CONTENT=`{{method:userFriendly}} {{entity}}. <span *ngIf="href">Click to see more information.</span>`
+   * - Parent will receive `POST method` of `GOAL/EVALUATION entities`.
+   *  Notification structure: TITLE=`{{ADMIN'S CONTENT}}`.
+   *
+   * NOTE: the server will handle the above condition and emit notification accordingly
+   */
   constructor(private ut: UtilityService) {
     this.socket = io(environment.SERVER_URL + '/notification');
-    this.socket = this.socket.connect()
-  }
-
-  public connect() {
-    this.socket.emit("newNotification");
     this.socket.on('newNotification', this.newNotification);
-    // this.socket.on('newNotification', (d) => console.log('newNotificaiton', d));
-    // this.socket.emit("newNotification",1234)
-    // this.socket.emit("newNotification",new Date())
-    // this.socket.emit("newNotification",[{data:'asdf'}])
   }
-  private newNotification = (notification: INotification) => {
-    let user = notification.by;
-    console.log('newNotification', notification);
-    if (!notification || !this.ut.user.value)//todo|| user.accountId == this.ut.user.value.accountId)
+  public connect(v: User) {
+    this.sub.add(this.ut.user
+      .subscribe(v => {
+        this._user = v;
+        console.log('hi')
+        this.socket.emit('registerUser', v);
+      }));
+  }
+
+  private newNotification = (n: INotification) => {
+    console.log('newNotification', n);
+    if (!n || this.ut.user.value == null)
       return;
-    let title = this.ut.translate('Account') + ': ' + user.person.name;
-    let action: string;
-    switch (notification.method) {
-      case 'POST': action = 'Created new'; break;
-      case 'DELETE': action = 'Deleted'; break;
-      case 'PATCH': action = 'Edited'; break;
-      case 'PUT': action = 'Edited'; break;
-      default: action = notification.method; break;
-    }
 
-    let entity: string;
-    switch (notification.controller) {
-      default: entity = notification.controller; break;
+    let title = this.getTitle(n, this.ut.user.value);
+    let content = this.getContent(n, this.ut.user.value);
+    let href = this.getHref(n, this.ut.user.value);
+    if (title == null) {//parent will have title = null
+      title = content
+      content = '';
     }
-    let content = this.ut.translate(action) + ' ' + this.ut.translate(entity);
-
-    let href: undefined | string;
-    if (notification.payloadId &&
-      (notification.controller == 'child') &&
-      notification.method != 'DELETE') {
-      href = '/child/' + notification.payloadId + '/report';
-      content += this.ut.translate('. Click to see the child information');
-    }
-
-    let ref = this.ut.notify(title, content, 'info', 10000);
+    let ref = this.ut.notify(title, content, 'info', 50000);//todo 15000
     if (href) {
       ref.onClick.subscribe(() => this.ut.router.navigateByUrl(href as string));
     }
 
   }
 
+  private getTitle(n: INotification, user: User): string | null {
+    if (user.roles.includes('Admin')) {
+      return this.ut.translate('Account') + ': ' + n.by.person.name;
+    } return null;
+  }
+
+  private getContent(n: INotification, user: User): string {
+    /**part1 looks like `created/deleted/edited`*/
+    let part1: string;
+    switch (n.method) {
+      case 'POST': part1 = n.controller == 'login' ? '' : 'Created'; break;//login has POST method
+      case 'DELETE': part1 = 'Deleted'; break;
+      case 'PATCH': part1 = 'Edited'; break;
+      case 'PUT': part1 = 'Edited'; break;
+      default: part1 = n.method ?? ''; break;
+    }
+
+    /**part2 looks like `account/goal/child/...` or `Downloaded a backup/Logged in/Logged out`*/
+    let part2: string;
+    switch (n.controller) {
+      case 'login': part2 = 'Logged in into the system'; break;
+      case 'logout': part2 = 'Logged out of the system'; break;
+      case 'backup': part2 = 'Downloaded a backup file of the database'; break;
+      case 'restore': part2 = 'Restored the database'; break;
+      case 'account': part2 = this.getPartTwoOfAccount(n, user); break;//account name/username maybe provided
+      case 'activity': part2 = 'an activity'; break;
+      case 'child': part2 = 'a child'; break;
+      case 'evaluation': part2 = this.getPartTwoOfEvaluation(n, user); break;//maybe parent
+      case 'goal': part2 = this.getPartTwoOfGoal(n, user); break;//maybe parent
+      case 'strength': part2 = this.getPartTwoOfStrength(n, user); break;
+      case 'field': part2 = 'a field'; break;
+      case 'program': part2 = 'a program'; break;
+      default: part2 = this.ut.translate(n.controller); break;
+    }
+    let content = '';
+    if (part1 && user.roles.includes('Admin'))
+      content = this.ut.translate(part1) + ' ';
+    content += this.ut.translate(part2);
+    return content;
+  }
+
+  private getHref(n: INotification, user: User): string | undefined {
+    if (n.payloadId &&
+      (n.controller == 'child') &&
+      n.method != 'DELETE') {
+      return '/child/' + n.payloadId + '/report';//todo make child/account view information only
+    }//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
+    return undefined;
+  }
+
+  private getPartTwoOfAccount(n: INotification, user: User): string {
+    let name = '';
+    if (typeof n.payload.person.name == 'string') {
+      name = n.payload.person.name;
+    } else name = n.payload.username;
+    if (name)
+      return this.ut.translate('the following account') + ' ' + name;
+    return 'an account';
+  }
+
+  private getPartTwoOfEvaluation(n: INotification, user: User): string {
+    if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
+      return 'New evaluation created for child'+' '+n.payload.person.name;
+    return 'an evaluation';
+  }
+
+  private getPartTwoOfGoal(n: INotification, user: User): string {
+    if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
+      return 'New goal created for child' + ' ' + n.payload.person.name;
+    return 'a goal';
+  }
+
+  private getPartTwoOfStrength(n: INotification, user: User): string {
+    if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
+      return 'New strength created for child' + ' ' + n.payload.person.name;
+    return 'a strength';
+  }
+
+  ngOnDestroy(): void {
+    this.sub.unsubscribe();
+  }
 }

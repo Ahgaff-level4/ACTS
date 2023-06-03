@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Post, Body, Patch, Param, Delete, Inject } from '@nestjs/common';
 import { ParseIntPipe } from '@nestjs/common/pipes';
 import { CreateEvaluation, EvaluationEntity, UpdateEvaluation } from './evaluation.entity';
 import { Roles } from 'src/auth/Role.guard';
@@ -10,7 +10,7 @@ import { User } from '../../../../interfaces';
 
 @Controller('api/evaluation')
 export class EvaluationController {
-  constructor(@InjectRepository(EvaluationEntity) private repo: Repository<EvaluationEntity>, private notify: NotificationGateway) { }
+  constructor(@InjectRepository(EvaluationEntity) private repo: Repository<EvaluationEntity>, @Inject('Notification') private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'Teacher')

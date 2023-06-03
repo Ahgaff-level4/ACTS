@@ -7,7 +7,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 @Module({
   imports:[TypeOrmModule.forFeature([ActivityEntity])],
-  providers: [ActivityService,NotificationGateway],
+  providers: [ActivityService	,{provide:'Notification',useClass:NotificationGateway}],
   controllers: [ActivityController]
 })
 export class ActivityModule {}

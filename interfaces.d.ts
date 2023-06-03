@@ -257,10 +257,10 @@ export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
 */
 export interface INotification {
 	by: User;
-	method: 'POST' | 'DELETE' | 'PATCH' | 'PUT';
-	controller: 'account' | 'activity' | 'child' | 'evaluation' | 'field' | 'goal' | 'backup' | 'restore' | 'program';
+	method: 'POST' | 'DELETE' | 'PATCH' | 'PUT'|null;
+	controller: 'account' | 'activity' | 'child' | 'evaluation' | 'field' | 'goal' | 'backup' | 'restore' | 'program' | 'login'|'logout'|'strength';
 	/**id of the posted/deleted/patched/putted entity */
-	payloadId:number;
-	payload:any;
-	datetime:string|Date;
+	payloadId: number;
+	payload: any;
+	datetime: string | Date;
 }
