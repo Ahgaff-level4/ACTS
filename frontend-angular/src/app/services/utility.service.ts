@@ -21,6 +21,7 @@ export class UtilityService {
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
   public isLoading = new BehaviorSubject<boolean>(false);
+  public notifySettings = new BehaviorSubject<{ allowNotification: boolean, closeAfter: number }>(JSON.parse(localStorage.getItem('notifySettings') ?? 'null') ?? { allowNotification: true, closeAfter: 10000 });
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
 
 
@@ -131,7 +132,7 @@ export class UtilityService {
    */
   public showMsgDialog(data: MessageDialogData) {
     return this.dialog
-      .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data,direction:this.getDirection() });
+      .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data, direction: this.getDirection() });
   }
 
   /**
@@ -203,7 +204,7 @@ export class UtilityService {
    * @param content will be translated
    * @param type icon type or no icon if not provided
    */
-  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error',duration=4000) {
+  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration = 4000) {
     if (title == null) {
       console.trace('notify title is `undefined`!');
       title = 'Error!';
@@ -292,8 +293,8 @@ export class UtilityService {
     return ret + ')';
   }
 
-  public getDirection():'ltr'|'rtl'{
-    return this.currentLang.includes('ar')?'rtl':'ltr';
+  public getDirection(): 'ltr' | 'rtl' {
+    return this.currentLang.includes('ar') ? 'rtl' : 'ltr';
   }
 }
 

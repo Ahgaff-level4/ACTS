@@ -47,7 +47,7 @@ export class SettingsComponent {
           if (typeof event.loaded == 'number') {
             this.uploadProgress = Math.round(100 * (event.loaded / (event.total ?? 1)));
           } else if (event instanceof HttpResponse && event.body.success) {
-            this.ut.notify("Restore successfully",'Database restored successfully','success');
+            this.ut.notify("Restored successfully", 'Database restored successfully', 'success');
             this.uploadProgress = null;
           }
           console.log('response', event);
@@ -58,7 +58,17 @@ export class SettingsComponent {
   }
 
   changePassword() {
-    this.dialog.open(PasswordDialogComponent,{direction:this.ut.getDirection()});
+    this.dialog.open(PasswordDialogComponent, { direction: this.ut.getDirection() });
+  }
+
+  closeAfter = this.ut.notifySettings.value.closeAfter / 1000;
+  changeNotification(value: boolean | KeyboardEvent) {
+    if (typeof value == 'boolean')
+      this.ut.notifySettings.next({ ...this.ut.notifySettings.value, allowNotification: value });
+    else
+      this.ut.notifySettings.next({ ...this.ut.notifySettings.value, closeAfter: Number(this.closeAfter) * 1000 });
+
+    localStorage.setItem('notifySettings', JSON.stringify(this.ut.notifySettings.value));
   }
 
 }

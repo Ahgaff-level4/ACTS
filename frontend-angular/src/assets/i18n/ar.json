@@ -624,7 +624,7 @@
   "Goals analytics": "تحليلات الأهداف",
   "Goals state":"",
   "Changes you made may not be saved.":"",
-  "Restore successfully":"",
+  "Restored successfully":"",
   "Edited":"",
   "Deleted":"",
   "Click to see more information":"",
@@ -643,5 +643,8 @@
   "Restored the database":"",
   "the following account":"",
   "New strength created for child":"",
-  "New goal created for child":""
+  "New goal created for child":"",
+  "Allow notifications":"",
+  "Changed his own password":"",
+  "0 for infinity":""
 }

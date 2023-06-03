@@ -37,7 +37,7 @@ export class SocketService implements OnDestroy {
 
   private newNotification = (n: INotification) => {
     console.log('newNotification', n);
-    if (!n || this.ut.user.value == null)
+    if (!n || this.ut.user.value == null || !this.ut.notifySettings.value.allowNotification)
       return;
 
     let title = this.getTitle(n, this.ut.user.value);
@@ -47,7 +47,7 @@ export class SocketService implements OnDestroy {
       title = content
       content = '';
     }
-    let ref = this.ut.notify(title, content, 'info', 50000);//todo 15000
+    let ref = this.ut.notify(title, content, 'info', this.ut.notifySettings.value.closeAfter);
     if (href) {
       ref.onClick.subscribe(() => this.ut.router.navigateByUrl(href as string));
     }
@@ -66,7 +66,7 @@ export class SocketService implements OnDestroy {
     switch (n.method) {
       case 'POST': part1 = n.controller == 'login' ? '' : 'Created'; break;//login has POST method
       case 'DELETE': part1 = 'Deleted'; break;
-      case 'PATCH': part1 = 'Edited'; break;
+      case 'PATCH': part1 = n.controller == 'account' ? '' : 'Edited'; break;//patch in account controller means UpdateOldPassword
       case 'PUT': part1 = 'Edited'; break;
       default: part1 = n.method ?? ''; break;
     }
@@ -106,17 +106,19 @@ export class SocketService implements OnDestroy {
 
   private getPartTwoOfAccount(n: INotification, user: User): string {
     let name = '';
-    if (typeof n.payload.person.name == 'string') {
+    if (typeof n.payload?.person?.name == 'string') {
       name = n.payload.person.name;
-    } else name = n.payload.username;
+    } else name = n.payload?.username;
+    if(n.controller == 'account' && n.method == 'PATCH')
+      return 'Changed his own password';//part1 is empty string
     if (name)
-      return this.ut.translate('the following account') + ' ' + name;
+      return this.ut.translate('the following account') + ': ' + name;
     return 'an account';
   }
 
   private getPartTwoOfEvaluation(n: INotification, user: User): string {
     if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
-      return 'New evaluation created for child'+' '+n.payload.person.name;
+      return 'New evaluation created for child' + ' ' + n.payload.person.name;
     return 'an evaluation';
   }
 
