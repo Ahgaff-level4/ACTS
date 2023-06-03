@@ -10,18 +10,9 @@ import { ErrorResponse, SuccessResponse, User } from '../../../../interfaces';
 export class LoginService {
   constructor(private http: HttpClient, private ut: UtilityService, private router: Router) { }
 
-  login(username: string, password: string, isRememberMe: boolean,onDone:Function) {
+  login(username: string, password: string, isRememberMe: boolean) {
     localStorage.setItem('isRememberMe', isRememberMe + '');
-    return this.http.post<User>(env.AUTH + 'login', { username, password }).subscribe({
-      next: (res) => {
-        if (typeof res.accountId === 'number' && Array.isArray(res.roles)) {
-          this.ut.user.next(res);
-          onDone();
-        } else this.ut.errorDefaultDialog();
-      }, error:(e)=>{
-        this.ut.errorDefaultDialog(e);
-      }
-    });
+    return this.http.post<User>(env.AUTH + 'login', { username, password });
 
   }
 

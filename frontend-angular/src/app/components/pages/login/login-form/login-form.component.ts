@@ -3,6 +3,7 @@ import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { LoginService } from 'src/app/services/login.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { User } from '../../../../../../../interfaces';
 
 @Component({
   selector: 'app-login-form',
@@ -28,10 +29,19 @@ export class LoginFormComponent {
   public submit() {
     const { username, password, isRememberMe } = this.formGroup.controls;
     this.formGroup.disable();
-    this.loginService.login(username.value.trim(), password.value, isRememberMe.value || true, () => {
+    this.loginService.login(username.value.trim(), password.value, isRememberMe.value || true)
+    .subscribe({
+      next:(v:User) => {
       this.formGroup.enable();
-      //todo redirect to previous page ?? '/main'
+      if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
+        this.ut.user.next(v);
+        //todo redirect to previous page ?? '/main'
         this.ut.router.navigate(['main']);
+      } else this.ut.errorDefaultDialog(v as any);
+    },error:e=>{
+      this.formGroup.enable();
+      this.ut.errorDefaultDialog(e);
+      }
     })
   }
 
