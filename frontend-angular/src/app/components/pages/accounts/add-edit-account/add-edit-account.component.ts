@@ -90,6 +90,8 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
   }
 
   async submit() {
+    this.isSubmitting = true;
+    setTimeout(()=>this.isSubmitting = false,100);
     this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
     this.ut.trimFormGroup(this.accountForm);
     this.personForm?.formGroup?.markAllAsTouched();
@@ -207,12 +209,13 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
     }
   }
 
+  isSubmitting = false;
   @HostListener('window:beforeunload')
   public canDeactivate(): boolean{//should NOT be arrow function
     // insert logic to check if there are pending changes here;
     // returning true will navigate without confirmation
     // returning false will show a confirm dialog before navigating away
-    if ((()=>this.accountForm.dirty || this.personForm?.formGroup.dirty)())//to access `this`
+    if ((()=>(this.accountForm.dirty || this.personForm?.formGroup.dirty)&&!this.isSubmitting)())//to access `this`
       return false;
     return true;
   }

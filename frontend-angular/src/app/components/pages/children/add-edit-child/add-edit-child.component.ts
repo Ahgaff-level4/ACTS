@@ -103,6 +103,8 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
 
 
   async submit() {
+    this.isSubmitting = true;
+    setTimeout(()=>this.isSubmitting = false,100);
     if (this.readonlyChild)
       return;//can not perform submit when showing the form in readonly mode
 
@@ -113,10 +115,9 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
-      this.isSubmitting = true;
 
       this.ut.isLoading.next(true);
-      FLAG:if (this.child?.id == null) {//Register a child
+      FLAG: if (this.child?.id == null) {//Register a child
         let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
         if (typeof p != 'object')
           break FLAG;
@@ -141,9 +142,8 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
-      this.isSubmitting = false;
-
     } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+
     // this.personForm.valid; do not submit if person field
   }
 
@@ -166,15 +166,15 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
     this.sub.unsubscribe();
   }
 
-  private isSubmitting: boolean = false;
+  public isSubmitting: boolean =  false;
   @HostListener('window:beforeunload')
   public canDeactivate(): boolean {//should NOT be arrow function
     // insert logic to check if there are pending changes here;
-    // returning true will navigate without confirmation
-    // returning false will show a confirm dialog before navigating away
-    if ((() => this.childForm.dirty || this.personForm?.formGroup.dirty)())//to access `this`
-      return false;
-    return (() => !this.isSubmitting)();
+
+
+    if ((() => (this.childForm.dirty || this.personForm?.formGroup.dirty)&&!this.isSubmitting)())//to access `this`
+      return false; // returning false will show a confirm dialog before navigating away
+    return true;// returning true will navigate without confirmation
   }
 
 }
