@@ -170,8 +170,6 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
   @HostListener('window:beforeunload')
   public canDeactivate(): boolean {//should NOT be arrow function
     // insert logic to check if there are pending changes here;
-
-
     if ((() => (this.childForm.dirty || this.personForm?.formGroup.dirty)&&!this.isSubmitting)())//to access `this`
       return false; // returning false will show a confirm dialog before navigating away
     return true;// returning true will navigate without confirmation

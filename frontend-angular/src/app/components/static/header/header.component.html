@@ -30,7 +30,7 @@
       </li>
       <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')" (click)="isShowDivIf=true" class="nav-item px-3"
         routerLinkActive="active">
-        <a class="nav-link" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
+        <a class="nav-link nbsp" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
       </li>
       <li *ngIf="ut.userHasAny('Admin')" (click)="isShowDivIf=true" class="nav-item px-3"
         routerLinkActive="active">

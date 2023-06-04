@@ -15,6 +15,7 @@ export class ReportChildComponent implements OnInit, OnDestroy {
   public childReport$ = new BehaviorSubject<IChildReport | null>(null);
   public options!: AgChartOptions;
   public nowDatetime = '';
+  public isPrinting = false;
   constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { }
 
   ngOnInit(): void {
@@ -92,7 +93,7 @@ export class ReportChildComponent implements OnInit, OnDestroy {
               text: this.ut.translate('Total'),
               fontFamily: 'Roboto',
               fontSize: 16,
-              fontWeight:'lighter',
+              fontWeight: 'lighter',
             },
           ],
           highlightStyle: {
@@ -130,6 +131,14 @@ export class ReportChildComponent implements OnInit, OnDestroy {
     if (Array.isArray(childReport.child.teachers))
       return childReport.child.teachers?.map(v => v.person.name).join(this.ut.translate(', '))
     else return '';
+  }
+
+  printHandle() {
+    this.isPrinting = true;
+    setTimeout(() => {
+      print();
+      this.isPrinting = false
+    }, 1000);
   }
 
   ngOnDestroy(): void {

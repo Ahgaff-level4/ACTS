@@ -204,13 +204,14 @@ export class UtilityService {
    * @param content will be translated
    * @param type icon type or no icon if not provided
    */
-  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration = 4000) {
+  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration: number = 4000) {
     if (title == null) {
       console.trace('notify title is `undefined`!');
       title = 'Error!';
       content = 'Something went wrong!';
     }
-    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration: duration, nzClass: 'rounded-4', nzPlacement: 'bottomRight', nzPauseOnHover: true })
+    const nzDuration = duration <= 0 ? undefined : duration;
+    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4', nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   public displayRoles(roles: Role[]) {
