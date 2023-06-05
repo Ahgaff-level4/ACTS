@@ -22,6 +22,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 import { Component } from 'ag-grid-community';
+import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
 
 export interface ComponentCanDeactivate {
   /**@returns false to prevent user navigating. true otherwise */
@@ -126,6 +127,7 @@ const routes: Routes = [
   { path: 'child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
   { path: 'goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
   { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
+  { path: 'child/:id', component: ViewChildComponent, title: titlePrefix + 'Child info', canActivate: [RoleGuard], data: AHTP },
   { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: AH },
   { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', },
   { path: 'child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: AH },

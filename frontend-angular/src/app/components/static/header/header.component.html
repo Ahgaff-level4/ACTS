@@ -54,7 +54,7 @@
       <a class="nav-link min-width rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn"
         routerLink="/login">{{'Login'|translate}}</a>
       <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;"
-        class="nav-link rounded-5 min-width" *ngIf="isLoggedIn">
+        class="nav-link rounded-5 min-width nbsp" *ngIf="isLoggedIn">
         {{'Logout'|translate}}</button>
     </div>
   </div>

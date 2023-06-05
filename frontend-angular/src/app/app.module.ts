@@ -57,6 +57,8 @@ import { StatisticsComponent } from './components/pages/home/statistics/statisti
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 import { AgChartsAngularModule } from 'ag-charts-angular';
+import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
+import { ChildInfoComponent } from './components/pages/children/view-child/child-info/child-info.component';
 
 @NgModule({
   declarations: [
@@ -98,6 +100,8 @@ import { AgChartsAngularModule } from 'ag-charts-angular';
     LoginFormComponent,
     StatisticsComponent,
     ReportChildComponent,
+    ViewChildComponent,
+    ChildInfoComponent,
   ],
   imports: [
     BrowserModule,

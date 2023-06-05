@@ -1,36 +1,17 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-end">
     <h1 class="mt-4 mb-0">{{'Child Report'|translate}}</h1>
-    <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button color="primary"><mat-icon>print</mat-icon>{{'Print'}}</button>
+    <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button
+      color="primary"><mat-icon>print</mat-icon>{{'Print'|translate}}</button>
   </div>
   <ng-container *ngIf="childReport$ |async as childReport">
-    <p class="fw-normal mx-md-5  fs-6">
+    <p class="fw-normal text-center mx-md-5  fs-6">
       {{nowDatetime}}
     </p>
     <h4 class="m-4 p-4 mt-0 pt-0 mb-0 pb-0 fw-normal">{{'Personal information'|translate}}</h4>
     <mat-card class="m-4 shadow d-flex rounded-5">
       <mat-card-content>
-        <p *ngIf="childReport.child.isArchive===true" class="fw-bold w-100 text-center my-warn-bg text-white rounded-5">
-          {{'Archived'|translate}}</p>
-        <p><span class="fw-bold">{{'Name'}}:</span>&nbsp;{{childReport.child.person.name||'-'}}</p>
-        <p><span
-            class="fw-bold">{{'Age'}}:</span>&nbsp;{{this.ut.fromNow(childReport.child.person.birthDate,true)||'-'}}</p>
-        <p><span
-            class="fw-bold">{{'Birthdate'}}:</span>&nbsp;{{this.ut.toDate(childReport.child.person.birthDate)||'-'}}</p>
-        <p><span class="fw-bold">{{'Gender'}}:</span>&nbsp;{{this.ut.translate(childReport.child.person.gender)||'-'}}
-        </p>
-        <p><span class="fw-bold">{{'Register date'}}:</span>&nbsp;{{this.ut.fromNow(childReport.child.person.birthDate)||'-'}}</p>
-        <p><span class="fw-bold">{{'Diagnostic'}}:</span>&nbsp;{{childReport.child.diagnostic}}</p>
-        <p><span class="fw-bold">{{'Family information'}}:</span>&nbsp;{{this.ut.familyInformation(childReport.child)||'-'}}</p>
-        <p><span class="fw-bold">{{'Parent kinship'}}:</span>&nbsp;{{childReport.child.parentsKinship}}</p>
-        <p><span class="fw-bold">{{'Diagnostic date'}}:</span>&nbsp;{{this.ut.toDate(childReport.child.diagnosticDate)||'-'}}</p>
-        <p><span class="fw-bold">{{'Pregnancy state'}}:</span>&nbsp;{{childReport.child.pregnancyState||'-'}}</p>
-        <p><span class="fw-bold">{{'Birth state'}}:</span>&nbsp;{{childReport.child.birthState||'-'}}</p>
-        <p><span class="fw-bold">{{'Growth state'}}:</span>&nbsp;{{childReport.child.growthState||'-'}}</p>
-        <p><span class="fw-bold">{{'Medicines'}}:</span>&nbsp;{{childReport.child.medicine||'-'}}</p>
-        <p><span class="fw-bold">{{'Priority skills'}}:</span>&nbsp;{{childReport.child.prioritySkills||'-'}}</p>
-        <p><span class="fw-bold">{{'Parent'}}:</span>&nbsp;{{childReport.child.parent?.person?.name||'-'}}</p>
-        <p><span class="fw-bold">{{'Teachers'}}:</span>&nbsp;{{getTeachers(childReport)||'-'}}</p>
+        <app-child-info [isPrinting]="isPrinting" [child]="childReport.child"></app-child-info>
       </mat-card-content>
     </mat-card>
     <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Goals analytics'|translate}}</h4>

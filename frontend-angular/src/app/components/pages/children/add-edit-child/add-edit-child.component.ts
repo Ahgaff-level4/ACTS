@@ -13,7 +13,7 @@ import { ComponentCanDeactivate } from 'src/app/app-routing.module';
   templateUrl: './add-edit-child.component.html',
   styleUrls: ['./add-edit-child.component.scss']
 })
-export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, ComponentCanDeactivate {
+export class AddEditChildComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
   public childForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
@@ -24,25 +24,11 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
   public teachers!: IAccountEntity[];
   public sub!: Subscription;
   maxlength = { maxlength: 512 };
-  /**Used to show the add-edit form in children table. If `readonlyChild` exist then do not show title, submit, and every control should be readonly */
-  @Input('child') readonlyChild: IChildEntity | undefined;
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService, private accountService: AccountService) {
   }
 
   ngOnInit(): void {
-    // window.onload = ()=> {
-    // var confirmationMessage = this.ut.translate('Changes you made may not be saved.');
-    // window.addEventListener("beforeunload", function (e) {
-    //   if (false) {//do not prevent leaving the page
-    //     return undefined;
-    //   }
-
-
-    //   (e || window.event).returnValue = confirmationMessage; //Gecko + IE
-    //   return confirmationMessage; //Gecko + Webkit, Safari, Chrome etc.
-    // });
-    // };
     this.childForm = this.fb.group({
       femaleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
       maleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
@@ -65,9 +51,8 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
     this.sub = this.accountService.accounts.subscribe((v) => {
       this.parents = v.filter(v => v.roles.includes('Parent'));
       this.teachers = v.filter(v => v.roles.includes('Teacher'));
-      let child = this.readonlyChild ? this.readonlyChild : this.child;
-      if (child?.teachers)
-        for (let c of child.teachers)
+      if (this.child?.teachers)
+        for (let c of this.child.teachers)
           this.teachers = this.teachers.map(t => c.id == t.id ? c : t);
     });
 
@@ -76,14 +61,6 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
     }
   }
 
-  async ngAfterViewInit() {
-    if (this.readonlyChild && this.personForm) {//if add-edit shows in readonly mode, AKA in children table
-      this.childForm.disable();
-      this.personForm.formGroup.disable();
-      this.childForm.setValue(this.ut.extractFrom(this.childForm.controls, this.readonlyChild));
-      this.personForm.formGroup.setValue(this.ut.extractFrom(this.personForm.formGroup.controls, this.readonlyChild.person))
-    }
-  }
 
   calcFamilyMembers = (): string => {
     return (Number(this.childForm?.get('femaleFamilyMembers')?.value ?? 0)
@@ -103,9 +80,6 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
 
 
   async submit() {
-    if (this.readonlyChild)
-      return;//can not perform submit when showing the form in readonly mode
-
     this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
     this.ut.trimFormGroup(this.childForm)
     this.personForm?.formGroup?.markAllAsTouched();

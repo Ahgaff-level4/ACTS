@@ -127,11 +127,7 @@ export class ReportChildComponent implements OnInit, OnDestroy {
     }
   }
 
-  getTeachers(childReport: IChildReport): string {
-    if (Array.isArray(childReport.child.teachers))
-      return childReport.child.teachers?.map(v => v.person.name).join(this.ut.translate(', '))
-    else return '';
-  }
+  
 
   printHandle() {
     this.isPrinting = true;

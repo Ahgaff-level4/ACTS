@@ -252,19 +252,8 @@ export class UtilityService {
    * @param obj array or object
    * @returns the same array or object with different reference address AKA ` obj != deepClone(obj)` and its properties object/array
    */
-  public deepClone<T extends object>(obj: T): T {
-    let ret: T;
-    if (Array.isArray(obj))
-      ret = [...obj] as T;
-    else if (typeof obj === 'object')
-      ret = { ...obj } as T;
-    else
-      return obj;
-
-    for (let i in ret)
-      if ((typeof ret[i] == 'object' && ret[i] !== null) || Array.isArray(ret[i]))
-        ret[i] = this.deepClone(ret[i] as T) as any;
-    return ret;
+  public deepClone<T>(obj: T): T {
+    return JSON.parse(JSON.stringify(obj))
   }
 
   /**
@@ -275,7 +264,7 @@ export class UtilityService {
   }
 
   /**@returns ex: `Third of 5 siblings (2 girls, 3 boys)` */
-  familyInformation(child: IChildEntity) {
+  displayFamilyInformation(child: IChildEntity) {
     let ret = '';
     if (child.birthOrder != null)
       ret += this.translate(this.ordinalNumbers[child.birthOrder - 1]);
@@ -298,5 +287,13 @@ export class UtilityService {
   public getDirection(): 'ltr' | 'rtl' {
     return this.currentLang.toLowerCase().includes('ar') ? 'rtl' : 'ltr';
   }
+
+  /**User friendly to display a child's teachers name */
+  displayTeachers(child:IChildEntity|undefined): string {
+    if (Array.isArray(child?.teachers))
+      return child!.teachers!.map(v => v.person.name).join(this.translate(', '))
+    else return '';
+  }
+
 }
 

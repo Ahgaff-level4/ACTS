@@ -76,7 +76,7 @@ export class ChildrenComponent implements OnInit, OnDestroy {
     {
       field: 'family',
       headerName: 'Family information',
-      valueGetter: (v) => v.data ? this.ut.familyInformation(v.data) : '',
+      valueGetter: (v) => v.data ? this.ut.displayFamilyInformation(v.data) : '',
       type: ['long', 'madeUp'],
     },
     {
@@ -165,7 +165,7 @@ export class ChildrenComponent implements OnInit, OnDestroy {
       [{
         field: 'teachers',
         headerName: 'Teachers',
-        valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
+        valueGetter: (v) => this.ut.displayTeachers(v.data),
         tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
       }, {
         field: 'isArchive',
