@@ -72,7 +72,7 @@
         cdkFocusInitial>{{'Cancel'|translate}}</button>
       <button type="submit" mat-button color="primary" class=" rounded-5">
         <mat-icon>{{(evaluationOrGoalId|type:'object')?'edit':'rate_review'}}</mat-icon>
-        {{(evaluationOrGoalId|type:'object')?'Edit':'Evaluate'|translate}}
+        {{((evaluationOrGoalId|type:'object')?'Edit':'Evaluate')|translate}}
       </button>
     </div>
   </form>
