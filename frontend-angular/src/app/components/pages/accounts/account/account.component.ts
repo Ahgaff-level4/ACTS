@@ -45,7 +45,8 @@ export class AccountComponent {
       field: 'person.gender',
       headerName: 'Gender',
       type: 'enum',
-      filterParams: { values: ['Male', 'Female'], },
+      valueGetter:v=>this.ut.translate(v.data?.person?.gender),
+      filterParams: { values: [this.ut.translate('Male'), this.ut.translate('Female')], },
       width: 100
     },
     {
@@ -63,17 +64,17 @@ export class AccountComponent {
     {
       field: 'roles',
       headerName: 'Roles',
-      type: 'enum',//filterParams in init
+      type: 'long',//filterParams in init
       valueGetter: v => v.data?.roles ? this.ut.displayRoles(v.data.roles) : '',
-      filterParams: {
-        values: [this.ut.translate('Admin'), this.ut.translate('Head of Department'), this.ut.translate('Teacher'), this.ut.translate('Parent')],
-        comparator: function (a: string, b: string) {
-          // return a.includes(b) ? 1 : (b.includes(a) ? -1 : 0);
-          console.log('a', a, 'b', b);
+      // filterParams: {
+      //   values: [this.ut.translate('Admin'), this.ut.translate('Head of Department'), this.ut.translate('Teacher'), this.ut.translate('Parent')],
+      //   comparator: function (a: string, b: string) {
+      //     // return a.includes(b) ? 1 : (b.includes(a) ? -1 : 0);
+      //     console.log('a', a, 'b', b);
 
-          return 1;//todo fix filtering for multi-role. `comparator` used for sort :/
-        }
-      } as SetFilterParams
+      //     return 1;//todo fix filtering for multi-role. `comparator` used for sort :/
+      //   }
+      // } as SetFilterParams
     },
     {
       field: 'person.createdDatetime',
@@ -97,7 +98,7 @@ export class AccountComponent {
     {
       name: 'Delete',
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
-      action: (v) => this.deleteAccount(v),
+      action: (v) => this.deleteAccount(this.selectedItem),
       tooltip: 'Delete the selected account',
     },
   ];

@@ -94,7 +94,8 @@
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100" appearance="fill">
           <mat-label>{{'Birth state'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #birthState matInput formControlName="birthState" maxlength="512"></textarea>
+          <textarea type="text" placeholder="..." #birthState matInput formControlName="birthState"
+            maxlength="512"></textarea>
           <mat-hint *ngIf="readonlyChild == null" align="end">{{birthState.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
@@ -104,14 +105,16 @@
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100" appearance="fill">
           <mat-label>{{'Growth state'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #growthState matInput formControlName="growthState" maxlength="512"></textarea>
+          <textarea type="text" placeholder="..." #growthState matInput formControlName="growthState"
+            maxlength="512"></textarea>
           <mat-hint *ngIf="readonlyChild == null" align="end">{{growthState.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100" appearance="fill">
           <mat-label>{{'Diagnostic'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #diagnostic matInput formControlName="diagnostic" maxlength="512"></textarea>
+          <textarea type="text" placeholder="..." #diagnostic matInput formControlName="diagnostic"
+            maxlength="512"></textarea>
           <mat-hint *ngIf="readonlyChild == null" align="end">{{diagnostic.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
@@ -121,14 +124,16 @@
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100" appearance="fill">
           <mat-label>{{'Medicines'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #medicine matInput formControlName="medicine" maxlength="512"></textarea>
+          <textarea type="text" placeholder="..." #medicine matInput formControlName="medicine"
+            maxlength="512"></textarea>
           <mat-hint *ngIf="readonlyChild == null" align="end">{{medicine.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100" appearance="fill">
           <mat-label>{{'Behaviors'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #behaviors matInput formControlName="behaviors" maxlength="512"></textarea>
+          <textarea type="text" placeholder="..." #behaviors matInput formControlName="behaviors"
+            maxlength="512"></textarea>
           <mat-hint *ngIf="readonlyChild == null" align="end">{{behaviors.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
@@ -175,8 +180,10 @@
       </div>
     </div>
 
-    <div *ngIf="readonlyChild == null" class="d-flex mt-4 mb-5  pb-5">
-      <button [disabled]="this.ut.isLoading.value" type="submit" class="w-75 mx-auto rounded-5" mat-flat-button color="primary">
+    <div *ngIf="readonlyChild == null"
+      class="d-flex mt-4 mb-5  pb-5">
+      <button (mouseenter)="isSubmitting=true" (mouseleave)="isSubmitting=false" [disabled]="this.ut.isLoading.value" type="submit" class="w-75 mx-auto rounded-5" mat-flat-button
+        color="primary">
         {{child?.id == null?'Submit':'Save Changes'|translate}} </button>
     </div>
   </form>

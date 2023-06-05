@@ -13,14 +13,18 @@
   <div class="py-2"></div>
   <mat-divider class="mx-5"></mat-divider>
   <div class=" mb-4 text-center">
-<h2 class=" mt-4 pb-2">{{'Watch this video to see how Autism Children Technical System works'|translate}}</h2>
-    <youtube-player
+<h3 class=" mt-4 pb-2">{{'Watch this video to see how Autism Children Technical System works'|translate}}</h3>
+    <!-- <youtube-player
     videoId="PeIN-Fe7DQo"
     [width]="560"
     [height]="315"
     [playerVars]="{
       autoplay: 0,
-    }"></youtube-player>
+    }"></youtube-player> -->
+    <video width="560" controls loop>
+      <source src="assets/ACTS.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
   </div>
     <mat-divider class="mx-5 mb-3"></mat-divider>
   <div class="d-flex flex-wrap justify-content-evenly">
@@ -30,7 +34,7 @@
         [alt]="card.alt??'image represent card\'s content'">
       <div class="text-center mt-2 p-2">
         <h4 class="card-title">{{card.title|translate}}</h4>
-        <p class="card-text">{{card.desc}}</p>
+        <p class="card-text">{{card.desc|translate}}</p>
       </div>
     </mat-card>
   </div>

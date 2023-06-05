@@ -511,7 +511,7 @@
   "Or": "أو",
   "Accounts": "حسابات",
   "Role": "دور",
-  "Roles": "ادوار",
+  "Roles": "الادوار",
   "Address": "عنوان",
   "Reset password": "إعادة تعيين كلمة المرور",
   "Change password": "تغيير كلمة المرور",
@@ -520,8 +520,8 @@
   "New password": "كلمة مرور جديدة",
   "Head of Department": "رئيس القسم",
   "Teacher": "معلم",
-  "Parent": "الوالد",
-  "Admin": "المشرف",
+  "Parent": "ولي الأمر",
+  "Admin": "مشرف",
   "Passwords do not match": "كلمات المرور غير متطابقة",
   "Must not contain spaces": "يجب ألا تحتوي على مسافات",
   "Phone": "الهاتف",
@@ -532,7 +532,7 @@
   "Archive": "أرشيف",
   "Not Archive": "ليس أرشفة",
   "Archiving a child will hide the child information from all pages and won't count their data in most report, such as children page. Only Admin can view archived children in the Children page by applying ‘Archive’ filter. Note: a parent of this child won't be able to view its information.": "ستؤدي أرشفة طفل إلى إخفاء المعلومات الفرعية من جميع الصفحات ولن يتم احتساب بياناته في معظم التقارير، مثل صفحة الأطفال. يمكن للمشرف فقط عرض العناصر الفرعية المؤرشفة في صفحة الأطفال من خلال تطبيق فلتر \"الأرشيف\". ملاحظة: لن يتمكن أحد الوالدين لهذا الطفل من عرض معلوماته.",
-  "GO BACK HOME": "العودة إلى المنزل",
+  "GO BACK HOME": "العودة إلى الصفحة الرئيسية",
   "Looks like you are lost": "يبدو أنك ضائع",
   "Settings": "اعدادات",
   "Application Language": "لغة التطبيق",
@@ -646,5 +646,7 @@
   "New goal created for child": "تم إنشاء هدف جديد للطفل",
   "Allow notifications": "السماح بالإشعارات",
   "Changed his own password": "غير كلمة المرور الخاصة به",
-  "0 for infinity": "0 لعدم إغلاق الإشعار تلقائيا"
+  "0 for infinity": "0 لعدم إغلاق الإشعار تلقائيا",
+  "Close after":"إغلاق تلقائي بعد",
+  "Seconds":"ثواني"
 }

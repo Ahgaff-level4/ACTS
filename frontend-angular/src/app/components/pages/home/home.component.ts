@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
       },
       {
         title: 'Accounts',
-        link: '/accounts',
+        link: '/account',
         img: 'assets/img/Account.svg',
         desc: 'Manage all users accounts',
         role: ['Admin']
@@ -48,7 +48,6 @@ export class HomeComponent implements OnInit {
         img: 'assets/img/Setting.svg',
         desc: 'Settings and preference',
       },
-
     ];
 
     this.cards = _cards.filter(v => v.role ? this.ut.userHasAny(...v.role) : true);

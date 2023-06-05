@@ -103,8 +103,6 @@ export class AddEditChildComponent implements OnInit, OnDestroy, AfterViewInit, 
 
 
   async submit() {
-    this.isSubmitting = true;
-    setTimeout(()=>this.isSubmitting = false,100);
     if (this.readonlyChild)
       return;//can not perform submit when showing the form in readonly mode
 

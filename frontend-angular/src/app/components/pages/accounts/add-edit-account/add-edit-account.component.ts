@@ -90,8 +90,6 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
   }
 
   async submit() {
-    this.isSubmitting = true;
-    setTimeout(()=>this.isSubmitting = false,100);
     this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
     this.ut.trimFormGroup(this.accountForm);
     this.personForm?.formGroup?.markAllAsTouched();

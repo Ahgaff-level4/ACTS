@@ -52,7 +52,7 @@ export class AccountService implements OnInit {
   post(account: ICreateAccount, manageLoading = false): Promise<IAccountEntity> {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.ut.errorDefaultDialog('Something went wrong!');
+        this.ut.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -95,7 +95,7 @@ export class AccountService implements OnInit {
   put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.ut.errorDefaultDialog('Something went wrong!');
+        this.ut.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -118,7 +118,7 @@ export class AccountService implements OnInit {
   delete(id: number, manageLoading = false) {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.ut.errorDefaultDialog('Something went wrong!');
+        this.ut.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -147,7 +147,7 @@ export class AccountService implements OnInit {
     return new Promise((res, rej) => {
       if (this.isLoggerIn === true)
         res(true);
-      else this.dialog.open<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, { data: false,direction:this.ut.getDirection() })
+      else this.dialog.open<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, { data: false, direction: this.ut.getDirection() })
         .afterClosed().subscribe((v) => {
           if (v === true) {
             this.isLoggerIn = v;

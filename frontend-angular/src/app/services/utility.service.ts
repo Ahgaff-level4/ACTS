@@ -202,13 +202,14 @@ export class UtilityService {
    * If title is null then show error message of something went wrong!
    * @param title will be translated
    * @param content will be translated
-   * @param type icon type or no icon if not provided
+   * @param type  notification icon will be based on the type or 'undefined'/'blank' for no icon
    */
   public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration: number = 4000) {
     if (title == null) {
       console.trace('notify title is `undefined`!');
       title = 'Error!';
       content = 'Something went wrong!';
+      type = 'error';
     }
     const nzDuration = duration <= 0 ? undefined : duration;
     return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4', nzPlacement: 'bottomRight', nzPauseOnHover: true })
@@ -295,7 +296,7 @@ export class UtilityService {
   }
 
   public getDirection(): 'ltr' | 'rtl' {
-    return this.currentLang.includes('ar') ? 'rtl' : 'ltr';
+    return this.currentLang.toLowerCase().includes('ar') ? 'rtl' : 'ltr';
   }
 }
 
