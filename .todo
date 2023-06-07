@@ -11,3 +11,6 @@ For more info see: https://angular.io/guide/build#configuring-commonjs-dependenc
 - add back button (<-) for nested pages. like child info and goals.
 
 - show (readonly) pages for child/account information.
+
+- reduce bundle size by reusing one component instead of duplicate code.
+Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 5.19 MB with a total of 5.68 MB.

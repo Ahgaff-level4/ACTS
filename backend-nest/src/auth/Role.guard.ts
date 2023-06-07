@@ -4,6 +4,7 @@ import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Reflector } from "@nestjs/core";
 import { R } from "src/utility.service";
 import { Role, User } from './../../../interfaces.d';
+import { Request } from "express";
 
 
 const ROLES_KEY = 'rolesDecorator';
@@ -20,28 +21,27 @@ export class RolesGuard implements CanActivate {
   constructor(private reflector: Reflector) { }
 
   canActivate(context: ExecutionContext): boolean {
-    //first: check login
-    const req = context.switchToHttp().getRequest();
-    if (req.path === '/api/auth/login' || req.path == '/api/auth/isLogin'||req.path=='/api/auth/logout')//user can only login without authentication
+    const req: Request = context.switchToHttp().getRequest();
+    if (req.path === '/api/auth/login'
+      || req.path == '/api/auth/isLogin'
+      || req.path == '/api/auth/logout')//No authentication needed for these
       return true;
-    const user: User = req.session['user'];
-    
-    // console.log(user)
+
+    const user: User | undefined = req.session['user'];
+
     if (!user || !user.roles || !Array.isArray(user.roles))
       throw new UnauthorizedException({ message: R.string.mustLogin, action: 'login' });
 
-
-
-    //second: check user role
+    //check user roles with request required roles
     const requiredRoles = this.reflector.getAllAndOverride<Role[]>(ROLES_KEY, [
       context.getHandler(),
       context.getClass(),
     ]);
-    // console.log({requiredRoles})
-    if (!Array.isArray(requiredRoles))
+
+    if (!Array.isArray(requiredRoles))//if these is no required roles for user's request
       return true;
 
-    if (user?.roles && requiredRoles.some((role) => user?.roles?.includes(role)))
+    if (requiredRoles.some((role) => user.roles.includes(role)))
       return true;
     else throw new UnauthorizedException({ message: R.string.insufficientPrivilege, requiredPrivilege: requiredRoles, yourPrivileges: user?.roles, action: 'privilege' });
   }

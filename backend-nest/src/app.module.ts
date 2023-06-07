@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule, RequestMethod } from '@nestjs/common';
 import { FieldModule } from './management/field/field.module';
 import { AccountModule } from './management/account/account.module';
 import { ActivityModule } from './management/activity/activity.module';
@@ -10,7 +10,6 @@ import { APP_GUARD } from '@nestjs/core';
 import { RolesGuard } from './auth/Role.guard';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { DataSource } from 'typeorm';
 import { config } from 'dotenv'
 import { FieldEntity } from './management/field/field.entity';
 import { PersonEntity, PersonView } from './management/person/person.entity';
@@ -24,6 +23,8 @@ import { ProgramEntity } from './management/program/program.entity';
 import { OtherModule } from './management/other/other.module';
 import { ReportModule } from './management/report/report.module';
 import { NotificationGateway } from './websocket/notification.gateway';
+import { AppController } from './app.controller';
+import { AngularMiddleware } from './angular.middleware';
 
 config();
 
@@ -50,10 +51,19 @@ config();
     ReportModule,
     // NotificationModule
   ],
+  controllers:[AppController],
   providers: [{
     provide: APP_GUARD,
     useClass: RolesGuard,
   },{provide:'Notification',useClass:NotificationGateway}]
 })
-export class AppModule {
+export class AppModule  implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(AngularMiddleware)
+      .forRoutes({
+        path: '/**', // For all routes because AngularMiddleware will check if route is not Angular then next()
+        method: RequestMethod.ALL, // For all methods
+      })
+  }
 }

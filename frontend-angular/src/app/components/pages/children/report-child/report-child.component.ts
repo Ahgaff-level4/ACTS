@@ -36,7 +36,8 @@ export class ReportChildComponent implements OnInit, OnDestroy {
       if (v == null) return;
       this.options.data[0].count = v.goal.completedCount;
       this.options.data[1].count = v.goal.continualCount;
-      ((this.options.series?.[0] as AgPolarSeriesOptions).innerLabels?.[0] as AgDoughnutInnerLabel).text = v.goal.completedCount + v.goal.continualCount + '';
+      if ((this.options?.series as any)?.[0]?.innerLabels?.[0]?.text)
+        (this.options.series as any)[0].innerLabels[0].text = v.goal.completedCount + v.goal.continualCount + '';
       this.options = { ...this.options };
     }));
 
@@ -127,7 +128,7 @@ export class ReportChildComponent implements OnInit, OnDestroy {
     }
   }
 
-  
+
 
   printHandle() {
     this.isPrinting = true;

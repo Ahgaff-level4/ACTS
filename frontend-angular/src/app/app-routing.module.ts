@@ -112,8 +112,9 @@ const titlePrefix = 'ACTS - ';
 
 const routes: Routes = [
   { path: '', component: HomeComponent, title: titlePrefix + 'Home', pathMatch: 'full' },
-  { path: 'main', redirectTo: '' },
-  { path: 'home', redirectTo: '' },
+  { path: 'main', redirectTo: '/' },
+  { path: 'home', redirectTo: '/' },
+  { path: 'index', redirectTo: '/' },
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
