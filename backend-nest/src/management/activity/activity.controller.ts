@@ -8,7 +8,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/activity')
 export class ActivityController {
-    constructor(private activityService: ActivityService,  @Inject('Notification')private notify: NotificationGateway) { }
+    constructor(private activityService: ActivityService, private notify: NotificationGateway) { }
 
     @Post()
     @Roles('Admin', 'HeadOfDepartment')
@@ -54,15 +54,15 @@ export class ActivityController {
 
     @Delete(':id')
     @Roles('Admin', 'HeadOfDepartment')
-    async remove(@Param('id', ParseIntPipe) id: string,@UserMust() user:User) {
-        const ret =await this.activityService.remove(+id);
+    async remove(@Param('id', ParseIntPipe) id: string, @UserMust() user: User) {
+        const ret = await this.activityService.remove(+id);
         this.notify.emitNewNotification({
             by: user,
             controller: 'activity',
             datetime: new Date(),
             method: 'DELETE',
             payloadId: +id,
-            payload:ret,
+            payload: ret,
         });
         return ret;
     }

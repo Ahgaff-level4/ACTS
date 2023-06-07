@@ -20,7 +20,7 @@ export class OtherController {
 	// Create a mutex instance to lock the flow. So that backup/recovery process will be async
 	private mutex = new Mutex();
 
-	constructor(@InjectDataSource() private dataSource: DataSource, @Inject('Notification') private notify: NotificationGateway) { }
+	constructor(@InjectDataSource() private dataSource: DataSource, private notify: NotificationGateway) { }
 
 	@Get('backup')
 	@Roles('Admin')

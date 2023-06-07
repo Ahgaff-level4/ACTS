@@ -10,7 +10,7 @@ import { User } from '../../../../interfaces';
 
 @Controller('api/evaluation')
 export class EvaluationController {
-  constructor(@InjectRepository(EvaluationEntity) private repo: Repository<EvaluationEntity>, @Inject('Notification') private notify: NotificationGateway) { }
+  constructor(@InjectRepository(EvaluationEntity) private repo: Repository<EvaluationEntity>, private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'Teacher')

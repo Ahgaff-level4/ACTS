@@ -16,7 +16,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 @Controller('api/goal')
 export class GoalController {
 
-  constructor(@InjectRepository(GoalEntity) private repo: Repository<GoalEntity>, @Inject('Notification') private notify: NotificationGateway) { }
+  constructor(@InjectRepository(GoalEntity) private repo: Repository<GoalEntity>, private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'Teacher')

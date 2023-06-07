@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { EvaluationController } from './evaluation.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { EvaluationEntity } from './evaluation.entity';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationModule } from 'src/websocket/notification.module';
 
 @Module({
-	imports:[TypeOrmModule.forFeature([EvaluationEntity])],
+	imports:[TypeOrmModule.forFeature([EvaluationEntity]),NotificationModule],
 	controllers:[EvaluationController],
-	providers:[{provide:'Notification',useClass:NotificationGateway}]
 
 })
 export class EvaluationModule {}

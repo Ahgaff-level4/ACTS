@@ -3,11 +3,11 @@ import { ActivityService } from './activity.service';
 import { ActivityController } from './activity.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ActivityEntity } from './activity.entity';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationModule } from 'src/websocket/notification.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([ActivityEntity])],
-  providers: [ActivityService	,{provide:'Notification',useClass:NotificationGateway}],
+  imports: [TypeOrmModule.forFeature([ActivityEntity]), NotificationModule],
+  providers: [ActivityService],
   controllers: [ActivityController]
 })
-export class ActivityModule {}
+export class ActivityModule { }

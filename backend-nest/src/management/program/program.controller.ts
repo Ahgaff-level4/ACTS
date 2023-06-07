@@ -11,7 +11,7 @@ import { User } from '../../../../interfaces';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/program')
 export class ProgramController {
-  constructor(@InjectRepository(ProgramEntity) private repo: Repository<ProgramEntity>,  @Inject('Notification')private notify: NotificationGateway) { }
+  constructor(@InjectRepository(ProgramEntity) private repo: Repository<ProgramEntity>,  private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')

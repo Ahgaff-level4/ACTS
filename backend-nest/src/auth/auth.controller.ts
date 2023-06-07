@@ -17,7 +17,7 @@ export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 
 @Controller('api/auth')
 export class AuthController {
-	constructor(private authService: AuthService, @Inject('Notification') private notify: NotificationGateway) { }
+	constructor(private authService: AuthService, private notify: NotificationGateway) { }
 
 	@Post('login')
 	async login(@Req() req: Request, @Body() loginInfo: LoginInfo) {

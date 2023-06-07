@@ -8,7 +8,7 @@ import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 @Controller('api/child')
 export class ChildController {
-  constructor(private readonly childService: ChildService,  @Inject('Notification')private notify: NotificationGateway) { }
+  constructor(private readonly childService: ChildService,  private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')

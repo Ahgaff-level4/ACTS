@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { GoalController } from './goal.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { GoalEntity } from './Goal.entity';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationModule } from 'src/websocket/notification.module';
 
 @Module({
-	imports:[TypeOrmModule.forFeature([GoalEntity])],
+	imports:[TypeOrmModule.forFeature([GoalEntity]),NotificationModule],
 	controllers:[GoalController],
-	providers:[{provide:'Notification',useClass:NotificationGateway}]
 
 })
 export class GoalModule {}

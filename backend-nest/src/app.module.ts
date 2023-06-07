@@ -22,9 +22,9 @@ import { GoalEntity } from './management/goal/Goal.entity';
 import { ProgramEntity } from './management/program/program.entity';
 import { OtherModule } from './management/other/other.module';
 import { ReportModule } from './management/report/report.module';
-import { NotificationGateway } from './websocket/notification.gateway';
 import { AppController } from './app.controller';
 import { AngularMiddleware } from './angular.middleware';
+import { NotificationModule } from './websocket/notification.module';
 
 config();
 
@@ -47,17 +47,16 @@ config();
     }),
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,
-    PersonModule, ProgramModule, AuthModule,OtherModule,
+    PersonModule, ProgramModule, AuthModule, OtherModule,
     ReportModule,
-    // NotificationModule
   ],
-  controllers:[AppController],
+  controllers: [AppController],
   providers: [{
     provide: APP_GUARD,
     useClass: RolesGuard,
-  },{provide:'Notification',useClass:NotificationGateway}]
+  }]
 })
-export class AppModule  implements NestModule {
+export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
     consumer
       .apply(AngularMiddleware)

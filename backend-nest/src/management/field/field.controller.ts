@@ -9,7 +9,7 @@ import { User } from '../../../../interfaces';
 @Controller('api/field')
 export class FieldController {
 
-  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>, @Inject('Notification') private notify: NotificationGateway) { }
+  constructor(@InjectRepository(FieldEntity) private repo: Repository<FieldEntity>, private notify: NotificationGateway) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')

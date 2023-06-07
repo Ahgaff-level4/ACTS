@@ -9,7 +9,7 @@ import { User } from '../../../../interfaces';
 
 @Controller('api/account')
 export class AccountController {
-    constructor(private readonly accountService: AccountService, @Inject('Notification') private notify: NotificationGateway) { }
+    constructor(private readonly accountService: AccountService, private notify: NotificationGateway) { }
 
     @Post()
     @Roles('Admin')

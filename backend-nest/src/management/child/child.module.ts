@@ -4,12 +4,12 @@ import { ChildController } from './child.controller';
 import { UtilityService } from 'src/utility.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ChildEntity } from './child.entity';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationModule } from 'src/websocket/notification.module';
 
 @Module({
-  imports:[TypeOrmModule.forFeature([ChildEntity])],
+  imports:[TypeOrmModule.forFeature([ChildEntity]),NotificationModule],
   controllers: [ChildController],
-  providers: [ChildService,UtilityService,{provide:'Notification',useClass:NotificationGateway}],
+  providers: [ChildService,UtilityService],
   
 })
 export class ChildModule {}
