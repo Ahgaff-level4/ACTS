@@ -1,18 +1,18 @@
 <nav style="border-bottom-left-radius:1.4rem; border-bottom-right-radius:1.4rem;"
   [ngClass]="{'shadow':ut.router.url!='/'}"
   class="navbar navbar-expand-lg navbar-dark my-primary-bg w-100 flex-fill flex-grow-1 px-0 justify-content-between">
-  <div class=" mx-2 d-flex w-100 justify-content-between align-items-center" [ngClass]="!isShowDivIf?'flex-wrap':'flex-nowrap'">
-    <a routerLink="/"><img class="image" src="/assets/img/logo.png" alt="ACTS logo" /></a>
+  <div class="d-flex w-100 justify-content-between align-items-center" [ngClass]="!isShowDivIf?'flex-wrap':'flex-nowrap'">
+    <a routerLink="/"><img class="image mx-2" src="/assets/img/logo.png" alt="ACTS logo" /></a>
     <a routerLink="/"
       class="icon-name justify-self-md-start justify-self-center text-white text-decoration-none"><span>{{'ACTS'|translate}}</span></a>
-      <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler align-self-baseline rounded-5" type="button"
+      <button (click)="isShowDivIf=!isShowDivIf" class="navbar-toggler align-self-center mx-2 rounded-5" type="button"
       data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
       aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
     <!-- *ngIf="!isShowDivIf" --- hide and show -->
     <ul id="navbarResponsive" [ngClass]="!isShowDivIf?'d-block':'d-none'"
-      class="navbar-nav w-100 collapse navbar-collapse ms-lg-5 me-lg-5 mt-lg-0 mt-3 justify-content-center">
+      class="navbar-nav w-100 collapse navbar-collapse mt-lg-0 mx-0 px-0 mt-3 justify-content-center">
       <li (click)="isShowDivIf=true" class="nav-item px-3" routerLinkActive="active">
         <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
       </li>
@@ -50,7 +50,7 @@
       </div>
     </ul>
 
-    <div (click)="isShowDivIf=true" class="nav-idtem mt-1 px-3 d-none d-lg-block" routerLinkActive="active">
+    <div (click)="isShowDivIf=true" class="nav-item px-2 d-flex align-items-center d-none d-lg-block" routerLinkActive="active">
       <a class="nav-link min-width rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn"
         routerLink="/login">{{'Login'|translate}}</a>
       <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;"

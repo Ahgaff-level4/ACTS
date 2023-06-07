@@ -45,7 +45,7 @@ export class SpecialActivityComponent implements OnDestroy {
   public columnDefs: (ColDef<IActivityEntity>)[] = [
     {
       field: 'goals.0.child.person.name',
-      headerName: 'Child',//headerName will be translated
+      headerName: "child's name",//headerName will be translated
       type: 'long',
       tooltipValueGetter: v => v.data?.goals?.length == 0 ? 'This activity is not bind to any child! We strongly recommend deleting it' : v.data?.goals?.[0]?.child?.person?.name,
     },

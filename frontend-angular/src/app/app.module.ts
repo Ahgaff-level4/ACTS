@@ -48,7 +48,6 @@ import { AddEditStrengthComponent } from './components/dialogs/add-edit/add-edit
 import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
 import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
-import { FilterChildrenComponent } from './components/dialogs/filter/filter-children/filter-children.component';
 import { AgGridModule } from 'ag-grid-angular';
 import { CalcAgePipe } from './pipes/calc-age.pipe';
 import 'ag-grid-enterprise';
@@ -96,7 +95,6 @@ import { ChildInfoComponent } from './components/pages/children/view-child/child
     StrengthComponent,
     AddEditStrengthComponent,
     SpecialActivityComponent,
-    FilterChildrenComponent,
     LoginFormComponent,
     StatisticsComponent,
     ReportChildComponent,

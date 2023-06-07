@@ -39,7 +39,7 @@ export class AppComponent {
     this.sub.add(this.ut.isLoading.subscribe(v => this.isLoading = v));
     this.handleOnLangChange();
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
-    if (this.ut.user.value == null && isRememberMe !== 'false')
+    if (this.ut.user.value == null && isRememberMe != 'false')
       this.ut.isLogin().finally(() => console.log('isLogin:', this.ut.user.value));
   }
 

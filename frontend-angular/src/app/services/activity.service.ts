@@ -52,7 +52,7 @@ export class ActivityService {
             manageLoading && this.ut.isLoading.next(false)
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the activity. Please try again later or check your connection.");
             rej(e);
-          }
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
         })
     });
   }
@@ -91,7 +91,7 @@ export class ActivityService {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the activity. Please try again later or check your connection.");
             rej(e);
-          }
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
         })
     })
   }
@@ -127,7 +127,7 @@ export class ActivityService {
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false)
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the activity. Please try again later or check your connection."); rej(e);
-          }
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
         })
     })
   }
@@ -147,7 +147,7 @@ export class ActivityService {
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program's activities. Please try again later or check your connection."); rej(e);
-          }
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
         })
     })
   }
@@ -160,13 +160,12 @@ export class ActivityService {
           next: v => {
             manageLoading && this.ut.isLoading.next(false);
             this.specialActivities.next(v);
-            this.fetchSpecialActivities();
             res(v[0]);
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the special activities. Please try again later or check your connection."); rej(e);
-          }
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
         })
     })
   }

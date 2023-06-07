@@ -1,5 +1,5 @@
 <div style="max-width: 600px;">
-  <h1 mat-dialog-title>{{field?.id?'Edit field':'Add new field'|translate}}</h1>
+  <h1 mat-dialog-title>{{(field?.id?'Edit field':'Add new field')|translate}}</h1>
   <form [formGroup]="formGroup" class="container-fluid" (submit)="submit($event)">
     <div mat-dialog-content>
     <div class="row">

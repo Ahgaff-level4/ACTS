@@ -20,7 +20,7 @@ export class PersonService {
           error: (e) => {
             this.ut.errorDefaultDialog(e);
             rej(e);
-          }
+          },complete:()=>{rej()}
         });
     });
   }
@@ -33,7 +33,7 @@ export class PersonService {
           error: (e) => {
             this.ut.errorDefaultDialog(e);
             rej(e);
-          }
+          },complete:()=>rej()
         })
     })
   }
@@ -48,7 +48,7 @@ export class PersonService {
             if (!doNotShowDialogs)
               this.ut.errorDefaultDialog(e);
             rej(e);
-          }
+          },complete:()=>rej()
         })
     })
   }

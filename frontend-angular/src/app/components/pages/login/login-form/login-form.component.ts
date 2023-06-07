@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef } from '@angular/material/dialog';
 import { LoginService } from 'src/app/services/login.service';
@@ -10,8 +10,14 @@ import { User } from '../../../../../../../interfaces';
   templateUrl: './login-form.component.html',
   styleUrls: ['./login-form.component.scss']
 })
-export class LoginFormComponent {
+export class LoginFormComponent implements OnInit {
   public hide: boolean = true;//used to hide password
+  public minlength = { minlength: 4 }
+  public formGroup = new FormGroup({
+    username: new FormControl('', { validators: [Validators.required, Validators.maxLength(30), Validators.minLength(4),], nonNullable: true }),
+    password: new FormControl('', { validators: [Validators.required, Validators.maxLength(1024), Validators.minLength(4)], nonNullable: true }),
+    isRememberMe: new FormControl(true, { validators: [Validators.required,] }),
+  });
   /**
    * Used in:
    * - login page.
@@ -19,30 +25,27 @@ export class LoginFormComponent {
    */
   constructor(private loginService: LoginService, private ut: UtilityService) { }
 
-  public formGroup = new FormGroup({
-    username: new FormControl('', { validators: [Validators.required, Validators.maxLength(30), Validators.minLength(4),], nonNullable: true }),
-    password: new FormControl('', { validators: [Validators.required, Validators.maxLength(1024), Validators.minLength(4)], nonNullable: true }),
-    isRememberMe: new FormControl(true, { validators: [Validators.required,] }),
-  });
-  public minlength = { minlength: 4 }
+  ngOnInit(): void {
+    this.ut.user.next(null);//if user redirect here he should not be considered logged in anymore.
+  }
 
   public submit() {
     const { username, password, isRememberMe } = this.formGroup.controls;
     this.formGroup.disable();
     this.loginService.login(username.value.trim(), password.value, isRememberMe.value || true)
-    .subscribe({
-      next:(v:User) => {
-      this.formGroup.enable();
-      if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
-        this.ut.user.next(v);
-        //todo redirect to previous page ?? '/main'
-        this.ut.router.navigate(['main']);
-      } else this.ut.errorDefaultDialog(v as any);
-    },error:e=>{
-      this.formGroup.enable();
-      this.ut.errorDefaultDialog(e);
-      }
-    })
+      .subscribe({
+        next: (v: User) => {
+          this.formGroup.enable();
+          if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
+            this.ut.user.next(v);
+            //todo redirect to previous page ?? '/main'
+            this.ut.router.navigate(['main']);
+          } else this.ut.errorDefaultDialog(v as any);
+        }, error: e => {
+          this.formGroup.enable();
+          this.ut.errorDefaultDialog(e);
+        }, complete: () => this.formGroup.enable()
+      })
   }
 
   public showForgetPasswordDialog() {

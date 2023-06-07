@@ -18,15 +18,14 @@ export class LoginService {
 
   logout() {
     this.http.get<SuccessResponse>(env.AUTH + 'logout').subscribe({
-      next: (res) => {
-        if (res.success) {
-          this.ut.user.next(null)
-          this.router.navigate(['login']);
-        } else this.ut.errorDefaultDialog(res);
-      }, error: (e) => {
-        this.ut.errorDefaultDialog(e);
-        this.ut.user.next(null)
-      }
-    })
+      next: (res) => userNullAndNav(),
+      error: () => userNullAndNav(),
+      complete: () => userNullAndNav()
+    });
+
+    const userNullAndNav = () => {
+      this.ut.user.next(null);
+      this.router.navigate(['login']);
+    }
   }
 }
