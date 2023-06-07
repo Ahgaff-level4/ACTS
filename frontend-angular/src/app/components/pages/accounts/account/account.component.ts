@@ -47,7 +47,7 @@ export class AccountComponent {
       type: 'enum',
       valueGetter:v=>this.ut.translate(v.data?.person?.gender),
       filterParams: { values: [this.ut.translate('Male'), this.ut.translate('Female')], },
-      width: 100
+      width: 110
     },
     {
       colId: 'birthDate',

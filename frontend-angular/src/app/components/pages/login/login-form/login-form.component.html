@@ -20,10 +20,10 @@
         <mat-error *ngIf="formGroup.controls.password.errors?.['required']">{{'You must enter a value'|translate}}</mat-error>
         <mat-error *ngIf="formGroup.controls.password.errors?.['minlength']">{{'Minimum length is '|translate:minlength}}</mat-error>
     </mat-form-field>
-    <div class="w-100 d-flex">
-      <mat-checkbox class="flex-fill text-white"
+    <div class="w-100 d-flex justify-content-between align-content-center text-white">
+      <mat-checkbox class="text-white"
         [formControl]="formGroup.controls.isRememberMe">{{'Remember Me'|translate}}</mat-checkbox>
-      <div style="cursor: pointer;" class="flex-fill anchor text-decoration-underline me-0 pe-0  align-self-center text-end text-white" (click)="showForgetPasswordDialog()" mat-button>{{'Forget the password?'|translate}}</div>
+      <div style="cursor: pointer;" class="anchor text-decoration-underline align-self-center" (click)="showForgetPasswordDialog()" mat-button>{{'Forget the password?'|translate}}</div>
     </div>
     <br>
     <button [disabled]="!formGroup.valid" class="w-100 mb-3 rounded-5" mat-raised-button color="accent" type="submit"

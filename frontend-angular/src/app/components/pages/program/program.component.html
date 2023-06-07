@@ -1,11 +1,11 @@
 <h1 class="p-4 mx-md-5 pb-4">{{'Programs'|translate}}</h1>
 <div class="mx-md-5 mb-5 pb-5">
-  <div class="w-100 row" *ngIf="!isPrinting">
-    <mat-form-field class="col-11">
+  <div class="w-100 d-flex" *ngIf="!isPrinting">
+    <mat-form-field class="w-100">
       <mat-label>{{'Search'|translate}}</mat-label>
       <input matInput (keyup)="applySearch($event)" placeholder="...">
     </mat-form-field>
-    <div class="col-1">
+    <div class="mx-3">
       <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"
         aria-label="Export button with a menu">
         <mat-icon color="primary">ios_share</mat-icon>

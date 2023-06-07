@@ -1,7 +1,7 @@
 <!--Note: this component used in add/edit child page AND in children table-->
 <div class="container">
   <h1 class="m-2 mt-5">
-    {{child?.id?'Edit child information':'Register a child'|translate}}
+    {{(child?.id?'Edit child information':'Register a child')|translate}}
   </h1>
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
@@ -184,7 +184,7 @@
       class="d-flex mt-4 mb-5  pb-5">
       <button (mouseenter)="isSubmitting=true" (mouseleave)="isSubmitting=false" [disabled]="this.ut.isLoading.value" type="submit" class="w-75 mx-auto rounded-5" mat-flat-button
         color="primary">
-        {{child?.id == null?'Submit':'Save Changes'|translate}} </button>
+        {{(child?.id == null?'Submit':'Save Changes')|translate}} </button>
     </div>
   </form>
 </div>

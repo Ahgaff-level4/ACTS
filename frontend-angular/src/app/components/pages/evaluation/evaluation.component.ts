@@ -45,7 +45,7 @@ export class EvaluationComponent {
   public columnDefs: (ColDef<IEvaluationEntity>)[] = [
     {
       field: 'description',
-      headerName: 'Description',
+      headerName: 'Description of how performed the goal',
       type: 'long',
       onCellValueChanged: this.onCellValueChange,
     },

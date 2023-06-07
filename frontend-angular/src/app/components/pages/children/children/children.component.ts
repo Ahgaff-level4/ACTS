@@ -59,8 +59,9 @@ export class ChildrenComponent implements OnInit, OnDestroy {
       field: 'person.gender',
       headerName: 'Gender',
       type: 'enum',
-      filterParams: { values: ['Male', 'Female'], },
-      width: 100
+      valueGetter:v=>this.ut.translate(v.data?.person?.gender),
+      filterParams: { values: [this.ut.translate('Male'), this.ut.translate('Female')], },
+      width: 110
     },
     {
       field: 'person.createdDatetime',

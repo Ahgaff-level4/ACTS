@@ -96,6 +96,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
     this.accountForm?.markAllAsTouched();
 
     if (this.personForm?.formGroup?.valid && this.accountForm?.valid) {
+      this.isSubmitting = true;
       this.accountForm?.disable();
       this.personForm?.formGroup?.disable();
       if (this.account?.id == null) {//Register new account
@@ -127,6 +128,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit,ComponentC
           this.ut.scrollTop();
         } catch (e) { }
       }
+      this.isSubmitting = false;
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
     } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
