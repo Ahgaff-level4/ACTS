@@ -212,7 +212,7 @@ export class UtilityService {
       type = 'error';
     }
     const nzDuration = duration <= 0 ? undefined : duration;
-    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4', nzPlacement: 'bottomRight', nzPauseOnHover: true })
+    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-'+this.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   public displayRoles(roles: Role[]) {
@@ -289,7 +289,7 @@ export class UtilityService {
   }
 
   /**User friendly to display a child's teachers name */
-  displayTeachers(child:IChildEntity|undefined): string {
+  displayTeachers(child: IChildEntity | undefined): string {
     if (Array.isArray(child?.teachers))
       return child!.teachers!.map(v => v.person.name).join(this.translate(', '))
     else return '';
