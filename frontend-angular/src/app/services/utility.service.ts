@@ -32,27 +32,32 @@ export class UtilityService {
   }
 
   /**
-   * promise will be fulfilled and user.next(...) will be called if user is login. otherwise rejected.
+   * promise that will return whether user is logged in into the server and has its own session in the server.
+   * Also, this function will call `user.next(...)` accordingly.
+   * Never rejected.
    */
-  public isLogin = () => {
-    return new Promise<void>((resolve, rej) => {
+  public isLogin = (): Promise<User | null> => {
+    return new Promise<User | null>((resolve) => {
       this.http.get<User>(env.AUTH + 'isLogin').subscribe({
         next: res => {
           if (typeof res?.accountId === 'number' && Array.isArray(res?.roles)) {
             this.user.next(res);
-            resolve();
+            console.log('ut : isLogin:', res);
+            resolve(res);
           } else {
             this.user.next(null);
-            rej();
+            resolve(null);
           }
         }, error: () => {
           this.user.next(null);
-          rej();
+          resolve(null);
+        }, complete: () => {
+          this.user.next(null);
+          resolve(null);
         }
       });
     });
   }
-
 
   /**
    * Display error dialog with message of:
@@ -190,8 +195,6 @@ export class UtilityService {
           control.setValue(control.value.trim());
       });
   }
-
-
 
   /**
    * If title is null then show error message of something went wrong!

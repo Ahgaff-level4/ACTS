@@ -43,7 +43,7 @@ export class StrengthService {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the strength. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     });
   }
@@ -63,7 +63,7 @@ export class StrengthService {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the strength. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
@@ -82,7 +82,7 @@ export class StrengthService {
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the strength. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
@@ -111,7 +111,7 @@ export class StrengthService {
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }

@@ -67,7 +67,7 @@ export class AccountService implements OnInit {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the account. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     });
   }
@@ -86,7 +86,7 @@ export class AccountService implements OnInit {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem changing your password. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
@@ -110,7 +110,7 @@ export class AccountService implements OnInit {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
@@ -132,7 +132,7 @@ export class AccountService implements OnInit {
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }

@@ -68,7 +68,7 @@ export class AgGridService {
     preventDefaultOnContextMenu: true,
     suppressClipboardPaste: true,
     suppressCutToClipboard: true,
-    enableRtl: this.ut.currentLang == 'ar' ? true : false,
+    enableRtl: this.ut.getDirection() == 'rtl' ? true : false,
     enableCellTextSelection: true,
     ensureDomOrder: true,
   }

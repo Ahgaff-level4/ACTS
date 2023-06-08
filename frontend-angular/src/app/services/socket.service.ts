@@ -10,8 +10,7 @@ import { Subscription, filter, first } from 'rxjs';
 })
 export class SocketService implements OnDestroy {
   private sub = new Subscription();
-  private socket!: Socket;
-  private _user: null | User = null;
+  private socket: Socket|undefined;
   /**
    * Notification will be passed to Admin and Parent:
    * - Admin:
@@ -23,27 +22,31 @@ export class SocketService implements OnDestroy {
    * NOTE: the server will handle the above condition and emit notification accordingly
    */
   constructor(private ut: UtilityService) {
-    this.socket = io(environment.SERVER_URL + '/notification');
-    this.socket.on('newNotification', this.newNotification);
   }
-  public connect(v: User) {
-    this.sub.add(this.ut.user
-      .subscribe(v => {
-        this._user = v;
-        console.log('hi')
-        this.socket.emit('registerUser', v);
-      }));
+  public connect(v: User | null) {
+    console.log('SocketService : connect : user:', v);
+
+    if (v == null) {
+      if (this.socket)
+        this.socket.close();
+
+    } else {
+      this.socket = io(environment.SERVER_URL + 'notification');
+      this.socket = this.socket.connect();
+      this.socket.on('newNotification', this.newNotification);
+      this.socket.emit('registerUser', v);
+    }
   }
 
   private newNotification = (n: INotification) => {
     console.log('newNotification', n);
-    if (!n || this.ut.user.value == null || !this.ut.notifySettings.value.allowNotification)
+    if (!n || !this.socket || this.ut.user.value == null || !this.ut.notifySettings.value.allowNotification)
       return;
 
     let title = this.getTitle(n, this.ut.user.value);
     let content = this.getContent(n, this.ut.user.value);
     let href = this.getHref(n, this.ut.user.value);
-    if (title == null) {//parent will have title = null
+    if (title == null) {//parent will have title = null. So, swap title and content values to make text bigger
       title = content
       content = '';
     }
@@ -109,7 +112,7 @@ export class SocketService implements OnDestroy {
     if (typeof n.payload?.person?.name == 'string') {
       name = n.payload.person.name;
     } else name = n.payload?.username;
-    if(n.controller == 'account' && n.method == 'PATCH')
+    if (n.controller == 'account' && n.method == 'PATCH')
       return 'Changed his own password';//part1 is empty string
     if (name)
       return this.ut.translate('the following account') + ': ' + name;

@@ -34,7 +34,7 @@ export class GoalService {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the goal. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     });
   }
@@ -53,7 +53,7 @@ export class GoalService {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the goal. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
@@ -72,7 +72,7 @@ export class GoalService {
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the goal. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
@@ -101,7 +101,7 @@ export class GoalService {
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);rej()}
+          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
   }
