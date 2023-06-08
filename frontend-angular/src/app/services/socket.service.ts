@@ -10,7 +10,7 @@ import { Subscription, filter, first } from 'rxjs';
 })
 export class SocketService implements OnDestroy {
   private sub = new Subscription();
-  private socket: Socket|undefined;
+  private socket: Socket | undefined;
   /**
    * Notification will be passed to Admin and Parent:
    * - Admin:
@@ -31,6 +31,8 @@ export class SocketService implements OnDestroy {
         this.socket.close();
 
     } else {
+      if (this.socket)
+        this.socket.close();
       this.socket = io(environment.SERVER_URL + 'notification');
       this.socket = this.socket.connect();
       this.socket.on('newNotification', this.newNotification);
@@ -59,7 +61,7 @@ export class SocketService implements OnDestroy {
 
   private getTitle(n: INotification, user: User): string | null {
     if (user.roles.includes('Admin')) {
-      return this.ut.translate('Account') + ': ' + n.by.person.name;
+      return this.ut.translate('User') + ': ' + n.by.person.name;
     } return null;
   }
 

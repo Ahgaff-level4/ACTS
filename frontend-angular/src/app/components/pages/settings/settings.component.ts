@@ -62,11 +62,21 @@ export class SettingsComponent {
   }
 
   closeAfter = this.ut.notifySettings.value.closeAfter / 1000;
-  changeNotification(value: boolean | KeyboardEvent) {
+  /**
+   *
+   * @param value is:
+   * - boolean if allowNotification changed.
+   * - KeyUp event for CloseAfter
+   * - Change event for CloseAfter
+   */
+  changeNotification(value: any) {
     if (typeof value == 'boolean')
       this.ut.notifySettings.next({ ...this.ut.notifySettings.value, allowNotification: value });
-    else
+    else{
+      if(value.target?.value!)
+        this.closeAfter = Number(value.target.value);
       this.ut.notifySettings.next({ ...this.ut.notifySettings.value, closeAfter: Number(this.closeAfter) * 1000 });
+    }
 
     localStorage.setItem('notifySettings', JSON.stringify(this.ut.notifySettings.value));
   }
