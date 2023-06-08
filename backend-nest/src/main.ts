@@ -49,18 +49,25 @@ const SESSION_OPTIONS: SessionOptions = {
   cookie: {
     maxAge: +process.env.SESSION_AGE_MILLISECOND || 7 * 24 * 60 * 60 * 1000,//default 7 days
     secure: 'auto',
+    sameSite: 'strict',
   },
 };
-
+const host: string = process.env.HOST_SERVER || 'localhost';
+const port: number = +process.env.PORT_SERVER || 3000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.use(helmet())
   app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.0.139:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
-  app.useGlobalInterceptors(new SuccessInterceptor())
+  app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalFilters(new HttpExceptionFilter());
-  await app.listen(port);
+  await app.listen(port, host, async () => {
+    console.log('Server running at', await app.getUrl());
+  });
 }
-const port = +process.env.PORT_SERVER || 3000;
-bootstrap().then(() => console.warn('Running on: http://localhost:' + port));
+bootstrap();
+//0.0.0.0 will be 127.0.0.1 and it: works in localhost and 127.0.0.1. Cross-Origin-Opener-Policy in {my_IPv4}
+//localhost will be http://[::1]:3000 and it: works in localhost. Site can't be reached in 127.0.0.1 and {my_IPv4}
+//127.0.0.1 running and it: works in localhost and 127.0.0.1. Site can’t be reached in {my_IPv4}
+//{my_IPv4} running and it: site can’t be reached in localhost and 127.0.0.1. Cross-Origin-Opener in {my_IPv4}

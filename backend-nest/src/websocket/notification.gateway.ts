@@ -20,8 +20,8 @@ export class NotificationGateway {
 	constructor(@InjectDataSource() private dataSource: DataSource) { }
 
 	public async emitNewNotification(n: INotification) {
-		console.log('emitNewNotification', this.clients.map(v => ({ socketId: v.socket.id, user: v.user })));
-
+		console.log('user:', n.by.username, 'made', n, '. Remaining connecters:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
+		
 		const clients = this.clients.filter(v => v.user.accountId != n.by.accountId);
 		const admins = clients.filter(v => v.user.roles.includes('Admin'));//get all Admins
 		let parents: { socket: Socket, user: User }[] = [];
@@ -68,7 +68,7 @@ export class NotificationGateway {
 		const indexOf = this.clients.map(v => v.socket.id).indexOf(client.id);
 		if (indexOf >= 0)//splice(-1,1) will splice last element! so we need to check if value exists
 			this.clients.splice(indexOf, 1);
-		console.log('handleDisconnect', this.clients.map(v => ({ socketId: v.socket.id, user: v.user })));
+		console.log('socketId:', client.id, ' disconnected. Remaining connectors:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
 	}
 
 	@SubscribeMessage('registerUser')
@@ -78,6 +78,6 @@ export class NotificationGateway {
 			this.clients.push({ user, socket: client });
 		else if (user == null && clientIds.includes(client.id))
 			this.clients.splice(clientIds.indexOf(client.id), 1);
-		console.log('registerUser', this.clients.map(v => ({ socketId: v.socket.id, user: v.user })));
+		console.log('socketId:', client.id, ' connected. Remaining connectors:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
 	}
 }

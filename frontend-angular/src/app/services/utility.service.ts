@@ -24,17 +24,12 @@ export class UtilityService {
   public notifySettings = new BehaviorSubject<{ allowNotification: boolean, closeAfter: number }>(JSON.parse(localStorage.getItem('notifySettings') ?? 'null') ?? { allowNotification: true, closeAfter: 10000 });
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
 
-
-
-
-
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
     private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
     private fromNowPipe: FromNowPipe, private dialog: MatDialog,
     public router: Router, private translateService: TranslateService,
     private dateTimeWeekPipe: DateTimeWeekPipe, private notificationService: NzNotificationService) {
   }
-
 
   /**
    * promise will be fulfilled and user.next(...) will be called if user is login. otherwise rejected.
@@ -212,7 +207,7 @@ export class UtilityService {
       type = 'error';
     }
     const nzDuration = duration <= 0 ? undefined : duration;
-    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-'+this.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
+    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   public displayRoles(roles: Role[]) {
@@ -245,7 +240,7 @@ export class UtilityService {
   }
 
   public get currentLang(): 'ar' | 'en' {
-    return this.translateService.currentLang == 'ar' ? 'ar' : 'en'
+    return this.translateService.currentLang.includes('ar') ? 'ar' : 'en'
   }
 
   /**

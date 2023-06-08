@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Inject, Post, Req, Session } from '@nestjs/common';
+import { Body, Controller, Get, Post, Req, Session } from '@nestjs/common';
 import { Request } from 'express';
 import { UnauthorizedException } from '@nestjs/common/exceptions';
 import * as bcrypt from 'bcrypt';
@@ -6,10 +6,9 @@ import { AuthService } from './auth.service';
 import { R } from 'src/utility.service';
 import { AccountEntity, CreateAccount } from 'src/management/account/account.entity';
 import { Session as Express_Session } from 'express-session';
-import { User, ILoginInfo, IPersonEntity } from '../../../interfaces';
+import { User, ILoginInfo } from '../../../interfaces';
 import { PickType } from '@nestjs/mapped-types';
 import { NotificationGateway } from 'src/websocket/notification.gateway';
-import { Roles } from './Role.guard';
 
 export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 	implements ILoginInfo {

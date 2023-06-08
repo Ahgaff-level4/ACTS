@@ -24,8 +24,6 @@ import { OtherModule } from './management/other/other.module';
 import { ReportModule } from './management/report/report.module';
 import { AppController } from './app.controller';
 import { AngularMiddleware } from './angular.middleware';
-import { NotificationModule } from './websocket/notification.module';
-
 config();
 
 @Module({
