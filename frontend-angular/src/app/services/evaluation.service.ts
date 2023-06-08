@@ -27,13 +27,11 @@ export class EvaluationService {
       this.http.post<IEvaluationEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._goalItsEvaluations)
               this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem while creating the evaluation record. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -47,13 +45,11 @@ export class EvaluationService {
       this.http.patch<SucResEditDel>(this.URL + '/' + id, entity)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._goalItsEvaluations)
               this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
             res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the evaluation. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -67,13 +63,11 @@ export class EvaluationService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._goalItsEvaluations)
               this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the evaluation. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -92,7 +86,6 @@ export class EvaluationService {
       this.http.get<IGoalEntity[]>(this.goalService.URL + '/' + id)
         .subscribe({
           next: v => {
-            manageLoading && this.ut.isLoading.next(false);
             if (Array.isArray(v) && v.length != 0) {
               this._goalItsEvaluations = v[0];
               this.goalItsEvaluations.next(v[0]);
@@ -103,7 +96,6 @@ export class EvaluationService {
             }
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

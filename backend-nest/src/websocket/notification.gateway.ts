@@ -21,7 +21,7 @@ export class NotificationGateway {
 
 	public async emitNewNotification(n: INotification) {
 		console.log('user:', n.by.username, 'made', n, '. Remaining connecters:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
-		
+
 		const clients = this.clients.filter(v => v.user.accountId != n.by.accountId);
 		const admins = clients.filter(v => v.user.roles.includes('Admin'));//get all Admins
 		let parents: { socket: Socket, user: User }[] = [];
@@ -78,6 +78,7 @@ export class NotificationGateway {
 			this.clients.push({ user, socket: client });
 		else if (user == null && clientIds.includes(client.id))
 			this.clients.splice(clientIds.indexOf(client.id), 1);
+
 		console.log('socketId:', client.id, ' connected. Remaining connectors:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
 	}
 }

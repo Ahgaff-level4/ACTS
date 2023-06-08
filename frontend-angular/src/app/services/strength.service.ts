@@ -34,13 +34,11 @@ export class StrengthService {
       this.http.post<IStrengthEntity>(this.goalService.URL, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._childItsStrengths)
               this.fetchChildItsStrengths(this._childItsStrengths.id);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the strength. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -54,13 +52,11 @@ export class StrengthService {
       this.http.patch<SucResEditDel>(this.goalService.URL + '/' + id, child)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._childItsStrengths)
               this.fetchChildItsStrengths(this._childItsStrengths.id);
             res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the strength. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -74,13 +70,11 @@ export class StrengthService {
       this.http.delete<SucResEditDel>(this.goalService.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._childItsStrengths)
               this.fetchChildItsStrengths(this._childItsStrengths.id);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the strength. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -98,7 +92,6 @@ export class StrengthService {
       this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id + '/strengths')
         .subscribe({
           next: v => {
-            manageLoading && this.ut.isLoading.next(false);
             if (Array.isArray(v) && v.length != 0) {
               this._childItsStrengths = v[0];
               this.childItsStrengths.next(v[0]);
@@ -109,7 +102,6 @@ export class StrengthService {
             }
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

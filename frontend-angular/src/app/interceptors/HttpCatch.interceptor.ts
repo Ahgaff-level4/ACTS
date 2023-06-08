@@ -22,7 +22,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
           if (error?.status === 0 || error?.status === -1) {
             this.ut.isLoading.next(false);
             this.showNetworkErrorDialog();
-            return EMPTY;//call complete of the observable.
+            throw error;//call complete of the observable.
           } else if (error?.status === 401 && error.error?.action == 'login') {
             // if (this.ut.user.value)
             //   this.ut.user.next(null);
@@ -30,7 +30,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
             this.showUnauthorizeDialog();
 
             this.ut.isLoading.next(false);
-            return EMPTY;
+            throw error;
           }
           // Rethrow the error
           throw error;

@@ -10,12 +10,15 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class HeaderComponent implements OnInit {
   public isShowDivIf = true;
+  public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
+  public isLoggedIn: boolean = false;
 
   constructor(public ut: UtilityService, public loginService: LoginService, public translate: TranslateService) {
   }
 
   ngOnInit(): void {
     this.ut.user.subscribe((v) => {
+      console.log('header user is object', !!v)
       this.isLoggedIn = v?.isLoggedIn ?? false;
     });
   }
@@ -27,6 +30,4 @@ export class HeaderComponent implements OnInit {
     this.language = this.language == 'Arabic' ? 'English' : 'Arabic';
   }
 
-  public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
-  public isLoggedIn: boolean = false;
 }

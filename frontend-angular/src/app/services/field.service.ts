@@ -23,10 +23,8 @@ export class FieldService {
       this.http.get<IFieldEntity[]>(this.URL)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fields.next(v); res()
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         });
@@ -42,12 +40,10 @@ export class FieldService {
       this.http.post<IFieldEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -61,12 +57,10 @@ export class FieldService {
       this.http.patch<SucResEditDel>(this.URL + '/' + id, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the field. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -80,12 +74,10 @@ export class FieldService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

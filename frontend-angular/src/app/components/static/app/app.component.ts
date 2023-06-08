@@ -20,8 +20,8 @@ export class AppComponent {
   constructor(public translate: TranslateService, private websocket: SocketService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
   }
 
-  ngOnInit() {
-    this.ut.user.subscribe(v => v && this.websocket.connect(v));//just to initialize it.
+  async ngOnInit() {
+    this.ut.user.subscribe(v => this.websocket.connect(v));//just to initialize it.
     // Register translation languages
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
@@ -40,7 +40,7 @@ export class AppComponent {
     this.handleOnLangChange();
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (this.ut.user.value == null && isRememberMe != 'false')
-      this.ut.isLogin().finally(() => console.log('isLogin:', this.ut.user.value));
+      this.ut.user.next(await this.ut.isLogin());
   }
 
   handleOnLangChange = async () => {

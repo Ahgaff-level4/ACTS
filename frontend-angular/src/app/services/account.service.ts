@@ -34,11 +34,9 @@ export class AccountService implements OnInit {
       this.http.get<IAccountEntity[]>(this.URL, { params: { 'FK': true } })
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.accounts.next(v);
             res();
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the accounts information. Please try again later or check your connection."); rej(e);
           },complete:()=>manageLoading && this.ut.isLoading.next(false),
         });
@@ -59,12 +57,10 @@ export class AccountService implements OnInit {
       this.http.post<IAccountEntity>(this.URL, account)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the account. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -78,12 +74,10 @@ export class AccountService implements OnInit {
       this.http.patch<SucResEditDel>(this.URL + '/' + this.ut.user.value?.accountId, changePassword)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem changing your password. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -102,12 +96,10 @@ export class AccountService implements OnInit {
       this.http.put<SucResEditDel>(this.URL + '/' + id, account)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -125,12 +117,10 @@ export class AccountService implements OnInit {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

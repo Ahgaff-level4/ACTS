@@ -91,7 +91,7 @@
       </div>
     </div>
     <div *ngIf="readonlyAccount == null" class="d-flex mt-4 mb-5 pb-5">
-      <button (mouseenter)="isSubmitting=true" (mouseleave)="isSubmitting=false" [disabled]="isLoading" class="w-75 mx-auto rounded-5" type="submit" mat-flat-button color="primary">
+      <button [disabled]="isLoading" class="w-75 mx-auto rounded-5" type="submit" mat-flat-button color="primary">
         {{(account?.id == null?'Submit':'Edit')|translate}} </button>
     </div>
   </form>

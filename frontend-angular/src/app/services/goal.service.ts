@@ -26,12 +26,10 @@ export class GoalService {
       this.http.post<IGoalEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._childItsGoals)
               this.fetchChildItsGoals(this._childItsGoals.id); res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the goal. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -45,12 +43,10 @@ export class GoalService {
       this.http.patch<SucResEditDel>(this.URL + '/' + id, goal)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._childItsGoals)
               this.fetchChildItsGoals(this._childItsGoals.id); res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the goal. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -64,13 +60,11 @@ export class GoalService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             if (this._childItsGoals)
               this.fetchChildItsGoals(this._childItsGoals.id);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the goal. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -88,7 +82,6 @@ export class GoalService {
       this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id + '/goals')
         .subscribe({
           next: v => {
-            manageLoading && this.ut.isLoading.next(false);
             if (Array.isArray(v) && v.length != 0) {
               this._childItsGoals = v[0];
               this.childItsGoals.next(v[0]);
@@ -99,7 +92,6 @@ export class GoalService {
             }
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

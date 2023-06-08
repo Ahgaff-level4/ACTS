@@ -32,7 +32,7 @@ export class UtilityService {
   }
 
   /**
-   * promise that will return whether user is logged in into the server and has its own session in the server.
+   * promise that will return `User` if user is logged in into the server and has its own session in the server.
    * Also, this function will call `user.next(...)` accordingly.
    * Never rejected.
    */
@@ -45,13 +45,12 @@ export class UtilityService {
             console.log('ut : isLogin:', res);
             resolve(res);
           } else {
+            console.log('ut : isLogin:', res);
             this.user.next(null);
             resolve(null);
           }
         }, error: () => {
-          this.user.next(null);
-          resolve(null);
-        }, complete: () => {
+          console.log('ut : isLogin:', null);
           this.user.next(null);
           resolve(null);
         }

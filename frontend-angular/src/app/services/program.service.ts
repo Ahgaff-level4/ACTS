@@ -24,10 +24,8 @@ export class ProgramService {
       this.http.get<IProgramEntity[]>(this.URL)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.programs.next(v); res()
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         });
@@ -43,12 +41,10 @@ export class ProgramService {
       this.http.post<IProgramEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch();
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -62,11 +58,9 @@ export class ProgramService {
       this.http.patch<SucResEditDel>(this.URL + '/' + id, child)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch(); res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the program. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -80,11 +74,9 @@ export class ProgramService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.fetch(); res(v)
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

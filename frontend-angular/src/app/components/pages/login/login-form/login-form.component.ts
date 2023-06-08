@@ -35,14 +35,12 @@ export class LoginFormComponent implements OnInit {
     this.loginService.login(username.value.trim(), password.value, isRememberMe.value || true)
       .subscribe({
         next: (v: User) => {
-          this.formGroup.enable();
           if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
             this.ut.user.next(v);
             //todo redirect to previous page ?? '/main'
             this.ut.router.navigate(['main']);
           } else this.ut.errorDefaultDialog(v as any);
         }, error: e => {
-          this.formGroup.enable();
           this.ut.errorDefaultDialog(e);
         }, complete: () => this.formGroup.enable()
       })

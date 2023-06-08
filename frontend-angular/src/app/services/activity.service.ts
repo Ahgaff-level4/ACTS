@@ -45,11 +45,9 @@ export class ActivityService {
       this.http.post<IActivityEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false)
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the activity. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -84,11 +82,9 @@ export class ActivityService {
       this.http.patch<SucResEditDel>(this.URL + '/' + id, updateActivity)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the activity. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
@@ -121,11 +117,9 @@ export class ActivityService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            manageLoading && this.ut.isLoading.next(false);
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false)
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the activity. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -139,13 +133,11 @@ export class ActivityService {
       this.http.get<IProgramEntity[]>(this.programService.URL + '/' + programId)
         .subscribe({
           next: v => {
-            manageLoading && this.ut.isLoading.next(false);
             this.programItsActivities.next(v[0]);
             this._programItsActivities = v[0];
             res(v[0]);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program's activities. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -158,12 +150,10 @@ export class ActivityService {
       this.http.get<IActivityEntity[]>(this.URL + '/special')
         .subscribe({
           next: v => {
-            manageLoading && this.ut.isLoading.next(false);
             this.specialActivities.next(v);
             res(v[0]);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the special activities. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })

@@ -18,14 +18,11 @@ export class LoginService {
 
   logout() {
     this.http.get<SuccessResponse>(env.AUTH + 'logout').subscribe({
-      next: (res) => userNullAndNav(),
-      error: () => userNullAndNav(),
-      complete: () => userNullAndNav()
-    });
-
-    const userNullAndNav = () => {
+      complete: () => {
       this.ut.user.next(null);
       this.router.navigate(['login']);
     }
+    });
+
   }
 }
