@@ -1,9 +1,6 @@
-<h1 class="pt-4 mx-md-5 pb-0">{{'Strengths'|translate}}</h1>
-<h5 class="fw-normal mx-md-5 pb-4">
-  {{'Strengths of'|translate}}:&nbsp;{{childItsStrengths?.person?.name}}
-</h5>
-<div class="mx-md-5 mb-5 pb-5">
-  <div class="w-100 row" *ngIf="!isPrinting">
+<app-title title1="Strengths" title2="Strengths of" [param2]="childItsStrengths?.person?.name"></app-title>
+<div class="container">
+  <div class="row" *ngIf="!isPrinting">
     <mat-form-field class="col-11">
       <mat-label>{{'Search'|translate}}</mat-label>
       <input matInput (keyup)="applySearch($event)" placeholder="...">

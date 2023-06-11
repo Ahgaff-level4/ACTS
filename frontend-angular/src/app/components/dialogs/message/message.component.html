@@ -1,12 +1,14 @@
 <div style="max-width: 500px;" class="px-md-3 px-2 pt-3">
-  <h4 mat-dialog-title [className]="titleColor">
-    <div style="display: flex; align-items: center;">
-      <mat-icon *ngIf="titleIcon"  style="margin-top: 5px;">{{titleIcon}}</mat-icon>
-      <span class="mx-1">{{titleText|translate}}</span>
+  <div mat-dialog-title [className]="titleColor">
+    <div class="d-flex justify-content-between">
+      <div>
+        <h4 [className]="titleColor">{{titleText|translate}}</h4>
+      </div>
+      <mat-icon *ngIf="titleIcon" style="margin:6px 6px 0px 6px;" [className]="titleColor">{{titleIcon}}</mat-icon>
     </div>
-  </h4>
+  </div>
   <mat-dialog-content>
-    {{content|translate}}
+    <p>{{content|translate}}</p>
   </mat-dialog-content>
 
   <mat-dialog-actions align="end">

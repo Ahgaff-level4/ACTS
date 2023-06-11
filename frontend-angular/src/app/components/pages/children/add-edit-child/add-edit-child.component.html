@@ -1,8 +1,6 @@
 <!--Note: this component used in add/edit child page AND in children table-->
+<app-title [title1]="(child?.id?'Edit child information':'Register a child')"></app-title>
 <div class="container">
-  <h1 class="m-2 mt-5">
-    {{(child?.id?'Edit child information':'Register a child')|translate}}
-  </h1>
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
   <form [formGroup]="childForm" class="container-fluid" (ngSubmit)="submit()">

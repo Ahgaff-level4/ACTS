@@ -58,6 +58,7 @@ import { ReportChildComponent } from './components/pages/children/report-child/r
 import { AgChartsAngularModule } from 'ag-charts-angular';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
 import { ChildInfoComponent } from './components/pages/children/view-child/child-info/child-info.component';
+import { TitleComponent } from './components/static/title/title.component';
 
 @NgModule({
   declarations: [
@@ -100,6 +101,7 @@ import { ChildInfoComponent } from './components/pages/children/view-child/child
     ReportChildComponent,
     ViewChildComponent,
     ChildInfoComponent,
+    TitleComponent,
   ],
   imports: [
     BrowserModule,

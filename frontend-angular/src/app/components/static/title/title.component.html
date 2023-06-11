@@ -1,0 +1,9 @@
+<div class="container mt-4 mb-4">
+  <h1 *ngIf="title1" class="mt-3 pb-0 mb-1">{{title1|translate}}</h1>
+  <h5 *ngIf="title2" class="fw-normal pb-0 mb-1">
+    {{title2|translate}}<span *ngIf="param2">:&nbsp;{{param2}}</span>
+  </h5>
+  <h5 *ngIf="title3" class="fw-normal mb-1">
+    {{title3|translate}}<span *ngIf="param3">:&nbsp;{{param3}}</span>
+  </h5>
+</div>
