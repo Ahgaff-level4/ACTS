@@ -1,12 +1,6 @@
 - when user changing route/page there should be sort of loader/spinner. Loading until the page is loaded. Also, check for animation when transporting between pages
 
-
 - Translate server error messages.
-
-- solve this:Warning: C:\ACTS\frontend-angular\node_modules\@angular\material-moment-adapter\fesm2020\material-moment-adapter.mjs depends on 'moment'. CommonJS or AMD dependencies can cause optimization bailouts.
-For more info see: https://angular.io/guide/build#configuring-commonjs-dependencies
-
-- in ag-grid when edit a cell of type date then make it date picker instead of text input.
 
 - add back button (<-) for nested pages. like child info and goals.
 
@@ -15,4 +9,17 @@ For more info see: https://angular.io/guide/build#configuring-commonjs-dependenc
 - reduce bundle size by reusing one component instead of duplicate code.
 Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 5.19 MB with a total of 5.68 MB.
 
-- fix each role privileges on add-edit-account tooltip or just make a dialog
+- fix each role privileges on add-edit-account tooltip or just make a dialog.
+
+- create simple Notification box to store live notifications. And only for Admin allow sending live message to all users.
+
+- check if a child can have duplicate activity for different goals/strengths. CHILD SHOULD NOT have duplicate activity.
+- check host file domain name in PowerToys app, may enable you to run server on LAN.
+
+- translate date filter dialog of ag-grid's table.
+
+-try deleting PersonController so that when new child/account added, its person is embedded with the child/account object. Is TypeORM will handle it correctly?
+
+- Add visitors of the site in the ~Dashboard? Is NestJs provide such thing?
+
+- check what all MatDialog div class it uses, than set the minimum width of the dialog to %50 to be responsive.
