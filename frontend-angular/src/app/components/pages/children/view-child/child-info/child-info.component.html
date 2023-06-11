@@ -33,9 +33,14 @@
       [routerLink]="'/child/'+child.id+'/goals'" mat-stroked-button color="primary">
       {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
     </a>
-    <a class="w-100 mx-3 mb-2 rounded-5" [matTooltip]="'View strengths of the selected child'|translate"
+    <a class="w-100 mx-3 mb-2 rounded-5 nbsp" [matTooltip]="'View strengths of the selected child'|translate"
       [routerLink]="'/child/'+child.id+'/strengths'" mat-stroked-button color="primary">
       {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
     </a>
+    <a class="w-100 mx-3 mb-2 rounded-5" *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')"
+    [matTooltip]="'View report of the selected child'|translate"
+    [routerLink]="'/child/'+child.id+'/report'" mat-stroked-button color="primary">
+    {{'Report'|translate}}<mat-icon>analytics</mat-icon>
+  </a>
   </div>
 </div>

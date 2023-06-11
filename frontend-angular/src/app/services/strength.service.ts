@@ -14,7 +14,7 @@ import { GoalService } from './goal.service';
  * The only difference is when fetching the "goals" if we want child's goals then `where goal.state != 'strength'`.
  * When we want child's strengths then `where goal.state == 'strength'`.
  * This is done in the server depends on the url:
- * - server path for child's goals is `api/child/:id/goals`
+ * - server path for child's goals is `api/child/:id/goal`
  * - server path for child's strengths is `api/child/:id/strengths`
  */
 export class StrengthService {

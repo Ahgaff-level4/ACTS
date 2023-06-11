@@ -1,4 +1,5 @@
-<app-title title1="Strengths" title2="Strengths of" [param2]="childItsStrengths?.person?.name"></app-title>
+<app-title title1="Strengths" title2="Strengths of" [param2]="childItsStrengths?.person?.name" [isPrinting]="isPrinting"
+  backLink="/children" backTooltip="Children"></app-title>
 <div class="container">
   <div class="row" *ngIf="!isPrinting">
     <mat-form-field class="col-11">

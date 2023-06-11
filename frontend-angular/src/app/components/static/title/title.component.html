@@ -1,9 +1,19 @@
 <div class="container mt-4 mb-4">
-  <h1 *ngIf="title1" class="mt-3 pb-0 mb-1">{{title1|translate}}</h1>
-  <h5 *ngIf="title2" class="fw-normal pb-0 mb-1">
-    {{title2|translate}}<span *ngIf="param2">:&nbsp;{{param2}}</span>
-  </h5>
-  <h5 *ngIf="title3" class="fw-normal mb-1">
-    {{title3|translate}}<span *ngIf="param3">:&nbsp;{{param3}}</span>
-  </h5>
+  <div class="d-flex mt-3">
+    <a *ngIf="backLink && (isPrinting==undefined || isPrinting==false)" [routerLink]="backLink"
+      class="mx-2 align-self-center" [matTooltip]="backTooltip?('page'|translate)+' '+(backTooltip|translate):''"
+      mat-icon-button color="primary">
+      <mat-icon class="mb-1" color="primary" *ngIf="ut.getDirection()=='ltr'">arrow_back</mat-icon>
+      <mat-icon class="mb-1" color="primary" *ngIf="ut.getDirection()=='rtl'">arrow_forward</mat-icon>
+    </a>
+    <div>
+      <h1 *ngIf="title1" class="pb-0 mb-1">{{title1|translate}}</h1>
+      <h5 *ngIf="title2" class="fw-normal pb-0 mb-1">
+        {{title2|translate}}<span *ngIf="param2">:&nbsp;{{param2}}</span>.
+      </h5>
+      <h5 *ngIf="title3" class="fw-normal mb-1">
+        {{title3|translate}}<span *ngIf="param3">:&nbsp;{{param3}}</span>.
+      </h5>
+    </div>
+  </div>
 </div>

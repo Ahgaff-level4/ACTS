@@ -31,7 +31,7 @@ export class EvaluationComponent {
   private onCellValueChange = async (e: NewValueParams<IEvaluationEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IEvaluationEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.goalItsEvaluations)
         await this.service.fetchGoalItsEvaluations(this.goalItsEvaluations.id).catch(() => { });
@@ -140,12 +140,12 @@ export class EvaluationComponent {
 
   /** @param data is either a evaluation to be Edit. Or goalId to be Add */
   addEdit(data?: IEvaluationEntity | number) {
-    console.log({data})
+    console.log({ data })
     if (typeof data != 'object' && typeof data != 'number')
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data ,direction:this.ut.getDirection()});
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data, direction: this.ut.getDirection() });
   }
 
   deleteDialog(evaluation?: IEvaluationEntity) {
@@ -160,7 +160,7 @@ export class EvaluationComponent {
         if (v === 'Delete') {
           try {
             await this.service.delete(evaluation.id, true);
-            this.ut.notify("Deleted successfully",'The evaluation has been deleted successfully','success');
+            this.ut.notify("Deleted successfully", 'The evaluation has been deleted successfully', 'success');
           } catch (e) { }
         }
       })

@@ -132,7 +132,7 @@ export class GoalComponent implements OnDestroy {
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigate(['goal', v.id, 'evaluations']) : '',
+      action: (v) => v ? this.ut.router.navigateByUrl('/child/'+this.childItsGoals?.id+'/goal/'+v.id+'/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
     },
     {

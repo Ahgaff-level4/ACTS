@@ -1,4 +1,5 @@
-<app-title title1="Goals" title2="Goals of" [param2]="childItsGoals?.person?.name"></app-title>
+<app-title title1="Goals" title2="Goals of" [param2]="childItsGoals?.person?.name" backLink="/children"
+  backTooltip="Children" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <div class="row" *ngIf="!isPrinting">
     <mat-form-field class="col-11">
@@ -49,9 +50,9 @@
       color="primary">
       {{'Evaluate'|translate}}<mat-icon>rate_review</mat-icon>
     </button>
-    <a [routerLink]="selectedItem?'/goal/'+selectedItem.id+'/evaluations':'#'" [disabled]="selectedItem==null"
-      [matTooltip]="'View evaluations of the selected goal'|translate" mat-stroked-button color="primary"
-      class="w-100 mx-3 mb-2 rounded-5">
+    <a [routerLink]="selectedItem?'/child/'+childItsGoals?.id+'/goal/'+selectedItem.id+'/evaluations':'#'"
+      [disabled]="selectedItem==null" [matTooltip]="'View evaluations of the selected goal'|translate"
+      mat-stroked-button color="primary" class="w-100 mx-3 mb-2 rounded-5">
       <mat-icon>reviews</mat-icon>
       <span>{{'Evaluations'|translate}}</span>
     </a>

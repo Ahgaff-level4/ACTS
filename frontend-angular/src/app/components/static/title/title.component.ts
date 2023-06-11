@@ -1,4 +1,5 @@
 import { Component, Input } from '@angular/core';
+import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-title',
@@ -12,4 +13,10 @@ export class TitleComponent {
   @Input('param2') param2: string | undefined;
   @Input('title3') title3: string | undefined;
   @Input('param3') param3: string | undefined;
+  @Input('backLink') backLink: string | undefined;
+  @Input('backTooltip') backTooltip: string | undefined;
+  /**Hide back button when printing */
+  @Input('isPrinting') isPrinting: boolean | undefined;
+
+  constructor(public ut: UtilityService) { }
 }
