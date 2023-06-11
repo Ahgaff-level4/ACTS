@@ -101,3 +101,8 @@ mat-checkbox.text-white div label {
   opacity: 0.9 !important ;
   transition: all 300ms ease-in-out !important;
 }
+
+mat-dialog-container{
+  max-width:600px;
+  width:600px !important;
+}

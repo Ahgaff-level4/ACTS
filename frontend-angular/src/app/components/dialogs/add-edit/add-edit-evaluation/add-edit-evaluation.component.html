@@ -1,4 +1,4 @@
-<div style="max-width: 600px;">
+<div>
   <h1 mat-dialog-title>{{((evaluationOrGoalId|type:'object')?'Edit evaluation':'Add new evaluation')|translate}}</h1>
   <form [formGroup]="formGroup" class="container-fluid" (submit)="submit($event)">
     <div mat-dialog-content>

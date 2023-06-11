@@ -1,10 +1,10 @@
-<div style="max-width: 500px;" class="px-md-3 px-2 pt-3">
-  <div mat-dialog-title [className]="titleColor">
+<div>
+  <div class="mt-4 mx-3">
     <div class="d-flex justify-content-between">
       <div>
-        <h4 [className]="titleColor">{{titleText|translate}}</h4>
+        <h4 class="opacity-75 mx-3">{{titleText|translate}}</h4>
       </div>
-      <mat-icon *ngIf="titleIcon" style="margin:6px 6px 0px 6px;" [className]="titleColor">{{titleIcon}}</mat-icon>
+      <mat-icon [className]="titleColor" *ngIf="titleIcon" style="margin:6px 6px 0px 6px;">{{titleIcon}}</mat-icon>
     </div>
   </div>
   <mat-dialog-content>
