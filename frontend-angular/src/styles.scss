@@ -92,3 +92,12 @@ mat-checkbox.text-white div label {
     direction: rtl;
   }
 }
+.nav-link{
+  opacity:0.75 !important;
+  color:white !important;
+  transition: all 300ms ease-in-out !important;
+}
+.nav-link:active,.nav-link:hover,.nav-link:focus,.nav-link:checked{
+  opacity: 0.9 !important ;
+  transition: all 300ms ease-in-out !important;
+}
