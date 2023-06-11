@@ -1,50 +1,58 @@
-<div >
-  <h4 mat-dialog-title>{{'Choose an activity'|translate}}</h4>
-  <div mat-dialog-content>
-    <h5 class="pt-3 fw-normal pb-0 mb-0">{{"Choose the activity's program"|translate}}</h5>
-    <mat-selection-list #listProgram [multiple]="false"
-      (selectionChange)="onSelectionChangeProgram(listProgram?.selectedOptions?.selected?.[0]?.value)">
-      <mat-list-option *ngFor="let program of this.programs??[]" [value]="program">
-        {{program.name}}
+<h4 mat-dialog-title>{{'Choose an activity'|translate}}</h4>
+<div mat-dialog-content class="w-100">
+  <h5 class="pt-3 fw-normal pb-0 mb-0">{{"Choose the activity's program"|translate}}</h5>
+  <mat-selection-list #listProgram [multiple]="false"
+    (selectionChange)="onSelectionChangeProgram(listProgram?.selectedOptions?.selected?.[0]?.value)">
+    <mat-list-option *ngFor="let program of this.programs??[]" [value]="program">
+      {{program.name}}
+    </mat-list-option>
+  </mat-selection-list>
+
+  <div *ngIf="this.chosenProgram">
+    <!-- <h5 class="pt-3 fw-normal pb-1 mb-0">{{'Choose an activity'|translate}}</h5> -->
+    <mat-button-toggle-group [(ngModel)]="filterByAgeTwoWay" (change)="filterByAge()" class="w-100"
+      aria-label="Filter activities">
+      <mat-button-toggle class="w-100" value="all">{{'All activities'|translate}}</mat-button-toggle>
+      <mat-button-toggle class="w-100" [matTooltip]="'Filter activities within age range of the child age'|translate"
+        value="age" [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
+    </mat-button-toggle-group>
+    <mat-form-field class="w-100 mt-2" appearance="outline">
+      <mat-label>{{'Filter by field'|translate}}</mat-label>
+      <mat-select multiple [(ngModel)]="filterByFieldsTwoWay" (selectionChange)="filterByFields()">
+        <mat-option *ngFor="let field of fields" [value]="field">
+          {{field.name}}
+        </mat-option>
+      </mat-select>
+    </mat-form-field>
+    <p *ngIf="!activities || activities.length ==0" class="text-center opacity-75 mt-4 mb-0 pb-0">
+      {{'Empty activity list'|translate}}
+    </p>
+    <mat-selection-list #listActivity [multiple]="false"
+      (selectionChange)="onSelectionChangeActivity(listActivity?.selectedOptions?.selected?.[0]?.value)">
+      <mat-list-option *ngFor="let activity of activities" [value]="activity">
+        <div matListItemTitle>{{activity.name}}</div>
+        <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} –
+          {{activity.maxAge}}.&nbsp;&nbsp;&nbsp;{{'Field'|translate}}:&nbsp;{{activity.field?.name}}</div>
       </mat-list-option>
     </mat-selection-list>
+  </div>
 
-    <div *ngIf="this.chosenProgram">
-      <!-- <h5 class="pt-3 fw-normal pb-1 mb-0">{{'Choose an activity'|translate}}</h5> -->
-      <mat-button-toggle-group [value]="filter" (change)="filterActivities($event.value)" class="w-100"
-        aria-label="Filter activities">
-        <mat-button-toggle class="w-100" value="all">{{'All activities'|translate}}</mat-button-toggle>
-        <mat-button-toggle class="w-100" [matTooltip]="'Filter activities within age range of the child age'|translate" value="age"
-          [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
-      </mat-button-toggle-group>
-      <p *ngIf="!activities || activities.length ==0" class="text-center opacity-75 mt-4 mb-0 pb-0">
-        {{'Empty activity list'|translate}}
-      </p>
-      <mat-selection-list #listActivity [multiple]="false"
-        (selectionChange)="onSelectionChangeActivity(listActivity?.selectedOptions?.selected?.[0]?.value)">
-        <mat-list-option *ngFor="let activity of activities" [value]="activity">
-          <div matListItemTitle>{{activity.name}}</div>
-          <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} – {{activity.maxAge}}.&nbsp;&nbsp;&nbsp;{{'Field'|translate}}:&nbsp;{{activity.field?.name}}</div>
-        </mat-list-option>
-      </mat-selection-list>
+  <div class="row m-3 d-flex">
+    <div class="col-4 border-bottom border-secondary align-self-center">
     </div>
-
-    <div class="row m-3 d-flex">
-      <div class="col-4 border-bottom border-secondary align-self-center">
-      </div>
-      <div class="col-4 text-center align-self-center">
-        {{'Or'|translate}}
-      </div>
-      <div class="col-4 border-bottom border-secondary align-self-center">
-      </div>
+    <div class="col-4 text-center align-self-center">
+      {{'Or'|translate}}
     </div>
+    <div class="col-4 border-bottom border-secondary align-self-center">
+    </div>
+  </div>
 
-    <div class="row">
-      <div class="col-md-12">
-        <button class="w-100 rounded-5" type="button" mat-stroked-button color="primary" (click)="createSpecialActivity()">
-          {{'Create special activity'|translate}}
-        </button>
-      </div>
+  <div class="row">
+    <div class="col-md-12">
+      <button class="w-100 rounded-5" type="button" mat-stroked-button color="primary"
+        (click)="createSpecialActivity()">
+        {{'Create special activity'|translate}}
+      </button>
     </div>
   </div>
 </div>

@@ -1,12 +1,14 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ProgramService } from 'src/app/services/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { IActivityEntity, IChildEntity, IProgramEntity } from '../../../../../../interfaces';
+import { IActivityEntity, IChildEntity, IFieldEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/goal.service';
 import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit-activity.component';
 import { ActivityService } from 'src/app/services/activity.service';
 import { StrengthService } from 'src/app/services/strength.service';
+import { FieldService } from 'src/app/services/field.service';
+import { SelectionChangedEvent } from 'ag-grid-community';
 
 @Component({
   selector: 'app-select-activity',
@@ -15,11 +17,12 @@ import { StrengthService } from 'src/app/services/strength.service';
 })
 export class SelectActivityComponent implements OnInit {
   public chosenProgram: IProgramEntity | undefined;
-  public filter: 'age' | 'all' = 'age';
+  public filterByAgeTwoWay: 'age' | 'all' = 'age';
+  public filterByFieldsTwoWay: IFieldEntity[] = [];
   public activities: IActivityEntity[] | [] = [];
   public programs: IProgramEntity[] | undefined;
   public child: IChildEntity | undefined;
-
+  public fields: IFieldEntity[] | undefined;
   /**
    * This dialog is used in the following state:
    * - 'goal' for choosing the goal's activity.
@@ -27,12 +30,13 @@ export class SelectActivityComponent implements OnInit {
    */
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService,
     private ut: UtilityService, private goalService: GoalService, private strengthService: StrengthService,
-    private activityService: ActivityService, private dialog: MatDialog,
+    private activityService: ActivityService, private dialog: MatDialog, private fieldService: FieldService,
     @Inject(MAT_DIALOG_DATA) public state: 'goal' | 'strength') {
   }
 
   ngOnInit(): void {
     this.programService.programs.subscribe(v => this.programs = v);
+    this.fieldService.fields.subscribe(v => this.fields = v);
     if (this.state == 'goal')
       this.goalService.childItsGoals.subscribe(v => this.child = v);
     else this.strengthService.childItsStrengths.subscribe(v => this.child = v);
@@ -43,7 +47,7 @@ export class SelectActivityComponent implements OnInit {
       this.activityService.fetchProgramItsActivities(value.id, true)
         .then((v) => {
           this.chosenProgram = v;
-          this.filterActivities();
+          this.filterByAge();
         });
     }
   }
@@ -53,16 +57,11 @@ export class SelectActivityComponent implements OnInit {
       this.dialogRef.close(chosenActivity);
   }
 
-  filterActivities(filter?: 'age' | 'all') {
-    if (filter == null)
-      filter = this.filter;
-    else this.filter = filter;
-    console.log('filter', filter);
-    if (filter == 'age' &&
+  filterByAge(callAllFilters: boolean = true) {
+    if (this.filterByAgeTwoWay == 'age' &&
       this.chosenProgram?.activities &&
       this.child?.person?.birthDate) { //filter by age
       var age = this.ut.calcAge(this.child?.person?.birthDate);
-      console.log('age', age);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
           if (v.maxAge == null || v.minAge == null || (age < v.maxAge && age > v.minAge))
@@ -74,10 +73,19 @@ export class SelectActivityComponent implements OnInit {
       if (this.chosenProgram?.activities)
         this.activities = this.chosenProgram.activities;
     }
+    if (callAllFilters)
+      this.filterByFields(false);
+  }
+
+  filterByFields(callAllFilters: boolean = true) {
+    if (callAllFilters)
+      this.filterByAge(false);
+    if (this.filterByFieldsTwoWay.length > 0)
+      this.activities = this.activities.filter(a => this.filterByFieldsTwoWay.map(f => f.name).includes(a.field!.name));
   }
 
   createSpecialActivity() {
-    this.dialog.open<AddEditActivityComponent, undefined, IActivityEntity>(AddEditActivityComponent,{direction:this.ut.getDirection()})
+    this.dialog.open<AddEditActivityComponent, undefined, IActivityEntity>(AddEditActivityComponent, { direction: this.ut.getDirection() })
       .afterClosed().subscribe(v => {
         if (typeof v === 'object')
           this.dialogRef.close(v);
