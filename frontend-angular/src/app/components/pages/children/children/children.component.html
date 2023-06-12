@@ -39,33 +39,28 @@
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData"
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
-  <div class="d-md-flex mx-4 mx-md-0 justify-content-evenly rounded-5" *ngIf="!isPrinting">
-    <a *ngIf="canAddEdit" class="w-100 mx-2 mb-2 rounded-5 nbsp" mat-raised-button color="primary" routerLink="/add-child">
-      {{'Register a child'|translate}}<mat-icon>person_add</mat-icon>
-    </a>
-    <a [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
-      [matTooltip]="'View all information'|translate"
-      [routerLink]="selectedItem?'/child/'+selectedItem!.id:'#'" mat-stroked-button color="primary">
-      {{'View'|translate}}<mat-icon>wysiwyg</mat-icon>
-    </a>
-    <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
-      class="w-100 mx-2 mb-2 rounded-5 nbsp" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
-      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-    </button>
-    <a [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
-      [matTooltip]="'View goals of the selected child'|translate"
-      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/goals':'#'" mat-stroked-button color="primary">
-      {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
-    </a>
-    <a [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
-      [matTooltip]="'View strengths of the selected child'|translate"
-      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" mat-stroked-button color="primary">
-      {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
-    </a>
-    <a *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')" [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
-      [matTooltip]="'View report of the selected child'|translate"
-      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/report':'#'" mat-stroked-button color="primary">
-      {{'Report'|translate}}<mat-icon>analytics</mat-icon>
-    </a>
+  <div class="d-md-flex mx-md-0 justify-content-evenly rounded-5" *ngIf="!isPrinting">
+    <app-button *ngIf="canAddEdit" class="w-100 mx-2 mb-2" appearance="raised"
+    link="/add-child" text="Register a child" icon="person_add">
+    </app-button>
+    <app-button [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
+      tooltip="View all information" text="View" icon="wysiwyg"
+      [link]="'/child/'+selectedItem?.id" appearance="stroked">
+    </app-button>
+    <app-button *ngIf="canAddEdit" [disabled]="selectedItem==null" tooltip="Edit the selected row"
+      class="w-100 mx-2 mb-2" text="Edit" icon="edit" appearance="stroked" (click)="edit(this.selectedItem)">
+    </app-button>
+    <app-button [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
+      tooltip="View goals of the selected child" text="Goals" icon="sports_score"
+      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/goals':'#'" appearance="stroked">
+    </app-button>
+    <app-button [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
+      tooltip="View strengths of the selected child" text="Strengths" icon="fitness_center"
+      [link]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" appearance="stroked">
+    </app-button>
+    <app-button *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')" [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
+      tooltip="View report of the selected child" text="Report" icon="analytics"
+      [link]="selectedItem?'/child/'+selectedItem!.id+'/report':'#'" appearance="stroked">
+    </app-button>
   </div>
 </div>

@@ -1,0 +1,35 @@
+<button *ngIf="appearance=='basic' && link == undefined" mat-button [disabled]="disabled" [class]="'w-100 rounded-5 nbsp '+class"
+  [color]="color" (click)="click" [matTooltip]="tooltip|translate"><mat-icon *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</button>
+<button *ngIf="appearance=='stroked'&& link == undefined" mat-stroked-button [disabled]="disabled"
+  [class]="'w-100 rounded-5 nbsp '+class" [color]="color" (click)="click" [matTooltip]="tooltip|translate"><mat-icon
+    *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</button>
+<button *ngIf="appearance=='flat'&& link == undefined" mat-flat-button [disabled]="disabled"
+  [class]="'w-100 rounded-5 nbsp '+class" [color]="color" (click)="click" [matTooltip]="tooltip|translate"><mat-icon
+    *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</button>
+<button *ngIf="appearance=='raised'&& link == undefined" mat-raised-button [disabled]="disabled"
+  [class]="'w-100 rounded-5 nbsp '+class" [color]="color" (click)="click" [matTooltip]="tooltip|translate"><mat-icon
+    *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</button>
+<button *ngIf="appearance=='icon'&& link == undefined" mat-icon-button [disabled]="disabled"
+  [class]="'w-100 rounded-5 nbsp '+class" [color]="color" (click)="click"
+  [matTooltip]="tooltip|translate"><mat-icon>{{icon}}</mat-icon></button>
+<a *ngIf="appearance=='basic' && link != undefined" mat-button [disabled]="disabled" [class]="'w-100 rounded-5 nbsp '+class"
+  [color]="color" [routerLink]="link" [matTooltip]="tooltip|translate"><mat-icon *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</a>
+<a *ngIf="appearance=='stroked' && link != undefined" mat-stroked-button [disabled]="disabled"
+  [class]="'w-100 rounded-5 nbsp '+class" [color]="color" [routerLink]="link" [matTooltip]="tooltip|translate"><mat-icon
+    *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</a>
+<a *ngIf="appearance=='flat' && link != undefined" mat-flat-button [disabled]="disabled" [class]="'w-100 rounded-5 nbsp '+class"
+  [color]="color" [routerLink]="link" [matTooltip]="tooltip|translate"><mat-icon *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</a>
+<a *ngIf="appearance=='raised' && link != undefined" mat-raised-button [disabled]="disabled"
+  [class]="'w-100 rounded-5 nbsp '+class" [color]="color" [routerLink]="link" [matTooltip]="tooltip|translate"><mat-icon
+    *ngIf="icon">{{icon}}</mat-icon>
+  {{text|translate}}</a>
+
+<a *ngIf="appearance=='icon' && link!=undefined" [disabled]="disabled" [class]="'w-100 rounded-5 nbsp '+class" mat-icon-button
+  [color]="color" [routerLink]="link" [matTooltip]="tooltip|translate"><mat-icon>{{icon}}</mat-icon></a>

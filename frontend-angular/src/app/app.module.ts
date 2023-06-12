@@ -60,6 +60,7 @@ import { ViewChildComponent } from './components/pages/children/view-child/view-
 import { ChildInfoComponent } from './components/pages/children/view-child/child-info/child-info.component';
 import { TitleComponent } from './components/static/title/title.component';
 import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
+import { ButtonComponent } from './components/forms/button/button.component';
 
 @NgModule({
   declarations: [
@@ -104,6 +105,7 @@ import { ViewAccountComponent } from './components/pages/accounts/view-account/v
     ChildInfoComponent,
     TitleComponent,
     ViewAccountComponent,
+    ButtonComponent,
   ],
   imports: [
     BrowserModule,
