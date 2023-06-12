@@ -38,7 +38,7 @@ export class AccountService implements OnInit {
             res();
           }, error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the accounts information. Please try again later or check your connection."); rej(e);
-          },complete:()=>manageLoading && this.ut.isLoading.next(false),
+          }, complete: () => manageLoading && this.ut.isLoading.next(false),
         });
     })
   }
@@ -63,7 +63,7 @@ export class AccountService implements OnInit {
           error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the account. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     });
   }
@@ -80,7 +80,7 @@ export class AccountService implements OnInit {
           error: e => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem changing your password. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }
@@ -102,7 +102,7 @@ export class AccountService implements OnInit {
           error: e => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }
@@ -122,7 +122,7 @@ export class AccountService implements OnInit {
           },
           error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }
@@ -154,5 +154,26 @@ export class AccountService implements OnInit {
     if (typeof username === 'string')
       return this.http.post<User>(env.AUTH + 'login', { username, password });
     return throwError(() => 'You must login!')
+  }
+
+  /**pop-up a delete confirmation dialog, then delete if user approve */
+  deleteAccount(account: IAccountEntity) {
+    this.ut.showMsgDialog({
+      content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
+      type: 'confirm',
+      buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
+    }).afterClosed().subscribe(async (v) => {
+      if (v === 'Delete') {
+        try {
+          await this.delete(account.id, true);
+          this.ut.notify("Deleted successfully", 'The account has been deleted successfully', 'success');
+        } catch (e) { }
+      }
+    })
+  }
+
+  /**navigate to edit-account page */
+  edit(account: IAccountEntity) {
+    this.ut.router.navigate(['edit-account'], { state: { data: account } });
   }
 }

@@ -20,6 +20,7 @@ import { SpecialActivityComponent } from './components/pages/special-activity/sp
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 import { Component } from 'ag-grid-community';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
+import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
 
 export interface ComponentCanDeactivate {
   /**@returns false to prevent user navigating. true otherwise */
@@ -112,6 +113,7 @@ const routes: Routes = [
   { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
   { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: A },
+  { path: 'account/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: A },
   { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: A },
   { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: A },
   { path: 'program/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: AHT },

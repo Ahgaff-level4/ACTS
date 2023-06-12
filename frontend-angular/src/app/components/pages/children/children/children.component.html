@@ -43,6 +43,11 @@
     <a *ngIf="canAddEdit" class="w-100 mx-2 mb-2 rounded-5 nbsp" mat-raised-button color="primary" routerLink="/add-child">
       {{'Register a child'|translate}}<mat-icon>person_add</mat-icon>
     </a>
+    <a [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
+      [matTooltip]="'View all information'|translate"
+      [routerLink]="selectedItem?'/child/'+selectedItem!.id:'#'" mat-stroked-button color="primary">
+      {{'View'|translate}}<mat-icon>wysiwyg</mat-icon>
+    </a>
     <button *ngIf="canAddEdit" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
       class="w-100 mx-2 mb-2 rounded-5 nbsp" mat-stroked-button color="primary" (click)="edit(this.selectedItem)">
       <mat-icon>edit</mat-icon>{{'Edit'|translate}}
@@ -56,11 +61,6 @@
       [matTooltip]="'View strengths of the selected child'|translate"
       [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" mat-stroked-button color="primary">
       {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
-    </a>
-    <a [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
-      [matTooltip]="'View all information'|translate"
-      [routerLink]="selectedItem?'/child/'+selectedItem!.id:'#'" mat-stroked-button color="primary">
-      {{'View'|translate}}<mat-icon>wysiwyg</mat-icon>
     </a>
     <a *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')" [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
       [matTooltip]="'View report of the selected child'|translate"

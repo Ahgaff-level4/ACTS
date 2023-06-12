@@ -45,7 +45,7 @@ export class AccountComponent {
       field: 'person.gender',
       headerName: 'Gender',
       type: 'enum',
-      valueGetter:v=>this.ut.translate(v.data?.person?.gender),
+      valueGetter: v => this.ut.translate(v.data?.person?.gender),
       filterParams: { values: [this.ut.translate('Male'), this.ut.translate('Female')], },
       width: 110
     },
@@ -66,15 +66,6 @@ export class AccountComponent {
       headerName: 'Roles',
       type: 'long',//filterParams in init
       valueGetter: v => v.data?.roles ? this.ut.displayRoles(v.data.roles) : '',
-      // filterParams: {
-      //   values: [this.ut.translate('Admin'), this.ut.translate('Head of Department'), this.ut.translate('Teacher'), this.ut.translate('Parent')],
-      //   comparator: function (a: string, b: string) {
-      //     // return a.includes(b) ? 1 : (b.includes(a) ? -1 : 0);
-      //     console.log('a', a, 'b', b);
-
-      //     return 1;//todo fix filtering for multi-role. `comparator` used for sort :/
-      //   }
-      // } as SetFilterParams
     },
     {
       field: 'person.createdDatetime',
@@ -85,7 +76,7 @@ export class AccountComponent {
       field: 'phones',
       headerName: 'Phone',
       type: 'long',
-      valueGetter: v => v.data ? this.displayPhones(v.data) : '',
+      valueGetter: v => v.data ? this.ut.displayPhones(v.data) : '',
     },
     {
       field: 'address',
@@ -98,12 +89,12 @@ export class AccountComponent {
     {
       name: 'Delete',
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
-      action: (v) => this.deleteAccount(this.selectedItem),
+      action: (v) => this.selectedItem ? this.accountService.deleteAccount(this.selectedItem) : this.ut.notify(null),
       tooltip: 'Delete the selected account',
     },
   ];
 
-  constructor(private accountService: AccountService, public ut: UtilityService, public agGrid: AgGridService) {
+  constructor(public accountService: AccountService, public ut: UtilityService, public agGrid: AgGridService) {
   }
 
   ngOnInit(): void {
@@ -125,38 +116,11 @@ export class AccountComponent {
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
-      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { this.edit(item) }),
+      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item?this.accountService.edit(item):this.ut.notify(null) }),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 
-  edit(account: IAccountEntity | undefined) {
-    if (account != undefined)
-      this.ut.router.navigate(['edit-account'], { state: { data: account } });
-  }
 
-  displayPhones(account: IAccountEntity) {
-    const phones = [];
-    for (let i = 0; i < 10; i++)
-      phones.push(account['phone' + i]);
-    return phones.filter(v => !!v).join(this.ut.translate(', '));
-  }
-
-  deleteAccount(account?: IAccountEntity) {
-    if (account) {
-      this.ut.showMsgDialog({
-        content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
-        type: 'confirm',
-        buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
-      }).afterClosed().subscribe(async (v) => {
-        if (v === 'Delete') {
-          try {
-            await this.accountService.delete(account.id, true);
-            this.ut.notify("Deleted successfully",'The account has been deleted successfully','success');
-          } catch (e) { }
-        }
-      })
-    } else this.ut.notify(null);
-  }
 
   ngOnDestroy() {
     this.accountService.isLoggerIn = false;

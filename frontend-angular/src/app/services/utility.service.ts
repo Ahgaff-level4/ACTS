@@ -1,6 +1,6 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Role, SuccessResponse, User, ErrorResponse, IChildEntity } from './../../../../interfaces.d';
+import { Role, SuccessResponse, User, ErrorResponse, IChildEntity, IAccountEntity } from './../../../../interfaces.d';
 import { BehaviorSubject } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
@@ -292,5 +292,14 @@ export class UtilityService {
     else return '';
   }
 
+  /**Display an account phones joined by a comma. Empty string if none */
+  displayPhones(account: IAccountEntity | undefined) {
+    if (!account)
+      return '';
+    const phones = [];
+    for (let i = 0; i < 10; i++)
+      phones.push(account['phone' + i]);
+    return phones.filter(v => !!v).join(this.translate(', '));
+  }
 }
 

@@ -1,0 +1,37 @@
+<app-title title1="Account information" backLink="/account" backTooltip="Accounts" [isPrinting]="undefined"></app-title>
+<div class="container">
+  <mat-card class="mx-lg-5 shadow d-flex rounded-5">
+    <mat-card-content>
+      <div *ngIf="account">
+        <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{account.person.name||'-'}}</p>
+        <p><span
+            class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.ut.fromNow(account.person.birthDate,true)||'-'}}</p>
+        <p><span
+            class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.ut.toDate(account.person.birthDate)||'-'}}</p>
+        <p><span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(account.person.gender)||'-'}}
+        </p>
+        <p><span class="fw-bold">
+            {{'Register date'|translate}}:</span>&nbsp;{{this.ut.fromNow(account.person.birthDate)||'-'}}</p>
+        <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{account.username||'-'}}</p>
+        <p *ngIf="ut.userHasAny('Parent')"><span class="fw-bold">
+            {{'Address'|translate}}:</span>&nbsp;{{account.address||'-'}}</p>
+        <p *ngIf="ut.userHasAny('Parent')"><span
+            class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{ut.displayPhones(account)||'-'}}</p>
+        <p><span class="fw-bold">
+            {{'Roles'|translate}}:</span>&nbsp;{{ut.displayRoles(account.roles)||'-'}}</p>
+        <div class="d-md-flex mx-4 pt-4 justify-content-evenly rounded-5">
+          <a class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary" routerLink="/add-account">
+            {{'Register new account'|translate}}<mat-icon>person_add</mat-icon>
+          </a>
+          <button class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button
+            color="primary" (click)="service.edit(this.account)">
+            <mat-icon>edit</mat-icon>{{'Edit'|translate}}
+          </button>
+          <button class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="warn"
+            (click)="service.deleteAccount(this.account)"><mat-icon>person_remove</mat-icon>
+            {{'Delete'|translate}}</button>
+        </div>
+      </div>
+    </mat-card-content>
+  </mat-card>
+</div>

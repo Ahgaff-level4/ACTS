@@ -105,7 +105,10 @@ export class SocketService implements OnDestroy {
       (n.controller == 'child') &&
       n.method != 'DELETE') {
       return '/child/' + n.payloadId;//todo make child/account view information only
-    }//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
+    } else if (n.payloadId &&
+      n.controller == 'account' &&
+      n.method != 'DELETE')
+      return '/account/' + n.payloadId//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
     return undefined;
   }
 

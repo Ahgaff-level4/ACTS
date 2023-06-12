@@ -59,6 +59,7 @@ import { AgChartsAngularModule } from 'ag-charts-angular';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
 import { ChildInfoComponent } from './components/pages/children/view-child/child-info/child-info.component';
 import { TitleComponent } from './components/static/title/title.component';
+import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
 
 @NgModule({
   declarations: [
@@ -102,6 +103,7 @@ import { TitleComponent } from './components/static/title/title.component';
     ViewChildComponent,
     ChildInfoComponent,
     TitleComponent,
+    ViewAccountComponent,
   ],
   imports: [
     BrowserModule,
