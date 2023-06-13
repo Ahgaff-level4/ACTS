@@ -7,23 +7,23 @@ import { ColDef, GridOptions, ISetFilterParams, MenuItemDef, NewValueParams, Set
 import { MatMenuTrigger } from '@angular/material/menu';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Observable, Subscription, finalize, first, map, tap } from 'rxjs';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
 })
-export class ChildrenComponent implements OnInit, OnDestroy {
+export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  public sub: Subscription = new Subscription();
 
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.childService.fetchChildren();
     }
@@ -59,7 +59,7 @@ export class ChildrenComponent implements OnInit, OnDestroy {
       field: 'person.gender',
       headerName: 'Gender',
       type: 'enum',
-      valueGetter:v=>this.ut.translate(v.data?.person?.gender),
+      valueGetter: v => this.ut.translate(v.data?.person?.gender),
       filterParams: { values: [this.ut.translate('Male'), this.ut.translate('Female')], },
       width: 110
     },
@@ -190,23 +190,21 @@ export class ChildrenComponent implements OnInit, OnDestroy {
 
 
   // Data that gets displayed in the grid
-  public rowData!: IChildEntity[] | undefined;
+  public rowData = this.childService.children$.pipe(map(v => {
+    if (this.canAddEdit)
+      return this.ut.deepClone(v);
+    else return this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
+
+  }));
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService, public ut: UtilityService, private dialog: MatDialog) {
+    super();
   }
 
 
 
   ngOnInit(): void {
-    this.childService.fetchChildren();
-    this.sub.add(this.childService.children.subscribe(v => {
-      if (this.canAddEdit)
-        this.rowData = this.ut.deepClone(v);
-      else this.rowData = this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
-      this.gridOptions.api?.refreshCells();
-    }));
-
     this.sub.add(this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     }));
@@ -260,7 +258,4 @@ export class ChildrenComponent implements OnInit, OnDestroy {
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
 }

@@ -22,7 +22,7 @@ export class ViewChildComponent implements OnInit, OnDestroy {
       next: async params => {
         let childId = params.get('id');
         if (childId != null && typeof (+childId) == 'number')
-          this.sub.add(this.service.children.subscribe(async v => {
+          this.sub.add(this.service.children$.subscribe(async v => {
             this.child = v.find(v => v.id == +childId!)
             if (!this.child)
               this.ut.notify(null);
