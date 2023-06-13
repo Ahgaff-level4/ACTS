@@ -50,7 +50,6 @@ export class SettingsComponent {
             this.ut.notify("Restored successfully", 'Database restored successfully', 'success');
             this.uploadProgress = null;
           }
-          console.log('response', event);
 
         },
         error: (error) => this.ut.errorDefaultDialog(error, 'There was a problem while restoring the database!')

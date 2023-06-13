@@ -178,8 +178,6 @@ export class UtilityService {
         if (ret[key] instanceof moment || moment.isMoment(ret[key]))
           ret[key] = ret[key].toDate().toISOString();
       }
-
-    console.log('extractDirty', ret);
     return Object.keys(ret).length == 0 ? null : ret;
   }
 

@@ -71,7 +71,6 @@ export class ReportChildComponent implements OnInit, OnDestroy {
             // fontWeight: 'bold',
             formatter: (param) => {
               // const value = datum[calloutLabelKey!];
-              // console.log(param,);
               return param.datum.type;
             },
           },
@@ -123,7 +122,6 @@ export class ReportChildComponent implements OnInit, OnDestroy {
       this.sub.add(this.service.fetchChildReport(this.childReport$.value.child.id, { timeframe })
         .subscribe(v => {
           this.childReport$.next(v);
-          console.log('updated', v);
         }));
     }
   }

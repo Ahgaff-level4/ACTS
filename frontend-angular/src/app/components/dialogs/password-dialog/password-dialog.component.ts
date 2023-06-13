@@ -64,7 +64,6 @@ export class PasswordDialogComponent {
         this.accountService.reenter(this.formGroup.get('password')?.value)
           .subscribe({
             next: (u) => {
-              console.log('u', u)
               this.ut.isLoading.next(false);
               if (u?.isLoggedIn)
                 this.dialogRef.close(true);

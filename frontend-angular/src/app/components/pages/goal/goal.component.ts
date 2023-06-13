@@ -67,7 +67,6 @@ export class GoalComponent implements OnDestroy {
         valueFormatter: v => this.ut.translate(v.value),
       } as ISetFilterParams<IGoalEntity, string>,
       cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
-        console.log(params)
         if (params.data?.state == 'completed')
           return '<div class="d-flex justify-content-center mt-2"><mat-icon _ngcontent-xxc-c62="" role="img" class="mat-icon notranslate  material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">done</mat-icon></div>';
         return '';
@@ -84,7 +83,6 @@ export class GoalComponent implements OnDestroy {
         valueFormatter: v => this.ut.translate(v.value),
       } as ISetFilterParams<IGoalEntity, string>,
       cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
-        console.log(params)
         if (params.data?.state == 'continual')
           return '<div class="d-flex justify-content-center mt-2"><mat-icon _ngcontent-xxc-c62="" role="img" class="mat-icon notranslate  material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">done</mat-icon></div>';
         return '';

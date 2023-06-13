@@ -140,7 +140,6 @@ export class EvaluationComponent {
 
   /** @param data is either a evaluation to be Edit. Or goalId to be Add */
   addEdit(data?: IEvaluationEntity | number) {
-    console.log({ data })
     if (typeof data != 'object' && typeof data != 'number')
       this.ut.errorDefaultDialog(undefined);
     else

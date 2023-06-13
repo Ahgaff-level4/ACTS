@@ -117,7 +117,6 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
         await this.personForm.submitEdit().catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
         let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
-        console.log(dirtyFields)
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
@@ -137,7 +136,6 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
     this.dialog.open<PasswordDialogComponent, string, string>(PasswordDialogComponent,
       { data: this.accountForm.get('password')?.value || '' ,direction:this.ut.getDirection()}).afterClosed()
       .subscribe(v => {
-        console.log('after close', v)
         if (typeof v === 'string') {
           this.accountForm.addControl('password', this.fb.control(v));
           this.accountForm.get('password')?.setValue(v);

@@ -26,18 +26,18 @@ export class SocketService implements OnDestroy {
   public connect(v: User | null) {
     console.log('SocketService : connect : user:', v);
 
-    if (v == null) {
-      if (this.socket)
-        this.socket.close();
+    // if (v == null) {
+    //   if (this.socket)
+    //     this.socket.close();
 
-    } else {
-      if (this.socket)
-        this.socket.close();
-      this.socket = io(environment.SERVER_URL + 'notification');
-      this.socket = this.socket.connect();
-      this.socket.on('newNotification', this.newNotification);
-      this.socket.emit('registerUser', v);
-    }
+    // } else {
+    //   if (this.socket)
+    //     this.socket.close();
+    //   this.socket = io(environment.SERVER_URL + 'notification');
+    //   this.socket = this.socket.connect();
+    //   this.socket.on('newNotification', this.newNotification);
+    //   this.socket.emit('registerUser', v);
+    // }
   }
 
   private newNotification = (n: INotification) => {
