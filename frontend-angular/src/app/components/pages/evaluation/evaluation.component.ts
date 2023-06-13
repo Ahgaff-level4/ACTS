@@ -12,13 +12,14 @@ import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-evaluation',
   templateUrl: './evaluation.component.html',
   styleUrls: ['./evaluation.component.scss']
 })
-export class EvaluationComponent {
+export class EvaluationComponent extends UnsubOnDestroy {
   public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
   public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
   public selectedItem?: IEvaluationEntity;
@@ -26,7 +27,6 @@ export class EvaluationComponent {
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause child has goals for `rowData`*/
   public goalItsEvaluations: IGoalEntity | undefined;
-  private sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IEvaluationEntity>) => {
     try {
@@ -98,6 +98,7 @@ export class EvaluationComponent {
   constructor(public service: EvaluationService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute,
     public agGrid: AgGridService) {
+    super();
   }
 
 
@@ -163,9 +164,5 @@ export class EvaluationComponent {
           } catch (e) { }
         }
       })
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

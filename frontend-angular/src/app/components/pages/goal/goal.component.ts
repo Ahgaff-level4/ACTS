@@ -11,13 +11,14 @@ import { ColDef, GridOptions, ICellRendererParams, ISetFilterParams, NewValuePar
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/field.service';
 import { ProgramService } from 'src/app/services/program.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-goal',
   templateUrl: './goal.component.html',
   styleUrls: ['./goal.component.scss']
 })
-export class GoalComponent implements OnDestroy {
+export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
   public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
   public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
   public selectedItem?: IGoalEntity;
@@ -25,12 +26,11 @@ export class GoalComponent implements OnDestroy {
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause child has goals for `rowData`*/
   public childItsGoals: IChildEntity | undefined;
-  public sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IGoalEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IGoalEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.childItsGoals)
         await this.service.fetchChildItsGoals(this.childItsGoals.id).catch(() => { });
@@ -130,7 +130,7 @@ export class GoalComponent implements OnDestroy {
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('/child/'+this.childItsGoals?.id+'/goal/'+v.id+'/evaluations') : '',
+      action: (v) => v ? this.ut.router.navigateByUrl('/child/' + this.childItsGoals?.id + '/goal/' + v.id + '/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
     },
     {
@@ -146,6 +146,7 @@ export class GoalComponent implements OnDestroy {
   constructor(public service: GoalService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute, public agGrid: AgGridService,
     private fieldService: FieldService, private programService: ProgramService) {
+    super();
   }
 
 
@@ -207,7 +208,7 @@ export class GoalComponent implements OnDestroy {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId,direction:this.ut.getDirection() })
+        .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId, direction: this.ut.getDirection() })
         .afterClosed().subscribe(v => {
           // if (v === 'added' || v === 'edited')//has been
           // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
@@ -226,7 +227,7 @@ export class GoalComponent implements OnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(goal.id, true);
-            this.ut.notify("Deleted successfully",'The goal has been deleted successfully','success');
+            this.ut.notify("Deleted successfully", 'The goal has been deleted successfully', 'success');
           } catch (e) { }
         }
       })
@@ -237,11 +238,7 @@ export class GoalComponent implements OnDestroy {
       this.ut.notify(undefined);
     else
       this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId,direction:this.ut.getDirection() });
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
+        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId, direction: this.ut.getDirection() });
   }
 
 }

@@ -7,13 +7,14 @@ import { PersonFormComponent } from 'src/app/components/forms/person-form/person
 import { Observable, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/services/account.service';
 import { ComponentCanDeactivate } from 'src/app/app-routing.module';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-add-edit-child',
   templateUrl: './add-edit-child.component.html',
   styleUrls: ['./add-edit-child.component.scss']
 })
-export class AddEditChildComponent implements OnInit, OnDestroy, ComponentCanDeactivate {
+export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy, ComponentCanDeactivate {
   public childForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
@@ -22,10 +23,10 @@ export class AddEditChildComponent implements OnInit, OnDestroy, ComponentCanDea
   public selectedParent: IAccountEntity | undefined;
   public parents!: IAccountEntity[];
   public teachers!: IAccountEntity[];
-  public sub!: Subscription;
   maxlength = { maxlength: 512 };
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService, private accountService: AccountService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -134,15 +135,11 @@ export class AddEditChildComponent implements OnInit, OnDestroy, ComponentCanDea
     }
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
-
-  public isSubmitting: boolean =  false;
+  public isSubmitting: boolean = false;
   @HostListener('window:beforeunload')
   public canDeactivate(): boolean {//should NOT be arrow function
     // insert logic to check if there are pending changes here;
-    if ((() => (this.childForm.dirty || this.personForm?.formGroup.dirty)&&!this.isSubmitting)())//to access `this`
+    if ((() => (this.childForm.dirty || this.personForm?.formGroup.dirty) && !this.isSubmitting)())//to access `this`
       return false; // returning false will show a confirm dialog before navigating away
     return true;// returning true will navigate without confirmation
   }

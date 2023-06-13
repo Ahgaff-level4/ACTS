@@ -6,13 +6,14 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from 'src/app/services/account.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dialog/password-dialog.component';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-add-edit-account',
   templateUrl: './add-edit-account.component.html',
   styleUrls: ['./add-edit-account.component.scss']
 })
-export class AddEditAccountComponent implements OnInit, AfterViewInit {
+export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, AfterViewInit {
   public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
@@ -27,6 +28,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
+    super();
   }
 
   ngOnInit(): void {
@@ -76,7 +78,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
     //   this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15),]));
 
 
-    this.ut.isLoading.subscribe(v => this.isLoading = v);
+    this.sub.add(this.ut.isLoading.subscribe(v => this.isLoading = v));
   }
 
   ngAfterViewInit(): void {
@@ -106,7 +108,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
           await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
-          this.ut.notify("Added successfully",'The new account has been registered successfully','success');
+          this.ut.notify("Added successfully", 'The new account has been registered successfully', 'success');
           this.ut.router.navigate(['/account']);
           this.ut.scrollTop();
         } catch (e) {
@@ -120,7 +122,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
-          this.ut.notify("Edited successfully",'The account has been edited successfully','success');
+          this.ut.notify("Edited successfully", 'The account has been edited successfully', 'success');
           this.ut.router.navigate(['/account']);
           this.ut.scrollTop();
         } catch (e) { }
@@ -134,7 +136,7 @@ export class AddEditAccountComponent implements OnInit, AfterViewInit {
   resetPassword() {
     this.accountForm.get('password')?.disable();
     this.dialog.open<PasswordDialogComponent, string, string>(PasswordDialogComponent,
-      { data: this.accountForm.get('password')?.value || '' ,direction:this.ut.getDirection()}).afterClosed()
+      { data: this.accountForm.get('password')?.value || '', direction: this.ut.getDirection() }).afterClosed()
       .subscribe(v => {
         if (typeof v === 'string') {
           this.accountForm.addControl('password', this.fb.control(v));

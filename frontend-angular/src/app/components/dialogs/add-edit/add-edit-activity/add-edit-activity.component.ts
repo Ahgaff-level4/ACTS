@@ -5,13 +5,14 @@ import { ActivityService } from 'src/app/services/activity.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IFieldEntity } from '../../../../../../../interfaces';
 import { FieldService } from 'src/app/services/field.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-add-edit-activity',
   templateUrl: './add-edit-activity.component.html',
   styleUrls: ['./add-edit-activity.component.scss']
 })
-export class AddEditActivityComponent {
+export class AddEditActivityComponent extends UnsubOnDestroy {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
@@ -23,6 +24,7 @@ export class AddEditActivityComponent {
      * 2- `programId` to add the new activity into it.
      * 3- `undefined` to add new special activity without program and should return the IActivityEntity after post*/
     @Inject(MAT_DIALOG_DATA) public activityProgramId?: IActivityEntity | number,) {
+    super();
   }
 
   ngOnInit(): void {
@@ -37,7 +39,7 @@ export class AddEditActivityComponent {
       fieldId: [null, [Validators.required, Validators.min(0)]],
       createdDatetime: [new Date(), [Validators.required]],
     });
-    this.fieldService.fields.subscribe(v => this.fields = v);
+    this.sub.add(this.fieldService.fields.subscribe(v => this.fields = v));
     if (typeof this.activityProgramId === 'object' && typeof this.activityProgramId != 'number' && this.activityProgramId)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.activityProgramId));
   }
@@ -56,7 +58,7 @@ export class AddEditActivityComponent {
             newActivity = await this.service.postProgramItsActivities({ ...this.formGroup.value, programId: this.activityProgramId }, true);
           else
             newActivity = await this.service.postSpecialActivities({ ...this.formGroup.value, });
-          this.ut.notify('Added successfully','The activity has been added successfully','success');
+          this.ut.notify('Added successfully', 'The activity has been added successfully', 'success');
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
         } catch (e) { }
       } else if (typeof this.activityProgramId == 'object') {//edit. activityProgramId type in this scope `IActivityEntity` and its programId type `number|undefined`
@@ -69,7 +71,7 @@ export class AddEditActivityComponent {
             else
               await this.service.patchInSpecialActivities(this.activityProgramId.id, dirtyControls, true);
           }
-          this.ut.notify('Edited successfully', 'The activity has been edited successfully','success');
+          this.ut.notify('Edited successfully', 'The activity has been edited successfully', 'success');
           this.dialogRef.close('edited');
         } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())

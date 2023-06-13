@@ -6,25 +6,26 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 import { Subscription } from 'rxjs';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-add-edit-strength',
   templateUrl: './add-edit-strength.component.html',
   styleUrls: ['./add-edit-strength.component.scss']
 })
-export class AddEditStrengthComponent implements OnDestroy {
+export class AddEditStrengthComponent extends UnsubOnDestroy implements OnDestroy {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new strength */
   public child: IChildEntity | undefined;
-  public sub: Subscription = new Subscription();
 
   constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
+    super()
   }
 
   ngOnInit(): void {
@@ -77,7 +78,7 @@ export class AddEditStrengthComponent implements OnDestroy {
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, { data: 'strength',direction:this.ut.getDirection() })
+    this.dialog.open<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, { data: 'strength', direction: this.ut.getDirection() })
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);
@@ -86,9 +87,5 @@ export class AddEditStrengthComponent implements OnDestroy {
         }
         else this.formGroup.get('activityId')?.setErrors({ dirty: true })
       });
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

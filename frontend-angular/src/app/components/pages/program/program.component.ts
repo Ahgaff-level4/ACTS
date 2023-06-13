@@ -7,24 +7,24 @@ import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Subscription, first } from 'rxjs';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-program',
   templateUrl: './program.component.html',
   styleUrls: ['./program.component.scss']
 })
-export class ProgramComponent implements OnDestroy {
+export class ProgramComponent extends UnsubOnDestroy implements OnDestroy {
   public canAddEditDelete: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');;
   public selectedItem?: IProgramEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   public rowData: IProgramEntity[] | undefined;
-  public sub:Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IProgramEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.sub.add(this.service.programs.subscribe(v => {
         this.rowData = v.map(n => ({ ...n }));
@@ -55,8 +55,8 @@ export class ProgramComponent implements OnDestroy {
     },
   ];
 
-  printTable(){
-    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   private menuItems: MyMenuItem<IProgramEntity>[] = [
@@ -85,6 +85,7 @@ export class ProgramComponent implements OnDestroy {
   }
 
   constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog, public agGrid: AgGridService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -109,7 +110,7 @@ export class ProgramComponent implements OnDestroy {
   /** if `data` param passed then it is Edit. Otherwise will be Add */
   addEdit(data?: IProgramEntity) {
     this.dialog
-      .open<AddEditProgramComponent, IProgramEntity>(AddEditProgramComponent, { data ,direction:this.ut.getDirection()});
+      .open<AddEditProgramComponent, IProgramEntity>(AddEditProgramComponent, { data, direction: this.ut.getDirection() });
   }
 
   deleteDialog(program: IProgramEntity | undefined) {
@@ -125,12 +126,9 @@ export class ProgramComponent implements OnDestroy {
       if (v === 'Delete') {
         try {
           await this.service.delete(program.id, true);
-          this.ut.notify("Deleted successfully",'The program has been deleted successfully','success');
+          this.ut.notify("Deleted successfully", 'The program has been deleted successfully', 'success');
         } catch (e) { }
       }
     })
-  }
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

@@ -5,18 +5,18 @@ import { ReportService, } from 'src/app/services/report.service';
 import { IChildReport, Timeframe } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AgChartOptions, AgDoughnutInnerLabel, AgPolarSeriesOptions } from 'ag-charts-community';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',
   styleUrls: ['./report-child.component.scss']
 })
-export class ReportChildComponent implements OnInit, OnDestroy {
-  public sub: Subscription = new Subscription();
+export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
   public childReport$ = new BehaviorSubject<IChildReport | null>(null);
   public options!: AgChartOptions;
   public nowDatetime = '';
   public isPrinting = false;
-  constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { }
+  constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { super(); }
 
   ngOnInit(): void {
     this.nowDatetime = this.ut.toDateTimeWeek(new Date());
@@ -134,9 +134,5 @@ export class ReportChildComponent implements OnInit, OnDestroy {
       print();
       this.isPrinting = false
     }, 1000);
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

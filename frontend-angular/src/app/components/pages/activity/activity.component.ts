@@ -14,25 +14,25 @@ import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activi
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/field.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-activity',
   templateUrl: './activity.component.html',
   styleUrls: ['./activity.component.scss']
 })
-export class ActivityComponent implements OnDestroy {
+export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IActivityEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause Program has activities of `rowData`*/
   public program: IProgramEntity | undefined;
-  public sub = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.program)
         await this.service.fetchProgramItsActivities(this.program.id).catch(() => { });
@@ -98,7 +98,7 @@ export class ActivityComponent implements OnDestroy {
   constructor(public service: ActivityService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute,
     private fieldService: FieldService, public agGrid: AgGridService,) {
-
+    super();
   }
 
 
@@ -132,8 +132,8 @@ export class ActivityComponent implements OnDestroy {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }
 
-  printTable(){
-    this.agGrid.printTable(this.gridOptions,v=>this.isPrinting=v);
+  printTable() {
+    this.agGrid.printTable(this.gridOptions, v => this.isPrinting = v);
   }
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
@@ -151,7 +151,7 @@ export class ActivityComponent implements OnDestroy {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data ,direction:this.ut.getDirection()});
+        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() });
   }
 
   deleteDialog(activity: IActivityEntity | undefined) {
@@ -169,13 +169,9 @@ export class ActivityComponent implements OnDestroy {
               await this.service.deleteInProgramItsActivities(activity.id, true);
             else
               await this.service.deleteInSpecialActivities(activity.id, true);
-            this.ut.notify("Deleted successfully",'The activity has been deleted successfully','success');
+            this.ut.notify("Deleted successfully", 'The activity has been deleted successfully', 'success');
           } catch (e) { }
         }
       });
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

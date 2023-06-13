@@ -7,24 +7,24 @@ import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Subscription, first } from 'rxjs';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-field',
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss']
 })
-export class FieldComponent implements OnInit, OnDestroy {
+export class FieldComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
   public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IFieldEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   public rowData: IFieldEntity[] | undefined;
-  public sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IFieldEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IFieldEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.sub.add(this.service.fields.subscribe(v => {
         this.rowData = this.ut.deepClone(v);
@@ -67,6 +67,7 @@ export class FieldComponent implements OnInit, OnDestroy {
 
   constructor(private service: FieldService, public ut: UtilityService,
     private dialog: MatDialog, public agGrid: AgGridService) {
+      super();
   }
 
   ngOnInit(): void {
@@ -98,7 +99,7 @@ export class FieldComponent implements OnInit, OnDestroy {
   /** if `data` param passed then it is Edit. Otherwise will be Add */
   addEdit(data?: IFieldEntity) {
     this.dialog
-      .open<AddEditFieldComponent, IFieldEntity>(AddEditFieldComponent, { data,direction:this.ut.getDirection() });
+      .open<AddEditFieldComponent, IFieldEntity>(AddEditFieldComponent, { data, direction: this.ut.getDirection() });
   }
 
   deleteDialog(field: IFieldEntity | undefined) {
@@ -113,12 +114,9 @@ export class FieldComponent implements OnInit, OnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(field.id, true);
-            this.ut.notify("Deleted successfully",'The field has been deleted successfully','success');
+            this.ut.notify("Deleted successfully", 'The field has been deleted successfully', 'success');
           } catch (e) { }
         }
       });
-  }
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

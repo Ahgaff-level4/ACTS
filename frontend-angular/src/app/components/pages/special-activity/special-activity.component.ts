@@ -13,24 +13,24 @@ import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/field.service';
 import { Subscription, first } from 'rxjs';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-special-activity',
   templateUrl: './special-activity.component.html',
   styleUrls: ['./special-activity.component.scss']
 })
-export class SpecialActivityComponent implements OnDestroy {
+export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestroy {
   public canEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IActivityEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   public rowData: IActivityEntity[] | undefined;
-  public sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.sub.add(this.service.specialActivities.subscribe(v => {
         this.rowData = this.ut.deepClone(v);
@@ -80,6 +80,7 @@ export class SpecialActivityComponent implements OnDestroy {
 
   constructor(public service: ActivityService, public ut: UtilityService,
     private dialog: MatDialog, public agGrid: AgGridService, private fieldService: FieldService) {
+    super();
   }
 
   ngOnInit(): void {
@@ -117,7 +118,7 @@ export class SpecialActivityComponent implements OnDestroy {
       this.ut.errorDefaultDialog(undefined);
     else
       this.dialog
-        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data ,direction:this.ut.getDirection()})
+        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() })
   }
 
   deleteDialog(activity: IActivityEntity | undefined) {
@@ -132,13 +133,9 @@ export class SpecialActivityComponent implements OnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.deleteInSpecialActivities(activity.id, true);
-            this.ut.notify("Deleted successfully",'The activity has been deleted successfully','success');
+            this.ut.notify("Deleted successfully", 'The activity has been deleted successfully', 'success');
           } catch (e) { }
         }
       });
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

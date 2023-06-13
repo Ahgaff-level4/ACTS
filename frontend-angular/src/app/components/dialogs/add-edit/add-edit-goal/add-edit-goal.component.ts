@@ -6,20 +6,20 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IGoalEntity } from '../../../../../../../interfaces';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 import { Subscription } from 'rxjs';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-add-edit-goal',
   templateUrl: './add-edit-goal.component.html',
   styleUrls: ['./add-edit-goal.component.scss']
 })
-export class AddEditGoalComponent implements OnDestroy {
+export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new goal */
   public child: IChildEntity | undefined;
-  public sub: Subscription = new Subscription();
 
   /** used to add/edit goal base on `goalOrChildId` type:
    * - Either goal to be edit.
@@ -27,6 +27,7 @@ export class AddEditGoalComponent implements OnDestroy {
   constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
+    super();
   }
 
   ngOnInit(): void {
@@ -62,7 +63,7 @@ export class AddEditGoalComponent implements OnDestroy {
           return this.ut.errorDefaultDialog();
         try {
           await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
-          this.ut.notify("Added successfully",'The goal has been added successfully','success');
+          this.ut.notify("Added successfully", 'The goal has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.goalOrChildId == 'object') {//edit
@@ -70,7 +71,7 @@ export class AddEditGoalComponent implements OnDestroy {
         try {
           if (dirtyControls != null)
             await this.service.patch(this.goalOrChildId.id, dirtyControls, true);
-          this.ut.notify("Edited successfully",'The goal has been edited successfully','success');
+          this.ut.notify("Edited successfully", 'The goal has been edited successfully', 'success');
           this.dialogRef.close('edited');
         } catch (e) { }
       } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
@@ -79,7 +80,7 @@ export class AddEditGoalComponent implements OnDestroy {
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, 'goal'|'strength', IActivityEntity>(SelectActivityComponent,{data:'goal',direction:this.ut.getDirection()})
+    this.dialog.open<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, { data: 'goal', direction: this.ut.getDirection() })
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);
@@ -88,8 +89,5 @@ export class AddEditGoalComponent implements OnDestroy {
         }
         else this.formGroup.get('activityId')?.setErrors({ dirty: true })
       });
-  }
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }

@@ -123,6 +123,7 @@ export class AccountComponent {
 
 
   ngOnDestroy() {
+    
     this.accountService.isLoggerIn = false;
   }
 }

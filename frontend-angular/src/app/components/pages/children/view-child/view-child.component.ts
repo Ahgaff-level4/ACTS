@@ -4,17 +4,17 @@ import { IChildEntity } from '../../../../../../../interfaces';
 import { ChildService } from 'src/app/services/child.service';
 import { Subscription } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-view-child',
   templateUrl: './view-child.component.html',
   styleUrls: ['./view-child.component.scss']
 })
-export class ViewChildComponent implements OnInit, OnDestroy {
+export class ViewChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
 
-  private sub = new Subscription();
   public child: IChildEntity | undefined;
-  constructor(private route: ActivatedRoute, private service: ChildService, private ut: UtilityService) { }
+  constructor(private route: ActivatedRoute, private service: ChildService, private ut: UtilityService) { super(); }
 
   ngOnInit(): void {
     this.ut.isLoading.next(true);
@@ -33,7 +33,4 @@ export class ViewChildComponent implements OnInit, OnDestroy {
     }));
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
 }

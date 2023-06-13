@@ -9,13 +9,14 @@ import { ActivityService } from 'src/app/services/activity.service';
 import { StrengthService } from 'src/app/services/strength.service';
 import { FieldService } from 'src/app/services/field.service';
 import { SelectionChangedEvent } from 'ag-grid-community';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-select-activity',
   templateUrl: './select-activity.component.html',
   styleUrls: ['./select-activity.component.scss']
 })
-export class SelectActivityComponent implements OnInit {
+export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   public chosenProgram: IProgramEntity | undefined;
   public filterByAgeTwoWay: 'age' | 'all' = 'age';
   public filterByFieldsTwoWay: IFieldEntity[] = [];
@@ -32,14 +33,15 @@ export class SelectActivityComponent implements OnInit {
     private ut: UtilityService, private goalService: GoalService, private strengthService: StrengthService,
     private activityService: ActivityService, private dialog: MatDialog, private fieldService: FieldService,
     @Inject(MAT_DIALOG_DATA) public state: 'goal' | 'strength') {
+    super();
   }
 
   ngOnInit(): void {
-    this.programService.programs.subscribe(v => this.programs = v);
-    this.fieldService.fields.subscribe(v => this.fields = v);
+    this.sub.add(this.programService.programs.subscribe(v => this.programs = v));
+    this.sub.add(this.fieldService.fields.subscribe(v => this.fields = v));
     if (this.state == 'goal')
-      this.goalService.childItsGoals.subscribe(v => this.child = v);
-    else this.strengthService.childItsStrengths.subscribe(v => this.child = v);
+      this.sub.add(this.goalService.childItsGoals.subscribe(v => this.child = v));
+    else this.sub.add(this.strengthService.childItsStrengths.subscribe(v => this.child = v));
   }
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {

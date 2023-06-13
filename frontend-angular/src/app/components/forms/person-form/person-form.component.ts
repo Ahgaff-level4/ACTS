@@ -4,13 +4,14 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { PersonService } from 'src/app/services/person.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-person-form',
   templateUrl: './person-form.component.html',
   styleUrls: ['./person-form.component.scss']
 })
-export class PersonFormComponent implements OnInit {
+export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   @Input() public person?: IPersonEntity | ICreatePerson;//optional for edit
   @Output() public personChange = new EventEmitter<IPersonEntity | ICreatePerson>();
   @Input() public personId: number | undefined;//todo if will be need it. For edit if you can't provide person then only id
@@ -19,7 +20,7 @@ export class PersonFormComponent implements OnInit {
   protected nowDate = new Date();
 
   constructor(private fb: FormBuilder, public personService: PersonService, private ut: UtilityService) {
-
+    super();
   }
 
   ngOnInit(): void {
@@ -32,10 +33,10 @@ export class PersonFormComponent implements OnInit {
     if (this.person) {
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.person));
     }
-    this.formGroup.valueChanges.subscribe(() => {
+    this.sub.add(this.formGroup.valueChanges.subscribe(() => {
       this.person = { ...this.person, ...this.formGroup.value };
       this.personChange.emit(this.person);
-    });
+    }));
   }
 
   /**
@@ -46,10 +47,10 @@ export class PersonFormComponent implements OnInit {
   }
 
   /** void if there is no dirty fields*/
-  public async submitEdit(): Promise<SucResEditDel|void> {
+  public async submitEdit(): Promise<SucResEditDel | void> {
     let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
     if (dirtyFields != null)
-      return await this.personService.patchPerson((this.person as IPersonEntity).id,dirtyFields).catch(()=>{});
+      return await this.personService.patchPerson((this.person as IPersonEntity).id, dirtyFields).catch(() => { });
   }
 
 }

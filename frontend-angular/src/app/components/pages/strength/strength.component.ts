@@ -10,13 +10,14 @@ import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { FieldService } from 'src/app/services/field.service';
 import { ProgramService } from 'src/app/services/program.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-strength',
   templateUrl: './strength.component.html',
   styleUrls: ['./strength.component.scss']
 })
-export class StrengthComponent {
+export class StrengthComponent extends UnsubOnDestroy {
   public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
   public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
   public selectedItem?: IStrengthEntity;
@@ -24,7 +25,6 @@ export class StrengthComponent {
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause child has goals for `rowData`*/
   public childItsStrengths: IChildEntity | undefined;
-  private sub: Subscription = new Subscription();
 
   private onCellValueChange = async (e: NewValueParams<IStrengthEntity>) => {
     try {
@@ -90,7 +90,7 @@ export class StrengthComponent {
   constructor(public service: StrengthService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute,
     public agGrid: AgGridService, private fieldService:FieldService,
-    private programService:ProgramService) {
+    private programService:ProgramService) {super();
   }
 
 
@@ -170,7 +170,4 @@ export class StrengthComponent {
       })
   }
 
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
-  }
 }

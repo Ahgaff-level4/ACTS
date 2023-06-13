@@ -4,16 +4,16 @@ import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/services/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-view-account',
   templateUrl: './view-account.component.html',
   styleUrls: ['./view-account.component.scss']
 })
-export class ViewAccountComponent {
-  private sub = new Subscription();
+export class ViewAccountComponent extends UnsubOnDestroy {
   public account: IAccountEntity | undefined;
-  constructor(private route: ActivatedRoute, public service: AccountService, public ut: UtilityService) { }
+  constructor(private route: ActivatedRoute, public service: AccountService, public ut: UtilityService) { super(); }
 
   ngOnInit(): void {
     this.ut.isLoading.next(true);
@@ -30,9 +30,5 @@ export class ViewAccountComponent {
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     }));
-  }
-
-  ngOnDestroy(): void {
-    this.sub.unsubscribe();
   }
 }
