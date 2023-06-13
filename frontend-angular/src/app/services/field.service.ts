@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject } from 'rxjs'
+import { BehaviorSubject, Observable, ReplaySubject, Subject, shareReplay } from 'rxjs'
 import { ICreateField, IFieldEntity, SucResEditDel } from '../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
@@ -9,24 +9,29 @@ import { UtilityService } from './utility.service';
   providedIn: 'root'
 })
 export class FieldService {
-  public fields = new ReplaySubject<IFieldEntity[]>(1);
   public URL = env.API + 'field';
+  private subject$: Subject<IFieldEntity[]> = new Subject<IFieldEntity[]>();//Made to emit new children to `children$` observers.
+  /**Observable function will start execution when the first observer subscribe. Then it will emit new values by the subject. */
+  public fields$: Observable<IFieldEntity[]> = new Observable<IFieldEntity[]>((subscriber) => {
+    this.subject$.subscribe(subscriber);
+    this.fetch().then(v => this.subject$.next(v))
+      .catch(() => { });
+  }).pipe(shareReplay(1));
 
   constructor(private http: HttpClient, private ut: UtilityService) {
-    this.fetch();
   }
 
   /** fetch fields from DB and emit it to fields */
-  public fetch(manageLoading = false): Promise<void> {
+  public fetch(manageLoading = false): Promise<IFieldEntity[]> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.get<IFieldEntity[]>(this.URL)
         .subscribe({
           next: (v) => {
-            this.fields.next(v); res()
+            this.subject$.next(v); res(v);
           }, error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
     })
   }
@@ -46,7 +51,7 @@ export class FieldService {
           error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     });
   }
@@ -63,7 +68,7 @@ export class FieldService {
           error: e => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the field. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }
@@ -79,7 +84,7 @@ export class FieldService {
           },
           error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }

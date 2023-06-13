@@ -118,7 +118,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
-    this.fieldService.fields.subscribe(v => {
+    this.fieldService.fields$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('field.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }

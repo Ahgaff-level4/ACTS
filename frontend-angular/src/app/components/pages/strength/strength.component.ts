@@ -109,13 +109,13 @@ export class StrengthComponent extends UnsubOnDestroy {
       },
     });
 
-    this.sub.add(this.fieldService.fields.subscribe(v => {
+    this.sub.add(this.fieldService.fields$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.field.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
     }));
 
-    this.sub.add(this.programService.programs.subscribe(v => {
+    this.sub.add(this.programService.programs$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.program.name');
       if (col)
         col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };

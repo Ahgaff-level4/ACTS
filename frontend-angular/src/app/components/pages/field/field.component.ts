@@ -19,17 +19,14 @@ export class FieldComponent extends UnsubOnDestroy implements OnInit, OnDestroy 
   public selectedItem?: IFieldEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  public rowData: IFieldEntity[] | undefined;
+  public rowData = this.service.fields$;
 
   private onCellValueChange = async (e: NewValueParams<IFieldEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IFieldEntity]: e.newValue });
       this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
-      this.sub.add(this.service.fields.subscribe(v => {
-        this.rowData = this.ut.deepClone(v);
-        this.gridOptions.api?.setRowData(this.rowData);
-      }));
+      this.service.fetch();
     }
   }
 
@@ -67,13 +64,10 @@ export class FieldComponent extends UnsubOnDestroy implements OnInit, OnDestroy 
 
   constructor(private service: FieldService, public ut: UtilityService,
     private dialog: MatDialog, public agGrid: AgGridService) {
-      super();
+    super();
   }
 
   ngOnInit(): void {
-    this.service.fetch();
-    this.sub.add(this.service.fields.subscribe({ next: v => this.rowData = this.ut.deepClone(v) }));
-
     this.sub.add(this.ut.user.subscribe(v => {
       this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     }));

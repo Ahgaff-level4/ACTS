@@ -33,20 +33,3 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - About us page and link in the footer.
 
-- BehaviorSubject that emit Person[]. But it will start fetching if its initial value is undefined AND a subscriber subscribe. 
-1 - It should not fetch multiple times for multiple subscribers.
-2 - It initial value is `undefined` to know if it is loading or fetched with value of `[]`.
-3 - There should be a way to access the value without dealing with subscription.
-4 - Should be Subject so that new values will be emitted.
-5 - add/edit/delete should call `fetchPersons()` and it checks for last existed value. Let's say that `Person[]` are belong to FK Admin-has-many-Person then `fetchPersons(admin.id);` `admin` is last fetched value and Person[] can be access as `admin.persons`. This is not the case but it is problem the solution should be able to solve.
-6 - Client code should be either subscribe with next:(v:`Person[]`)=>... Or direct access with getPersons():`Person[]|undefined` for direct access.
-//Propose solution:
-public person$ = new Observable((subscriber)=>{
-	if(this.person == undefined){
-		subscriber.next(await fetchPersons());//fetchPerson will return Person[].
-	}else subscriber.next(this.person);
-}).pipe(shareReplay(1));
-public person:undefined|Person[];
-constructor(){
-	this.person$.subscribe(v=>this.person = v);
-}

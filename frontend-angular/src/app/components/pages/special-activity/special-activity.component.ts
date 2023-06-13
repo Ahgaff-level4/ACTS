@@ -84,7 +84,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
   }
 
   ngOnInit(): void {
-    this.sub.add(this.fieldService.fields.subscribe(v => {
+    this.sub.add(this.fieldService.fields$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('field.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }

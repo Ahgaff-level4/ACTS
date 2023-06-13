@@ -6,7 +6,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { Subscription, first } from 'rxjs';
+import { Observable, Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
@@ -19,17 +19,14 @@ export class ProgramComponent extends UnsubOnDestroy implements OnDestroy {
   public selectedItem?: IProgramEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  public rowData: IProgramEntity[] | undefined;
+  public rowData: Observable<IProgramEntity[]> = this.service.programs$;
 
   private onCellValueChange = async (e: NewValueParams<IProgramEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
       this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
-      this.sub.add(this.service.programs.subscribe(v => {
-        this.rowData = v.map(n => ({ ...n }));
-        this.gridOptions?.api?.refreshCells();
-      }));
+      this.service.fetch();
     }
   }
 
@@ -89,12 +86,6 @@ export class ProgramComponent extends UnsubOnDestroy implements OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sub.add(this.service.programs.subscribe({
-      next: v => {
-        this.rowData = this.ut.deepClone(v);
-      }
-    }));
-
     this.sub.add(this.ut.user.subscribe(v => {
       this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
     }));

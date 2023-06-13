@@ -3,7 +3,7 @@
   <h5 class="pt-3 fw-normal pb-0 mb-0">{{"Choose the activity's program"|translate}}</h5>
   <mat-selection-list #listProgram [multiple]="false"
     (selectionChange)="onSelectionChangeProgram(listProgram?.selectedOptions?.selected?.[0]?.value)">
-    <mat-list-option *ngFor="let program of this.programs??[]" [value]="program">
+    <mat-list-option *ngFor="let program of this.programService.programs$|async" [value]="program">
       {{program.name}}
     </mat-list-option>
   </mat-selection-list>
@@ -19,7 +19,7 @@
     <mat-form-field class="w-100 mt-2" appearance="outline">
       <mat-label>{{'Filter by field'|translate}}</mat-label>
       <mat-select multiple [(ngModel)]="filterByFieldsTwoWay" (selectionChange)="filterByFields()">
-        <mat-option *ngFor="let field of fields" [value]="field">
+        <mat-option *ngFor="let field of fieldService.fields$|async" [value]="field">
           {{field.name}}
         </mat-option>
       </mat-select>

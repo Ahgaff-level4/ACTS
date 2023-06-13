@@ -113,7 +113,6 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
       headerName: 'Diagnostic date',
       type: 'fromNow',
       hide: true,
-      onCellValueChanged: this.onChildCellValueChanged,
     },
     {
       field: 'pregnancyState',
@@ -191,10 +190,10 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
 
   // Data that gets displayed in the grid
   public rowData = this.childService.children$.pipe(map(v => {
+    console.log('rowData = children')
     if (this.canAddEdit)
       return this.ut.deepClone(v);
     else return this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
-
   }));
 
 

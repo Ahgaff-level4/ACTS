@@ -17,7 +17,7 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public isSpecialActivity!: boolean;
-  public fields: IFieldEntity[] | undefined;
+  // public fields: IFieldEntity[] | undefined;
   constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     /**passed data could be:
      * 1- `activity` to be edit. If activity.programId == null THEN it is special activity
@@ -39,7 +39,7 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
       fieldId: [null, [Validators.required, Validators.min(0)]],
       createdDatetime: [new Date(), [Validators.required]],
     });
-    this.sub.add(this.fieldService.fields.subscribe(v => this.fields = v));
+    // this.sub.add(this.fieldService.fields.subscribe(v => this.fields = v));
     if (typeof this.activityProgramId === 'object' && typeof this.activityProgramId != 'number' && this.activityProgramId)
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.activityProgramId));
   }

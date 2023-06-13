@@ -50,11 +50,11 @@
       </div>
     </ul>
 
-    <div (click)="isShowDivIf=true" class="nav-item px-2 d-flex align-items-center d-none d-lg-block" routerLinkActive="active">
-      <a class="min-width rounded-5" mat-raised-button color="accent" *ngIf="!isLoggedIn"
+    <div (click)="isShowDivIf=true" class="nav-item opacity-100 px-2 d-flex align-items-center d-none d-lg-block" routerLinkActive="active">
+      <a class="min-width rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!isLoggedIn"
         routerLink="/login">{{'Login'|translate}}</a>
       <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;"
-        class="rounded-5 min-width nbsp" *ngIf="isLoggedIn">
+        class="rounded-5 min-width nbsp opacity-100" *ngIf="isLoggedIn">
         {{'Logout'|translate}}</button>
     </div>
   </div>
