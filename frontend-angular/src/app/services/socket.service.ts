@@ -42,7 +42,7 @@ export class SocketService implements OnDestroy {
 
   private newNotification = (n: INotification) => {
     console.log('newNotification', n);
-    if (!n || !this.socket || this.ut.user.value == null || !this.ut.notifySettings.value.allowNotification)
+    if (!n || !this.socket || this.ut.user.value == null || !this.ut.notifySettings.value.showNotification)
       return;
 
     let title = this.getTitle(n, this.ut.user.value);

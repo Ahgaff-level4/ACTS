@@ -1,11 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, Subscription, interval } from 'rxjs';
+import { BehaviorSubject, Observable, filter, interval, map } from 'rxjs';
 import { ReportService, } from 'src/app/services/report.service';
 import { IChildReport, Timeframe } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
-import { AgChartOptions, AgDoughnutInnerLabel, AgPolarSeriesOptions } from 'ag-charts-community';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { Color, ScaleType } from '@swimlane/ngx-charts';
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',
@@ -13,14 +13,24 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 })
 export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
   public childReport$ = new BehaviorSubject<IChildReport | null>(null);
-  public options!: AgChartOptions;
   public nowDatetime = '';
   public isPrinting = false;
+  public rowData: Observable<{ name: string, value: number }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
+    return [{ name: this.ut.translate('Completed'), value: v!.goal.completedCount },
+    { name: this.ut.translate('Continual'), value: v!.goal.continualCount }];
+  }))
+  public colorScheme: Color = {
+    name: 'myColor',
+    selectable: false,
+    group: ScaleType.Time,
+    domain: ['#318c63',
+      '#f3c900',],
+  };
   constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { super(); }
 
   ngOnInit(): void {
     this.nowDatetime = this.ut.toDateTimeWeek(new Date());
-    this.sub.add(interval(1000).subscribe(() => this.nowDatetime = this.ut.toDateTimeWeek(new Date())));
+    this.sub.add(interval(1000).pipe(filter(() => this.nowDatetime != this.ut.toDateTimeWeek(new Date()))).subscribe(() => this.nowDatetime = this.ut.toDateTimeWeek(new Date())));
     this.sub.add(this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
@@ -31,89 +41,6 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
         else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.")
       },
     }));
-
-    this.sub.add(this.childReport$.subscribe((v) => {
-      if (v == null) return;
-      this.options.data[0].count = v.goal.completedCount;
-      this.options.data[1].count = v.goal.continualCount;
-      if ((this.options?.series as any)?.[0]?.innerLabels?.[0]?.text)
-        (this.options.series as any)[0].innerLabels[0].text = v.goal.completedCount + v.goal.continualCount + '';
-      this.options = { ...this.options };
-    }));
-
-    this.options = {
-      autoSize: true,
-      theme: 'ag-material',
-      data: [
-        { type: this.ut.translate('Completed'), },
-        { type: this.ut.translate('Continual'), },
-      ],
-      title: {
-        text: this.ut.translate('Goals state'),
-        fontWeight: 'normal',
-        fontSize: 24,
-        spacing: 25,
-        fontFamily: 'Roboto',
-      },
-      series: [
-        {
-          type: 'pie',
-          calloutLabelKey: 'type',
-          strokeWidth: 0,
-          angleKey: 'count',
-          sectorLabelKey: 'count',
-          calloutLabel: {
-            enabled: false,
-          },
-          sectorLabel: {
-            color: 'white',
-            fontFamily: 'Roboto',
-            // fontWeight: 'bold',
-            formatter: (param) => {
-              // const value = datum[calloutLabelKey!];
-              return param.datum.type;
-            },
-          },
-          // title: {
-          //   text: 'Godals',
-          // },
-          fills: [
-            '#198754',
-            '#ffc107',
-          ],
-          innerRadiusRatio: 0.5,
-          innerLabels: [
-            {
-              text: '',//total count
-              fontSize: 24,
-              fontFamily: 'Roboto',
-              fontWeight: 'normal',
-            },
-            {
-              text: this.ut.translate('Total'),
-              fontFamily: 'Roboto',
-              fontSize: 16,
-              fontWeight: 'lighter',
-            },
-          ],
-          highlightStyle: {
-            item: {
-              fillOpacity: 0.2,
-              stroke: '#000',
-              strokeWidth: 0.5,
-            },
-          },
-          tooltip: {
-            renderer: ({ datum, calloutLabelKey, title, sectorLabelKey }) => {
-              return {
-                // title,
-                content: `${datum[sectorLabelKey!]} ${datum[calloutLabelKey!]} goals`,
-              };
-            },
-          },
-        },
-      ],
-    }
   }
 
 

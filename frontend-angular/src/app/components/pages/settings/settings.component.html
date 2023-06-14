@@ -35,11 +35,11 @@
     <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Notifications'|translate}}</h4>
     <mat-card class="m-4 shadow rounded-5">
       <mat-card-content class="row m-3">
-        <mat-slide-toggle class="col-md-8 mb-3" (change)="changeNotification($event.checked)" [checked]="ut.notifySettings.value.allowNotification"
-          color="primary">{{'Allow notifications'|translate}}</mat-slide-toggle>
+        <mat-slide-toggle class="col-md-8 mb-3" (change)="changeNotification($event.checked)" [checked]="ut.notifySettings.value.showNotification"
+          color="primary">{{'Show notifications'|translate}}</mat-slide-toggle>
         <mat-form-field class="col-md-4">
           <mat-label>{{'Close after'|translate}}</mat-label>
-            <input matInput [disabled]="!ut.notifySettings.value.allowNotification" type="number" [(ngModel)]="closeAfter" (change)="changeNotification($event)" (keyup)="changeNotification($event)"
+            <input matInput [disabled]="!ut.notifySettings.value.showNotification" type="number" [(ngModel)]="closeAfter" (change)="changeNotification($event)" (keyup)="changeNotification($event)"
             [placeholder]="'0 for infinity'|translate" />
           <span matTextSuffix>{{'Seconds'|translate}}</span>
         </mat-form-field>

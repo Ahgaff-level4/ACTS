@@ -616,7 +616,7 @@
   "Monthly": "شهريا",
   "Weekly": "أسبوعيا",
   "Timeframe": "الإطار الزمني",
-  "Total": "مجموع",
+  "Total": "المجموع",
   "View report of the selected child": "عرض تقرير الطفل المحدد",
   "Report": "تقرير",
   "Child Report": "تقرير الطفل",
@@ -645,7 +645,7 @@
   "the following account": "الحساب التالي",
   "New strength created for child": "تم إنشاء قوة جديدة للطفل",
   "New goal created for child": "تم إنشاء هدف جديد للطفل",
-  "Allow notifications": "السماح بالإشعارات",
+  "Show notifications": "إظهار الإشعارات",
   "Changed his own password": "غير كلمة المرور الخاصة به",
   "0 for infinity": "0 لعدم إغلاق الإشعار تلقائيا",
   "Close after":"إغلاق تلقائي بعد",
@@ -675,5 +675,6 @@
   "child's name":"اسم الطفل",
   "Filter by field":"تصفية بحسب المجال",
   "All":"الكل",
-  "Account information":"معلومات الحساب"
+  "Account information":"معلومات الحساب",
+  "Loading...":"جاري التحميل..."
 }

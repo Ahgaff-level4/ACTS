@@ -64,13 +64,13 @@ export class SettingsComponent {
   /**
    *
    * @param value is:
-   * - boolean if allowNotification changed.
+   * - boolean if showNotification changed.
    * - KeyUp event for CloseAfter
    * - Change event for CloseAfter
    */
   changeNotification(value: any) {
     if (typeof value == 'boolean')
-      this.ut.notifySettings.next({ ...this.ut.notifySettings.value, allowNotification: value });
+      this.ut.notifySettings.next({ ...this.ut.notifySettings.value, showNotification: value });
     else{
       if(value.target?.value!)
         this.closeAfter = Number(value.target.value);

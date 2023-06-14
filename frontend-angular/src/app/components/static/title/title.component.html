@@ -1,7 +1,8 @@
 <div class="container mt-4 mb-4">
   <div class="d-flex mt-3">
     <a *ngIf="backLink && (isPrinting==undefined || isPrinting==false)" [routerLink]="backLink"
-      class="mx-2 align-self-center" [matTooltip]="backTooltip?('page'|translate)+' '+(backTooltip|translate):''"
+      class="mx-2 align-self-center"
+      [matTooltip]="backTooltip?(ut.getDirection()=='rtl'?('page'|translate)+' '+(backTooltip|translate):(backTooltip|translate)+' '+('page'|translate)):''"
       mat-icon-button color="primary">
       <mat-icon class="mb-1" color="primary" *ngIf="ut.getDirection()=='ltr'">arrow_back</mat-icon>
       <mat-icon class="mb-1" color="primary" *ngIf="ut.getDirection()=='rtl'">arrow_forward</mat-icon>
