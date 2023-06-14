@@ -20,6 +20,8 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - Add page that shows activities of a specific field. try reuse Program component.
 
+- Child should has specific program, and it should be selected as default when selecting an activity.
+
 - Look for how to make a web page as Android App, Check out Capacitor.
 
 - When user navigate to other page, show opacity animation. Like in RxJs web page (hide then show the other page).

@@ -1,6 +1,6 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-end">
-    <app-title title1="Child Report" backLink="/children" backTooltip="Children" [isPrinting]="isPrinting"></app-title>
+    <!-- <app-title title1="Child Report" backLink="/children" backTooltip="Children" [isPrinting]="isPrinting"></app-title> -->
     <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button
       color="primary"><mat-icon>print</mat-icon>{{'Print'|translate}}</button>
   </div>
