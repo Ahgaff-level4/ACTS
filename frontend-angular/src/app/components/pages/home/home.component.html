@@ -63,13 +63,18 @@
 
   <div class="d-flex flex-wrap justify-content-evenly">
     <mat-card *ngFor="let card of cards" (click)="ut.scrollTop()" [routerLink]="card.link" style="cursor: pointer;"
-      class="card m-3 shadow mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
+    class="card m-3 shadow mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
       <img style="max-width:220px; max-height: 220px;" class="p-2" [src]="card.img"
-        [alt]="card.alt??'image represent card\'s content'">
+      [alt]="card.alt??'image represent card\'s content'">
       <div class="text-center mt-2 p-2">
         <h4 class="card-title">{{card.title|translate}}</h4>
         <p class="card-text">{{card.desc|translate}}</p>
       </div>
     </mat-card>
   </div>
+
+  <mat-divider class="mx-5 my-5"></mat-divider>
+
+  <app-dashboard *ngIf="ut.userHasAny('Admin')"></app-dashboard>
+  
 </div>

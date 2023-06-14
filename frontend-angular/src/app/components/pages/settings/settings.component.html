@@ -34,8 +34,8 @@
   <div *ngIf="ut.user.value">
     <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Notifications'|translate}}</h4>
     <mat-card class="m-4 shadow rounded-5">
-      <mat-card-content class="row m-3">
-        <mat-slide-toggle class="col-md-8 mb-3" (change)="changeNotification($event.checked)" [checked]="ut.notifySettings.value.showNotification"
+      <mat-card-content class="row m-3 mb-0 d-flex">
+        <mat-slide-toggle class="col-md-8 align-self-baseline mt-3" (change)="changeNotification($event.checked)" [checked]="ut.notifySettings.value.showNotification"
           color="primary">{{'Show notifications'|translate}}</mat-slide-toggle>
         <mat-form-field class="col-md-4">
           <mat-label>{{'Close after'|translate}}</mat-label>

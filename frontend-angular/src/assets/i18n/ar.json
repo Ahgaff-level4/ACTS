@@ -676,5 +676,8 @@
   "Filter by field":"تصفية بحسب المجال",
   "All":"الكل",
   "Account information":"معلومات الحساب",
-  "Loading...":"جاري التحميل..."
+  "Loading...":"جاري التحميل...",
+  "Dashboard":"إحصائيات عامة",
+  "Register Date":"تاريخ التسجيل",
+  "Number of Children":"عدد الاطفال"
 }

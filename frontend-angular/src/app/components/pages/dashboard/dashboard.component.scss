@@ -1,0 +1,11 @@
+.timeframe {
+  z-index: 2;
+  width: 100%;
+  align-self: center;
+}
+@media (min-width: 768px) {
+  .timeframe {
+    width: 140px;
+    margin-bottom: -20px;
+  }
+}

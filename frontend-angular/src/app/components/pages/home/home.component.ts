@@ -16,30 +16,6 @@ export class HomeComponent implements OnInit {
   public cards!: Card[];
 
   ngOnInit(): void {
-
-    const subject = new Subject();
-    const obs = new Observable((subscriber) => {
-      console.warn('obs execution started')
-      subject.subscribe(subscriber);
-      setTimeout(() => subject.next('children1'), 500)
-    }).pipe(shareReplay(1));
-
-    obs.subscribe((v) => console.warn('sub1', v))
-    obs.subscribe((v) => console.warn('sub2', v))
-    setTimeout(() => {obs.subscribe((v) => console.warn('sub3', v));console.warn('sub3 subscribed')}, 550);
-
-    setTimeout(() => {
-      console.warn('timeout emit to subject')
-      subject.next('children2');
-      obs.subscribe(v=>console.warn('sub4',v));
-      subject.next('children3')
-    }, 2000)
-
-
-
-
-
-
     const _cards: Card[] = [
       {
         title: 'Children',

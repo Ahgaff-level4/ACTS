@@ -52,7 +52,6 @@ import { AgGridModule } from 'ag-grid-angular';
 import { CalcAgePipe } from './pipes/calc-age.pipe';
 import 'ag-grid-enterprise';
 import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
-import { StatisticsComponent } from './components/pages/home/statistics/statistics.component';
 import { YouTubePlayerModule } from '@angular/youtube-player';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
@@ -61,6 +60,7 @@ import { TitleComponent } from './components/static/title/title.component';
 import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
 import { ButtonComponent } from './components/forms/button/button.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -99,13 +99,13 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
     AddEditStrengthComponent,
     SpecialActivityComponent,
     LoginFormComponent,
-    StatisticsComponent,
     ReportChildComponent,
     ViewChildComponent,
     ChildInfoComponent,
     TitleComponent,
     ViewAccountComponent,
     ButtonComponent,
+    DashboardComponent,
   ],
   imports: [
     BrowserModule,

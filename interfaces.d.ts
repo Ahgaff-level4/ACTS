@@ -242,25 +242,30 @@ export interface SucResEditDel {
 
 }
 
-export interface IChildReport {
-	child: IChildEntity;
-	goal: { completedCount: number, continualCount: number },
+/**todo notification should not send to all users:
+ * - if parent get a notification of new goal then indeed that goal have been added to one of the parent's children.
+ * - if teacher ... then ... have been added to one of his teaching children.
+ * - if Admin/HeadOfDepartment ... then it means nothing only system's data changed.
+*/
+export interface INotification {
+	by: User;
+	method: 'POST' | 'DELETE' | 'PATCH' | 'PUT' | null;
+	controller: 'account' | 'activity' | 'child' | 'evaluation' | 'field' | 'goal' | 'backup' | 'restore' | 'program' | 'login' | 'logout' | 'strength';
+	/**id of the posted/deleted/patched/putted entity */
+	payloadId: number;
+	payload: any;
+	datetime: string | Date;
 
 }
 
 export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
 
-/**todo notification should not send to all users:
-* - if parent get a notification of new goal then indeed that goal have been added to one of the parent's children.
-* - if teacher ... then ... have been added to one of his teaching children.
-* - if Admin/HeadOfDepartment ... then it means nothing only system's data changed.
-*/
-export interface INotification {
-	by: User;
-	method: 'POST' | 'DELETE' | 'PATCH' | 'PUT'|null;
-	controller: 'account' | 'activity' | 'child' | 'evaluation' | 'field' | 'goal' | 'backup' | 'restore' | 'program' | 'login'|'logout'|'strength';
-	/**id of the posted/deleted/patched/putted entity */
-	payloadId: number;
-	payload: any;
-	datetime: string | Date;
+export interface IChildReport {
+	child: IChildEntity;
+	goal: { completedCount: number, continualCount: number },
+}
+
+export interface IDashboard {
+	children: IChildEntity[],//depend on the timeframe.
+	childrenCount:number;//the number of children in the system despite the timeframe
 }

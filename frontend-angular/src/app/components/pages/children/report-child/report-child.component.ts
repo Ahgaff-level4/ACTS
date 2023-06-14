@@ -19,13 +19,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     return [{ name: this.ut.translate('Completed'), value: v!.goal.completedCount },
     { name: this.ut.translate('Continual'), value: v!.goal.continualCount }];
   }))
-  public colorScheme: Color = {
-    name: 'myColor',
-    selectable: false,
-    group: ScaleType.Time,
-    domain: ['#318c63',
-      '#f3c900',],
-  };
+  
   constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { super(); }
 
   ngOnInit(): void {

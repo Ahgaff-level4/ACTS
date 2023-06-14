@@ -1,8 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, catchError } from 'rxjs';
+import { EMPTY, Observable, catchError } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
-import { IChildReport, Timeframe } from '../../../../interfaces';
+import { IChildReport, IDashboard, Timeframe } from '../../../../interfaces';
 import { UtilityService } from './utility.service';
 
 @Injectable({
@@ -14,9 +14,15 @@ export class ReportService {
   constructor(private http: HttpClient, private ut: UtilityService) {
   }
 
-  fetchChildReport(childId: number, query: {timeframe:Timeframe}={timeframe:'All Time'}): Observable<IChildReport> {
-    return this.http.get<IChildReport>(this.URL + 'child/' + childId,{params:query}).pipe(
-      catchError(e => this.ut.errorDefaultDialog(e).afterClosed())
+  fetchChildReport(childId: number, query?: { timeframe: Timeframe }): Observable<IChildReport> {
+    return this.http.get<IChildReport>(this.URL + 'child/' + childId, { params: query }).pipe(
+      catchError(e => { this.ut.errorDefaultDialog(e); return EMPTY; })
+    );
+  }
+
+  fetchDashboard(query?: { timeframe: Timeframe }): Observable<IDashboard> {
+    return this.http.get<IDashboard>(this.URL + 'dashboard', { params: query }).pipe(
+      catchError(e => { this.ut.errorDefaultDialog(e); return EMPTY; })
     );
   }
 
