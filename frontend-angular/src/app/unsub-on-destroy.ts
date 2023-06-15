@@ -7,6 +7,5 @@ export class UnsubOnDestroy {
 
   public ngOnDestroy() {
     this.sub.unsubscribe();
-    console.log('ngOnDestory called')
   }
 }

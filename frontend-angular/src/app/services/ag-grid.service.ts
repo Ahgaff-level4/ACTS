@@ -4,11 +4,11 @@ import { ColDef, GetContextMenuItemsParams, GetLocaleTextParams, GridApi, GridOp
 import { GridReadyEvent } from 'ag-grid-community';
 import { Clipboard } from '@angular/cdk/clipboard';
 import * as moment from 'moment';
+import { PrivilegeService } from './privilege.service';
 @Injectable({
   providedIn: 'root'
 })
 export class AgGridService {
-  //todo: chart reports.
   //todo: cell editor base on its type (e.g., date type should have date picker). Hint: i think CellEditor is the way...
   //todo: date picker for filter dose not translate to Arabic!
   //todo: stop pagination in printing the table.
@@ -22,7 +22,7 @@ export class AgGridService {
    * - if field is number then set `type='number'`. Default filter is for string.
    * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, },`
    */
-  constructor(public ut: UtilityService, private clipboard: Clipboard) { }
+  constructor(public ut: UtilityService, private clipboard: Clipboard, private pr: PrivilegeService) { }
 
   /**
    * @param data any nested object
@@ -55,7 +55,7 @@ export class AgGridService {
     if (gridApi) {
       gridApi.selectAll();
       gridApi.copySelectedRowsToClipboard({ includeHeaders });
-      this.ut.notify('Copied to clipboard',undefined,'success');
+      this.ut.notify('Copied to clipboard', undefined, 'success');
     } else this.ut.notify(undefined);
   }
 
@@ -254,9 +254,9 @@ export class AgGridService {
       sideBar: this.sideBar,
       onCellDoubleClicked: async (e) => {
         if (!canEdit)
-          this.ut.notify('Error!',"You don't have sufficient privilege to edit!",'error');
+          this.ut.notify('Error!', "You don't have sufficient privilege to edit!", 'error');
         else if (e.colDef.editable !== true)
-          this.ut.notify("You can't edit any row in this column directly!",undefined,'warning');
+          this.ut.notify("You can't edit any row in this column directly!", undefined, 'warning');
       },
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
@@ -297,11 +297,12 @@ export class AgGridService {
         if (Array.isArray(menu))
           items.push(...menu.map(this.mapMyMenuItemToMenuItemDef(v.node?.data)));
 
-        return [...items, {
+        items.push({
           name: this.ut.translate('Copy'),
           icon: copyIcon,
           subMenu: this.copySubMenu(v, copyIcon),
-        },
+        });
+        return this.ut.userHasAny(this.pr.printTable) == false ? items : [...items,
           'separator',
         {
           name: this.ut.translate('Export table'),
@@ -341,7 +342,7 @@ export class AgGridService {
 
   private copySubMenu(menuParam: GetContextMenuItemsParams, copyIcon: string): (string | MenuItemDef)[] {
     const api = menuParam.api;
-    return [{
+    const copyCellRow = [{
       name: this.ut.translate('Copy cell'),
       icon: copyIcon,
       action: () => {
@@ -358,7 +359,9 @@ export class AgGridService {
       name: this.ut.translate('Copy row (with headers)'),
       icon: copyIcon,
       action: () => api.copyToClipboard({ includeHeaders: true })
-    }, 'separator',
+    },];
+
+    return this.ut.userHasAny(this.pr.printTable) == false ? copyCellRow : [...copyCellRow, 'separator',
     {
       name: this.ut.translate('Copy table'),
       icon: copyIcon,
