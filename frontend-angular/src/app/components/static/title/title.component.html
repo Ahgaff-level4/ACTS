@@ -1,24 +1,19 @@
-<div class="container mt-4 mb-4" >
+<div class="container mt-4 mb-4">
   <div class="d-flex mt-3">
-    <a *ngIf="back && (isPrinting==undefined || isPrinting==false)" [routerLink]="back.link??'./#'"
-      class="mx-2 align-self-center"
-      [matTooltip]="tooltipOf(back)"
-      mat-icon-button color="primary">
+    <a *ngIf="back && (isPrinting!=true)" [routerLink]="back.link??'./'" class="mx-2 align-self-center"
+      [matTooltip]="tooltipOf(back)" mat-icon-button color="primary">
       <mat-icon class="mb-1" color="primary">{{'arrow_back'|translate}}</mat-icon>
     </a>
     <div>
-      <h1 *ngIf="title" class="pb-0 mb-1">{{title|translate}}</h1>
-      <!-- <h5 *ngIf="title2" class="fw-normal pb-0 mb-1">
-        {{title2|translate}}<span *ngIf="param2">:&nbsp;{{param2}}</span>.
-      </h5>
-      <h5 *ngIf="title3" class="fw-normal mb-1">
-        {{title3|translate}}<span *ngIf="param3">:&nbsp;{{param3}}</span>.
-      </h5> -->
-      <div *ngFor="let link of links; let i=index;" class="d-inline">
-        <a [routerLink]="link.link??'./'" [matTooltip]="tooltipOf(link)" class="my-accent-text">
-          {{link.title|translate}}<span *ngIf="link.param">:&nbsp;{{link.param}}</span>
-        </a>
-        <span *ngIf="links.length-1 != i">&nbsp;{{'>'|translate}}&nbsp;</span>
+      <h1 *ngIf="links.length ==1" class="pb-0 mb-1">{{links[0].title|translate}}<span *ngIf="links[0].param">:&nbsp;{{links[0].param}}</span></h1>
+      <h2 *ngIf="links.length !=1" class="pb-0 mb-1">{{links[0].title|translate}}<span *ngIf="links[0].param">:&nbsp;{{links[0].param}}</span></h2>
+      <div *ngIf="links.length>1">
+        <div *ngFor="let link of links; let i=index;" class="d-inline">
+          <a [routerLink]="links[links.length - 1 - i].link??'./'" [matTooltip]="tooltipOf(links[links.length - 1 - i])" class="my-accent-text">
+            {{links[links.length - 1 - i].title|translate}}<span *ngIf="links[links.length - 1 - i].param">:&nbsp;{{links[links.length - 1 - i].param}}</span>
+          </a>
+          <span *ngIf="links.length-1 != i">&nbsp;>&nbsp;</span>
+        </div>
       </div>
     </div>
   </div>

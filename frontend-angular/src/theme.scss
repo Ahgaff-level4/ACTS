@@ -56,6 +56,9 @@ $dark-theme: mat-dark-theme(
 .my-accent-text {
 	color: mat-color($my-accent);
 }
+a.my-accent-text:hover {
+	color: mat-color($my-accent);
+}
 .my-warn-text {
 	color: mat-color($my-warn);
 }
