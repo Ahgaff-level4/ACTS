@@ -1,39 +1,8 @@
 <app-title [links]="[{title:'Children'}]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
-  <div class="row" *ngIf="!isPrinting">
-    <mat-form-field class="col-11">
-      <mat-label>{{'Search'|translate}}</mat-label>
-      <input matInput (keyup)="applySearch($event)" placeholder="...">
-    </mat-form-field>
-    <div class="col-1">
-      <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"
-        aria-label="Export button with a menu">
-        <mat-icon color="primary">ios_share</mat-icon>
-      </button>
-      <mat-menu #exportMenu="matMenu">
-        <button mat-menu-item (click)="agGrid.exportCSV(gridOptions.api)">
-          <mat-icon color="primary">download</mat-icon>
-          <span>{{'Export as CSV'|translate}}</span>
-        </button>
-        <button mat-menu-item (click)="agGrid.exportExcel(gridOptions.api)">
-          <mat-icon color="primary">download</mat-icon>
-          <span>{{'Export as Excel'|translate}}</span>
-        </button>
-        <button mat-menu-item (click)="this.printTable()">
-          <mat-icon color="primary">print</mat-icon>
-          <span>{{'Print'|translate}}</span>
-        </button>
-        <button mat-menu-item (click)="agGrid.exportClipboard(gridOptions.api,false)">
-          <mat-icon color="primary">content_copy</mat-icon>
-          <span>{{'Copy table'|translate}}</span>
-        </button>
-        <button mat-menu-item (click)="agGrid.exportClipboard(gridOptions.api,false)">
-          <mat-icon color="primary">table_view</mat-icon>
-          <span>{{'Copy table (with headers)'|translate}}</span>
-        </button>
-      </mat-menu>
-    </div>
-  </div>
+  <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
+  (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
+  
   <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData|async"

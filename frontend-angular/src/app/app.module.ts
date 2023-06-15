@@ -61,6 +61,7 @@ import { ViewAccountComponent } from './components/pages/accounts/view-account/v
 import { ButtonComponent } from './components/forms/button/button.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
+import { SearchExportComponent } from './components/forms/search-export/search-export.component';
 
 @NgModule({
   declarations: [
@@ -106,6 +107,7 @@ import { DashboardComponent } from './components/pages/dashboard/dashboard.compo
     ViewAccountComponent,
     ButtonComponent,
     DashboardComponent,
+    SearchExportComponent,
   ],
   imports: [
     BrowserModule,

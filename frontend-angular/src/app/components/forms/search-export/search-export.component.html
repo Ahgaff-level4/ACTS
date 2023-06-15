@@ -1,0 +1,34 @@
+<div class="d-flex" *ngIf="!isPrinting">
+  <mat-form-field class="w-100">
+    <mat-label>{{'Search'|translate}}</mat-label>
+    <input matInput (keyup)="keyup.emit($event)" placeholder="...">
+  </mat-form-field>
+  <div class="mx-3" *ngIf="ut.userHasAny(pr.printTable)">
+    <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"
+      aria-label="Export button with a menu">
+      <mat-icon color="primary">ios_share</mat-icon>
+    </button>
+    <mat-menu #exportMenu="matMenu">
+      <button mat-menu-item (click)="agGridService.exportCSV(gridOptions.api)">
+        <mat-icon color="primary">download</mat-icon>
+        <span>{{'Export as CSV'|translate}}</span>
+      </button>
+      <button mat-menu-item (click)="agGridService.exportExcel(gridOptions.api)">
+        <mat-icon color="primary">download</mat-icon>
+        <span>{{'Export as Excel'|translate}}</span>
+      </button>
+      <button mat-menu-item (click)="print.emit()">
+        <mat-icon color="primary">print</mat-icon>
+        <span>{{'Print'|translate}}</span>
+      </button>
+      <button mat-menu-item (click)="agGridService.exportClipboard(gridOptions.api,false)">
+        <mat-icon color="primary">content_copy</mat-icon>
+        <span>{{'Copy table'|translate}}</span>
+      </button>
+      <button mat-menu-item (click)="agGridService.exportClipboard(gridOptions.api,true)">
+        <mat-icon color="primary">table_view</mat-icon>
+        <span>{{'Copy table (with headers)'|translate}}</span>
+      </button>
+    </mat-menu>
+  </div>
+</div>
