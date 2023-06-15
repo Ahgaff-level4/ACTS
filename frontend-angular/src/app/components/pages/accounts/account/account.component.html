@@ -8,24 +8,12 @@
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
-    <a class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary" routerLink="/add-account">
-      {{'Register new account'|translate}}<mat-icon>person_add</mat-icon>
-    </a>
-    <a [disabled]="selectedItem==null" class="w-100 mx-2 mb-2 rounded-5 nbsp"
-      [matTooltip]="'View all information'|translate" [routerLink]="selectedItem?'/account/'+selectedItem!.id:'#'"
-      mat-stroked-button color="primary">
-      {{'View'|translate}}<mat-icon>wysiwyg</mat-icon>
-    </a>
-    <button [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
-      class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="primary"
-      (click)="this.selectedItem?accountService.edit(this.selectedItem):ut.notify(null)">
-      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-    </button>
-
-    <button [disabled]="selectedItem==null" class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="warn"
-      (click)="this.selectedItem?accountService.deleteAccount(this.selectedItem):ut.notify(null)"
-      [matTooltip]="'Delete the selected account'|translate"><mat-icon>person_remove</mat-icon>
-      {{'Delete'|translate}}</button>
-  </div>
+  <app-table-controllers *ngIf="!isPrinting"
+  [anchor1]="{link:'/add-account',text:'Register new account',icon:'person_add'}"
+  [anchor2]="{disabled:selectedItem==null,tooltip:'View all information',link:selectedItem?'/account/'+selectedItem!.id:'./',text:'View',icon:'wysiwyg'}"
+  [button3]="{disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
+  (button3Click)="this.selectedItem?accountService.edit(this.selectedItem):ut.notify(null)"
+  [button4]="{disabled:selectedItem==null,color:'warn',tooltip:'Delete the selected account',text:'Delete',icon:'person_remove'}"
+  (button4Click)="this.selectedItem?accountService.deleteAccount(this.selectedItem):ut.notify(null)"
+  ></app-table-controllers>
 </div>

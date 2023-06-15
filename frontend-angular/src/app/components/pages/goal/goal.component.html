@@ -2,35 +2,22 @@
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
   (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
-  
+
   <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
       [rowData]="childItsGoals?.goals" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
-  <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
-    <button *ngIf="canAdd" class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary"
-      (click)="addEdit(childItsGoals?.id)">
-      {{'Add new goal'|translate}}<mat-icon>add</mat-icon>
-    </button>
-    <button *ngIf="canAdd" class="w-100 mx-3 mb-2 rounded-5" [disabled]="selectedItem==null"
-      [matTooltip]="'Evaluate the selected goal'|translate" (click)="evaluate(selectedItem!.id)" mat-stroked-button
-      color="primary">
-      {{'Evaluate'|translate}}<mat-icon>rate_review</mat-icon>
-    </button>
-    <a [routerLink]="selectedItem?'/child/'+childItsGoals?.id+'/goal/'+selectedItem.id+'/evaluations':'#'"
-      [disabled]="selectedItem==null" [matTooltip]="'View evaluations of the selected goal'|translate"
-      mat-stroked-button color="primary" class="w-100 mx-3 mb-2 rounded-5">
-      <mat-icon>reviews</mat-icon>
-      <span>{{'Evaluations'|translate}}</span>
-    </a>
-    <button *ngIf="canEditDelete" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
-      class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="primary" (click)="addEdit(this.selectedItem)">
-      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-    </button>
-    <button *ngIf="canEditDelete" [disabled]="selectedItem==null" [matTooltip]="'Delete the selected goal'|translate"
-      class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="warn" (click)="deleteDialog(this.selectedItem)">
-      <mat-icon>delete</mat-icon>{{'Delete'|translate}}
-    </button>
-  </div>
+
+  <app-table-controllers *ngIf="!isPrinting"
+  [button1]="{show:canAdd,text:'Add new goal',icon:'add'}"
+  (button1Click)="addEdit(childItsGoals?.id)"
+  [button2]="{show:canAdd,disabled:selectedItem==null,tooltip:'Evaluate the selected goal',text:'Evaluate',icon:'rate_review'}"
+  (button2Click)="evaluate(selectedItem!.id)"
+  [anchor3]="{link:selectedItem?'/child/'+childItsGoals?.id+'/goal/'+selectedItem.id+'/evaluations':'./',disabled:selectedItem==null,tooltip:'View evaluations of the selected goal',icon:'reviews',text:'Evaluations'}"
+  [button4]="{show:canEditDelete,disabled:selectedItem==null,icon:'edit',text:'Edit',tooltip:'Edit the selected row',}"
+  (button4Click)="addEdit(this.selectedItem)"
+  [button5]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Delete the selected goal',icon:'delete',text:'Delete',color:'warn'}"
+  (button5Click)="deleteDialog(this.selectedItem)"
+  ></app-table-controllers>
 </div>

@@ -1,0 +1,64 @@
+<div class="d-flex flex-column flex-md-row justify-content-md-evenly">
+  <button *ngIf="button1 && button1.show != false" [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'"
+    [matTooltip]="(button1.tooltip??'')|translate" (click)="button1Click.emit()" mat-raised-button
+    [disabled]="button1.disabled==true" [color]="button1.color??'primary'">
+    {{button1.text|translate}}<mat-icon>{{button1.icon}}</mat-icon>
+  </button>
+  <a *ngIf="anchor1 && anchor1.show != false" [routerLink]="anchor1.link" [disabled]="anchor1.disabled==true"
+    [matTooltip]="(anchor1.tooltip??'')|translate" mat-raised-button [color]="anchor1.color??'primary'"
+    [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'">
+    <mat-icon>{{anchor1.icon}}</mat-icon>
+    {{anchor1.text|translate}}
+  </a>
+  <button *ngIf="button2 && button2.show != false" [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'"
+    [matTooltip]="(button2.tooltip??'')|translate" (click)="button2Click.emit()" mat-stroked-button
+    [disabled]="button2.disabled==true" [color]="button2.color??'primary'">
+    {{button2.text|translate}}<mat-icon>{{button2.icon}}</mat-icon>
+  </button>
+  <a *ngIf="anchor2 && anchor2.show != false" [routerLink]="anchor2.link" [disabled]="anchor2.disabled==true"
+    [matTooltip]="(anchor2.tooltip??'')|translate" mat-stroked-button [color]="anchor2.color??'primary'"
+    [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'">
+    <mat-icon>{{anchor2.icon}}</mat-icon>
+    {{anchor2.text|translate}}
+  </a>
+  <button *ngIf="button3 && button3.show != false" [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'"
+    [matTooltip]="(button3.tooltip??'')|translate" (click)="button3Click.emit()" mat-stroked-button
+    [disabled]="button3.disabled==true" [color]="button3.color??'primary'">
+    {{button3.text|translate}}<mat-icon>{{button3.icon}}</mat-icon>
+  </button>
+  <a *ngIf="anchor3 && anchor3.show != false" [routerLink]="anchor3.link" [disabled]="anchor3.disabled==true"
+    [matTooltip]="(anchor3.tooltip??'')|translate" mat-stroked-button [color]="anchor3.color??'primary'"
+    [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'">
+    <mat-icon>{{anchor3.icon}}</mat-icon>
+    {{anchor3.text|translate}}
+  </a>
+  <button *ngIf="button4 && button4.show != false" [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'"
+    [matTooltip]="(button4.tooltip??'')|translate" (click)="button4Click.emit()" mat-stroked-button
+    [disabled]="button4.disabled==true" [color]="button4.color??'primary'">
+    {{button4.text|translate}}<mat-icon>{{button4.icon}}</mat-icon>
+  </button>
+
+  <a *ngIf="anchor4 && anchor4.show != false" [routerLink]="anchor4.link" [disabled]="anchor4.disabled==true"
+    [matTooltip]="(anchor4.tooltip??'')|translate" mat-stroked-button [color]="anchor4.color??'primary'"
+    [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'">
+    <mat-icon>{{anchor4.icon}}</mat-icon>
+    {{anchor4.text|translate}}
+  </a>
+  <a *ngIf="anchor5 && anchor5.show != false" [routerLink]="anchor5.link" [disabled]="anchor5.disabled==true"
+    [matTooltip]="(anchor5.tooltip??'')|translate" mat-stroked-button [color]="anchor5.color??'primary'"
+    [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'">
+    <mat-icon>{{anchor5.icon}}</mat-icon>
+    {{anchor5.text|translate}}
+  </a>
+  <button *ngIf="button5 && button5.show != false" [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'"
+  [matTooltip]="(button5.tooltip??'')|translate" (click)="button5Click.emit()" mat-stroked-button
+  [disabled]="button5.disabled==true" [color]="button5.color??'primary'">
+  {{button5.text|translate}}<mat-icon>{{button5.icon}}</mat-icon>
+</button>
+  <a *ngIf="anchor6 && anchor6.show != false" [routerLink]="anchor6.link" [disabled]="anchor6.disabled==true"
+    [matTooltip]="(anchor6.tooltip??'')|translate" mat-stroked-button [color]="anchor6.color??'primary'"
+    [class]="'w-100 mx-0 mb-2 rounded-5 mx-md-2'">
+    <mat-icon>{{anchor6.icon}}</mat-icon>
+    {{anchor6.text|translate}}
+  </a>
+</div>

@@ -8,6 +8,7 @@ import { MatMenuTrigger } from '@angular/material/menu';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Observable, Subscription, finalize, first, map, tap } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -197,7 +198,8 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
   }));
 
 
-  constructor(private childService: ChildService, public agGrid: AgGridService, public ut: UtilityService, private dialog: MatDialog) {
+  constructor(private childService: ChildService, public agGrid: AgGridService,
+    public ut: UtilityService, public pr: PrivilegeService) {
     super();
   }
 
@@ -216,9 +218,8 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
   }
 
   edit(child: IChildEntity | undefined) {
-    if (child != undefined) {
-      this.ut.router.navigate(['edit-child'], { state: { data: child } });
-    }
+    if (child || this.selectedItem)
+      this.ut.router.navigate(['edit-child'], { state: { data: child ?? this.selectedItem } });
   }
 
   printTable() {
@@ -226,6 +227,12 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
   }
 
   private goalsStrengthsMenuItems: MyMenuItem<IChildEntity>[] = [
+    {
+      name: 'View',
+      icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">wysiwyg</mat-icon>`,
+      action: (v) => v ? this.ut.router.navigateByUrl('/child/' + v.id) : '',
+      tooltip: 'View all information',
+    },
     {
       name: 'Goals',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">sports_score</mat-icon>`,

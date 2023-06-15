@@ -12,20 +12,12 @@
       [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <div class="d-md-flex justify-content-between" *ngIf="!isPrinting">
-    <button *ngIf="canAdd" class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary"
-      (click)="addEdit(goalItsEvaluations?.id)">
-      {{'Add new evaluation'|translate}}<mat-icon>rate_review</mat-icon>
-    </button>
-    <button *ngIf="canEditDelete" [disabled]="selectedItem==null" [matTooltip]="'Edit the selected row'|translate"
-      class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="primary" (click)="addEdit(this.selectedItem)">
-      <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-    </button>
-    <button *ngIf="canEditDelete" [disabled]="selectedItem==null"
-      [matTooltip]="'Delete the selected evaluation'|translate" class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button
-      color="warn" (click)="deleteDialog(this.selectedItem)">
-      <mat-icon>delete</mat-icon>{{'Delete'|translate}}
-    </button>
-  </div>
-
+  <app-table-controllers *ngIf="!isPrinting"
+  [button1]="{show:canAdd,text:'Add new evaluation',icon:'rate_review'}"
+  (button1Click)="addEdit(goalItsEvaluations?.id)"
+  [button2]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
+  (button2Click)="addEdit(this.selectedItem)"
+  [button3]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Delete the selected evaluation',color:'warn',icon:'delete',text:'Delete'}"
+  (button3Click)="deleteDialog(this.selectedItem)"
+  ></app-table-controllers>
 </div>

@@ -7,7 +7,7 @@
     <div>
       <h1 *ngIf="links.length ==1" class="pb-0 mb-1">{{links[0].title|translate}}<span *ngIf="links[0].param">:&nbsp;{{links[0].param}}</span></h1>
       <h2 *ngIf="links.length !=1" class="pb-0 mb-1">{{links[0].title|translate}}<span *ngIf="links[0].param">:&nbsp;{{links[0].param}}</span></h2>
-      <div *ngIf="links.length>1">
+      <div *ngIf="links.length>1 && isPrinting!=true">
         <div *ngFor="let link of links; let i=index;" class="d-inline">
           <a [routerLink]="links[links.length - 1 - i].link??'./'" [matTooltip]="tooltipOf(links[links.length - 1 - i])" class="my-accent-text">
             {{links[links.length - 1 - i].title|translate}}<span *ngIf="links[links.length - 1 - i].param">:&nbsp;{{links[links.length - 1 - i].param}}</span>

@@ -3,7 +3,7 @@
     <mat-label>{{'Search'|translate}}</mat-label>
     <input matInput (keyup)="keyup.emit($event)" placeholder="...">
   </mat-form-field>
-  <div class="mx-3" *ngIf="ut.userHasAny(pr.printTable)">
+  <div class="mx-3" *ngIf="ut.userHasAny(pr.action.printTable)">
     <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"
       aria-label="Export button with a menu">
       <mat-icon color="primary">ios_share</mat-icon>

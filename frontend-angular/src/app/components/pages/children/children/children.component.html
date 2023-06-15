@@ -1,35 +1,21 @@
 <app-title [links]="[{title:'Children'}]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
-  <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
-  (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
-  
+  <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
+    (print)="printTable()"></app-search-export>
+
   <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
-    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData|async"
-      domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
+    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
+      [rowData]="rowData|async" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
-  <div class="d-md-flex mx-md-0 justify-content-evenly rounded-5" *ngIf="!isPrinting">
-    <app-button *ngIf="canAddEdit" class="w-100 mx-2 mb-2" appearance="raised"
-    link="/add-child" text="Register a child" icon="person_add">
-    </app-button>
-    <app-button [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
-      tooltip="View all information" text="View" icon="wysiwyg"
-      [link]="'/child/'+selectedItem?.id" appearance="stroked">
-    </app-button>
-    <app-button *ngIf="canAddEdit" [disabled]="selectedItem==null" tooltip="Edit the selected row"
-      class="w-100 mx-2 mb-2" text="Edit" icon="edit" appearance="stroked" (click)="edit(this.selectedItem)">
-    </app-button>
-    <app-button [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
-      tooltip="View goals of the selected child" text="Goals" icon="sports_score"
-      [routerLink]="selectedItem?'/child/'+selectedItem!.id+'/goals':'#'" appearance="stroked">
-    </app-button>
-    <app-button [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
-      tooltip="View strengths of the selected child" text="Strengths" icon="fitness_center"
-      [link]="selectedItem?'/child/'+selectedItem!.id+'/strengths':'#'" appearance="stroked">
-    </app-button>
-    <app-button *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')" [disabled]="selectedItem==null" class="w-100 mx-2 mb-2"
-      tooltip="View report of the selected child" text="Report" icon="analytics"
-      [link]="selectedItem?'/child/'+selectedItem!.id+'/report':'#'" appearance="stroked">
-    </app-button>
-  </div>
+
+  <app-table-controllers *ngIf="!isPrinting"
+    [anchor1]="{text:'Register a child',icon:'person_add',link:'/add-child',show:canAddEdit,}"
+    [anchor2]="{text:'View',icon:'wysiwyg',disabled:selectedItem==null,tooltip:'View all information',link:selectedItem?'/child/'+selectedItem!.id:'./',}"
+    [button3]="{text:'Edit',icon:'edit', show:canAddEdit,disabled:selectedItem==null,tooltip:'Edit the selected row',}"
+    (button3Click)="edit(this.selectedItem)"
+    [anchor4]="{text:'Goals',icon:'sports_score',disabled:selectedItem==null,tooltip:'View goals of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/goals':'./',}"
+    [anchor5]="{disabled:selectedItem==null,tooltip:'View strengths of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/strengths':'./',text:'Strengths',icon:'fitness_center',}"
+    [anchor6]="{show:this.ut.userHasAny(pr.action.reportChild),disabled:selectedItem==null,tooltip:'View report of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/report':'./',text:'Report',icon:'analytics'}"
+    ></app-table-controllers>
 </div>

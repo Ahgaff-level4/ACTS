@@ -87,6 +87,12 @@ export class AccountComponent {
 
   private menuItems: MyMenuItem<IAccountEntity>[] = [
     {
+      name: 'View',
+      icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">wysiwyg</mat-icon>`,
+      action: (v) => v ? this.ut.router.navigateByUrl('/account/' + v.id) : '',
+      tooltip: 'View all information',
+    },
+    {
       name: 'Delete',
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.selectedItem ? this.accountService.deleteAccount(this.selectedItem) : this.ut.notify(null),
@@ -123,7 +129,7 @@ export class AccountComponent {
 
 
   ngOnDestroy() {
-    
+
     this.accountService.isLoggerIn = false;
   }
 }

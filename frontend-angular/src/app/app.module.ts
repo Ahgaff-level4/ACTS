@@ -58,10 +58,10 @@ import { ViewChildComponent } from './components/pages/children/view-child/view-
 import { ChildInfoComponent } from './components/pages/children/view-child/child-info/child-info.component';
 import { TitleComponent } from './components/static/title/title.component';
 import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
-import { ButtonComponent } from './components/forms/button/button.component';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 import { SearchExportComponent } from './components/forms/search-export/search-export.component';
+import { TableControllersComponent } from './components/forms/table-controllers/table-controllers.component';
 
 @NgModule({
   declarations: [
@@ -105,9 +105,9 @@ import { SearchExportComponent } from './components/forms/search-export/search-e
     ChildInfoComponent,
     TitleComponent,
     ViewAccountComponent,
-    ButtonComponent,
     DashboardComponent,
     SearchExportComponent,
+    TableControllersComponent,
   ],
   imports: [
     BrowserModule,
