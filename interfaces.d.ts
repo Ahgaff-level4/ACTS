@@ -260,9 +260,15 @@ export interface INotification {
 
 export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
 
+export interface CustomTimeframe{
+	from:string|Date,
+	to:string|Date,
+}
+
 export interface IChildReport {
 	child: IChildEntity;
 	goal: { completedCount: number, continualCount: number },
+	goalStrength:{goals:IGoalEntity[],strengths:IStrengthEntity[]}
 }
 
 export interface IDashboard {

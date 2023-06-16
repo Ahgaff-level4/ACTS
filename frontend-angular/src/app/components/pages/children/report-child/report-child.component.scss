@@ -1,12 +1,11 @@
 .timeframe {
   z-index: 2;
-  margin-bottom: -10px;
+  margin-bottom: -15px;
   width: 100%;
   align-self: center;
 }
 @media (min-width: 768px) {
   .timeframe {
-    width: 140px;
-    margin-bottom: -90px;
+    max-width: 240px;
   }
 }

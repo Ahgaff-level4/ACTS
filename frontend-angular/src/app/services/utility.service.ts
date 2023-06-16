@@ -23,7 +23,6 @@ export class UtilityService {
   public isLoading = new BehaviorSubject<boolean>(false);
   public notifySettings = new BehaviorSubject<{ showNotification: boolean, closeAfter: number }>(JSON.parse(localStorage.getItem('notifySettings') ?? 'null') ?? { showNotification: true, closeAfter: 10000 });
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
-
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
     private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
     private fromNowPipe: FromNowPipe, private dialog: MatDialog,
@@ -254,13 +253,6 @@ export class UtilityService {
    */
   public deepClone<T>(obj: T): T {
     return JSON.parse(JSON.stringify(obj))
-  }
-
-  /**
-   * scroll user to the top.
-   */
-  public scrollTop() {
-    window.scrollTo({ top: 0 })
   }
 
   /**@returns ex: `Third of 5 siblings (2 girls, 3 boys)` */

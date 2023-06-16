@@ -681,5 +681,12 @@
   "Register Date":"تاريخ التسجيل",
   "Number of Children":"عدد الاطفال",
   "arrow_back":"arrow_forward",
-  "Current page":"الصفحة الحالية"
+  "Current page":"الصفحة الحالية",
+  "From":"من",
+  "To":"إلى",
+  "Invalid start date":"تاريخ 'من' غير صالح",
+  "Invalid end date":"تاريخ 'إلى' غير صالح",
+  "Apply":"تطبيق",
+  "Invalid date range":"نطاق التاريخ غير صالح",
+  "Activities fields":"مجالات الانشطة"
 }

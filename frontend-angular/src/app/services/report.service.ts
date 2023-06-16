@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { EMPTY, Observable, catchError } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
-import { IChildReport, IDashboard, Timeframe } from '../../../../interfaces';
+import { CustomTimeframe, IChildReport, IDashboard, Timeframe } from '../../../../interfaces';
 import { UtilityService } from './utility.service';
 
 @Injectable({
@@ -14,8 +14,10 @@ export class ReportService {
   constructor(private http: HttpClient, private ut: UtilityService) {
   }
 
-  fetchChildReport(childId: number, query?: { timeframe: Timeframe }): Observable<IChildReport> {
-    return this.http.get<IChildReport>(this.URL + 'child/' + childId, { params: query }).pipe(
+  fetchChildReport(childId: number, timeframe?: CustomTimeframe): Observable<IChildReport> {
+    return this.http.get<IChildReport>(this.URL + 'child/' + childId, {
+      params: timeframe as {from:string,to:string}|undefined
+    }).pipe(
       catchError(e => { this.ut.errorDefaultDialog(e); return EMPTY; })
     );
   }
