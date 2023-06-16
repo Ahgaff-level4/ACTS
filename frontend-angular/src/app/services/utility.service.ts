@@ -1,21 +1,21 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Role, SuccessResponse, User, ErrorResponse, IChildEntity, IAccountEntity } from './../../../../interfaces.d';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, first } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { DatePipe } from '../pipes/date.pipe';
 import { DateTimeWeekPipe } from '../pipes/date-time-week.pipe';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class UtilityService {
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
@@ -28,7 +28,7 @@ export class UtilityService {
     private toDatePipe: DatePipe, private calcAgePipe: CalcAgePipe,
     private fromNowPipe: FromNowPipe, private dialog: MatDialog,
     public router: Router, private translateService: TranslateService,
-    private dateTimeWeekPipe: DateTimeWeekPipe, private notificationService: NzNotificationService) {
+    private dateTimeWeekPipe: DateTimeWeekPipe, private notificationService: NzNotificationService,) {
   }
 
   /**
@@ -77,8 +77,12 @@ export class UtilityService {
     else if (typeof (eOrMessage as ErrorResponse)?.success === 'boolean'
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
-    else
-      message = this.translatePipe.transform('Something went wrong!') + ' ' + (appendMsg ? this.translatePipe.transform(appendMsg) : this.translatePipe.transform('Sorry, there was a problem. Please try again later or check your connection.'));
+    else {
+      let somethingWentWrong = this.translate('Something went wrong!');
+      appendMsg = appendMsg ? this.translate(appendMsg) : '';
+      let sorry = this.translate('Sorry, there was a problem. Please try again later or check your connection.');
+      message = (appendMsg ? appendMsg : somethingWentWrong + ' ' + sorry);
+    }
 
     return this.showMsgDialog({ content: message, type: 'error' })
   }
@@ -299,6 +303,18 @@ export class UtilityService {
     for (let i = 0; i < 10; i++)
       phones.push(account['phone' + i]);
     return phones.filter(v => !!v).join(this.translate(', '));
+  }
+
+  getRouteParamId(route:ActivatedRoute,param: string = 'id'): Promise<number> {
+    return new Promise((res, rej) => {
+      route.paramMap.pipe(first()).subscribe(v => {
+        const p = v.get(param);
+        console.log('param', p);
+        if (p && Number.isInteger(+p))
+          res(+p);
+        else rej();
+      })
+    })
   }
 }
 

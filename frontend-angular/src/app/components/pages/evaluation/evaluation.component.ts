@@ -25,17 +25,15 @@ export class EvaluationComponent extends UnsubOnDestroy {
   public selectedItem?: IEvaluationEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  /**don't use `rowData` 'cause child has goals for `rowData`*/
-  public goalItsEvaluations: IGoalEntity | undefined;
 
   private onCellValueChange = async (e: NewValueParams<IEvaluationEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IEvaluationEntity]: e.newValue });
       this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
-      if (this.goalItsEvaluations)
-        await this.service.fetchGoalItsEvaluations(this.goalItsEvaluations.id).catch(() => { });
-      this.gridOptions?.api?.refreshCells();
+      if (this.service.goalItsEvaluations$.value)
+        await this.service.fetchGoalItsEvaluations(this.service.goalItsEvaluations$.value.id).catch(() => { });
+      // this.gridOptions?.api?.refreshCells();
     }
   }
 
@@ -103,19 +101,13 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
 
 
-  ngOnInit(): void {
-    this.route.paramMap.subscribe({
-      next: async params => {
-        let goalId = params.get('id');
-        if (typeof goalId === 'string')
-          this.sub.add(this.service.goalItsEvaluations.subscribe(async v => {
-            if (v && v.id == +(goalId as string))
-              this.goalItsEvaluations = this.ut.deepClone(v);
-            else await this.service.fetchGoalItsEvaluations(+(goalId as string));
-          }));
-        else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
-      },
-    });
+  async ngOnInit() {
+    try {
+      let goalId = await this.ut.getRouteParamId(this.route);
+      this.service.fetchGoalItsEvaluations(goalId);
+    } catch (e) {
+      this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
+    }
 
     this.sub.add(this.ut.user.subscribe(v => {
       this.canAdd = this.ut.userHasAny('Admin', 'Teacher');

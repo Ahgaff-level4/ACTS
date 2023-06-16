@@ -24,16 +24,14 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
   public selectedItem?: IGoalEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  /**don't use `rowData` 'cause child has goals for `rowData`*/
-  public childItsGoals: IChildEntity | undefined;
 
   private onCellValueChange = async (e: NewValueParams<IGoalEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IGoalEntity]: e.newValue });
       this.ut.notify('Edited successfully', undefined, 'success')
     } catch (e) {
-      if (this.childItsGoals)
-        await this.service.fetchChildItsGoals(this.childItsGoals.id).catch(() => { });
+      if (this.service.childItsGoals$.value)
+        await this.service.fetchChildItsGoals(this.service.childItsGoals$.value.id).catch(() => { });
       this.gridOptions?.api?.refreshCells();
     }
   }
@@ -130,7 +128,7 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('/child/' + this.childItsGoals?.id + '/goal/' + v.id + '/evaluations') : '',
+      action: (v) => v && this.service.childItsGoals$.value ? this.ut.router.navigateByUrl('/child/' + this.service.childItsGoals$.value.id + '/goal/' + v.id + '/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
     },
     {
@@ -151,21 +149,13 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
 
 
 
-  ngOnInit(): void {
-    this.sub.add(this.route.paramMap.subscribe({
-      next: async params => {
-        let childId = params.get('id');
-        if (typeof childId == 'string')
-          this.sub.add(this.service.childItsGoals.subscribe(async v => {
-            if (v && v.id == +(childId as string)) {
-              this.childItsGoals = this.ut.deepClone(v);
-              this.gridOptions?.api?.refreshCells();
-            }
-            else await this.service.fetchChildItsGoals(+(childId as string), true).catch(() => { });
-          }));
-        else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
-      },
-    }));
+  async ngOnInit() {
+    try {
+      let childId = await this.ut.getRouteParamId(this.route);
+      await this.service.fetchChildItsGoals(childId, true).catch(() => { });
+    }catch(e){
+      this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
+    }
 
     this.sub.add(this.fieldService.fields$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.field.name');

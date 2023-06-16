@@ -10,7 +10,7 @@ import { StrengthService } from 'src/app/services/strength.service';
 import { FieldService } from 'src/app/services/field.service';
 import { SelectionChangedEvent } from 'ag-grid-community';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-select-activity',
@@ -22,7 +22,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   public filterByAgeTwoWay: 'age' | 'all' = 'age';
   public filterByFieldsTwoWay: IFieldEntity[] = [];
   public activities: IActivityEntity[] | [] = [];
-  public child: IChildEntity | undefined;
+  public child$: BehaviorSubject<IChildEntity | undefined> = new BehaviorSubject<IChildEntity | undefined>(undefined);
   /**
    * This dialog is used in the following state:
    * - 'goal' for choosing the goal's activity.
@@ -37,8 +37,8 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
 
   ngOnInit(): void {
     if (this.state == 'goal')
-      this.sub.add(this.goalService.childItsGoals.subscribe(v => this.child = v));
-    else this.sub.add(this.strengthService.childItsStrengths.subscribe(v => this.child = v));
+      this.child$ = this.goalService.childItsGoals$;
+    // else this.child$ = this.strengthService.childItsStrengths;
   }
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {
@@ -59,8 +59,8 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   filterByAge(callAllFilters: boolean = true) {
     if (this.filterByAgeTwoWay == 'age' &&
       this.chosenProgram?.activities &&
-      this.child?.person?.birthDate) { //filter by age
-      var age = this.ut.calcAge(this.child?.person?.birthDate);
+      this.child$.value?.person?.birthDate) { //filter by age
+      var age = this.ut.calcAge(this.child$.value?.person?.birthDate);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
           if (v.maxAge == null || v.minAge == null || (age < v.maxAge && age > v.minAge))

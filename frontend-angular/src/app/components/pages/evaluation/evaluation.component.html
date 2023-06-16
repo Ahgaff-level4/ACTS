@@ -1,5 +1,5 @@
-<app-title [links]="[{title:'Evaluations of goal',param:goalItsEvaluations?.activity?.name},
-{title:'Goals of',param:goalItsEvaluations?.child?.person?.name,link:goalItsEvaluations?.child?.id?'/child/'+goalItsEvaluations?.child?.id+'/goals':undefined},
+<app-title [links]="[{title:'Evaluations of goal',param:service.goalItsEvaluations$.value?.activity?.name},
+{title:'Goals of',param:service.goalItsEvaluations$.value?.child?.person?.name,link:service.goalItsEvaluations$.value?.child?.id?'/child/'+service.goalItsEvaluations$.value?.child?.id+'/goals':undefined},
 {title:'Children',link:'/children'},]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
@@ -8,13 +8,13 @@
   <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
-      [rowData]="goalItsEvaluations?.evaluations" domLayout='autoHeight'
+      [rowData]="(service.goalItsEvaluations$|async)?.evaluations" domLayout='autoHeight'
       [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
   <app-table-controllers *ngIf="!isPrinting"
   [button1]="{show:canAdd,text:'Add new evaluation',icon:'rate_review'}"
-  (button1Click)="addEdit(goalItsEvaluations?.id)"
+  (button1Click)="addEdit(service.goalItsEvaluations$.value?.id)"
   [button2]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
   (button2Click)="addEdit(this.selectedItem)"
   [button3]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Delete the selected evaluation',color:'warn',icon:'delete',text:'Delete'}"

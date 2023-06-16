@@ -7,9 +7,9 @@
       <mat-icon [className]="titleColor" *ngIf="titleIcon" style="margin:6px 6px 0px 6px;">{{titleIcon}}</mat-icon>
     </div>
   </div>
-  <mat-dialog-content>
+  <div mat-dialog-content>
     <p>{{content|translate}}</p>
-  </mat-dialog-content>
+  </div>
 
   <mat-dialog-actions align="end">
     <button mat-button class=" rounded-5" *ngFor="let b of buttons" (click)="dialogRef.close(b.type)"

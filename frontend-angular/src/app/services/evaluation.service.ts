@@ -11,11 +11,9 @@ import { GoalService } from './goal.service';
 })
 export class EvaluationService {
   URL = env.API + 'evaluation';
-  public goalItsEvaluations = new ReplaySubject<IGoalEntity | undefined>(1);
-  private _goalItsEvaluations: undefined | IGoalEntity;
+  public goalItsEvaluations$ = new BehaviorSubject<IGoalEntity | undefined>(undefined);
 
   constructor(private http: HttpClient, private ut: UtilityService, private goalService: GoalService) {
-    this.goalItsEvaluations.next(undefined);
   }
 
   /**
@@ -27,14 +25,14 @@ export class EvaluationService {
       this.http.post<IEvaluationEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
-            if (this._goalItsEvaluations)
-              this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
+            if (this.goalItsEvaluations$.value)
+              this.fetchGoalItsEvaluations(this.goalItsEvaluations$.value.id);
             res(v);
           },
           error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem while creating the evaluation record. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     });
   }
@@ -45,14 +43,14 @@ export class EvaluationService {
       this.http.patch<SucResEditDel>(this.URL + '/' + id, entity)
         .subscribe({
           next: (v) => {
-            if (this._goalItsEvaluations)
-              this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
+            if (this.goalItsEvaluations$.value)
+              this.fetchGoalItsEvaluations(this.goalItsEvaluations$.value.id);
             res(v)
           },
           error: e => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the evaluation. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }
@@ -63,13 +61,13 @@ export class EvaluationService {
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            if (this._goalItsEvaluations)
-              this.fetchGoalItsEvaluations(this._goalItsEvaluations.id);
+            if (this.goalItsEvaluations$.value)
+              this.fetchGoalItsEvaluations(this.goalItsEvaluations$.value.id);
             res(v);
           },
           error: (e) => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the evaluation. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }
@@ -87,8 +85,7 @@ export class EvaluationService {
         .subscribe({
           next: v => {
             if (Array.isArray(v) && v.length != 0) {
-              this._goalItsEvaluations = v[0];
-              this.goalItsEvaluations.next(v[0]);
+              this.goalItsEvaluations$.next(v[0]);
               res(v[0]);
             }
             else {
@@ -97,7 +94,7 @@ export class EvaluationService {
           },
           error: e => {
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
   }

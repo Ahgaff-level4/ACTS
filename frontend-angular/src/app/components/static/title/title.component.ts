@@ -15,14 +15,14 @@ export class TitleComponent implements OnInit {
   /**Hide back button when printing */
   @Input('isPrinting') isPrinting: boolean | undefined;
 
-  protected back: Link | undefined;
+  /**back button will navigate to links[1] */
+  // protected back: Link | undefined;
   constructor(public ut: UtilityService) { }
   ngOnInit(): void {
-    this.back = this.links[1];
     if (this.links.length == 0)
       throw "TitleComponent expects `links` array with at least one element! Got links=" + this.links;
-    if (this.back && typeof this.back.link != 'string')
-      throw 'TitleComponent expect previous(links[1]) to have property link as `links[1].link` but links[1]=' + this.back.link + '. This is error because if links[1] exist then show back arrow icon but it has no link!'
+    if (this.links[1] && typeof this.links[1].link != 'string')
+      throw 'TitleComponent expect previous(links[1]) to have property link as `links[1].link` but links[1]=' + this.links[1].link + '. This is error because if links[1] exist then show back arrow icon but it has no link!'
   }
 
   /**Add "Page" prefix to the link's title. (e.g. 'Page title_name') */
@@ -30,8 +30,8 @@ export class TitleComponent implements OnInit {
     if (link == this.links[0])
       return this.ut.translate('Current page');
     return this.ut.getDirection() == 'rtl' ?
-      this.ut.translate('page') + ' ' + this.ut.translate(link.title) + (link.param ? ' ' + link.param : '')
-      : (link.title) + (link.param ? ' ' + link.param : '') + ' ' + this.ut.translate('page');
+      (this.ut.translate('page') + ' ' + this.ut.translate(link.title) + (link.param ? ' ' + link.param : ''))
+      : ((link.title) + (link.param ? ' ' + link.param : '') + ' ' + this.ut.translate('page'));
   }
 }
 

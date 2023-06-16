@@ -10,7 +10,7 @@ import { UtilityService } from './utility.service';
 })
 export class ProgramService {
   public URL = env.API + 'program';
-  private subject$: Subject<IProgramEntity[]> = new Subject<IProgramEntity[]>();//Made to emit new children to `children$` observers.
+  private subject$: Subject<IProgramEntity[]> = new Subject<IProgramEntity[]>();//Made to emit new values into the Observable's subscribers
   /**Observable function will start execution when the first observer subscribe. Then it will emit new values by the subject. */
   public programs$: Observable<IProgramEntity[]> = new Observable<IProgramEntity[]>((subscriber) => {
     this.subject$.subscribe(subscriber);

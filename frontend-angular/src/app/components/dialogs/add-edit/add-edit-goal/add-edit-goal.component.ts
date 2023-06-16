@@ -5,7 +5,7 @@ import { GoalService } from 'src/app/services/goal.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IGoalEntity } from '../../../../../../../interfaces';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
-import { Subscription } from 'rxjs';
+import { BehaviorSubject, Subscription } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
@@ -19,7 +19,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new goal */
-  public child: IChildEntity | undefined;
+  public child$ = new BehaviorSubject<IChildEntity | undefined>(undefined);
 
   /** used to add/edit goal base on `goalOrChildId` type:
    * - Either goal to be edit.
@@ -39,11 +39,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    this.sub.add(this.goalService.childItsGoals.subscribe(v => {
-      if (v == null && typeof this.goalOrChildId != 'object')
-        this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
-      else this.child = v;
-    }));
+    this.child$ = this.goalService.childItsGoals$;
 
     if (typeof this.goalOrChildId === 'object') {
       this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.goalOrChildId));
@@ -59,10 +55,10 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.goalOrChildId == 'number') {//add new
-        if (this.child?.id == null || this.ut.user.value?.accountId == null)
+        if (this.child$.value?.id == undefined || this.ut.user.value?.accountId == undefined)
           return this.ut.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
+          await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.ut.user.value.accountId }, true);
           this.ut.notify("Added successfully", 'The goal has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }

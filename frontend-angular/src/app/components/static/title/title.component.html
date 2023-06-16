@@ -1,7 +1,7 @@
 <div class="container mt-4 mb-4">
   <div class="d-flex mt-3">
-    <a *ngIf="back && (isPrinting!=true)" [routerLink]="back.link??'./'" class="mx-2 align-self-center"
-      [matTooltip]="tooltipOf(back)" mat-icon-button color="primary">
+    <a *ngIf="links[1] && (isPrinting!=true)" [routerLink]="links[1].link??'./'" class="mx-2 align-self-center"
+      [matTooltip]="tooltipOf(links[1])" mat-icon-button color="primary">
       <mat-icon class="mb-1" color="primary">{{'arrow_back'|translate}}</mat-icon>
     </a>
     <div>

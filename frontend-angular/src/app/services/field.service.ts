@@ -10,7 +10,7 @@ import { UtilityService } from './utility.service';
 })
 export class FieldService {
   public URL = env.API + 'field';
-  private subject$: Subject<IFieldEntity[]> = new Subject<IFieldEntity[]>();//Made to emit new children to `children$` observers.
+  private subject$: Subject<IFieldEntity[]> = new Subject<IFieldEntity[]>();//Made to emit new values into the Observable's subscribers
   /**Observable function will start execution when the first observer subscribe. Then it will emit new values by the subject. */
   public fields$: Observable<IFieldEntity[]> = new Observable<IFieldEntity[]>((subscriber) => {
     this.subject$.subscribe(subscriber);

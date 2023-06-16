@@ -13,7 +13,7 @@ export class ChildService {
   /**last emitted value of `children$` */
   // public children: undefined | IChildEntity[];
   /**DO NOT SUBSCRIBE HERE. this is used to emit new values to children$ only. */
-  private subject$: Subject<IChildEntity[]> = new Subject<IChildEntity[]>();//Made to emit new children to `children$` observers.
+  private subject$: Subject<IChildEntity[]> = new Subject<IChildEntity[]>();//Made to emit new values into the Observable's subscribers
   public children$: Observable<IChildEntity[]> = new Observable<IChildEntity[]>((subscriber) => {
     this.subject$.subscribe(subscriber);
     this.fetchChildren().then(v => this.subject$.next(v))
