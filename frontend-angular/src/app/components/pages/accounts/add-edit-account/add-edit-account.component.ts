@@ -20,7 +20,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
   minMaxLength = { minlength: 4, maxlength: 32 };
-  phoneMaxLength = { maxlength: 15 }
+  phoneMinMaxLength = { maxlength: 15, minlength: 9 }
   isLoading = false;
   hide = true;
   phoneFields: string[] = [];
@@ -58,21 +58,24 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       // this.accountForm?.setValue(this.ut.extractFrom(this.accountForm.controls, { ...this.account, password: '', repeatPassword: '' }));
     }
 
+    const phoneValidators = [Validators.maxLength(this.phoneMinMaxLength.maxlength),
+    Validators.minLength(this.phoneMinMaxLength.minlength),
+    Validators.pattern(/(^\+?)([0-9]+$)/)];
     this.accountForm = this.fb.group({
       username: [this.account?.username ?? null, [Validators.required, this.ut.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
       ...pass,
       roles: [this.account?.roles ?? [], [this.rolesValidator]],
       address: [this.account?.address ?? null, [Validators.maxLength(64)]],
-      phone0: [this.account?.phone0 ?? null, [Validators.maxLength(15),]],
-      phone1: [this.account?.phone1 ?? null, [Validators.maxLength(15),]],
-      phone2: [this.account?.phone2 ?? null, [Validators.maxLength(15),]],
-      phone3: [this.account?.phone3 ?? null, [Validators.maxLength(15),]],
-      phone4: [this.account?.phone4 ?? null, [Validators.maxLength(15),]],
-      phone5: [this.account?.phone5 ?? null, [Validators.maxLength(15),]],
-      phone6: [this.account?.phone6 ?? null, [Validators.maxLength(15),]],
-      phone7: [this.account?.phone7 ?? null, [Validators.maxLength(15),]],
-      phone8: [this.account?.phone8 ?? null, [Validators.maxLength(15),]],
-      phone9: [this.account?.phone9 ?? null, [Validators.maxLength(15),]],
+      phone0: [this.account?.phone0 ?? null, phoneValidators],
+      phone1: [this.account?.phone1 ?? null, phoneValidators],
+      phone2: [this.account?.phone2 ?? null, phoneValidators],
+      phone3: [this.account?.phone3 ?? null, phoneValidators],
+      phone4: [this.account?.phone4 ?? null, phoneValidators],
+      phone5: [this.account?.phone5 ?? null, phoneValidators],
+      phone6: [this.account?.phone6 ?? null, phoneValidators],
+      phone7: [this.account?.phone7 ?? null, phoneValidators],
+      phone8: [this.account?.phone8 ?? null, phoneValidators],
+      phone9: [this.account?.phone9 ?? null, phoneValidators],
     });
     // for (let i = 0; i < 10; i++)
     //   this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15),]));

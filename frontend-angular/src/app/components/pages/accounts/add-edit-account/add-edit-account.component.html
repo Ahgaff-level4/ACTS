@@ -82,9 +82,9 @@
       <div *ngFor="let phoneField of phoneFields; let i = index" class="col-md-4 p-2">
         <mat-form-field>
           <mat-label>{{'Phone'|translate}}&nbsp;{{i+1}}</mat-label>
-          <input matInput formControlName="{{ phoneField }}" (input)="onPhoneChange(i)" placeholder="..."
-            maxlength="15" />
-          <mat-error>{{getPhoneErrorMessage(phoneField)|translate:phoneMaxLength}}</mat-error>
+          <input dir="ltr" matInput type="tel" formControlName="{{ phoneField }}" (input)="onPhoneChange(i)" placeholder="..."
+            maxlength="15" minlength="9" />
+          <mat-error>{{getPhoneErrorMessage(phoneField)|translate:phoneMinMaxLength}}</mat-error>
         </mat-form-field>
       </div>
     </div>

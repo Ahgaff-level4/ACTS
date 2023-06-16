@@ -524,7 +524,7 @@
   "Passwords do not match": "كلمات المرور غير متطابقة",
   "Must not contain spaces": "يجب ألا تحتوي على مسافات",
   "Phone": "الهاتف",
-  "Phone number must contain only digits and '+' symbol": "يجب أن يحتوي رقم الهاتف على أرقام ورمز \"+\" فقط",
+  "Phone number must contain only digits and '+' symbol": "يجب أن يحتوي رقم الهاتف على أرقام ويسمح برمز \"+\" في البداية فقط",
   "None": "لا احد",
   "Save Changes": "حفظ التغييرات",
   "Are you sure you want to archive this child?": "هل أنت متأكد من أنك تريد أرشفة هذا الطفل؟",

@@ -2,7 +2,7 @@ import { Directive } from "@angular/core";
 import { Subscription } from "rxjs";
 
 @Directive()
-export class UnsubOnDestroy {
+export abstract class UnsubOnDestroy {
   public sub: Subscription = new Subscription();
 
   public ngOnDestroy() {
