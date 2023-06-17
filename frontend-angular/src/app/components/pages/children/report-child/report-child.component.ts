@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, filter, interval, map, tap, throttleTime } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, filter, interval, map, merge, mergeAll, mergeMap, tap, throttleTime } from 'rxjs';
 import { ReportService, } from 'src/app/services/report.service';
-import { CustomTimeframe, IChildReport, Timeframe } from '../../../../../../../interfaces';
+import { CustomTimeframe, IChildReport, IFieldEntity, Timeframe } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDateRangePicker, MatDatepicker } from '@angular/material/datepicker';
+import { FieldService } from 'src/app/services/field.service';
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',
@@ -17,11 +18,35 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
   /**Displayed Date Time Week */
   public nowDatetime = '';
   public isPrinting = false;
-  public goalsStatePieData: Observable<{ name: string, value: number }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
+  public goalsStatePieData$: Observable<{ name: string, value: number }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
     console.log(v)
     return [{ name: this.ut.translate('Completed'), value: v!.goal.completedCount },
     { name: this.ut.translate('Continual'), value: v!.goal.continualCount }];
   }));
+
+  public activitiesFieldsPolar$: Observable<{ name: string, series: { name: string, value: number }[] }[]> = combineLatest(
+    [this.childReport$.pipe(filter(v => v != null)),
+    this.fieldService.fields$]
+  ).pipe(map((v) => {
+    const report: IChildReport = v[0] as IChildReport;
+    const fields: IFieldEntity[] = v[1];
+    return [{
+      name: this.ut.translate('Completed goals'), series: fields.map(f => ({
+        name: f.name,
+        value: report.goalStrength.goals.filter(g => g.state != 'continual' && g.activity.fieldId == f.id).length
+      }))
+    }, {
+      name: this.ut.translate('Continual goals'), series: fields.map(f => ({
+        name: f.name,
+        value: report.goalStrength.goals.filter(g => g.state == 'continual' && g.activity.fieldId == f.id).length,
+      }))
+    },{
+      name:this.ut.translate('Strengths activities'),series:fields.map(f=>({
+        name:f.name,
+        value:report.goalStrength.strengths.filter(s => s.activity.fieldId == f.id).length
+      }))
+    }]
+  }))
 
   public customTimeframeForm = new FormGroup({
     from: new FormControl<Date>(new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') + '-01')),//current date at day one. Ex:'2023-06-17' => '2023-06-01'
@@ -29,7 +54,8 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
   });
 
 
-  constructor(private route: ActivatedRoute, public service: ReportService, public ut: UtilityService) { super(); }
+  constructor(private route: ActivatedRoute, public service: ReportService,
+    public ut: UtilityService, public fieldService: FieldService) { super(); }
 
   ngOnInit(): void {
     //refresh every minute
@@ -71,4 +97,8 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
       this.isPrinting = false
     }, 1000);
   }
+
+  stringify = (v: any) => v+'';
+
+
 }

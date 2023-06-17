@@ -64,9 +64,10 @@ export class ReportController {
 		// const continualCount = await this.dataSource.getRepository(GoalEntity)
 		// 	.countBy({ childId: id, state: 'continual', assignDatetime: Between(new Date(query.from), new Date(query.to)) });
 		const goals = await this.dataSource.getRepository(GoalEntity)
-			.findBy({ childId: id, state: Not('strength'), assignDatetime: Between(new Date(query.from), new Date(query.to)) });
+			.find({ relations: ['activity'], where: { childId: id, state: Not('strength'), assignDatetime: Between(new Date(query.from), new Date(query.to)) } });
+
 		const strengths = await this.dataSource.getRepository(GoalEntity)
-			.findBy({ childId: id, state: 'strength', assignDatetime: Between(new Date(query.from), new Date(query.to)) });
+			.find({ relations: ['activity'], where: { childId: id, state: 'strength', assignDatetime: Between(new Date(query.from), new Date(query.to)) } });
 		const completedCount = goals.filter(v => v.state == 'completed').length;
 		const continualCount = goals.filter(v => v.state == 'continual').length;
 		return { child, goal: { completedCount, continualCount }, goalStrength: { goals, strengths }, };
