@@ -63,7 +63,7 @@
         <mat-error *ngIf="customTimeframeForm.controls.to.hasError('matEndDateInvalid')">{{'Invalid end date'|translate}}</mat-error>
       </mat-form-field>
     </div>
-    <mat-card-content dir="ltr" class="me-4 mb-md-3">
+    <mat-card-content dir="ltr" style="min-height: 400px;" class="me-4 mb-md-3">
       <ngx-charts-polar-chart
       [legend]="true"
       [animations]="true"

@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IAccountEntity } from '../../../../../../../interfaces';
 import { Subscription } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/CRUD/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 

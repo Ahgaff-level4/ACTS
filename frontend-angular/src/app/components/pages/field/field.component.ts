@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { IFieldEntity } from '../../../../../../interfaces';
-import { FieldService } from 'src/app/services/field.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';

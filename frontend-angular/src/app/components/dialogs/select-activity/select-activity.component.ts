@@ -1,13 +1,13 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { ProgramService } from 'src/app/services/program.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IFieldEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { GoalService } from 'src/app/services/goal.service';
+import { GoalService } from 'src/app/services/CRUD/goal.service';
 import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit-activity.component';
-import { ActivityService } from 'src/app/services/activity.service';
-import { StrengthService } from 'src/app/services/strength.service';
-import { FieldService } from 'src/app/services/field.service';
+import { ActivityService } from 'src/app/services/CRUD/activity.service';
+import { StrengthService } from 'src/app/services/CRUD/strength.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
 import { SelectionChangedEvent } from 'ag-grid-community';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { BehaviorSubject, Observable } from 'rxjs';

@@ -1,10 +1,10 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { ActivityService } from 'src/app/services/activity.service';
+import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IFieldEntity } from '../../../../../../../interfaces';
-import { FieldService } from 'src/app/services/field.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({

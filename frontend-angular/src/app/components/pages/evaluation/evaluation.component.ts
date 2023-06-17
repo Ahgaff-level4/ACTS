@@ -4,7 +4,7 @@ import { MatSort } from '@angular/material/sort';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
 import { Subscription } from 'rxjs';
-import { EvaluationService } from 'src/app/services/evaluation.service';
+import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';

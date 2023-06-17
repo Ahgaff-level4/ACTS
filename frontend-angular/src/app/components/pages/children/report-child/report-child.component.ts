@@ -7,7 +7,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDateRangePicker, MatDatepicker } from '@angular/material/datepicker';
-import { FieldService } from 'src/app/services/field.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',

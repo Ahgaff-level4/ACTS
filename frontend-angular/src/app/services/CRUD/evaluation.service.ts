@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { UtilityService } from './utility.service';
-import { IGoalEntity, ICreateEvaluation, IEvaluationEntity, SucResEditDel } from '../../../../interfaces';
+import { UtilityService } from '../utility.service';
+import { IGoalEntity, ICreateEvaluation, IEvaluationEntity, SucResEditDel } from '../../../../../interfaces';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { ChildService } from './child.service';
 import { GoalService } from './goal.service';

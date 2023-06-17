@@ -1,7 +1,7 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IActivityEntity, IChildEntity, IStrengthEntity } from '../../../../../../../interfaces';
-import { StrengthService } from 'src/app/services/strength.service';
+import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';

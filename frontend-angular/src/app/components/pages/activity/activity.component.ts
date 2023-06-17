@@ -3,17 +3,17 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { IActivityEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { ActivityService } from 'src/app/services/activity.service';
+import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { ProgramService } from 'src/app/services/program.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { FieldService } from 'src/app/services/field.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({

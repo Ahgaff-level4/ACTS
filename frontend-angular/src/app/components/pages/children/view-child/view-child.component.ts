@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { IChildEntity } from '../../../../../../../interfaces';
-import { ChildService } from 'src/app/services/child.service';
+import { ChildService } from 'src/app/services/CRUD/child.service';
 import { Subscription } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';

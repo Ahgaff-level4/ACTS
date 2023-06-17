@@ -7,7 +7,7 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - fix each role privileges on add-edit-account tooltip or just make a dialog.
 
-- create simple Notification box to store live notifications. And only for Admin allow sending live message to all users.
+- create simple Notification box to store live notifications. And only for Admin allow sending live message to all users. And live logged in accounts. And send direct(private) message to one account.
 
 - check if a child can have duplicate activity for different goals/strengths. CHILD SHOULD NOT have duplicate activity.
 - check host file domain name in PowerToys app, may enable you to run server on LAN.
@@ -27,11 +27,8 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 - When user navigate to other page, show opacity animation. Like in RxJs web page (hide then show the other page).
 
 - Apache server...
-
-- change title component to have path like instead of `title1 \n title2`. so it will be:
-  `title1 > title2 > title3` each link is clickable.
   
-- Default load Goals page with filter of this month AND state=continues.
+<!-- - Default load Goals page with filter of this month AND state=continues. -->
 
 - About us page and link in the footer.
 

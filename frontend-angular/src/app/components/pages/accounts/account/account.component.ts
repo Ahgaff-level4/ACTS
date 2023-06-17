@@ -4,7 +4,7 @@ import { MatTable, MatTableDataSource } from '@angular/material/table';
 import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/CRUD/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';

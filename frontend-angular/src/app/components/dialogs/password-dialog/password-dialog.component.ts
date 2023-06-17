@@ -1,7 +1,7 @@
 import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/CRUD/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({

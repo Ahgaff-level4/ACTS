@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, ReplaySubject, Subject, shareReplay } from 'rxjs';
-import { ICreateProgram, IProgramEntity, SucResEditDel } from '../../../../interfaces';
+import { ICreateProgram, IProgramEntity, SucResEditDel } from '../../../../../interfaces';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { UtilityService } from './utility.service';
+import { UtilityService } from '../utility.service';
 
 @Injectable({
   providedIn: 'root'

@@ -3,7 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
 import { UtilityService } from 'src/app/services/utility.service';
-import { AccountService } from 'src/app/services/account.service';
+import { AccountService } from 'src/app/services/CRUD/account.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dialog/password-dialog.component';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';

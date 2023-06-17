@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
-import { IActivityEntity, ICreateActivity, IProgramEntity, SucResEditDel } from '../../../../interfaces';
+import { IActivityEntity, ICreateActivity, IProgramEntity, SucResEditDel } from '../../../../../interfaces';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { UtilityService } from './utility.service';
+import { UtilityService } from '../utility.service';
 import { ProgramService } from './program.service';
 import { BehaviorSubject, ReplaySubject, first, last } from 'rxjs';
 @Injectable({

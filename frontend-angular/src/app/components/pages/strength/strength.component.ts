@@ -4,12 +4,12 @@ import { IChildEntity, IStrengthEntity } from '../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { StrengthService } from 'src/app/services/strength.service';
+import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { AddEditStrengthComponent } from '../../dialogs/add-edit/add-edit-strength/add-edit-strength.component';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
-import { FieldService } from 'src/app/services/field.service';
-import { ProgramService } from 'src/app/services/program.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({

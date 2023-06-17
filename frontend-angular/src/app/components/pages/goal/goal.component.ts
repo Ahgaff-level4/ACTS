@@ -4,13 +4,13 @@ import { Subscription, first } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { MatDialog } from '@angular/material/dialog';
 import { UtilityService } from 'src/app/services/utility.service';
-import { GoalService } from 'src/app/services/goal.service';
+import { GoalService } from 'src/app/services/CRUD/goal.service';
 import { AddEditGoalComponent } from '../../dialogs/add-edit/add-edit-goal/add-edit-goal.component';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 import { ColDef, GridOptions, ICellRendererParams, ISetFilterParams, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { FieldService } from 'src/app/services/field.service';
-import { ProgramService } from 'src/app/services/program.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
@@ -92,7 +92,7 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
     {
       field: 'state',//not property of Goal
       headerName: 'State',
-      valueFormatter: v => v.value == 'continual' ? this.ut.translate('Continual') : this.ut.translate('Completed'),
+      valueFormatter: v => this.ut.translate(v.value),
       type: 'enum',
       filterParams: {
         values: ['continual', 'completed'],
@@ -153,7 +153,7 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
     try {
       let childId = await this.ut.getRouteParamId(this.route);
       await this.service.fetchChildItsGoals(childId, true).catch(() => { });
-    }catch(e){
+    } catch (e) {
       this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
     }
 
@@ -187,6 +187,9 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
   public gridOptions: GridOptions<IGoalEntity> = {
     ...this.agGrid.commonGridOptions('goals table', this.columnDefs, this.canEditDelete,
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
+      (e) => {
+        // e.api.getFilterInstance('state')?.setModel({ values: ['continual'] });
+      }
     ),
     onRowClicked: (v) => this.selectedItem = v.data,
   }

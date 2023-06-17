@@ -1,11 +1,11 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
-import { UtilityService } from './utility.service';
+import { UtilityService } from '../utility.service';
 import { BehaviorSubject, Observable, ReplaySubject, throwError } from 'rxjs';
-import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../interfaces';
+import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
 import { MatDialog } from '@angular/material/dialog';
-import { PasswordDialogComponent } from '../components/dialogs/password-dialog/password-dialog.component';
+import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
 
 @Injectable({
   providedIn: 'root'

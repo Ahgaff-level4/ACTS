@@ -104,36 +104,36 @@ const AHT = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher'] };
 const AHTP = { allowRoles: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'] }
 const titlePrefix = 'ACTS - ';
 
-const routes: Routes = [
-  { path: '', component: HomeComponent, title: titlePrefix + 'Home', pathMatch: 'full' },
+export const routes: Routes = [
+  { path: '', component: HomeComponent, title: titlePrefix + 'Home', pathMatch: 'full',data:{animation:'homePage'} },
   { path: 'main', redirectTo: '/' },
   { path: 'home', redirectTo: '/' },
   { path: 'index', redirectTo: '/' },
-  { path: 'login', component: LoginComponent, title: titlePrefix + 'Login' },
-  { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: AHT },
-  { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: AHT },
-  { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: A },
-  { path: 'account/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: A },
-  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: A },
-  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: A },
-  { path: 'program/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: AHT },
-  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: AHTP },
-  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: AH },
-  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: AH },
-  { path: 'child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: AHTP },
-  { path: 'child/:childId/goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
-  { path: 'goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: AHTP },
-  { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: AHTP },
-  { path: 'child/:id', component: ViewChildComponent, title: titlePrefix + 'Child info', canActivate: [RoleGuard], data: AHTP },
-  { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: AH },
-  { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', },
-  { path: 'child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: AH },
-  { path: '**', component: Page404Component, title: 'Page Not Found' },
+  { path: 'login', component: LoginComponent, title: titlePrefix + 'Login', data: { animation: 'loginPage' } },
+  { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: { ...AHT, animation: 'fieldPage' } },
+  { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: { ...AHT, animation: 'programPage' } },
+  { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: { ...A, animation: 'accountPage' } },
+  { path: 'account/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: { ...A, animation: 'viewAccountPage' } },
+  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { ...A, animation: 'addAccountPage' } },
+  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { ...A, animation: 'editAccountPage' } },
+  { path: 'program/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { ...AHT, animation: 'programActivitiesPage' } },
+  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: { ...AHTP, animation: 'childrenPage' } },
+  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { ...AH, animation: 'addChildPage' } },
+  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { ...AH, animation: 'editChildPage' } },
+  { path: 'child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: { ...AHTP, animation: 'childGoalsPage' } },
+  { path: 'child/:childId/goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { ...AHTP, animation: 'goalEvaluationsPage' } },
+  { path: 'goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { ...AHTP, animation: 'goalEvaluationsPage' } },
+  { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: { ...AHTP, animation: 'childStrengthsPage' } },
+  { path: 'child/:id', component: ViewChildComponent, title: titlePrefix + 'Child info', canActivate: [RoleGuard], data: { ...AHTP, animation: 'viewChildPage' } },
+  { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: { ...AH, animation: 'specialActivitiesPage' } },
+  { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', data: { animation: 'settingsPage' } },
+  { path: 'child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: { ...AH, animation: 'childReportPage' } },
+  { path: '**', component: Page404Component, title: 'Page Not Found', data: { animation: 'pageNotFoundPage' } },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
-    scrollPositionRestoration: 'enabled'
+    scrollPositionRestoration: 'enabled',
   })],
   exports: [RouterModule]
 })

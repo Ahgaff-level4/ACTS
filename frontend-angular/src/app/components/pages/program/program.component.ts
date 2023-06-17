@@ -1,6 +1,6 @@
 import { Component, OnDestroy } from '@angular/core';
 import { IProgramEntity } from '../../../../../../interfaces';
-import { ProgramService } from 'src/app/services/program.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MatDialog } from '@angular/material/dialog';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';

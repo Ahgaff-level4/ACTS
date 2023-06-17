@@ -2,7 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { IFieldEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { FieldService } from 'src/app/services/field.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({

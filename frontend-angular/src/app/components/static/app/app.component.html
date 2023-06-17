@@ -1,5 +1,8 @@
 <app-header></app-header>
-<router-outlet>
-  <app-spinner *ngIf="this.isLoading"></app-spinner>
-</router-outlet>
+<div style="min-height: 99vh;" [@routeAnimations]="prepareRoute(outlet)">
+  <div id="whiteLayer" style="z-index:999999;" class="position-absolute bg-white"></div>
+  <router-outlet style="min-height: 100vh;" #outlet="outlet">
+    <app-spinner *ngIf="this.isLoading"></app-spinner>
+  </router-outlet>
+</div>
 <app-footer></app-footer>
