@@ -1,22 +1,14 @@
 .top {
   z-index: -1;
-  top: -50px;
-  // right: -500px;
-  height: 660px;
-  width: 100%;
+  margin-top: -50px;
+  padding-top: 100px;
   border-bottom-left-radius: 3.3rem;
   border-bottom-right-radius: 3.3rem;
-  // border-radius: 50%;
   overflow: hidden !important;
-}
-@media (min-width: 768px) {
-  .top {
-    height: 470px;
-  }
 }
 
 .card {
-  width:250px;
+  width: 250px;
   display: block;
   top: 0px;
   position: relative;
@@ -57,4 +49,3 @@
     transform: scale(2.15);
   }
 }
-

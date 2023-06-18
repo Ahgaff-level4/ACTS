@@ -16,14 +16,27 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
   styleUrls: ['./app.component.scss'],
   animations: [trigger('routeAnimations', [
     transition('* => homePage', [
+
+      query('#whiteLayer', [
+        style({ minWidth: '100%', minHeight: '100%', opacity: 1 }),
+      ]),
+      query('#animate-home-header', [
+        style({ height: 0, paddingTop: 0, marginTop: 0 }),
+      ]),
+      group([
+        query('#whiteLayer', [
+          animate('500ms 1ms ease-out', style({ opacity: 0, marginTop: '90vh' })),
+        ]),
+        query('#animate-home-header', [
+          animate("500ms 1ms ease-out", style({ height: "*", paddingTop: '*', marginTop: '*' }))
+        ]),
+      ])
     ],),
     transition('* <=> *', [
 
       query('#whiteLayer', [
-        style({ minWidth: '100%', minHeight: '100%', opacity: 1 })
-      ]),
-      query('#whiteLayer', [
-        animate('700ms 1ms ease-in-out', style({ opacity: 0 })),
+        style({ minWidth: '100%', minHeight: '100%', opacity: 1 }),
+        animate('500ms 1ms ease-in-out', style({ opacity: 0 })),
       ]),
 
     ],)

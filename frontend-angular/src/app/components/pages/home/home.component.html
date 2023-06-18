@@ -1,22 +1,18 @@
-<div style="height:0px !important;" class="d-flex flex-nowrap overflow-visible">
-  <div class="my-primary-bg position-relative top">
+<div id="animate-home-header"
+  class="d-flex my-primary-bg flex-md-row flex-column justify-content-md-between mb-5 top pb-5 px-5">
+  <div class="text-white mb-5 text-center mt-md-5">
+    <h1 class="display-1 text-white">{{'ACTS'|translate}}</h1>
+    <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
   </div>
+  <img src="assets/img/teacher-teach-child.svg" width="auto" height="330px" alt="Teacher teach a child">
 </div>
 <div class="container-fluid">
-  <div
-    class="d-flex flex-md-row flex-column justify-content-md-between justify-content-center container mb-5 pb-5 mt-5 ">
-    <div class="text-white mb-5 text-center  mt-md-5 text-md-start">
-      <h1 class="display-1 text-white">{{'ACTS'|translate}}</h1>
-      <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
-    </div>
-    <img class="align-self-center" src="assets/img/teacher-teach-child.svg" width="auto" height="330px"
-      alt="Teacher teach a child">
-  </div>
 
   <mat-divider class="mx-5 my-4"></mat-divider>
 
   <div class=" mb-4 text-center">
-    <h3 class="my-primary-text mt-2 pb-2">{{'Watch this video to see how Autism Children Technical System works'|translate}}</h3>
+    <h3 class="my-primary-text mt-2 pb-2">{{'Watch this video to see how Autism Children Technical System
+      works'|translate}}</h3>
     <!-- <youtube-player class="rounded-5 shadow"
     videoId="PeIN-Fe7DQo"
     [width]="560"
@@ -36,10 +32,16 @@
   <div class="row">
     <div class="col-md-7 align-self-center">
       <h3 class="text-center my-primary-text">{{'About the Hadramout Foundation for Autism'|translate}}</h3>
-      <p class="mx-4 mt-4 fs-5">{{'Hadramout Foundation for Autism was established on 2012 with the aim of training, rehabilitation, education and service of children with special needs and their families. It aims to implement projects for the rehabilitation and training for autism centres and societies in Hadramout according to the latest educational methods and with the participation of accredited specialists from outside Yemen.'|translate}}</p>
+      <p class="mx-4 mt-4 fs-5">{{'Hadramout Foundation for Autism was established on 2012 with the aim of training,
+        rehabilitation, education and service of children with special needs and their families. It aims to implement
+        projects for the rehabilitation and training for autism centres and societies in Hadramout according to the
+        latest educational methods and with the participation of accredited specialists from outside Yemen.'|translate}}
+      </p>
     </div>
     <div class="col-md-5">
-      <a class=" d-flex justify-content-center align-content-center" href="https://www.facebook.com/hadaidorg"><img class="align-self-center shadow rounded-5" width="50%" src="assets/img/HFA-logo.jpg" alt="Hadramout Foundation for Autism logo" /></a>
+      <a class=" d-flex justify-content-center align-content-center" href="https://www.facebook.com/hadaidorg"><img
+          class="align-self-center shadow rounded-5" width="50%" src="assets/img/HFA-logo.jpg"
+          alt="Hadramout Foundation for Autism logo" /></a>
     </div>
   </div>
 
@@ -47,25 +49,35 @@
   <div class="my-5 py-1"></div>
   <div class="row">
     <div class="col-md-7 d-flex justify-content-center">
-      <a href="https://www.facebook.com/hadaidorg"><img class="align-self-center shadow rounded-5" width="100%" src="assets/img/HFA.jpg" alt="Hadramout Foundation for Autism building" /></a>
+      <a href="https://www.facebook.com/hadaidorg"><img class="align-self-center shadow rounded-5" width="100%"
+          src="assets/img/HFA.jpg" alt="Hadramout Foundation for Autism building" /></a>
     </div>
     <div class="col-md-5 align-self-center">
-      <p class="mx-4 mt-2 fs-5">{{'The foundation started under the auspices of 50 children with disabilities (autism - down syndrome - learning difficulties). In 2015, the number of children increased to 120, and the number of children joining it reached 197 children and 131 of the educational and administrative cadres worked, and the number of reserve children from those wishing to join the foundation reached more than 200 children. In that time, the foundation was unable to receive them due to lack of the capacity of the current building and the absence of an operational budget. The foundation celebrated the graduation of more than 60 of its children and enrolled in public schools and more than 20 children to qualify the professional to practice their lives normally.'|translate}}&nbsp;<a href="https://www.facebook.com/hadaidorg">{{'For more information click here.'|translate}}</a></p>
+      <p class="mx-4 mt-2 fs-5">{{'The foundation started under the auspices of 50 children with disabilities (autism -
+        down syndrome - learning difficulties). In 2015, the number of children increased to 120, and the number of
+        children joining it reached 197 children and 131 of the educational and administrative cadres worked, and the
+        number of reserve children from those wishing to join the foundation reached more than 200 children. In that
+        time, the foundation was unable to receive them due to lack of the capacity of the current building and the
+        absence of an operational budget. The foundation celebrated the graduation of more than 60 of its children and
+        enrolled in public schools and more than 20 children to qualify the professional to practice their lives
+        normally.'|translate}}&nbsp;<a href="https://www.facebook.com/hadaidorg">{{'For more information click
+          here.'|translate}}</a></p>
     </div>
   </div>
   <div class="my-4 py-md-3"></div>
 
   <div class="m-md-3">
-    <a href="https://www.facebook.com/hadaidorg"><img class="rounded-2 shadow-sm" width="100%" src="assets/img/HFA-banner.jpg" alt="Hadramout Foundation for Autism banner" /></a>
+    <a href="https://www.facebook.com/hadaidorg"><img class="rounded-2 shadow-sm" width="100%"
+        src="assets/img/HFA-banner.jpg" alt="Hadramout Foundation for Autism banner" /></a>
   </div>
 
   <mat-divider class="mx-5 my-5"></mat-divider>
 
   <div class="d-flex flex-wrap justify-content-evenly">
     <mat-card *ngFor="let card of cards" [routerLink]="card.link" style="cursor: pointer;"
-    class="card m-3 shadow mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
+      class="card m-3 shadow mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
       <img style="max-width:220px; max-height: 220px;" class="p-2" [src]="card.img"
-      [alt]="card.alt??'image represent card\'s content'">
+        [alt]="card.alt??'image represent card\'s content'">
       <div class="text-center mt-2 p-2">
         <h4 class="card-title">{{card.title|translate}}</h4>
         <p class="card-text">{{card.desc|translate}}</p>

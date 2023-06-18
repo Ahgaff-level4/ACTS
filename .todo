@@ -1,5 +1,3 @@
-- when user changing route/page there should be sort of loader/spinner. Loading until the page is loaded. Also, check for animation when transporting between pages
-
 - Translate server error messages.
 
 - reduce bundle size by reusing one component instead of duplicate code.
@@ -23,8 +21,6 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 - Child should has specific program, and it should be selected as default when selecting an activity.
 
 - Look for how to make a web page as Android App, Check out Capacitor.
-
-- When user navigate to other page, show opacity animation. Like in RxJs web page (hide then show the other page).
 
 - Apache server...
   
