@@ -12,15 +12,14 @@ import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-goal',
   templateUrl: './goal.component.html',
   styleUrls: ['./goal.component.scss']
 })
-export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
-  public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
-  public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
+export class GoalComponent extends UnsubOnDestroy {
   public selectedItem?: IGoalEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -124,26 +123,29 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">rate_review</mat-icon>`,
       action: (v) => this.evaluate(v?.id),
       tooltip: 'Evaluate the selected goal',
+      disabled:!this.pr.canUser('addEvaluation'),
     },
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
       action: (v) => v && this.service.childItsGoals$.value ? this.ut.router.navigateByUrl('/child/' + this.service.childItsGoals$.value.id + '/goal/' + v.id + '/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
+      disabled:!this.pr.canUser('goalEvaluationsPage'),
     },
     {
       name: 'Delete',
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected goal',
-      disabled: !this.canEditDelete,
+      disabled: !this.pr.canUser('deleteGoal'),
     },
   ];
 
 
   constructor(public service: GoalService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute, public agGrid: AgGridService,
-    private fieldService: FieldService, private programService: ProgramService) {
+    private fieldService: FieldService, private programService: ProgramService,
+    public pr: PrivilegeService) {
     super();
   }
 
@@ -169,10 +171,6 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
         col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };
     }));
 
-    this.sub.add(this.ut.user.subscribe(v => {
-      this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
-      this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    }));
   }
 
   applySearch(event: Event) {
@@ -185,7 +183,7 @@ export class GoalComponent extends UnsubOnDestroy implements OnDestroy {
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IGoalEntity> = {
-    ...this.agGrid.commonGridOptions('goals table', this.columnDefs, this.canEditDelete,
+    ...this.agGrid.commonGridOptions('goals table', this.columnDefs, this.pr.canUser('editGoal'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => {
         // e.api.getFilterInstance('state')?.setModel({ values: ['continual'] });

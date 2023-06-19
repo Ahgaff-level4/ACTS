@@ -4,6 +4,7 @@ import { Role } from '../../../../../../interfaces';
 import { AsyncSubject, Observable, ReplaySubject, Subject, map, of, share, shareReplay, tap } from 'rxjs';
 import { AsyncScheduler } from 'rxjs/internal/scheduler/AsyncScheduler';
 import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
+import { Action, PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-home',
@@ -11,7 +12,7 @@ import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
   styleUrls: ['./home.component.scss']
 })
 export class HomeComponent implements OnInit {
-  constructor(public ut: UtilityService) { }
+  constructor(public pr: PrivilegeService) { }
 
   public cards!: Card[];
 
@@ -22,28 +23,28 @@ export class HomeComponent implements OnInit {
         link: '/children',
         img: 'assets/img/girl.svg', alt: 'girl photo',
         desc: 'Children information',
-        role: ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent',]
+        role: 'childrenPage'
       },
       {
         title: "Special Activities",
         img: "assets/img/Activity.svg",
         link: "/special-activities",
         desc: "Special Activities information",
-        role: ['Admin', 'HeadOfDepartment']
+        role: 'specialActivitiesPage'
       },
       {
         title: "Programs",
         img: "assets/img/Program.svg",
         link: "/program",
         desc: "Programs information",
-        role: ['Admin', 'HeadOfDepartment', 'Teacher']
+        role: 'programsPage'
       },
       {
         title: 'Accounts',
         link: '/account',
         img: 'assets/img/Account.svg',
         desc: 'Manage all users accounts',
-        role: ['Admin']
+        role: 'accountsPage'
       },
       {
         title: 'Settings',
@@ -51,12 +52,19 @@ export class HomeComponent implements OnInit {
         img: 'assets/img/Setting.svg',
         desc: 'Settings and preference',
       },
+      //todo field page
     ];
 
-    this.cards = _cards.filter(v => v.role ? this.ut.userHasAny(...v.role) : true);
+    this.cards = _cards.filter(v => v.role ? this.pr.canUser(v.role) : true);
   }
 }
 
 interface Card {
-  title: string, link: string, img: string, alt?: string, desc: string, role?: Role[]
+  title: string,
+  link: string,
+  img: string,
+  alt?: string,
+  desc: string,
+  role?: Action
+
 }

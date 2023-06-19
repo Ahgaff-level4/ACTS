@@ -15,21 +15,21 @@
         <li class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher','Parent')" class="px-3 nav-item"
+        <li *ngIf="pr.canUser('childrenPage')" class="px-3 nav-item"
           routerLinkActive="active">
           <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment','Teacher')" class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="pr.canUser('programsPage')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/program">{{'Programs'|translate}}</a>
         </li>
-        <li *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment','Teacher')" class="px-3 nav-item"
+        <li *ngIf="pr.canUser('fieldsPage')" class="px-3 nav-item"
           routerLinkActive="active">
           <a class="nav-link" routerLink="/field">{{'Fields'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin','HeadOfDepartment')" class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="pr.canUser('specialActivitiesPage')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
         </li>
-        <li *ngIf="ut.userHasAny('Admin')" class="px-3 nav-item" routerLinkActive="active">
+        <li *ngIf="pr.canUser('accountsPage')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
         </li>
         <li class="px-3 nav-item" routerLinkActive="active">

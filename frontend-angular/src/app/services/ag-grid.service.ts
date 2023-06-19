@@ -302,7 +302,7 @@ export class AgGridService {
           icon: copyIcon,
           subMenu: this.copySubMenu(v, copyIcon),
         });
-        return this.ut.userHasAny(this.pr.action.printTable) == false ? items : [...items,
+        return this.pr.canUser('printTable') == false ? items : [...items,
           'separator',
         {
           name: this.ut.translate('Export table'),
@@ -361,7 +361,7 @@ export class AgGridService {
       action: () => api.copyToClipboard({ includeHeaders: true })
     },];
 
-    return this.ut.userHasAny(this.pr.action.printTable) == false ? copyCellRow : [...copyCellRow, 'separator',
+    return this.pr.canUser('printTable') == false ? copyCellRow : [...copyCellRow, 'separator',
     {
       name: this.ut.translate('Copy table'),
       icon: copyIcon,

@@ -25,18 +25,18 @@
   <p><span class="fw-bold">{{'Parent'|translate}}:</span>&nbsp;{{child.parent?.person?.name||'-'}}</p>
   <p><span class="fw-bold">{{'Teachers'|translate}}:</span>&nbsp;{{this.ut.displayTeachers(child)||'-'}}</p>
   <div *ngIf="!isPrinting" class="d-md-flex mx-4 pt-4 justify-content-evenly rounded-5">
-    <button *ngIf="ut.userHasAny('Admin','HeadOfDepartment')" class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button
+    <button *ngIf="pr.canUser('editChildPage')" class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button
       color="primary" (click)="this.ut.router.navigate(['edit-child'], { state: { data: child } })">
       <mat-icon>edit</mat-icon>{{'Edit'|translate}}
     </button>
-    <a class="w-100 mx-3 mb-2 rounded-5" [routerLink]="'/child/'+child.id+'/goals'" mat-stroked-button color="primary">
+    <a *ngIf="pr.canUser('childGoalsPage')" class="w-100 mx-3 mb-2 rounded-5" [routerLink]="'/child/'+child.id+'/goals'" mat-stroked-button color="primary">
       {{'Goals'|translate}}<mat-icon>sports_score</mat-icon>
     </a>
-    <a class="w-100 mx-3 mb-2 rounded-5 nbsp" [routerLink]="'/child/'+child.id+'/strengths'" mat-stroked-button
+    <a *ngIf="pr.canUser('childStrengthsPage')" class="w-100 mx-3 mb-2 rounded-5 nbsp" [routerLink]="'/child/'+child.id+'/strengths'" mat-stroked-button
       color="primary">
       {{'Strengths'|translate}}<mat-icon>fitness_center</mat-icon>
     </a>
-    <a class="w-100 mx-3 mb-2 rounded-5" *ngIf="this.ut.userHasAny('Admin','HeadOfDepartment')"
+    <a class="w-100 mx-3 mb-2 rounded-5" *ngIf="this.pr.canUser('childReportPage')"
       [routerLink]="'/child/'+child.id+'/report'" mat-stroked-button color="primary">
       {{'Report'|translate}}<mat-icon>analytics</mat-icon>
     </a>

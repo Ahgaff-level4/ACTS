@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService } from 'src/app/services/login.service';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class HeaderComponent implements OnInit {
   public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
   public isLoggedIn: boolean = false;
 
-  constructor(public ut: UtilityService, public loginService: LoginService, public translate: TranslateService) {
+  constructor(public ut: UtilityService, public loginService: LoginService, public translate: TranslateService, public pr:PrivilegeService) {
   }
 
   ngOnInit(): void {

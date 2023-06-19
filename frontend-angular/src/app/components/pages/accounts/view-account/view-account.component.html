@@ -13,9 +13,9 @@
         <p><span class="fw-bold">
             {{'Register date'|translate}}:</span>&nbsp;{{this.ut.fromNow(account.person.birthDate)||'-'}}</p>
         <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{account.username||'-'}}</p>
-        <p *ngIf="ut.userHasAny('Parent')"><span class="fw-bold">
+        <p *ngIf="pr.canUser('accountAddressPhone')"><span class="fw-bold">
             {{'Address'|translate}}:</span>&nbsp;{{account.address||'-'}}</p>
-        <p *ngIf="ut.userHasAny('Parent')"><span
+        <p *ngIf="pr.canUser('accountAddressPhone')"><span
             class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{ut.displayPhones(account)||'-'}}</p>
         <p><span class="fw-bold">
             {{'Roles'|translate}}:</span>&nbsp;{{ut.displayRoles(account.roles)||'-'}}</p>

@@ -87,6 +87,6 @@
 
   <mat-divider class="mx-5 my-5"></mat-divider>
 
-  <app-dashboard *ngIf="ut.userHasAny('Admin')"></app-dashboard>
+  <app-dashboard *ngIf="pr.canUser('dashboard')"></app-dashboard>
 
 </div>

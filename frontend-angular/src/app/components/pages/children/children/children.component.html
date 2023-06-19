@@ -10,12 +10,12 @@
   </div>
 
   <app-table-controllers *ngIf="!isPrinting"
-    [anchor1]="{text:'Register a child',icon:'person_add',link:'/add-child',show:canAddEdit,}"
+    [anchor1]="{text:'Register a child',icon:'person_add',link:'/add-child',show:this.pr.canUser('addChildPage'),}"
     [anchor2]="{text:'View',icon:'wysiwyg',disabled:selectedItem==null,tooltip:'View all information',link:selectedItem?'/child/'+selectedItem!.id:'./',}"
-    [button3]="{text:'Edit',icon:'edit', show:canAddEdit,disabled:selectedItem==null,tooltip:'Edit the selected row',}"
+    [button3]="{text:'Edit',icon:'edit', show:this.pr.canUser('editChildPage'),disabled:selectedItem==null,tooltip:'Edit the selected row',}"
     (button3Click)="edit(this.selectedItem)"
     [anchor4]="{text:'Goals',icon:'sports_score',disabled:selectedItem==null,tooltip:'View goals of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/goals':'./',}"
     [anchor5]="{disabled:selectedItem==null,tooltip:'View strengths of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/strengths':'./',text:'Strengths',icon:'fitness_center',}"
-    [anchor6]="{show:this.ut.userHasAny(pr.action.reportChild),disabled:selectedItem==null,tooltip:'View report of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/report':'./',text:'Report',icon:'analytics'}"
+    [anchor6]="{show:this.pr.canUser('childReportPage'),disabled:selectedItem==null,tooltip:'View report of the selected child',link:selectedItem?'/child/'+selectedItem!.id+'/report':'./',text:'Report',icon:'analytics'}"
     ></app-table-controllers>
 </div>

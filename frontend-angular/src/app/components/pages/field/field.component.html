@@ -10,11 +10,11 @@
   </div>
 
   <app-table-controllers *ngIf="!isPrinting"
-  [button1]="{show:canAddEdit,text:'Add new field',icon:'add'}"
+  [button1]="{show:this.pr.canUser('addField'),text:'Add new field',icon:'add'}"
   (button1Click)="addEdit()"
-  [button2]="{show:canAddEdit,disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
+  [button2]="{show:this.pr.canUser('editField'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
   (button2Click)="addEdit(selectedItem)"
-  [button3]="{disabled:selectedItem==null,show:canAddEdit,tooltip:'Delete the selected field',color:'warn',text:'Delete',icon:'delete'}"
+  [button3]="{disabled:selectedItem==null,show:this.pr.canUser('deleteField'),tooltip:'Delete the selected field',color:'warn',text:'Delete',icon:'delete'}"
   (button3Click)="deleteDialog(selectedItem)"
   ></app-table-controllers>
 </div>

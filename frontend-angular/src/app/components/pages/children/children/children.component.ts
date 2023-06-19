@@ -15,8 +15,7 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
 })
-export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
-  public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+export class ChildrenComponent extends UnsubOnDestroy {
   public selectedItem?: IChildEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -162,7 +161,7 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
       tooltipValueGetter: (v) => v.data?.parent?.username ? this.ut.translate('Username') + ': ' + v.data.parent.username : '',
     },
 
-    ...this.canAddEdit ?//add isArchive column if user can add/edit. We are forced to duplicate teacher column for false closure unless we do a function and make it big deal.
+    ...this.pr.canUser('archiveChild') ?//add isArchive column if user can add/edit. We are forced to duplicate teacher column for false closure unless we do a function and make it big deal.
       [{
         field: 'teachers',
         headerName: 'Teachers',
@@ -192,7 +191,7 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
   // Data that gets displayed in the grid
   public rowData = this.childService.children$.pipe(map(v => {
     console.log('rowData = children')
-    if (this.canAddEdit)
+    if (this.pr.canUser('archiveChild'))
       return this.ut.deepClone(v);
     else return this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
   }));
@@ -202,16 +201,6 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
     public ut: UtilityService, public pr: PrivilegeService) {
     super();
   }
-
-
-
-  ngOnInit(): void {
-    this.sub.add(this.ut.user.subscribe(v => {
-      this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    }));
-
-  }
-
 
   applySearch(event: Event) {
     this.quickFilter = (event.target as HTMLInputElement).value;
@@ -255,7 +244,7 @@ export class ChildrenComponent extends UnsubOnDestroy implements OnInit, OnDestr
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IChildEntity> = {
-    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.canAddEdit,
+    ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.pr.canUser('editChildPage'),
       this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) },
       (e) => {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });

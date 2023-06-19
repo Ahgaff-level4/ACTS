@@ -6,6 +6,7 @@ import { BehaviorSubject, Observable, ReplaySubject, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
+import { PrivilegeService } from '../privilege.service';
 
 @Injectable({
   providedIn: 'root'
@@ -15,8 +16,8 @@ export class AccountService implements OnInit {
   public accounts = new ReplaySubject<IAccountEntity[]>();
   public isLoggerIn: boolean = false;
 
-  constructor(private http: HttpClient, private ut: UtilityService, private dialog: MatDialog) {
-    if (this.ut.userHasAny('Admin'))
+  constructor(private http: HttpClient, private ut: UtilityService, private pr:PrivilegeService, private dialog: MatDialog) {
+    if (this.pr.canUser('accountsPage'))
       this.fetch();
   }
 

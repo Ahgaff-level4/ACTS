@@ -10,10 +10,10 @@
       [rowData]="childItsStrengths?.strengths" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <app-table-controllers *ngIf="!isPrinting" [button1]="{show:canAdd,text:'Add new strength',icon:'add'}"
+  <app-table-controllers *ngIf="!isPrinting" [button1]="{show:this.pr.canUser('addStrength'),text:'Add new strength',icon:'add'}"
     (button1Click)="addEdit(childItsStrengths?.id)"
-    [button2]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
+    [button2]="{show:this.pr.canUser('editStrength'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
     (button2Click)="addEdit(this.selectedItem)"
-    [button3]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Delete the selected strength',color:'warn',icon:'delete',text:'Delete'}"
+    [button3]="{show:this.pr.canUser('deleteStrength'),disabled:selectedItem==null,tooltip:'Delete the selected strength',color:'warn',icon:'delete',text:'Delete'}"
     (button3Click)="deleteDialog(this.selectedItem)"></app-table-controllers>
 </div>

@@ -13,6 +13,7 @@ import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-eval
 import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-evaluation',
@@ -20,8 +21,6 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
   styleUrls: ['./evaluation.component.scss']
 })
 export class EvaluationComponent extends UnsubOnDestroy {
-  public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
-  public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
   public selectedItem?: IEvaluationEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -87,7 +86,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected evaluation',
-      disabled: !this.canEditDelete,
+      disabled: !this.pr.canUser('deleteEvaluation'),
     },
   ];
 
@@ -95,7 +94,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
   constructor(public service: EvaluationService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute,
-    public agGrid: AgGridService) {
+    public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
 
@@ -109,10 +108,6 @@ export class EvaluationComponent extends UnsubOnDestroy {
       this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
     }
 
-    this.sub.add(this.ut.user.subscribe(v => {
-      this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
-      this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    }));
   }
 
   applySearch(event: Event) {
@@ -125,7 +120,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IEvaluationEntity> = {
-    ...this.agGrid.commonGridOptions('evaluations table', this.columnDefs, this.canEditDelete,
+    ...this.agGrid.commonGridOptions('evaluations table', this.columnDefs, this.pr.canUser('editEvaluation'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
     ),
     onRowClicked: (v) => this.selectedItem = v.data,

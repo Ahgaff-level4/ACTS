@@ -8,14 +8,14 @@ import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-field',
   templateUrl: './field.component.html',
   styleUrls: ['./field.component.scss']
 })
-export class FieldComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
-  public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
+export class FieldComponent extends UnsubOnDestroy {
   public selectedItem?: IFieldEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -58,19 +58,13 @@ export class FieldComponent extends UnsubOnDestroy implements OnInit, OnDestroy 
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected field',
-      disabled: !this.canAddEdit,
+      disabled: !this.pr.canUser('deleteField'),
     },
   ];
 
   constructor(private service: FieldService, public ut: UtilityService,
-    private dialog: MatDialog, public agGrid: AgGridService) {
+    private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.sub.add(this.ut.user.subscribe(v => {
-      this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    }));
   }
 
   applySearch(event: Event) {
@@ -83,7 +77,7 @@ export class FieldComponent extends UnsubOnDestroy implements OnInit, OnDestroy 
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IFieldEntity> = {
-    ...this.agGrid.commonGridOptions('fields table', this.columnDefs, this.canAddEdit,
+    ...this.agGrid.commonGridOptions('fields table', this.columnDefs, this.pr.canUser('editField'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),

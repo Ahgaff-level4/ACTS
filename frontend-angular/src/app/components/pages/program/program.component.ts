@@ -8,14 +8,14 @@ import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Observable, Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-program',
   templateUrl: './program.component.html',
   styleUrls: ['./program.component.scss']
 })
-export class ProgramComponent extends UnsubOnDestroy implements OnDestroy {
-  public canAddEditDelete: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');;
+export class ProgramComponent extends UnsubOnDestroy {
   public selectedItem?: IProgramEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -68,30 +68,23 @@ export class ProgramComponent extends UnsubOnDestroy implements OnDestroy {
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected program',
-      disabled: !this.canAddEditDelete,
+      disabled: !this.pr.canUser('deleteProgram'),
     },
   ];
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IProgramEntity> = {
-    ...this.agGrid.commonGridOptions('programs table', this.columnDefs, this.canAddEditDelete,
+    ...this.agGrid.commonGridOptions('programs table', this.columnDefs, this.pr.canUser('editProgram'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 
-  constructor(private service: ProgramService, public ut: UtilityService, private dialog: MatDialog, public agGrid: AgGridService) {
+  constructor(private service: ProgramService, public ut: UtilityService,
+    private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
-
-  ngOnInit(): void {
-    this.sub.add(this.ut.user.subscribe(v => {
-      this.canAddEditDelete = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    }));
-  }
-
-
 
   applySearch(event: Event) {
     this.quickFilter = (event.target as HTMLInputElement).value;

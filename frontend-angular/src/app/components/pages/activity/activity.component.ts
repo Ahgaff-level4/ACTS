@@ -15,6 +15,7 @@ import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-activity',
@@ -22,7 +23,6 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
   styleUrls: ['./activity.component.scss']
 })
 export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
-  public canAddEdit: boolean = this.ut.userHasAny('Admin', 'HeadOfDepartment');
   public selectedItem?: IActivityEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -90,14 +90,14 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected activity',
-      disabled: !this.canAddEdit,
+      disabled: !this.pr.canUser('deleteActivity'),
     },
   ];
 
 
   constructor(public service: ActivityService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute,
-    private fieldService: FieldService, public agGrid: AgGridService,) {
+    private fieldService: FieldService, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
 
@@ -123,9 +123,6 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
     });
-    this.ut.user.subscribe(v => {
-      this.canAddEdit = this.ut.userHasAny('Admin', 'HeadOfDepartment');
-    });
   }
 
   applySearch(event: Event) {
@@ -138,7 +135,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IActivityEntity> = {
-    ...this.agGrid.commonGridOptions('activities table', this.columnDefs, this.canAddEdit,
+    ...this.agGrid.commonGridOptions('activities table', this.columnDefs, this.pr.canUser('editActivity'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),

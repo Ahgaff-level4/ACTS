@@ -11,6 +11,7 @@ import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-strength',
@@ -18,8 +19,6 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
   styleUrls: ['./strength.component.scss']
 })
 export class StrengthComponent extends UnsubOnDestroy {
-  public canAdd: boolean = this.ut.userHasAny('Admin', 'Teacher');
-  public canEditDelete: boolean = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
   public selectedItem?: IStrengthEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -83,14 +82,14 @@ export class StrengthComponent extends UnsubOnDestroy {
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
       action: (v) => this.deleteDialog(v),
       tooltip: 'Delete the selected strength',
-      disabled: !this.canEditDelete,
+      disabled: !this.pr.canUser('deleteStrength'),
     },
   ];
 
   constructor(public service: StrengthService, public ut: UtilityService,
     private dialog: MatDialog, private route: ActivatedRoute,
     public agGrid: AgGridService, private fieldService:FieldService,
-    private programService:ProgramService) {super();
+    private programService:ProgramService,public pr:PrivilegeService) {super();
   }
 
 
@@ -121,10 +120,6 @@ export class StrengthComponent extends UnsubOnDestroy {
         col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };
     }));
 
-    this.sub.add(this.ut.user.subscribe(v => {
-      this.canAdd = this.ut.userHasAny('Admin', 'Teacher');
-      this.canEditDelete = this.ut.userHasAny('Admin', 'Teacher', 'HeadOfDepartment');
-    }));
   }
 
   applySearch(event: Event) {
@@ -137,7 +132,7 @@ export class StrengthComponent extends UnsubOnDestroy {
 
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IStrengthEntity> = {
-    ...this.agGrid.commonGridOptions('strengths table', this.columnDefs, this.canEditDelete,
+    ...this.agGrid.commonGridOptions('strengths table', this.columnDefs, this.pr.canUser('editStrength'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
     ),
     onRowClicked: (v) => this.selectedItem = v.data,

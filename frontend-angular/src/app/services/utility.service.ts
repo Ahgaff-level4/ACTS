@@ -137,18 +137,7 @@ export class UtilityService {
       .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data, direction: this.getDirection() });
   }
 
-  /**
-   * @return `true` if user's roles has any one role of the param `roles`. If user has no role overlap with param `roles` then return `false`
-   */
-  public userHasAny(...roles: Role[] | Role[][]): boolean {
-    const allowedRoles: Role[] = Array.isArray(roles[0]) ? roles[0] as Role[] : roles as Role[];
-    if (this.user.value)
-      for (let r of this.user.value.roles)
-        if (allowedRoles.includes(r))
-          return true;
 
-    return false;
-  }
 
   /**
    * Used in formGroup to setValue of formGroup.controls with the correspond object properties.

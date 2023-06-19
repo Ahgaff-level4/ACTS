@@ -12,13 +12,13 @@
       [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <app-table-controllers *ngIf="!isPrinting" [button1]="{show:canAdd,text:'Add new goal',icon:'add'}"
+  <app-table-controllers *ngIf="!isPrinting" [button1]="{show:this.pr.canUser('addGoal'),text:'Add new goal',icon:'add'}"
     (button1Click)="addEdit(service.childItsGoals$.value?.id)"
-    [button2]="{show:canAdd,disabled:selectedItem==null,tooltip:'Evaluate the selected goal',text:'Evaluate',icon:'rate_review'}"
+    [button2]="{show:this.pr.canUser('addEvaluation'),disabled:selectedItem==null,tooltip:'Evaluate the selected goal',text:'Evaluate',icon:'rate_review'}"
     (button2Click)="evaluate(selectedItem!.id)"
-    [anchor3]="{link:selectedItem&&service.childItsGoals$.value?'/child/'+service.childItsGoals$.value.id+'/goal/'+selectedItem.id+'/evaluations':'./',disabled:selectedItem==null,tooltip:'View evaluations of the selected goal',icon:'reviews',text:'Evaluations'}"
-    [button4]="{show:canEditDelete,disabled:selectedItem==null,icon:'edit',text:'Edit',tooltip:'Edit the selected row',}"
+    [anchor3]="{show:this.pr.canUser('goalEvaluationsPage'),link:selectedItem&&service.childItsGoals$.value?'/child/'+service.childItsGoals$.value.id+'/goal/'+selectedItem.id+'/evaluations':'./',disabled:selectedItem==null,tooltip:'View evaluations of the selected goal',icon:'reviews',text:'Evaluations'}"
+    [button4]="{show:this.pr.canUser('editGoal'),disabled:selectedItem==null,icon:'edit',text:'Edit',tooltip:'Edit the selected row',}"
     (button4Click)="addEdit(this.selectedItem)"
-    [button5]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Delete the selected goal',icon:'delete',text:'Delete',color:'warn'}"
+    [button5]="{show:this.pr.canUser('deleteGoal'),disabled:selectedItem==null,tooltip:'Delete the selected goal',icon:'delete',text:'Delete',color:'warn'}"
     (button5Click)="deleteDialog(this.selectedItem)"></app-table-controllers>
 </div>

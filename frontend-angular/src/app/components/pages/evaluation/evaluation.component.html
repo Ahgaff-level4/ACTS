@@ -13,11 +13,11 @@
   </div>
 
   <app-table-controllers *ngIf="!isPrinting"
-  [button1]="{show:canAdd,text:'Add new evaluation',icon:'rate_review'}"
+  [button1]="{show:this.pr.canUser('addEvaluation'),text:'Add new evaluation',icon:'rate_review'}"
   (button1Click)="addEdit(service.goalItsEvaluations$.value?.id)"
-  [button2]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
+  [button2]="{show:this.pr.canUser('editEvaluation'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
   (button2Click)="addEdit(this.selectedItem)"
-  [button3]="{show:canEditDelete,disabled:selectedItem==null,tooltip:'Delete the selected evaluation',color:'warn',icon:'delete',text:'Delete'}"
+  [button3]="{show:this.pr.canUser('deleteEvaluation'),disabled:selectedItem==null,tooltip:'Delete the selected evaluation',color:'warn',icon:'delete',text:'Delete'}"
   (button3Click)="deleteDialog(this.selectedItem)"
   ></app-table-controllers>
 </div>
