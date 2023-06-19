@@ -6,6 +6,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IFieldEntity } from '../../../../../../../interfaces';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-activity',
@@ -18,7 +19,8 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
   protected nowDate = new Date();
   public isSpecialActivity!: boolean;
   // public fields: IFieldEntity[] | undefined;
-  constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>,
+  constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService,
+    private ut: UtilityService, public dialogRef: MatDialogRef<any>, private formService: FormService,
     /**passed data could be:
      * 1- `activity` to be edit. If activity.programId == null THEN it is special activity
      * 2- `programId` to add the new activity into it.
@@ -41,13 +43,13 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
     });
     // this.sub.add(this.fieldService.fields.subscribe(v => this.fields = v));
     if (typeof this.activityProgramId === 'object' && typeof this.activityProgramId != 'number' && this.activityProgramId)
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.activityProgramId));
+      this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.activityProgramId));
   }
 
 
   public async submit(event: SubmitEvent) {
     event.preventDefault();
-    this.ut.trimFormGroup(this.formGroup);
+    this.formService.trimFormGroup(this.formGroup);
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
@@ -62,7 +64,7 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
         } catch (e) { }
       } else if (typeof this.activityProgramId == 'object') {//edit. activityProgramId type in this scope `IActivityEntity` and its programId type `number|undefined`
-        let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
+        let dirtyControls = this.formService.extractDirty(this.formGroup.controls);
         try {
 
           if (dirtyControls != null) {

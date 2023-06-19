@@ -37,6 +37,7 @@ export class ChildService {
             this.subject$.next(v);
             res(v)
           }, error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
@@ -58,6 +59,7 @@ export class ChildService {
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the child. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -74,6 +76,7 @@ export class ChildService {
             this.fetchChildren(); res(v)
           },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the child information. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }

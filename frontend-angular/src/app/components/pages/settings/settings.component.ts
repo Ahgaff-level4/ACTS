@@ -7,6 +7,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { environment } from 'src/environments/environment';
 import { PasswordDialogComponent } from '../../dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { DisplayService } from 'src/app/services/display.service';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -18,7 +19,9 @@ export class SettingsComponent {
   public uploadProgress: number | null = null;
   public API = environment.API;
 
-  constructor(public pr: PrivilegeService, public translate: TranslateService, public ut: UtilityService, private http: HttpClient, private dialog: MatDialog) { }
+  constructor(public pr: PrivilegeService, public translate: TranslateService,
+    public ut: UtilityService, private http: HttpClient, private dialog: MatDialog,
+    public display: DisplayService) { }
 
 
   restore() {

@@ -6,6 +6,7 @@ import { AccountService } from 'src/app/services/CRUD/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-view-account',
@@ -15,7 +16,7 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 export class ViewAccountComponent extends UnsubOnDestroy {
   public account: IAccountEntity | undefined;
   constructor(private route: ActivatedRoute, public service: AccountService,
-    public ut: UtilityService, public pr: PrivilegeService) { super(); }
+    public ut: UtilityService, public pr: PrivilegeService,public display:DisplayService) { super(); }
 
   ngOnInit(): void {
     this.ut.isLoading.next(true);

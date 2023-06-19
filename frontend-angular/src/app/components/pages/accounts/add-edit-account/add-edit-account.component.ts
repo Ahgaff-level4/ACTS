@@ -7,6 +7,7 @@ import { AccountService } from 'src/app/services/CRUD/account.service';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dialog/password-dialog.component';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-account',
@@ -27,7 +28,8 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   @Input('account') readonlyAccount: IAccountEntity | undefined;//was used in account table to show account info
 
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService, private dialog: MatDialog) {
+  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService,
+    private dialog: MatDialog, public formService: FormService) {
     super();
   }
 
@@ -47,7 +49,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
 
     this.person = this.account?.person;
     let pass = this.account?.id ? {} : {
-      password: [null, [Validators.required, this.ut.validation.strongPasswordValidator, Validators.minLength(4)]],
+      password: [null, [Validators.required, this.formService.validation.strongPasswordValidator, Validators.minLength(4)]],
       repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],
     };
 
@@ -55,14 +57,13 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       this.account.address = this.account.address ?? undefined;//the field should be as a key property in the account object even if it has value of undefined
       for (let i = 0; i < 10; i++)
         this.account['phone' + i] = this.account['phone' + i] ?? undefined;
-      // this.accountForm?.setValue(this.ut.extractFrom(this.accountForm.controls, { ...this.account, password: '', repeatPassword: '' }));
     }
 
     const phoneValidators = [Validators.maxLength(this.phoneMinMaxLength.maxlength),
     Validators.minLength(this.phoneMinMaxLength.minlength),
     Validators.pattern(/(^\+?)([0-9]+$)/)];
     this.accountForm = this.fb.group({
-      username: [this.account?.username ?? null, [Validators.required, this.ut.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
+      username: [this.account?.username ?? null, [Validators.required, this.formService.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
       ...pass,
       roles: [this.account?.roles ?? [], [this.rolesValidator]],
       address: [this.account?.address ?? null, [Validators.maxLength(64)]],
@@ -77,9 +78,6 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       phone8: [this.account?.phone8 ?? null, phoneValidators],
       phone9: [this.account?.phone9 ?? null, phoneValidators],
     });
-    // for (let i = 0; i < 10; i++)
-    //   this.accountForm.addControl('phone' + i, this.fb.control(null, [Validators.maxLength(15),]));
-
 
     this.sub.add(this.ut.isLoading.subscribe(v => this.isLoading = v));
   }
@@ -88,14 +86,14 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
     if (this.readonlyAccount && this.personForm) {
       this.accountForm.disable();
       this.personForm.formGroup.disable();
-      this.accountForm.setValue(this.ut.extractFrom(this.accountForm.controls, this.readonlyAccount));
-      this.personForm.formGroup.setValue(this.ut.extractFrom(this.personForm.formGroup.controls, this.readonlyAccount.person))
+      this.accountForm.setValue(this.formService.extractFrom(this.accountForm.controls, this.readonlyAccount));
+      this.personForm.formGroup.setValue(this.formService.extractFrom(this.personForm.formGroup.controls, this.readonlyAccount.person))
     }
   }
 
   async submit() {
-    this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
-    this.ut.trimFormGroup(this.accountForm);
+    this.formService.trimFormGroup(this.personForm?.formGroup as FormGroup);
+    this.formService.trimFormGroup(this.accountForm);
     this.personForm?.formGroup?.markAllAsTouched();
     this.accountForm?.markAllAsTouched();
 
@@ -120,7 +118,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
         this.ut.isLoading.next(true);
         await this.personForm.submitEdit().catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
-        let dirtyFields = this.ut.extractDirty(this.accountForm.controls);
+        let dirtyFields = this.formService.extractDirty(this.accountForm.controls);
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
@@ -152,7 +150,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
     if (this.accountForm.get('username')?.hasError('whitespace'))
       return 'Must not contain spaces';
 
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('username')) || '';
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('username')) || '';
   }
 
 
@@ -160,7 +158,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
     if (this.accountForm.get('password')?.hasError('strongPassword'))
       return 'Password is not strong enough';
 
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('password')) || '';
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('password')) || '';
   }
 
 
@@ -168,7 +166,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
     if (this.accountForm.get('repeatPassword')?.hasError('passwordMatch'))
       return 'Passwords do not match';
 
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('repeatPassword')) || '';
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('repeatPassword')) || '';
   }
 
 
@@ -181,7 +179,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   getPhoneErrorMessage(controlName: string) {
     if (this.accountForm.get(controlName)?.hasError('pattern'))
       return "Phone number must contain only digits and '+' symbol";
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get(controlName)) || '';
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get(controlName)) || '';
   }
 
 

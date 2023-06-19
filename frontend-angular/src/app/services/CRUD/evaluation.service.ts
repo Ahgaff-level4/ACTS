@@ -30,6 +30,7 @@ export class EvaluationService {
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem while creating the evaluation record. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -48,6 +49,7 @@ export class EvaluationService {
             res(v)
           },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the evaluation. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -66,6 +68,7 @@ export class EvaluationService {
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the evaluation. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -93,6 +96,7 @@ export class EvaluationService {
             }
           },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })

@@ -8,6 +8,7 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatDateRangePicker, MatDatepicker } from '@angular/material/datepicker';
 import { FieldService } from 'src/app/services/CRUD/field.service';
+import { DisplayService } from 'src/app/services/display.service';
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',
@@ -40,10 +41,10 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
         name: f.name,
         value: report.goalStrength.goals.filter(g => g.state == 'continual' && g.activity.fieldId == f.id).length,
       }))
-    },{
-      name:this.ut.translate('Strengths activities'),series:fields.map(f=>({
-        name:f.name,
-        value:report.goalStrength.strengths.filter(s => s.activity.fieldId == f.id).length
+    }, {
+      name: this.ut.translate('Strengths activities'), series: fields.map(f => ({
+        name: f.name,
+        value: report.goalStrength.strengths.filter(s => s.activity.fieldId == f.id).length
       }))
     }]
   }))
@@ -55,12 +56,16 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
 
 
   constructor(private route: ActivatedRoute, public service: ReportService,
-    public ut: UtilityService, public fieldService: FieldService) { super(); }
+    public ut: UtilityService, public fieldService: FieldService,
+    public display: DisplayService) { super(); }
 
   ngOnInit(): void {
     //refresh every minute
-    this.nowDatetime = this.ut.toDateTimeWeek(new Date());
-    this.sub.add(interval(1000).pipe(filter(() => this.nowDatetime != this.ut.toDateTimeWeek(new Date()))).subscribe(() => this.nowDatetime = this.ut.toDateTimeWeek(new Date())));
+    this.nowDatetime = this.display.toDateTimeWeek(new Date());
+    this.sub.add(interval(1000)
+      .pipe(filter(() => this.nowDatetime != this.display.toDateTimeWeek(new Date())))
+      .subscribe(() => this.nowDatetime = this.display.toDateTimeWeek(new Date()))
+    );
 
 
     this.sub.add(this.customTimeframeForm.valueChanges.pipe(throttleTime(300, undefined, { leading: false, trailing: true })).subscribe(v => {
@@ -98,7 +103,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     }, 1000);
   }
 
-  stringify = (v: any) => v+'';
+  stringify = (v: any) => v + '';
 
 
 }

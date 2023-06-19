@@ -9,6 +9,7 @@ import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Observable, Subscription, finalize, first, map, tap } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { DisplayService } from 'src/app/services/display.service';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -44,9 +45,9 @@ export class ChildrenComponent extends UnsubOnDestroy {
       headerName: 'Age',
       valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
-      valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
+      valueFormatter: (v) => this.display.fromNow(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
-      tooltipValueGetter: (v) => this.ut.toDate(v.data?.person.birthDate),
+      tooltipValueGetter: (v) => this.display.toDate(v.data?.person.birthDate),
     },
     {
       colId: 'birthDate',
@@ -77,7 +78,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
     {
       field: 'family',
       headerName: 'Family information',
-      valueGetter: (v) => v.data ? this.ut.displayFamilyInformation(v.data) : '',
+      valueGetter: (v) => v.data ? this.display.childFamilyInformation(v.data) : '',
       type: ['long', 'madeUp'],
     },
     {
@@ -165,7 +166,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
       [{
         field: 'teachers',
         headerName: 'Teachers',
-        valueGetter: (v) => this.ut.displayTeachers(v.data),
+        valueGetter: (v) => this.display.childTeachers(v.data),
         tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
       }, {
         field: 'isArchive',
@@ -198,7 +199,8 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
-    public ut: UtilityService, public pr: PrivilegeService) {
+    public ut: UtilityService, public pr: PrivilegeService,
+    public display: DisplayService) {
     super();
   }
 

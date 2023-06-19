@@ -2,6 +2,7 @@ import { Component, Input } from '@angular/core';
 import { IChildEntity } from '../../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-child-info',
@@ -12,5 +13,5 @@ export class ChildInfoComponent {
 
   @Input('child') public child: IChildEntity | undefined;
   @Input('isPrinting') public isPrinting: boolean = false;
-  constructor(public ut: UtilityService, public pr: PrivilegeService) { }
+  constructor(public display: DisplayService, public pr: PrivilegeService, public ut: UtilityService) { }
 }

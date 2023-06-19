@@ -7,6 +7,7 @@ import { IActivityEntity, IChildEntity, IGoalEntity } from '../../../../../../..
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-goal',
@@ -26,6 +27,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
    * - Or childId to add the new goal into it */
   constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
+    private formService: FormService,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
     super();
   }
@@ -42,7 +44,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
     this.child$ = this.goalService.childItsGoals$;
 
     if (typeof this.goalOrChildId === 'object') {
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.goalOrChildId));
+      this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.goalOrChildId));
       this.selectedActivity = this.goalOrChildId?.activity;
     }
   }
@@ -50,7 +52,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
 
   public async submit(event: SubmitEvent): Promise<any> {
     event.preventDefault();
-    this.ut.trimFormGroup(this.formGroup);
+    this.formService.trimFormGroup(this.formGroup);
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
@@ -63,7 +65,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.goalOrChildId == 'object') {//edit
-        let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
+        let dirtyControls = this.formService.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
             await this.service.patch(this.goalOrChildId.id, dirtyControls, true);

@@ -9,6 +9,7 @@ import { UtilityService } from 'src/app/services/utility.service';
 import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { ColDef, GridOptions, SetFilterParams } from 'ag-grid-community';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-account',
@@ -37,9 +38,9 @@ export class AccountComponent {
       headerName: 'Age',
       valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
-      valueFormatter: (v) => this.ut.fromNow(v.data?.person.birthDate, true),
+      valueFormatter: (v) => this.display.fromNow(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
-      tooltipValueGetter: (v) => this.ut.toDate(v.data?.person.birthDate),
+      tooltipValueGetter: (v) => this.display.toDate(v.data?.person.birthDate),
     },
     {
       field: 'person.gender',
@@ -65,7 +66,7 @@ export class AccountComponent {
       field: 'roles',
       headerName: 'Roles',
       type: 'long',//filterParams in init
-      valueGetter: v => v.data?.roles ? this.ut.displayRoles(v.data.roles) : '',
+      valueGetter: v => v.data?.roles ? this.display.accountRoles(v.data.roles) : '',
     },
     {
       field: 'person.createdDatetime',
@@ -76,7 +77,7 @@ export class AccountComponent {
       field: 'phones',
       headerName: 'Phone',
       type: 'long',
-      valueGetter: v => v.data ? this.ut.displayPhones(v.data) : '',
+      valueGetter: v => v.data ? this.display.accountPhones(v.data) : '',
     },
     {
       field: 'address',
@@ -100,7 +101,8 @@ export class AccountComponent {
     },
   ];
 
-  constructor(public accountService: AccountService, public ut: UtilityService, public agGrid: AgGridService) {
+  constructor(public accountService: AccountService, public ut: UtilityService,
+    public agGrid: AgGridService, public display: DisplayService) {
   }
 
   ngOnInit(): void {
@@ -122,7 +124,7 @@ export class AccountComponent {
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
-      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item?this.accountService.edit(item):this.ut.notify(null) }),
+      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.accountService.edit(item) : this.ut.notify(null) }),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 

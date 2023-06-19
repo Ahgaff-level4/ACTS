@@ -4,6 +4,7 @@ import { IFieldEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-field',
@@ -14,7 +15,8 @@ export class AddEditFieldComponent {
   public formGroup: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb: FormBuilder, public service: FieldService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public field?: IFieldEntity,) {
+  constructor(private fb: FormBuilder, public service: FieldService, private ut: UtilityService,
+    public dialogRef: MatDialogRef<any>, private formService: FormService, @Inject(MAT_DIALOG_DATA) public field?: IFieldEntity,) {
     this.formGroup = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
       createdDatetime: [new Date(), [Validators.required]],
@@ -23,13 +25,13 @@ export class AddEditFieldComponent {
 
   ngOnInit(): void {
     if (this.field)
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.field));
+      this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.field));
   }
 
 
   public async submit(event: SubmitEvent) {
     event.preventDefault();
-    this.ut.trimFormGroup(this.formGroup);
+    this.formService.trimFormGroup(this.formGroup);
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
@@ -37,15 +39,15 @@ export class AddEditFieldComponent {
         try {
 
           await this.service.post(this.formGroup.value);
-          this.ut.notify("Added successfully",'The field has been added successfully','success')
+          this.ut.notify("Added successfully", 'The field has been added successfully', 'success')
           this.dialogRef.close();
         } catch (e) { }
       } else {//edit
-        let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
+        let dirtyFields = this.formService.extractDirty(this.formGroup.controls);
         try {
           if (dirtyFields != null)
             await this.service.patch(this.field.id, dirtyFields);
-          this.ut.notify("Edited successfully",'The field has been edited successfully','success')
+          this.ut.notify("Edited successfully", 'The field has been edited successfully', 'success')
           this.dialogRef.close();
         } catch (e) { }
       }

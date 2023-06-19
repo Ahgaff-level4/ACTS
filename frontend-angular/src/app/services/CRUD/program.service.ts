@@ -31,6 +31,7 @@ export class ProgramService {
           next: (v) => {
             this.subject$.next(v); res(v);
           }, error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
@@ -50,6 +51,7 @@ export class ProgramService {
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -66,6 +68,7 @@ export class ProgramService {
             this.fetch(); res(v)
           },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the program. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -82,6 +85,7 @@ export class ProgramService {
             this.fetch(); res(v)
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })

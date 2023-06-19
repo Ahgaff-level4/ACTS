@@ -1,19 +1,19 @@
-import { Component, Inject, OnDestroy } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IActivityEntity, IChildEntity, IStrengthEntity } from '../../../../../../../interfaces';
 import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
-import { Subscription } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-strength',
   templateUrl: './add-edit-strength.component.html',
   styleUrls: ['./add-edit-strength.component.scss']
 })
-export class AddEditStrengthComponent extends UnsubOnDestroy implements OnDestroy {
+export class AddEditStrengthComponent extends UnsubOnDestroy {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
@@ -23,6 +23,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy implements OnDestro
 
   constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
+    private formService: FormService,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
     super()
@@ -44,7 +45,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy implements OnDestro
     }));
 
     if (typeof this.strengthOrChildId === 'object') {
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.strengthOrChildId));
+      this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.strengthOrChildId));
       this.selectedActivity = this.strengthOrChildId?.activity;
     }
   }
@@ -52,7 +53,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy implements OnDestro
 
   public async submit(event: SubmitEvent): Promise<any> {
     event.preventDefault();
-    this.ut.trimFormGroup(this.formGroup);
+    this.formService.trimFormGroup(this.formGroup);
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
@@ -65,7 +66,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy implements OnDestro
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.strengthOrChildId == 'object') {//edit
-        let dirtyControls = this.ut.extractDirty(this.formGroup.controls);
+        let dirtyControls = this.formService.extractDirty(this.formGroup.controls);
         try {
           if (dirtyControls != null)
             await this.service.patch(this.strengthOrChildId.id, dirtyControls, true);

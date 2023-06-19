@@ -5,6 +5,7 @@ import { GridReadyEvent } from 'ag-grid-community';
 import { Clipboard } from '@angular/cdk/clipboard';
 import * as moment from 'moment';
 import { PrivilegeService } from './privilege.service';
+import { DisplayService } from './display.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +23,8 @@ export class AgGridService {
    * - if field is number then set `type='number'`. Default filter is for string.
    * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, },`
    */
-  constructor(public ut: UtilityService, private clipboard: Clipboard, private pr: PrivilegeService) { }
+  constructor(public ut: UtilityService, private clipboard: Clipboard,
+    private pr: PrivilegeService, private display: DisplayService) { }
 
   /**
    * @param data any nested object
@@ -95,27 +97,27 @@ export class AgGridService {
 
   private columnTypes: { [key: string]: ColDef<any> } = {
     fromNow: {
-      valueFormatter: (v) => this.ut.fromNow(v.value),//set the presentational value
+      valueFormatter: (v) => this.display.fromNow(v.value),//set the presentational value
       chartDataType: 'time',
-      tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
+      tooltipValueGetter: (v) => this.display.toDate(v.value),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.display.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
       width: 150,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
       valueParser: v => new Date(v.newValue),
     },
     fromNowNoAgo: {
-      valueFormatter: (v) => this.ut.fromNow(v.value, true),//set the presentational value
+      valueFormatter: (v) => this.display.fromNow(v.value, true),//set the presentational value
       chartDataType: 'time',
-      tooltipValueGetter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
+      tooltipValueGetter: (v) => this.display.toDate(v.value),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.display.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
       width: 100,
       filter: 'agDateColumnFilter',
       filterParams: this.dateFilterParam,
     },
     toDate: {
-      valueFormatter: (v) => this.ut.toDate(v.value),
-      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.ut.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
+      valueFormatter: (v) => this.display.toDate(v.value),
+      valueGetter: v => Number.isNaN(Date.parse(this.getNestedValue(v.data, v.colDef.field!))) ? this.display.toDate(this.getNestedValue(v.data, v.colDef.field!)) : new Date(this.getNestedValue(v.data, v.colDef.field!)),
       chartDataType: 'time',
       width: 100,
       filter: 'agDateColumnFilter',

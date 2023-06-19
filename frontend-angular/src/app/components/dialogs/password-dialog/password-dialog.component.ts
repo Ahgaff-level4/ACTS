@@ -2,6 +2,7 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountService } from 'src/app/services/CRUD/account.service';
+import { FormService } from 'src/app/services/form.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -25,13 +26,15 @@ export class PasswordDialogComponent {
    * 2- data:undefined. Change password will be handled here. dialog buttons 'Cancel' and 'Change' handed here. dialog return nothing aka undefined
    * 3- data:false. dialog buttons `Cancel` and `Confirm` will check the entered password. dialog return true if confirmed.
    */
-  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService, public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: string | undefined | false,) {
+  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService,
+    public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: string | undefined | false,
+    private formService: FormService) {
   }
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
       oldPassword: [null, [Validators.required, Validators.minLength(4)]],
-      password: [null, [Validators.required, this.ut.validation.strongPasswordValidator, Validators.minLength(4)]],
+      password: [null, [Validators.required, this.formService.validation.strongPasswordValidator, Validators.minLength(4)]],
       repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],
     });
     this.isReset = typeof this.data === 'string';
@@ -91,18 +94,18 @@ export class PasswordDialogComponent {
     if (this.getState() != 'reenter' && this.formGroup.get('password')?.hasError('strongPassword'))
       return 'Password is not strong enough';
 
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('password')) || '';
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('password')) || '';
   }
 
   getRepeatPasswordErrorMessage() {
     if (this.formGroup.get('repeatPassword')?.hasError('passwordMatch'))
       return 'Passwords do not match';
 
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('repeatPassword')) || '';
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('repeatPassword')) || '';
   }
 
   getOldPasswordErrorMessage() {
-    return this.ut.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('oldPassword'));
+    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('oldPassword'));
   }
 
   /** dialog state which is what the dialog purpose */

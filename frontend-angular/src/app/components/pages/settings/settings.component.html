@@ -23,7 +23,7 @@
         <p *ngIf="ut.user.value.birthdate">
           {{'Birthdate'|translate}}:&nbsp;{{ut.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{ut.user.value.birthdate|fromNow:true}}
         </p>
-        <p>{{'Roles'|translate}}:&nbsp;{{ut.displayRoles(ut.user.value.roles)}}</p>
+        <p>{{'Roles'|translate}}:&nbsp;{{display.accountRoles(ut.user.value.roles)}}</p>
         <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">
           {{'Change my password'|translate}}
         </button>

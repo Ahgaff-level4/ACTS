@@ -4,6 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IEvaluationEntity } from '../../../../../../../interfaces';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-evaluation',
@@ -11,12 +12,17 @@ import { IEvaluationEntity } from '../../../../../../../interfaces';
   styleUrls: ['./add-edit-evaluation.component.scss']
 })
 export class AddEditEvaluationComponent {
-  public formGroup: FormGroup;
+  public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb: FormBuilder, public service: EvaluationService, private ut: UtilityService, public dialogRef: MatDialogRef<any>,
+  constructor(private fb: FormBuilder, public service: EvaluationService, private ut: UtilityService,
+    public dialogRef: MatDialogRef<any>, private formService: FormService,
     /** @param data is either an evaluation to be Edit. Or goalId to be Add */
     @Inject(MAT_DIALOG_DATA) public evaluationOrGoalId?: IEvaluationEntity | number,) {
+  }
+
+
+  ngOnInit(): void {
     this.formGroup = this.fb.group({
       description: [null, [Validators.required, Validators.maxLength(512), Validators.minLength(3)]],
       mainstream: [null, [Validators.maxLength(512)]],
@@ -25,18 +31,16 @@ export class AddEditEvaluationComponent {
       teacherId: [this.ut.user.value?.accountId, [Validators.required]],
       evaluationDatetime: [new Date(), [Validators.required]],
     });
-  }
 
-  ngOnInit(): void {
     if (typeof this.evaluationOrGoalId === 'object')
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.evaluationOrGoalId));
+      this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.evaluationOrGoalId));
     else this.formGroup.addControl('goalId', this.fb.control(this.evaluationOrGoalId));
   }
 
 
   public async submit(event: SubmitEvent) {
     event.preventDefault();
-    this.ut.trimFormGroup(this.formGroup);
+    this.formService.trimFormGroup(this.formGroup);
     this.formGroup.markAllAsTouched();
     if (this.formGroup.valid) {
       this.formGroup.disable();
@@ -44,15 +48,15 @@ export class AddEditEvaluationComponent {
         try {
 
           await this.service.post(this.formGroup.value);
-          this.ut.notify('Added successfully','The evaluation has been added successfully','success')
+          this.ut.notify('Added successfully', 'The evaluation has been added successfully', 'success')
           this.dialogRef.close();
         } catch (e) { }
       } else if (typeof this.evaluationOrGoalId === 'object') {//edit
-        let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
+        let dirtyFields = this.formService.extractDirty(this.formGroup.controls);
         try {
           if (dirtyFields != null)
             await this.service.patch(this.evaluationOrGoalId.id, dirtyFields);
-          this.ut.notify('Edited successfully','The evaluation has been edited successfully','success')
+          this.ut.notify('Edited successfully', 'The evaluation has been edited successfully', 'success')
           this.dialogRef.close();
         } catch (e) { }
       }

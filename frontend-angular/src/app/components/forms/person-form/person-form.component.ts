@@ -5,6 +5,7 @@ import { MatDatepickerInputEvent } from '@angular/material/datepicker';
 import { PersonService } from 'src/app/services/CRUD/person.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-person-form',
@@ -19,7 +20,8 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   protected minlength = { minlength: 4 };
   protected nowDate = new Date();
 
-  constructor(private fb: FormBuilder, public personService: PersonService, private ut: UtilityService) {
+  constructor(private fb: FormBuilder, public personService: PersonService, private ut: UtilityService,
+    private formService: FormService) {
     super();
   }
 
@@ -31,7 +33,7 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
       createdDatetime: [new Date(), [Validators.required]],
     });
     if (this.person) {
-      this.formGroup.setValue(this.ut.extractFrom(this.formGroup.controls, this.person));
+      this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.person));
     }
     this.sub.add(this.formGroup.valueChanges.subscribe(() => {
       this.person = { ...this.person, ...this.formGroup.value };
@@ -43,12 +45,12 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
    * Called by the parent component. Hint: using `@ViewChild` decorator
    */
   public submit(): Promise<IPersonEntity> {
-    return this.personService.postPerson(this.ut.extractDirty(this.formGroup.controls) as ICreatePerson);
+    return this.personService.postPerson(this.formService.extractDirty(this.formGroup.controls) as ICreatePerson);
   }
 
   /** void if there is no dirty fields*/
   public async submitEdit(): Promise<SucResEditDel | void> {
-    let dirtyFields = this.ut.extractDirty(this.formGroup.controls);
+    let dirtyFields = this.formService.extractDirty(this.formGroup.controls);
     if (dirtyFields != null)
       return await this.personService.patchPerson((this.person as IPersonEntity).id, dirtyFields).catch(() => { });
   }

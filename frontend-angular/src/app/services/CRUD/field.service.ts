@@ -30,6 +30,7 @@ export class FieldService {
           next: (v) => {
             this.subject$.next(v); res(v);
           }, error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
@@ -49,6 +50,7 @@ export class FieldService {
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -66,6 +68,7 @@ export class FieldService {
             res(v);
           },
           error: e => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the field. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
@@ -83,6 +86,7 @@ export class FieldService {
             res(v);
           },
           error: (e) => {
+            manageLoading && this.ut.isLoading.next(false);
             this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })

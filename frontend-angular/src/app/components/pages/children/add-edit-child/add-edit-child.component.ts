@@ -8,6 +8,7 @@ import { Observable, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { ComponentCanDeactivate } from 'src/app/app-routing.module';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { FormService } from 'src/app/services/form.service';
 
 @Component({
   selector: 'app-add-edit-child',
@@ -25,7 +26,8 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
   public teachers!: IAccountEntity[];
   maxlength = { maxlength: 512 };
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService, private accountService: AccountService) {
+  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
+    private accountService: AccountService, private formService: FormService) {
     super();
   }
 
@@ -58,7 +60,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
     });
 
     if (this.child) {
-      this.childForm?.setValue(this.ut.extractFrom(this.childForm.controls, this.child));
+      this.childForm?.setValue(this.formService.extractFrom(this.childForm.controls, this.child));
     }
   }
 
@@ -81,8 +83,8 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
 
 
   async submit() {
-    this.ut.trimFormGroup(this.personForm?.formGroup as FormGroup);
-    this.ut.trimFormGroup(this.childForm)
+    this.formService.trimFormGroup(this.personForm?.formGroup as FormGroup);
+    this.formService.trimFormGroup(this.childForm)
     this.personForm?.formGroup?.markAllAsTouched();
     this.childForm?.markAllAsTouched();
     if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
@@ -95,7 +97,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
         if (typeof p != 'object')
           break FLAG;
         try {
-          let dirtyFields = this.ut.extractDirty(this.childForm.controls);
+          let dirtyFields = this.formService.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
           this.ut.notify("Added successfully", 'The new child has been registered successfully', 'success');
           this.ut.router.navigate(['/children']);
@@ -104,7 +106,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
         }
       } else {//edit the child
         await this.personForm.submitEdit().catch(() => { });
-        let dirtyFields = this.ut.extractDirty(this.childForm.controls);
+        let dirtyFields = this.formService.extractDirty(this.childForm.controls);
         try {
           if (dirtyFields != null)
             await this.childService.patchChild(this.child.id, dirtyFields, true);
