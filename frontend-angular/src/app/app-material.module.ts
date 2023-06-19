@@ -26,6 +26,8 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatBadgeModule} from '@angular/material/badge';
+import {MatRadioModule} from '@angular/material/radio';
 
 
 @NgModule({
@@ -56,6 +58,8 @@ import {MatTabsModule} from '@angular/material/tabs';
     ClipboardModule,
     NzNotificationModule,
     MatTabsModule,
+    MatBadgeModule,
+    MatRadioModule,
   ],
 })
 export class AppMaterialModule {

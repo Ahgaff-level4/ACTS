@@ -4,6 +4,7 @@ import { environment } from 'src/environments/environment';
 import { INotification, User } from '../../../../interfaces';
 import { UtilityService } from './utility.service';
 import { Subscription, filter, first } from 'rxjs';
+import { NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +22,7 @@ export class SocketService implements OnDestroy {
    *
    * NOTE: the server will handle the above condition and emit notification accordingly
    */
-  constructor(private ut: UtilityService) {
+  constructor(private ut: UtilityService, private nt:NotificationService) {
   }
   public connect(v: User | null) {
     console.log('SocketService : connect : user:', v);
@@ -42,7 +43,7 @@ export class SocketService implements OnDestroy {
 
   private newNotification = (n: INotification) => {
     console.log('newNotification', n);
-    if (!n || !this.socket || this.ut.user.value == null || !this.ut.notifySettings.value.showNotification)
+    if (!n || !this.socket || this.ut.user.value == null || !this.nt.notificationSettings.value.showNotification)
       return;
 
     let title = this.getTitle(n, this.ut.user.value);
@@ -52,7 +53,7 @@ export class SocketService implements OnDestroy {
       title = content
       content = '';
     }
-    let ref = this.ut.notify(title, content, 'info', this.ut.notifySettings.value.closeAfter);
+    let ref = this.ut.notify(title, content, 'info', this.nt.notificationSettings.value.closeAfter);
     if (href) {
       ref.onClick.subscribe(() => this.ut.router.navigateByUrl(href as string));
     }

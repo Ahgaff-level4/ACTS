@@ -111,7 +111,10 @@ mat-dialog-container {
   width: 600px !important;
 }
 
-.mat-mdc-dialog-surface{
+.mat-mdc-dialog-surface {
   border-radius: 2.5rem !important;
 }
 
+.min-width-120 {
+  min-width: 120px !important;
+}

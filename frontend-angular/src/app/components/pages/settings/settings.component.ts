@@ -8,6 +8,7 @@ import { environment } from 'src/environments/environment';
 import { PasswordDialogComponent } from '../../dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { DisplayService } from 'src/app/services/display.service';
+import { NotificationService } from 'src/app/services/notification.service';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
@@ -21,7 +22,7 @@ export class SettingsComponent {
 
   constructor(public pr: PrivilegeService, public translate: TranslateService,
     public ut: UtilityService, private http: HttpClient, private dialog: MatDialog,
-    public display: DisplayService) { }
+    public display: DisplayService, public nt:NotificationService) { }
 
 
   restore() {
@@ -64,7 +65,7 @@ export class SettingsComponent {
     this.dialog.open(PasswordDialogComponent, { direction: this.ut.getDirection() });
   }
 
-  closeAfter = this.ut.notifySettings.value.closeAfter / 1000;
+  closeAfter = this.nt.notificationSettings.value.closeAfter / 1000;
   /**
    *
    * @param value is:
@@ -74,14 +75,14 @@ export class SettingsComponent {
    */
   changeNotification(value: any) {
     if (typeof value == 'boolean')
-      this.ut.notifySettings.next({ ...this.ut.notifySettings.value, showNotification: value });
+      this.nt.notificationSettings.next({ ...this.nt.notificationSettings.value, showNotification: value });
     else {
       if (value.target?.value!)
         this.closeAfter = Number(value.target.value);
-      this.ut.notifySettings.next({ ...this.ut.notifySettings.value, closeAfter: Number(this.closeAfter) * 1000 });
+      this.nt.notificationSettings.next({ ...this.nt.notificationSettings.value, closeAfter: Number(this.closeAfter) * 1000 });
     }
 
-    localStorage.setItem('notifySettings', JSON.stringify(this.ut.notifySettings.value));
+    localStorage.setItem('notifySettings', JSON.stringify(this.nt.notificationSettings.value));
   }
 
 }

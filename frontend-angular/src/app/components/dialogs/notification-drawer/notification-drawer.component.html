@@ -1,18 +1,23 @@
-  <h1 mat-dialog-title>{{'Notifications'|translate}}</h1>
-  <mat-tab-group dynamicHeight mat-dialog-content class="h-100">
-    <mat-tab>
-      <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">thumb_up</mat-icon>
-        {{'Notifications'|translate}}
-      </ng-template>
+<!-- <h1 mat-dialog-title>{{'Notifications'|translate}}</h1> -->
+<mat-tab-group dynamicHeight>
+  <mat-tab>
+    <ng-template mat-tab-label>
+      {{'Notifications'|translate}}
+      &nbsp;<mat-icon>notifications</mat-icon>
+    </ng-template>
+    <div mat-dialog-content>
       Content 1
-    </mat-tab>
 
-    <mat-tab *ngIf="pr.canUser('broadcastMessage')">
-      <ng-template mat-tab-label>
-        <mat-icon class="example-tab-icon">thumb_up</mat-icon>
-        {{'Online accounts'|translate}}
-      </ng-template>
+    </div>
+  </mat-tab>
+
+  <mat-tab *ngIf="pr.canUser('broadcastMessage')">
+    <ng-template mat-tab-label>
+      {{'Online'|translate}}
+      &nbsp;<mat-icon>group</mat-icon>
+    </ng-template>
+    <div mat-dialog-content>
       Content 2
-    </mat-tab>
-  </mat-tab-group>
+    </div>
+  </mat-tab>
+</mat-tab-group>
