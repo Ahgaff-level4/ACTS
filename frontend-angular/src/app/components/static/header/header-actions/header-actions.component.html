@@ -1,0 +1,15 @@
+<div class="nav-item opacity-100 px-2 d-flex align-items-center" routerLinkActive="active">
+  <!--In visible header(large screen) screen-->
+  <button (click)="openNotificationDrawer()" type="button" class="d-none d-lg-block mx-1" mat-icon-button [matTooltip]="'Notifications'|translate">
+    <mat-icon color="accent" class="mb-1">notifications</mat-icon>
+  </button>
+  <a class="min-width rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!isLoggedIn"
+  routerLink="/login">{{'Login'|translate}}</a>
+  <button mat-raised-button color="accent" (click)="this.loginService.logout()" style="cursor:pointer;"
+  class="rounded-5 min-width nbsp opacity-100" *ngIf="isLoggedIn">
+  {{'Logout'|translate}}</button>
+  <!--In drawer header(small screen) screen-->
+  <button (click)="openNotificationDrawer()" type="button" class="d-lg-none d-block mx-1" mat-icon-button [matTooltip]="'Notifications'|translate">
+    <mat-icon color="accent" class="mb-1">notifications</mat-icon>
+  </button>
+</div>

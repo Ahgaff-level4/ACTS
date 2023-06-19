@@ -3,7 +3,7 @@
   <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Application Language'|translate}}</h4>
   <mat-card class="m-4 shadow rounded-5">
     <mat-card-content class="d-flex m-3 justify-content-center">
-      <mat-button-toggle-group class="w-75" aria-label="Choose language">
+      <mat-button-toggle-group class="w-75 rounded-5" aria-label="Choose language">
         <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='ar'"
           (change)="this.translate.use('ar')">عربي</mat-button-toggle>
         <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='en'"

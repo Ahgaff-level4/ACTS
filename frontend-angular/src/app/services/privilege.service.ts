@@ -91,4 +91,5 @@ export const PRIVILEGE = {
   backupRestore:A,
   /**print/export/copy table */
   printTable: AH,
+  broadcastMessage:A,
 }

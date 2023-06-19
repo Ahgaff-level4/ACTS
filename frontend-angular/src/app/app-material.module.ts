@@ -25,6 +25,7 @@ import { MatCardModule } from '@angular/material/card';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
 import { ClipboardModule } from '@angular/cdk/clipboard';
 import { NzNotificationModule } from 'ng-zorro-antd/notification';
+import {MatTabsModule} from '@angular/material/tabs';
 
 
 @NgModule({
@@ -54,6 +55,7 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
     MatProgressBarModule,
     ClipboardModule,
     NzNotificationModule,
+    MatTabsModule,
   ],
 })
 export class AppMaterialModule {
