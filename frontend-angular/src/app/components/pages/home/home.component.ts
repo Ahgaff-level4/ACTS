@@ -1,9 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { UtilityService } from 'src/app/services/utility.service';
-import { Role } from '../../../../../../interfaces';
-import { AsyncSubject, Observable, ReplaySubject, Subject, map, of, share, shareReplay, tap } from 'rxjs';
-import { AsyncScheduler } from 'rxjs/internal/scheduler/AsyncScheduler';
-import { AsyncAction } from 'rxjs/internal/scheduler/AsyncAction';
 import { Action, PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({

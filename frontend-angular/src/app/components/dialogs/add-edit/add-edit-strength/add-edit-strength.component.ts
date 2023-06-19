@@ -7,6 +7,7 @@ import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dial
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-strength',
@@ -21,9 +22,9 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
   /**Used when adding new strength */
   public child: IChildEntity | undefined;
 
-  constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
+  constructor(private fb:FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
-    private formService: FormService,
+    private formService: FormService, private nt: NotificationService,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
     super()
@@ -40,7 +41,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
 
     this.sub.add(this.strengthService.childItsStrengths.subscribe(v => {
       if (v == null)
-        this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
+        this.nt.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
       else this.child = v;
     }));
 
@@ -59,10 +60,10 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
       this.formGroup.disable();
       if (typeof this.strengthOrChildId == 'number') {//add new
         if (this.child?.id == null || this.ut.user.value?.accountId == null)
-          return this.ut.errorDefaultDialog();
+          return this.nt.errorDefaultDialog();
         try {
           await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
-          this.ut.notify("Added successfully", 'The strength has been added successfully', 'success');
+          this.nt.notify("Added successfully", 'The strength has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.strengthOrChildId == 'object') {//edit
@@ -70,12 +71,12 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
         try {
           if (dirtyControls != null)
             await this.service.patch(this.strengthOrChildId.id, dirtyControls, true);
-          this.ut.notify("Edited successfully", 'The strength has been edited successfully', 'success');
+          this.nt.notify("Edited successfully", 'The strength has been edited successfully', 'success');
           this.dialogRef.close('edited');
         } catch (e) { }
-      } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
+      } else this.nt.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
   selectActivity() {

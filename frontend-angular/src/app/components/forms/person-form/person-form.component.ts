@@ -1,9 +1,7 @@
-import { AfterViewInit, Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
 import { ICreatePerson, SucResEditDel, IPersonEntity } from '../../../../../../interfaces';
-import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDatepickerInputEvent } from '@angular/material/datepicker';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PersonService } from 'src/app/services/CRUD/person.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 
@@ -20,8 +18,7 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   protected minlength = { minlength: 4 };
   protected nowDate = new Date();
 
-  constructor(private fb: FormBuilder, public personService: PersonService, private ut: UtilityService,
-    private formService: FormService) {
+  constructor(private fb:FormBuilder, public personService: PersonService, private formService: FormService) {
     super();
   }
 

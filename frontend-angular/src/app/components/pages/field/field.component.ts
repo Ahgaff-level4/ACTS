@@ -9,6 +9,7 @@ import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-field',
@@ -24,7 +25,7 @@ export class FieldComponent extends UnsubOnDestroy {
   private onCellValueChange = async (e: NewValueParams<IFieldEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IFieldEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.service.fetch();
     }
@@ -62,7 +63,7 @@ export class FieldComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(private service: FieldService, public ut: UtilityService,
+  constructor(private service: FieldService, public ut: UtilityService,private nt:NotificationService,
     private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -92,9 +93,9 @@ export class FieldComponent extends UnsubOnDestroy {
 
   deleteDialog(field: IFieldEntity | undefined) {
     if (field == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         content: this.ut.translate('You are about to delete the field: ') + field.name + this.ut.translate(' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -102,7 +103,7 @@ export class FieldComponent extends UnsubOnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(field.id, true);
-            this.ut.notify("Deleted successfully", 'The field has been deleted successfully', 'success');
+            this.nt.notify("Deleted successfully", 'The field has been deleted successfully', 'success');
           } catch (e) { }
         }
       });

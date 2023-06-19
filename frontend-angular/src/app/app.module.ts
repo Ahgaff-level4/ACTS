@@ -65,6 +65,7 @@ import { TableControllersComponent } from './components/forms/table-controllers/
 import { HeaderActionsComponent } from './components/static/header/header-actions/header-actions.component';
 import { NotificationDrawerComponent } from './components/dialogs/notification-drawer/notification-drawer.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
+import { NotificationItemComponent } from './components/dialogs/notification-drawer/notification-item/notification-item.component';
 
 @NgModule({
   declarations: [
@@ -113,6 +114,7 @@ import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/d
     TableControllersComponent,
     HeaderActionsComponent,
     NotificationDrawerComponent,
+    NotificationItemComponent,
   ],
   imports: [
     BrowserModule,

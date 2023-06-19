@@ -4,6 +4,7 @@ import { IChildEntity, ICreateChild, SucResEditDel } from '../../../../../interf
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
+import { NotificationService } from '../notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,7 +21,7 @@ export class ChildService {
       .catch(() => { });
   }).pipe(shareReplay(1));//Observable function will be start execution when the first observer subscribe. Then it will emit new values by the subject.
 
-  constructor(private http: HttpClient, private ut: UtilityService) {
+  constructor(private http: HttpClient, private ut: UtilityService, private nt: NotificationService,) {
   }
 
   /**
@@ -38,7 +39,7 @@ export class ChildService {
             res(v)
           }, error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
     })
@@ -60,7 +61,7 @@ export class ChildService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the child. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem registering the child. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -77,7 +78,7 @@ export class ChildService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the child information. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the child information. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })

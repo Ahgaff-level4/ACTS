@@ -4,6 +4,7 @@ import { ICreateField, IFieldEntity, SucResEditDel } from '../../../../../interf
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
+import { NotificationService } from '../notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -18,7 +19,7 @@ export class FieldService {
       .catch(() => { });
   }).pipe(shareReplay(1));
 
-  constructor(private http: HttpClient, private ut: UtilityService) {
+  constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,) {
   }
 
   /** fetch fields from DB and emit it to fields */
@@ -31,7 +32,7 @@ export class FieldService {
             this.subject$.next(v); res(v);
           }, error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
     })
@@ -51,7 +52,7 @@ export class FieldService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -69,7 +70,7 @@ export class FieldService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the field. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the field. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -87,7 +88,7 @@ export class FieldService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })

@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { PrivilegeService } from 'src/app/services/privilege.service';
-import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-footer',

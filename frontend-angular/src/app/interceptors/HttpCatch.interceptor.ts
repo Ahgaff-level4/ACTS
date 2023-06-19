@@ -1,13 +1,13 @@
 import { Injectable } from '@angular/core';
-import { HttpEvent, HttpInterceptor, HttpHandler, HttpRequest, HttpClient, HttpErrorResponse, HttpResponse, HttpBackend } from '@angular/common/http';
-import { EMPTY, Observable, catchError, delay, from, mergeMap, of, retry, retryWhen, take, tap, throwError } from 'rxjs';
+import { HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
+import { EMPTY, Observable, catchError } from 'rxjs';
 import { UtilityService } from '../services/utility.service';
-import { LoginService } from '../services/login.service';
+import { NotificationService } from '../services/notification.service';
 
 @Injectable()
 export class HttpCatchInterceptor implements HttpInterceptor {
 
-  constructor(private ut: UtilityService, private http: HttpClient) { }
+  constructor(private ut: UtilityService, private nt:NotificationService,) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     const requestClone = req.clone();
@@ -41,11 +41,11 @@ export class HttpCatchInterceptor implements HttpInterceptor {
   }
 
   showNetworkErrorDialog(){
-      this.ut.notify('Network Error!', `Please check your network connection and try again.`, 'error');
+      this.nt.notify('Network Error!', `Please check your network connection and try again.`, 'error');
   }
 
   showUnauthorizeDialog() {
-    this.ut.showMsgDialog({
+    this.nt.showMsgDialog({
       type: 'error',
       title: { text: 'Insufficient privilege!' },
       content: `You don't have sufficient privilege to do this action!`,

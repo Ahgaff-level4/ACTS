@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
@@ -26,9 +27,9 @@ export class PasswordDialogComponent {
    * 2- data:undefined. Change password will be handled here. dialog buttons 'Cancel' and 'Change' handed here. dialog return nothing aka undefined
    * 3- data:false. dialog buttons `Cancel` and `Confirm` will check the entered password. dialog return true if confirmed.
    */
-  constructor(private fb: FormBuilder, public accountService: AccountService, private ut: UtilityService,
+  constructor(private fb:FormBuilder, public accountService: AccountService, private ut: UtilityService,
     public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: string | undefined | false,
-    private formService: FormService) {
+    private formService: FormService,private nt:NotificationService) {
   }
 
   ngOnInit(): void {
@@ -54,11 +55,11 @@ export class PasswordDialogComponent {
         this.dialogRef.close(this.formGroup.get('password')?.value?.toString());
       } else if (this.getState() == 'change') {//change
         if (this.formGroup.get('password')?.value == this.formGroup.get('oldPassword')?.value)
-          this.ut.notify('Invalid Field', `The new password is the same old password!`, 'error');
+          this.nt.notify('Invalid Field', `The new password is the same old password!`, 'error');
         else {
           try {
             await this.accountService.changePassword({ oldPassword: this.formGroup.get('oldPassword')?.value, password: this.formGroup.get('password')?.value })
-            this.ut.notify("Edited successfully", 'The password have been changed successfully', 'success');
+            this.nt.notify("Edited successfully", 'The password have been changed successfully', 'success');
             this.dialogRef.close();
           } catch (e) { }
         }
@@ -70,16 +71,16 @@ export class PasswordDialogComponent {
               this.ut.isLoading.next(false);
               if (u?.isLoggedIn)
                 this.dialogRef.close(true);
-              else this.ut.errorDefaultDialog();
+              else this.nt.errorDefaultDialog();
             }, error: (err) => {
               this.ut.isLoading.next(false);
-              this.ut.errorDefaultDialog(err);
+              this.nt.errorDefaultDialog(err);
             }
           });
       }
       this.formGroup.enable();
     } else
-      this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+      this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
 
   }
 

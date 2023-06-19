@@ -9,6 +9,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatDateRangePicker, MatDatepicker } from '@angular/material/datepicker';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { DisplayService } from 'src/app/services/display.service';
+import { NotificationService } from 'src/app/services/notification.service';
 @Component({
   selector: 'app-report-child',
   templateUrl: './report-child.component.html',
@@ -56,7 +57,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
 
 
   constructor(private route: ActivatedRoute, public service: ReportService,
-    public ut: UtilityService, public fieldService: FieldService,
+    public ut: UtilityService, public fieldService: FieldService,private nt:NotificationService,
     public display: DisplayService) { super(); }
 
   ngOnInit(): void {
@@ -71,7 +72,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     this.sub.add(this.customTimeframeForm.valueChanges.pipe(throttleTime(300, undefined, { leading: false, trailing: true })).subscribe(v => {
       if (this.childReport$.value && v.to && v.from && this.customTimeframeForm.valid && v.from < v.to)
         this.updateReport({ to: v.to, from: v.from });
-      else this.ut.notify('Invalid Field', 'Invalid date range', 'error')
+      else this.nt.notify('Invalid Field', 'Invalid date range', 'error')
     }));
 
     this.sub.add(this.route.paramMap.subscribe({
@@ -79,7 +80,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
         let childId = params.get('id');
         if (typeof childId == 'string')
           this.service.fetchChildReport(+childId).pipe(tap(v => this.childReport$.next(v))).subscribe();
-        else this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.")
+        else this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.")
       },
     }));
   }

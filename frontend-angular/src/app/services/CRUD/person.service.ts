@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { ICreatePerson, SucResEditDel, IPersonEntity } from '../../../../../interfaces';
-import { UtilityService } from '../utility.service';
+import { NotificationService } from '../notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ import { UtilityService } from '../utility.service';
 export class PersonService {
   public personURL = env.API + 'person';
 
-  constructor(private http: HttpClient, private ut: UtilityService) { }
+  constructor(private http: HttpClient, private nt:NotificationService,) { }
 
   postPerson(person: ICreatePerson): Promise<IPersonEntity> {
     return new Promise((res, rej) => {
@@ -18,7 +18,7 @@ export class PersonService {
         .subscribe({
           next: (v) => res(v),
           error: (e) => {
-            this.ut.errorDefaultDialog(e);
+            this.nt.errorDefaultDialog(e);
             rej(e);
           },
         });
@@ -31,7 +31,7 @@ export class PersonService {
         .subscribe({
           next: (v) => res(v),
           error: (e) => {
-            this.ut.errorDefaultDialog(e);
+            this.nt.errorDefaultDialog(e);
             rej(e);
           },
         })
@@ -46,7 +46,7 @@ export class PersonService {
           next: (v) => res(v),
           error: (e) => {
             if (!doNotShowDialogs)
-              this.ut.errorDefaultDialog(e);
+              this.nt.errorDefaultDialog(e);
             rej(e);
           },
         })

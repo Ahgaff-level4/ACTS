@@ -12,8 +12,8 @@
   [anchor1]="{link:'/add-account',text:'Register new account',icon:'person_add'}"
   [anchor2]="{disabled:selectedItem==null,tooltip:'View all information',link:selectedItem?'/account/'+selectedItem!.id:'./',text:'View',icon:'wysiwyg'}"
   [button3]="{disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
-  (button3Click)="this.selectedItem?accountService.edit(this.selectedItem):ut.notify(null)"
+  (button3Click)="this.selectedItem?accountService.edit(this.selectedItem):nt.notify(null)"
   [button4]="{disabled:selectedItem==null,color:'warn',tooltip:'Delete the selected account',text:'Delete',icon:'person_remove'}"
-  (button4Click)="this.selectedItem?accountService.deleteAccount(this.selectedItem):ut.notify(null)"
+  (button4Click)="this.selectedItem?accountService.deleteAccount(this.selectedItem):nt.notify(null)"
   ></app-table-controllers>
 </div>

@@ -2,9 +2,9 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { IProgramEntity } from '../../../../../../../interfaces';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-program',
@@ -15,8 +15,8 @@ export class AddEditProgramComponent {
   public formGroup: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb: FormBuilder, public service: ProgramService, private ut: UtilityService,
-    private formService: FormService, public dialogRef: MatDialogRef<any>,
+  constructor(private fb:FormBuilder, public service: ProgramService,
+    private formService: FormService, public dialogRef: MatDialogRef<any>,private nt:NotificationService,
     @Inject(MAT_DIALOG_DATA) public program?: IProgramEntity) {
     this.formGroup = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
@@ -39,7 +39,7 @@ export class AddEditProgramComponent {
       if (this.program?.id == null) {//add new
         try {
           await this.service.post(this.formGroup.value);
-          this.ut.notify("Added successfully", 'The program has been added successfully', 'success');
+          this.nt.notify("Added successfully", 'The program has been added successfully', 'success');
           this.dialogRef.close();
         } catch (e) { }
       } else {//edit
@@ -47,12 +47,12 @@ export class AddEditProgramComponent {
         try {
           if (dirtyProgram != null)
             await this.service.patch(this.program.id, dirtyProgram);
-          this.ut.notify("Edited successfully", 'The program has been edited successfully', 'success');
+          this.nt.notify("Edited successfully", 'The program has been edited successfully', 'success');
           this.dialogRef.close();
         } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }

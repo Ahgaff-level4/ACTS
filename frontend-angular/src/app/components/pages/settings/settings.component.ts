@@ -26,7 +26,7 @@ export class SettingsComponent {
 
 
   restore() {
-    this.ut.showMsgDialog({
+    this.nt.showMsgDialog({
       type: 'confirm',
       content: 'NOTE: The restore process will replace/overwrite your current database with the backup version. Any current data that is not exist in the backup version will be lost!',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Continue' }]
@@ -52,12 +52,12 @@ export class SettingsComponent {
           if (typeof event.loaded == 'number') {
             this.uploadProgress = Math.round(100 * (event.loaded / (event.total ?? 1)));
           } else if (event instanceof HttpResponse && event.body.success) {
-            this.ut.notify("Restored successfully", 'Database restored successfully', 'success');
+            this.nt.notify("Restored successfully", 'Database restored successfully', 'success');
             this.uploadProgress = null;
           }
 
         },
-        error: (error) => this.ut.errorDefaultDialog(error, 'There was a problem while restoring the database!')
+        error: (error) => this.nt.errorDefaultDialog(error, 'There was a problem while restoring the database!')
       });
   }
 

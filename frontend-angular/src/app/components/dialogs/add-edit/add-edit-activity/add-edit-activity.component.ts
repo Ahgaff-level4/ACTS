@@ -1,12 +1,12 @@
 import { Component, Inject } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
-import { UtilityService } from 'src/app/services/utility.service';
-import { IActivityEntity, IFieldEntity } from '../../../../../../../interfaces';
+import { IActivityEntity } from '../../../../../../../interfaces';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-activity',
@@ -19,8 +19,9 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
   protected nowDate = new Date();
   public isSpecialActivity!: boolean;
   // public fields: IFieldEntity[] | undefined;
-  constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService,
-    private ut: UtilityService, public dialogRef: MatDialogRef<any>, private formService: FormService,
+  constructor(private fb:FormBuilder, public service: ActivityService, public fieldService: FieldService,
+    public dialogRef: MatDialogRef<any>, private formService: FormService,
+    private nt:NotificationService,
     /**passed data could be:
      * 1- `activity` to be edit. If activity.programId == null THEN it is special activity
      * 2- `programId` to add the new activity into it.
@@ -60,7 +61,7 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
             newActivity = await this.service.postProgramItsActivities({ ...this.formGroup.value, programId: this.activityProgramId }, true);
           else
             newActivity = await this.service.postSpecialActivities({ ...this.formGroup.value, });
-          this.ut.notify('Added successfully', 'The activity has been added successfully', 'success');
+          this.nt.notify('Added successfully', 'The activity has been added successfully', 'success');
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
         } catch (e) { }
       } else if (typeof this.activityProgramId == 'object') {//edit. activityProgramId type in this scope `IActivityEntity` and its programId type `number|undefined`
@@ -73,12 +74,12 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
             else
               await this.service.patchInSpecialActivities(this.activityProgramId.id, dirtyControls, true);
           }
-          this.ut.notify('Edited successfully', 'The activity has been edited successfully', 'success');
+          this.nt.notify('Edited successfully', 'The activity has been edited successfully', 'success');
           this.dialogRef.close('edited');
         } catch (e) { }
-      } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
+      } else this.nt.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }

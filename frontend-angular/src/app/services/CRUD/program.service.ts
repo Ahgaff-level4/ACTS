@@ -1,9 +1,10 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, shareReplay } from 'rxjs';
+import { Observable, Subject, shareReplay } from 'rxjs';
 import { ICreateProgram, IProgramEntity, SucResEditDel } from '../../../../../interfaces';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from '../utility.service';
+import { NotificationService } from '../notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class ProgramService {
   }).pipe(shareReplay(1));
 
 
-  constructor(private http: HttpClient, private ut: UtilityService) {
+  constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,) {
   }
 
   /** fetch programs from DB and emit it to programs */
@@ -32,7 +33,7 @@ export class ProgramService {
             this.subject$.next(v); res(v);
           }, error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e);
+            this.nt.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         });
     })
@@ -52,7 +53,7 @@ export class ProgramService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -69,7 +70,7 @@ export class ProgramService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the program. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the program. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -86,7 +87,7 @@ export class ProgramService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })

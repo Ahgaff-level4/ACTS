@@ -9,6 +9,7 @@ import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Observable, Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-program',
@@ -24,7 +25,7 @@ export class ProgramComponent extends UnsubOnDestroy {
   private onCellValueChange = async (e: NewValueParams<IProgramEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IProgramEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.service.fetch();
     }
@@ -81,7 +82,7 @@ export class ProgramComponent extends UnsubOnDestroy {
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 
-  constructor(private service: ProgramService, public ut: UtilityService,
+  constructor(private service: ProgramService, public ut: UtilityService,private nt:NotificationService,
     private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -99,10 +100,10 @@ export class ProgramComponent extends UnsubOnDestroy {
 
   deleteDialog(program: IProgramEntity | undefined) {
     if (program == null) {
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
       return;
     }
-    this.ut.showMsgDialog({
+    this.nt.showMsgDialog({
       content: this.ut.translate('You are about to delete the program: ') + program.name + this.ut.translate(" permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -110,7 +111,7 @@ export class ProgramComponent extends UnsubOnDestroy {
       if (v === 'Delete') {
         try {
           await this.service.delete(program.id, true);
-          this.ut.notify("Deleted successfully", 'The program has been deleted successfully', 'success');
+          this.nt.notify("Deleted successfully", 'The program has been deleted successfully', 'success');
         } catch (e) { }
       }
     })

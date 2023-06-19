@@ -7,6 +7,7 @@ import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } 
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from '../privilege.service';
+import { NotificationService } from '../notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,9 @@ export class AccountService implements OnInit {
   public accounts = new ReplaySubject<IAccountEntity[]>();
   public isLoggerIn: boolean = false;
 
-  constructor(private http: HttpClient, private ut: UtilityService, private pr:PrivilegeService, private dialog: MatDialog) {
+  constructor(private http: HttpClient, private ut: UtilityService,
+    private pr:PrivilegeService, private dialog: MatDialog,
+    private nt:NotificationService,) {
     if (this.pr.canUser('accountsPage'))
       this.fetch();
   }
@@ -39,7 +42,7 @@ export class AccountService implements OnInit {
             res();
           }, error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the accounts information. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the accounts information. Please try again later or check your connection."); rej(e);
           }, complete: () => manageLoading && this.ut.isLoading.next(false),
         });
     })
@@ -52,7 +55,7 @@ export class AccountService implements OnInit {
   post(account: ICreateAccount, manageLoading = false): Promise<IAccountEntity> {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.ut.notify(null);
+        this.nt.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -64,7 +67,7 @@ export class AccountService implements OnInit {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem registering the account. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem registering the account. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -82,7 +85,7 @@ export class AccountService implements OnInit {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem changing your password. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem changing your password. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -93,7 +96,7 @@ export class AccountService implements OnInit {
   put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.ut.notify(null);
+        this.nt.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -105,7 +108,7 @@ export class AccountService implements OnInit {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -115,7 +118,7 @@ export class AccountService implements OnInit {
   delete(id: number, manageLoading = false) {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.ut.notify(null);
+        this.nt.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -127,7 +130,7 @@ export class AccountService implements OnInit {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
@@ -164,7 +167,7 @@ export class AccountService implements OnInit {
 
   /**pop-up a delete confirmation dialog, then delete if user approve */
   deleteAccount(account: IAccountEntity) {
-    this.ut.showMsgDialog({
+    this.nt.showMsgDialog({
       content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -172,7 +175,7 @@ export class AccountService implements OnInit {
       if (v === 'Delete') {
         try {
           await this.delete(account.id, true);
-          this.ut.notify("Deleted successfully", 'The account has been deleted successfully', 'success');
+          this.nt.notify("Deleted successfully", 'The account has been deleted successfully', 'success');
         } catch (e) { }
       }
     })

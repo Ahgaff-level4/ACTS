@@ -1,18 +1,15 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Role, SuccessResponse, User, ErrorResponse, IChildEntity, IAccountEntity } from './../../../../interfaces.d';
+import { SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject, first } from 'rxjs';
 import { environment as env } from 'src/environments/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FromNowPipe } from '../pipes/from-now.pipe';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
-import { DatePipe } from '../pipes/date.pipe';
-import { DateTimeWeekPipe } from '../pipes/date-time-week.pipe';
+import { NotificationService } from './notification.service';
 import { NzNotificationService } from 'ng-zorro-antd/notification';
 @Injectable({
   providedIn: 'root',
@@ -24,8 +21,7 @@ export class UtilityService {
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
     private calcAgePipe: CalcAgePipe, private dialog: MatDialog,
-    public router: Router, private translateService: TranslateService,
-    private notificationService: NzNotificationService,) {
+    public router: Router, private translateService: TranslateService,) {
   }
 
   /**
@@ -56,35 +52,6 @@ export class UtilityService {
   }
 
   /**
-   * Display error dialog with message of:
-   * - if `HttpErrorResponse` then extract the error `message`.
-   * - if string then message is `eOrMessage`.
-   * - else show default message (e.g., 'Something Went Wrong!') followed by `appendMsg` if exist.
-   * @param eOrMessage
-   * @param appendMsg used when error could not be identified and will be appended after the default error message: `'Something Went Wrong! '+appendMsg`
-   */
-  public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse, appendMsg?: string): MatDialogRef<MessageDialogComponent, any> => {
-    console.warn('UtilityService : errorDefaultDialog : eOrMessage:', eOrMessage);
-
-    let message: string;
-    if (typeof eOrMessage === 'string')
-      message = eOrMessage;
-    else if (eOrMessage instanceof HttpErrorResponse && eOrMessage?.error?.message)
-      message = eOrMessage.error.message;
-    else if (typeof (eOrMessage as ErrorResponse)?.success === 'boolean'
-      && typeof (eOrMessage as ErrorResponse)?.message === 'string')
-      message = eOrMessage?.message;
-    else {
-      let somethingWentWrong = this.translate('Something went wrong!');
-      appendMsg = appendMsg ? this.translate(appendMsg) : '';
-      let sorry = this.translate('Sorry, there was a problem. Please try again later or check your connection.');
-      message = (appendMsg ? appendMsg : somethingWentWrong + ' ' + sorry);
-    }
-
-    return this.showMsgDialog({ content: message, type: 'error' })
-  }
-
-  /**
    * We recommend using pipe translate (e.g., `<h1>{{title | translate}}</h1>`)
    * @param key key inside the ar.json file. If `null` or `undefined` returns empty string
    * @returns correspond value of the provided key translation (e.g., 'Login' or 'تسجيل دخول')
@@ -100,33 +67,6 @@ export class UtilityService {
    * NOTE: IF PROVIDED DATE IS INVALID THEN IT RETURNS `0` */
   public calcAge(value: string | Date | moment.Moment | null | undefined): number {
     return this.calcAgePipe.transform(value);
-  }
-
-  /**
-   *
-   * @param data structure of the message dialog
-   * @returns MatDialogRef. Value when close is the button type clicked.
-   */
-  public showMsgDialog(data: MessageDialogData) {
-    return this.dialog
-      .open<MessageDialogComponent, MessageDialogData, ButtonType>(MessageDialogComponent, { data, direction: this.getDirection() });
-  }
-
-  /**
-   * If title is null then show error message of something went wrong!
-   * @param title will be translated
-   * @param content will be translated
-   * @param type  notification icon will be based on the type or 'undefined'/'blank' for no icon
-   */
-  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration: number = 4000) {
-    if (title == null) {
-      console.trace('notify title is `undefined`!');
-      title = 'Error!';
-      content = 'Something went wrong!';
-      type = 'error';
-    }
-    const nzDuration = duration <= 0 ? undefined : duration;
-    return this.notificationService.create(type ?? 'blank', this.translate(title), this.translate(content ?? ''), { nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   public get currentLang(): 'ar' | 'en' {

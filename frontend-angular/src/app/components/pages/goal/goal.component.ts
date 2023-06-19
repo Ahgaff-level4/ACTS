@@ -13,6 +13,7 @@ import { FieldService } from 'src/app/services/CRUD/field.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-goal',
@@ -27,7 +28,7 @@ export class GoalComponent extends UnsubOnDestroy {
   private onCellValueChange = async (e: NewValueParams<IGoalEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IGoalEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.service.childItsGoals$.value)
         await this.service.fetchChildItsGoals(this.service.childItsGoals$.value.id).catch(() => { });
@@ -142,7 +143,7 @@ export class GoalComponent extends UnsubOnDestroy {
   ];
 
 
-  constructor(public service: GoalService, public ut: UtilityService,
+  constructor(public service: GoalService, public ut: UtilityService,private nt:NotificationService,
     private dialog: MatDialog, private route: ActivatedRoute, public agGrid: AgGridService,
     private fieldService: FieldService, private programService: ProgramService,
     public pr: PrivilegeService) {
@@ -156,7 +157,7 @@ export class GoalComponent extends UnsubOnDestroy {
       let childId = await this.ut.getRouteParamId(this.route);
       await this.service.fetchChildItsGoals(childId, true).catch(() => { });
     } catch (e) {
-      this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
+      this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
     }
 
     this.sub.add(this.fieldService.fields$.subscribe(v => {
@@ -196,7 +197,7 @@ export class GoalComponent extends UnsubOnDestroy {
   /** @param goalOrChildId is either a goal to be Edit. Or childId to be Add */
   addEdit(goalOrChildId?: IGoalEntity | number) {
     if (typeof goalOrChildId != 'object' && typeof goalOrChildId != 'number')
-      this.ut.errorDefaultDialog(undefined);
+      this.nt.errorDefaultDialog(undefined);
     else
       this.dialog
         .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId, direction: this.ut.getDirection() })
@@ -208,9 +209,9 @@ export class GoalComponent extends UnsubOnDestroy {
 
   deleteDialog(goal: IGoalEntity | undefined) {
     if (goal == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         content: this.ut.translate('You are about to delete the goal: \"') + goal.activity.name + this.ut.translate("\" permanently. If the child has finished the goal then edit the goal state as completed. NOTE: all evaluations of this goal will also be deleted permanently."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -218,7 +219,7 @@ export class GoalComponent extends UnsubOnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(goal.id, true);
-            this.ut.notify("Deleted successfully", 'The goal has been deleted successfully', 'success');
+            this.nt.notify("Deleted successfully", 'The goal has been deleted successfully', 'success');
           } catch (e) { }
         }
       })
@@ -226,7 +227,7 @@ export class GoalComponent extends UnsubOnDestroy {
 
   evaluate(goalId: number | undefined) {
     if (goalId == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
       this.dialog
         .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId, direction: this.ut.getDirection() });

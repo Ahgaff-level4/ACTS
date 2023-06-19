@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { UtilityService } from '../utility.service';
 import { ProgramService } from './program.service';
 import { BehaviorSubject, ReplaySubject, first, last } from 'rxjs';
+import { NotificationService } from '../notification.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -14,7 +15,7 @@ export class ActivityService {
   public specialActivities = new ReplaySubject<IActivityEntity[]>(1);
   private _programItsActivities: undefined | IProgramEntity;
   constructor(private http: HttpClient, private ut: UtilityService,
-    private programService: ProgramService) {
+    private programService: ProgramService,private nt:NotificationService,) {
     this.fetchSpecialActivities();
     this.programItsActivities.next(undefined);//to call next for first subscriber. Should then check if next's value is the Program needed or call `fetchProgramItsActivities` with needed programId
   }
@@ -49,7 +50,7 @@ export class ActivityService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the activity. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the activity. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -87,7 +88,7 @@ export class ActivityService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the activity. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the activity. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -123,7 +124,7 @@ export class ActivityService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the activity. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the activity. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
@@ -142,7 +143,7 @@ export class ActivityService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the program's activities. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the program's activities. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
@@ -159,7 +160,7 @@ export class ActivityService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the special activities. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the special activities. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })

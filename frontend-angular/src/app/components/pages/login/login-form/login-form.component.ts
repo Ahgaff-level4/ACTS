@@ -4,6 +4,7 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { LoginService } from 'src/app/services/login.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { User } from '../../../../../../../interfaces';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-login-form',
@@ -23,7 +24,8 @@ export class LoginFormComponent implements OnInit {
    * - login page.
    * - as dialog.
    */
-  constructor(private loginService: LoginService, private ut: UtilityService) { }
+  constructor(private loginService: LoginService, private ut: UtilityService,
+    private nt:NotificationService,) { }
 
   ngOnInit(): void {
     this.ut.user.next(null);//if user redirect here he should not be considered logged in anymore.
@@ -39,15 +41,15 @@ export class LoginFormComponent implements OnInit {
             this.ut.user.next(v);
             //todo redirect to previous page ?? '/main'
             this.ut.router.navigate(['main']);
-          } else this.ut.errorDefaultDialog(v as any);
+          } else this.nt.errorDefaultDialog(v as any);
         }, error: e => {
-          this.ut.errorDefaultDialog(e);
+          this.nt.errorDefaultDialog(e);
         }, complete: () => this.formGroup.enable()
       })
   }
 
   public showForgetPasswordDialog() {
-    this.ut.showMsgDialog({
+    this.nt.showMsgDialog({
       type: 'info',
       title: { text: 'Forget the password?', icon: 'info' },
       content: `Call the administrator to reset your password. If you are the administrator then try to access the system with another account that has Admin privilege, so that you can reset this account password. If nothing of the previous steps works then try to contact the technician who set up this system.`

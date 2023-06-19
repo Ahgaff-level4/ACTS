@@ -15,6 +15,7 @@ import { FieldService } from 'src/app/services/CRUD/field.service';
 import { Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-special-activity',
@@ -30,7 +31,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.sub.add(this.service.specialActivities.subscribe(v => {
         this.rowData = this.ut.deepClone(v);
@@ -78,9 +79,9 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     },
   ];
 
-  constructor(public service: ActivityService, public ut: UtilityService,
+  constructor(public service: ActivityService,private ut:UtilityService,
     private dialog: MatDialog, public agGrid: AgGridService, private fieldService: FieldService,
-    public pr:PrivilegeService) {
+    public pr: PrivilegeService, private nt: NotificationService,) {
     super();
   }
 
@@ -113,7 +114,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
   /** `data` is Activity to be Edit. */
   edit(data?: IActivityEntity) {
     if (typeof data != 'object' && typeof data != 'number')
-      this.ut.errorDefaultDialog(undefined);
+      this.nt.errorDefaultDialog(undefined);
     else
       this.dialog
         .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() })
@@ -121,9 +122,9 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
 
   deleteDialog(activity: IActivityEntity | undefined) {
     if (activity == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -131,7 +132,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
         if (v === 'Delete') {
           try {
             await this.service.deleteInSpecialActivities(activity.id, true);
-            this.ut.notify("Deleted successfully", 'The activity has been deleted successfully', 'success');
+            this.nt.notify("Deleted successfully", 'The activity has been deleted successfully', 'success');
           } catch (e) { }
         }
       });

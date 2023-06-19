@@ -14,6 +14,7 @@ import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-c
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-evaluation',
@@ -28,7 +29,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
   private onCellValueChange = async (e: NewValueParams<IEvaluationEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IEvaluationEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.service.goalItsEvaluations$.value)
         await this.service.fetchGoalItsEvaluations(this.service.goalItsEvaluations$.value.id).catch(() => { });
@@ -93,7 +94,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
 
   constructor(public service: EvaluationService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute,
+    private dialog: MatDialog, private route: ActivatedRoute,private nt:NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -105,7 +106,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
       let goalId = await this.ut.getRouteParamId(this.route);
       this.service.fetchGoalItsEvaluations(goalId);
     } catch (e) {
-      this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
+      this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
     }
 
   }
@@ -129,7 +130,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
   /** @param data is either a evaluation to be Edit. Or goalId to be Add */
   addEdit(data?: IEvaluationEntity | number) {
     if (typeof data != 'object' && typeof data != 'number')
-      this.ut.errorDefaultDialog(undefined);
+      this.nt.errorDefaultDialog(undefined);
     else
       this.dialog
         .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data, direction: this.ut.getDirection() });
@@ -137,9 +138,9 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
   deleteDialog(evaluation?: IEvaluationEntity) {
     if (evaluation == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         content: this.ut.translate('You are about to delete the evaluation with description: \"') + evaluation.description + this.ut.translate("\" permanently."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -147,7 +148,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(evaluation.id, true);
-            this.ut.notify("Deleted successfully", 'The evaluation has been deleted successfully', 'success');
+            this.nt.notify("Deleted successfully", 'The evaluation has been deleted successfully', 'success');
           } catch (e) { }
         }
       })

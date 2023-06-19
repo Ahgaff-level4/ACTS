@@ -8,6 +8,7 @@ import { SelectActivityComponent } from '../../select-activity/select-activity.c
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-goal',
@@ -25,9 +26,9 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   /** used to add/edit goal base on `goalOrChildId` type:
    * - Either goal to be edit.
    * - Or childId to add the new goal into it */
-  constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
+  constructor(private fb:FormBuilder, public service: GoalService, public goalService: GoalService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
-    private formService: FormService,
+    private formService: FormService,private nt:NotificationService,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
     super();
   }
@@ -58,10 +59,10 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
       this.formGroup.disable();
       if (typeof this.goalOrChildId == 'number') {//add new
         if (this.child$.value?.id == undefined || this.ut.user.value?.accountId == undefined)
-          return this.ut.errorDefaultDialog();
+          return this.nt.errorDefaultDialog();
         try {
           await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.ut.user.value.accountId }, true);
-          this.ut.notify("Added successfully", 'The goal has been added successfully', 'success');
+          this.nt.notify("Added successfully", 'The goal has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }
       } else if (typeof this.goalOrChildId == 'object') {//edit
@@ -69,12 +70,12 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
         try {
           if (dirtyControls != null)
             await this.service.patch(this.goalOrChildId.id, dirtyControls, true);
-          this.ut.notify("Edited successfully", 'The goal has been edited successfully', 'success');
+          this.nt.notify("Edited successfully", 'The goal has been edited successfully', 'success');
           this.dialogRef.close('edited');
         } catch (e) { }
-      } else this.ut.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
+      } else this.nt.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close())
       this.formGroup.enable();
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
   selectActivity() {

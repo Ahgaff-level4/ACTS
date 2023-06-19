@@ -12,6 +12,7 @@ import { FieldService } from 'src/app/services/CRUD/field.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-strength',
@@ -28,7 +29,7 @@ export class StrengthComponent extends UnsubOnDestroy {
   private onCellValueChange = async (e: NewValueParams<IStrengthEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IStrengthEntity]: e.newValue });
-      this.ut.notify('Edited successfully',undefined,'success')
+      this.nt.notify('Edited successfully',undefined,'success')
     } catch (e) {
       if (this.childItsStrengths)
         await this.service.fetchChildItsStrengths(this.childItsStrengths.id).catch(() => { });
@@ -87,7 +88,7 @@ export class StrengthComponent extends UnsubOnDestroy {
   ];
 
   constructor(public service: StrengthService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute,
+    private dialog: MatDialog, private route: ActivatedRoute,private nt:NotificationService,
     public agGrid: AgGridService, private fieldService:FieldService,
     private programService:ProgramService,public pr:PrivilegeService) {super();
   }
@@ -104,7 +105,7 @@ export class StrengthComponent extends UnsubOnDestroy {
               this.childItsStrengths = this.ut.deepClone(v);
             else await this.service.fetchChildItsStrengths(+(childId as string), true).catch(() => { });
           }));
-        else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.")
+        else this.nt.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.")
       },
     });
 
@@ -141,7 +142,7 @@ export class StrengthComponent extends UnsubOnDestroy {
   /** @param strengthOrChildId is either a strength to be Edit. Or childId to be Add */
   addEdit(strengthOrChildId?: IStrengthEntity | number) {
     if (typeof strengthOrChildId != 'object' && typeof strengthOrChildId != 'number')
-      this.ut.errorDefaultDialog(undefined);
+      this.nt.errorDefaultDialog(undefined);
     else
       this.dialog
         .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId ,direction:this.ut.getDirection()})
@@ -149,9 +150,9 @@ export class StrengthComponent extends UnsubOnDestroy {
 
   deleteDialog(strength?: IStrengthEntity) {
     if (strength == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         content: this.ut.translate('You are about to delete the strength: \"') + strength.activity.name + this.ut.translate("\" permanently."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -159,7 +160,7 @@ export class StrengthComponent extends UnsubOnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(strength.id, true);
-            this.ut.notify("Deleted successfully",'The strength has been deleted successfully','success');
+            this.nt.notify("Deleted successfully",'The strength has been deleted successfully','success');
           } catch (e) { }
         }
       })

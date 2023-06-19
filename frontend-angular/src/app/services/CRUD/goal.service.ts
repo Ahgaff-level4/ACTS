@@ -3,9 +3,9 @@ import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from '../utility.service';
 import { IChildEntity, ICreateGoal, IGoalEntity, SucResEditDel } from '../../../../../interfaces';
-import { BehaviorSubject, Observable, ReplaySubject, Subject, shareReplay, tap } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { ChildService } from './child.service';
-import { UnsubOnDestroy } from '../../unsub-on-destroy';
+import { NotificationService } from '../notification.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -13,7 +13,8 @@ export class GoalService {
   URL = env.API + 'goal';
   public childItsGoals$ = new BehaviorSubject<IChildEntity | undefined>(undefined);
 
-  constructor(private http: HttpClient, private ut: UtilityService, private childService: ChildService) {
+  constructor(private http: HttpClient, private ut: UtilityService,
+    private childService: ChildService, private nt: NotificationService,) {
   }
 
   /**
@@ -30,7 +31,7 @@ export class GoalService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the goal. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the goal. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -48,7 +49,7 @@ export class GoalService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the goal. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the goal. Please try again later or check your connection.");
             rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
@@ -67,7 +68,7 @@ export class GoalService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the goal. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the goal. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })
@@ -89,12 +90,12 @@ export class GoalService {
               res(v[0]);
             }
             else {
-              this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(v);
+              this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(v);
             }
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
     })

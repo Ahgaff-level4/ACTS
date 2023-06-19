@@ -9,6 +9,7 @@ import { AccountService } from 'src/app/services/CRUD/account.service';
 import { ComponentCanDeactivate } from 'src/app/app-routing.module';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-child',
@@ -26,8 +27,9 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
   public teachers!: IAccountEntity[];
   maxlength = { maxlength: 512 };
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
-    private accountService: AccountService, private formService: FormService) {
+  constructor(private fb:FormBuilder,public ut: UtilityService, private childService: ChildService,
+    private accountService: AccountService, private formService: FormService,
+    private nt:NotificationService,) {
     super();
   }
 
@@ -99,7 +101,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
         try {
           let dirtyFields = this.formService.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
-          this.ut.notify("Added successfully", 'The new child has been registered successfully', 'success');
+          this.nt.notify("Added successfully", 'The new child has been registered successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) {
           this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
@@ -110,14 +112,14 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
         try {
           if (dirtyFields != null)
             await this.childService.patchChild(this.child.id, dirtyFields, true);
-          this.ut.notify("Edited successfully", 'The child has been edited successfully', 'success');
+          this.nt.notify("Edited successfully", 'The child has been edited successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) { }
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
 
     // this.personForm.valid; do not submit if person field
   }
@@ -125,7 +127,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
 
   archiveChanged() {
     if (this.childForm.get('isArchive')?.value === true) {
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         title: { text: `Are you sure you want to archive this child?` },
         content: `Archiving a child will hide the child information from all pages and won't count their data in most report, such as children page. Only Admin can view archived children in the Children page by applying ‘Archive’ filter. Note: a parent of this child won't be able to view its information.`,
         type: 'confirm',

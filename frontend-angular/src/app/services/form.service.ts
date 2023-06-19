@@ -1,14 +1,12 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import * as moment from 'moment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
-
-  constructor() { }
-
+  
   /**
    * Used in formGroup to setValue of formGroup.controls with the correspond object properties.
    * Ex: `keys={'name':FormControl...}` and `properties={'name':'Ahmad','age':20,...}`

@@ -16,6 +16,7 @@ import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-activity',
@@ -32,7 +33,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.program)
         await this.service.fetchProgramItsActivities(this.program.id).catch(() => { });
@@ -96,7 +97,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
 
 
   constructor(public service: ActivityService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute,
+    private dialog: MatDialog, private route: ActivatedRoute,private nt:NotificationService,
     private fieldService: FieldService, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -114,7 +115,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
               this.program = this.ut.deepClone(v);
             else await this.service.fetchProgramItsActivities(+(programId as string), true).catch(() => { });
           }));
-        else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
+        else this.nt.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
@@ -145,7 +146,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   /** `data` is either Activity to be Edit. Or programId to be Add */
   addEdit(data?: IActivityEntity | number) {
     if (typeof data != 'object' && typeof data != 'number')
-      this.ut.errorDefaultDialog(undefined);
+      this.nt.errorDefaultDialog(undefined);
     else
       this.dialog
         .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() });
@@ -153,9 +154,9 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
 
   deleteDialog(activity: IActivityEntity | undefined) {
     if (activity == null)
-      this.ut.notify(undefined);
+      this.nt.notify(undefined);
     else
-      this.ut.showMsgDialog({
+      this.nt.showMsgDialog({
         content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
@@ -166,7 +167,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
               await this.service.deleteInProgramItsActivities(activity.id, true);
             else
               await this.service.deleteInSpecialActivities(activity.id, true);
-            this.ut.notify("Deleted successfully", 'The activity has been deleted successfully', 'success');
+            this.nt.notify("Deleted successfully", 'The activity has been deleted successfully', 'success');
           } catch (e) { }
         }
       });

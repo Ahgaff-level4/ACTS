@@ -8,6 +8,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dialog/password-dialog.component';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-account',
@@ -28,8 +29,8 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   @Input('account') readonlyAccount: IAccountEntity | undefined;//was used in account table to show account info
 
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService,
-    private dialog: MatDialog, public formService: FormService) {
+  constructor(private fb:FormBuilder, public ut: UtilityService, private accountService: AccountService,
+    private dialog: MatDialog, public formService: FormService,private nt:NotificationService,) {
     super();
   }
 
@@ -109,7 +110,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
           await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
-          this.ut.notify("Added successfully", 'The new account has been registered successfully', 'success');
+          this.nt.notify("Added successfully", 'The new account has been registered successfully', 'success');
           this.ut.router.navigate(['/account']);
         } catch (e) {
           this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
@@ -122,13 +123,13 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
-          this.ut.notify("Edited successfully", 'The account has been edited successfully', 'success');
+          this.nt.notify("Edited successfully", 'The account has been edited successfully', 'success');
           this.ut.router.navigate(['/account']);
         } catch (e) { }
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 

@@ -10,6 +10,7 @@ import { animate, state, style, transition, trigger } from '@angular/animations'
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { ColDef, GridOptions, SetFilterParams } from 'ag-grid-community';
 import { DisplayService } from 'src/app/services/display.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-account',
@@ -96,12 +97,13 @@ export class AccountComponent {
     {
       name: 'Delete',
       icon: `<mat-icon _ngcontent-glk-c62="" color="warn" role="img" class="mat-icon notranslate mat-warn material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">delete</mat-icon>`,
-      action: (v) => this.selectedItem ? this.accountService.deleteAccount(this.selectedItem) : this.ut.notify(null),
+      action: (v) => this.selectedItem ? this.accountService.deleteAccount(this.selectedItem) : this.nt.notify(null),
       tooltip: 'Delete the selected account',
     },
   ];
 
   constructor(public accountService: AccountService, public ut: UtilityService,
+    public nt:NotificationService,
     public agGrid: AgGridService, public display: DisplayService) {
   }
 
@@ -124,7 +126,7 @@ export class AccountComponent {
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
-      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.accountService.edit(item) : this.ut.notify(null) }),
+      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.accountService.edit(item) : this.nt.notify(null) }),
     onRowClicked: (v) => this.selectedItem = v.data,
   }
 

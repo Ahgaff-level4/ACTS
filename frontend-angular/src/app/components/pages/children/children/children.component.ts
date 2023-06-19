@@ -10,6 +10,7 @@ import { Observable, Subscription, finalize, first, map, tap } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { DisplayService } from 'src/app/services/display.service';
+import { NotificationService } from 'src/app/services/notification.service';
 // import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
 @Component({
   selector: 'app-children',
@@ -24,7 +25,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
   public onChildCellValueChanged = async (e: NewValueParams<IChildEntity>) => {
     try {
       await this.childService.patchChild(e.data.id, { [e.colDef.field as keyof IChildEntity]: e.newValue });
-      this.ut.notify('Edited successfully', undefined, 'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       this.childService.fetchChildren();
     }
@@ -199,7 +200,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
-    public ut: UtilityService, public pr: PrivilegeService,
+    public ut: UtilityService, public pr: PrivilegeService,private nt:NotificationService,
     public display: DisplayService) {
     super();
   }

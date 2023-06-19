@@ -5,6 +5,7 @@ import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IEvaluationEntity } from '../../../../../../../interfaces';
 import { FormService } from 'src/app/services/form.service';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-add-edit-evaluation',
@@ -15,8 +16,8 @@ export class AddEditEvaluationComponent {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb: FormBuilder, public service: EvaluationService, private ut: UtilityService,
-    public dialogRef: MatDialogRef<any>, private formService: FormService,
+  constructor(private fb:FormBuilder, public service: EvaluationService, private ut: UtilityService,
+    public dialogRef: MatDialogRef<any>, private formService: FormService,private nt:NotificationService,
     /** @param data is either an evaluation to be Edit. Or goalId to be Add */
     @Inject(MAT_DIALOG_DATA) public evaluationOrGoalId?: IEvaluationEntity | number,) {
   }
@@ -48,7 +49,7 @@ export class AddEditEvaluationComponent {
         try {
 
           await this.service.post(this.formGroup.value);
-          this.ut.notify('Added successfully', 'The evaluation has been added successfully', 'success')
+          this.nt.notify('Added successfully', 'The evaluation has been added successfully', 'success')
           this.dialogRef.close();
         } catch (e) { }
       } else if (typeof this.evaluationOrGoalId === 'object') {//edit
@@ -56,12 +57,12 @@ export class AddEditEvaluationComponent {
         try {
           if (dirtyFields != null)
             await this.service.patch(this.evaluationOrGoalId.id, dirtyFields);
-          this.ut.notify('Edited successfully', 'The evaluation has been edited successfully', 'success')
+          this.nt.notify('Edited successfully', 'The evaluation has been edited successfully', 'success')
           this.dialogRef.close();
         } catch (e) { }
       }
       this.formGroup.enable();
-    } else this.ut.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 
 }

@@ -1,7 +1,5 @@
-import { Component, Inject, OnInit } from '@angular/core';
+import { Component, Inject } from '@angular/core';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { UtilityService } from 'src/app/services/utility.service';
 @Component({
   selector: 'app-message',
   templateUrl: './message.component.html',

@@ -22,6 +22,7 @@ import { Component } from 'ag-grid-community';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
 import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
 import { PRIVILEGE } from './services/privilege.service';
+import { NotificationService } from './services/notification.service';
 
 export interface ComponentCanDeactivate {
   /**@returns false to prevent user navigating. true otherwise */
@@ -52,6 +53,7 @@ export function PendingChangesGuard(component: Component, state: RouterStateSnap
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
   const ut = inject(UtilityService);
+  const nt = inject(NotificationService);
   let allowRoles: Role[] = route.data['allowRoles'] as Role[];
   if (!Array.isArray(allowRoles) || allowRoles.length === 0)
     throw 'Expected allowRoles to be typeof Role[]. Got:' + allowRoles;
@@ -79,7 +81,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   //----------------------------------------
 
   function showUnauthorizeDialog() {
-    ut.showMsgDialog({
+    nt.showMsgDialog({
       type: 'error',
       title: { text: 'Insufficient privilege!' },
       content: `You don't have sufficient privilege to do this action!`,

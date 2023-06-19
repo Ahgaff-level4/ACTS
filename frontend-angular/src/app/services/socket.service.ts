@@ -53,7 +53,7 @@ export class SocketService implements OnDestroy {
       title = content
       content = '';
     }
-    let ref = this.ut.notify(title, content, 'info', this.nt.notificationSettings.value.closeAfter);
+    let ref = this.nt.notify(title, content, 'info', this.nt.notificationSettings.value.closeAfter);
     if (href) {
       ref.onClick.subscribe(() => this.ut.router.navigateByUrl(href as string));
     }

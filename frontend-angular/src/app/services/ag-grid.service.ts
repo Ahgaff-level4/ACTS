@@ -6,6 +6,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import * as moment from 'moment';
 import { PrivilegeService } from './privilege.service';
 import { DisplayService } from './display.service';
+import { NotificationService } from './notification.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -23,7 +24,7 @@ export class AgGridService {
    * - if field is number then set `type='number'`. Default filter is for string.
    * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, },`
    */
-  constructor(public ut: UtilityService, private clipboard: Clipboard,
+  constructor(private ut: UtilityService, private clipboard: Clipboard,private nt:NotificationService,
     private pr: PrivilegeService, private display: DisplayService) { }
 
   /**
@@ -57,8 +58,8 @@ export class AgGridService {
     if (gridApi) {
       gridApi.selectAll();
       gridApi.copySelectedRowsToClipboard({ includeHeaders });
-      this.ut.notify('Copied to clipboard', undefined, 'success');
-    } else this.ut.notify(undefined);
+      this.nt.notify('Copied to clipboard', undefined, 'success');
+    } else this.nt.notify(undefined);
   }
 
   private gridOptionsProperties: GridOptions = {
@@ -256,9 +257,9 @@ export class AgGridService {
       sideBar: this.sideBar,
       onCellDoubleClicked: async (e) => {
         if (!canEdit)
-          this.ut.notify('Error!', "You don't have sufficient privilege to edit!", 'error');
+          this.nt.notify('Error!', "You don't have sufficient privilege to edit!", 'error');
         else if (e.colDef.editable !== true)
-          this.ut.notify("You can't edit any row in this column directly!", undefined, 'warning');
+          this.nt.notify("You can't edit any row in this column directly!", undefined, 'warning');
       },
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
@@ -348,7 +349,7 @@ export class AgGridService {
       name: this.ut.translate('Copy cell'),
       icon: copyIcon,
       action: () => {
-        this.clipboard.copy(menuParam.value) == false ? this.ut.notify(undefined) : '';
+        this.clipboard.copy(menuParam.value) == false ? this.nt.notify(undefined) : '';
       }
     },
     {

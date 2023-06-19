@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, ReplaySubject } from 'rxjs';
-import { environment as env } from 'src/environments/environment';
+import { ReplaySubject } from 'rxjs';
 import { IChildEntity, ICreateStrength, IStrengthEntity, SucResEditDel } from '../../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from '../utility.service';
 import { ChildService } from './child.service';
 import { GoalService } from './goal.service';
+import { NotificationService } from '../notification.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -22,7 +22,8 @@ export class StrengthService {
   public childItsStrengths = new ReplaySubject<IChildEntity | undefined>(1)
   private _childItsStrengths: undefined | IChildEntity;
 
-  constructor(private http: HttpClient, private ut: UtilityService, private childService: ChildService, private goalService: GoalService) {
+  constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,
+    private childService: ChildService, private goalService: GoalService) {
     this.childItsStrengths.next(undefined);
   }
   /**
@@ -40,7 +41,7 @@ export class StrengthService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem creating the strength. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the strength. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -59,7 +60,7 @@ export class StrengthService {
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem editing the strength. Please try again later or check your connection.");
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the strength. Please try again later or check your connection.");
             rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
@@ -78,7 +79,7 @@ export class StrengthService {
           },
           error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem deleting the strength. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the strength. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })
@@ -101,12 +102,12 @@ export class StrengthService {
               res(v[0]);
             }
             else {
-              this.ut.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(v);
+              this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(v);
             }
           },
           error: e => {
             manageLoading && this.ut.isLoading.next(false);
-            this.ut.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
+            this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
           },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
         })
     })

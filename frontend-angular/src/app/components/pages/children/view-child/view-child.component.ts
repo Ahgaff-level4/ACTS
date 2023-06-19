@@ -5,6 +5,7 @@ import { ChildService } from 'src/app/services/CRUD/child.service';
 import { Subscription } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-view-child',
@@ -14,7 +15,8 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 export class ViewChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
 
   public child: IChildEntity | undefined;
-  constructor(private route: ActivatedRoute, private service: ChildService, private ut: UtilityService) { super(); }
+  constructor(private route: ActivatedRoute, private service: ChildService,
+    private ut: UtilityService,private nt:NotificationService,) { super(); }
 
   ngOnInit(): void {
     this.ut.isLoading.next(true);
@@ -25,9 +27,9 @@ export class ViewChildComponent extends UnsubOnDestroy implements OnInit, OnDest
           this.sub.add(this.service.children$.subscribe(async v => {
             this.child = v.find(v => v.id == +childId!)
             if (!this.child)
-              this.ut.notify(null);
+              this.nt.notify(null);
           }));
-        else this.ut.errorDefaultDialog("Sorry, there was a problem fetching the children information. Please try again later or check your connection.");
+        else this.nt.errorDefaultDialog("Sorry, there was a problem fetching the children information. Please try again later or check your connection.");
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     }));
