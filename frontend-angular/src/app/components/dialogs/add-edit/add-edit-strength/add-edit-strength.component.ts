@@ -23,7 +23,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
   public child: IChildEntity | undefined;
 
   constructor(private fb:FormBuilder, public service: StrengthService, public strengthService: StrengthService,
-    private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
+    private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     private formService: FormService, private nt: NotificationService,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
@@ -80,7 +80,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, { data: 'strength', direction: this.ut.getDirection() })
+    this.nt.openDialog<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, 'strength')
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);

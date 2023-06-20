@@ -66,7 +66,11 @@ import { HeaderActionsComponent } from './components/static/header/header-action
 import { NotificationDrawerComponent } from './components/dialogs/notification-drawer/notification-drawer.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { NotificationItemComponent } from './components/dialogs/notification-drawer/notification-item/notification-item.component';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { IconDefinition } from '@ant-design/icons-angular';
+import { BellFill } from '@ant-design/icons-angular/icons';
 
+const icons: IconDefinition[] = [BellFill]
 @NgModule({
   declarations: [
     AppComponent,
@@ -134,7 +138,9 @@ import { NotificationItemComponent } from './components/dialogs/notification-dra
         useFactory: (http: HttpClient) => new TranslateHttpLoader(http),
         deps: [HttpClient],
       },
-    })
+    }),
+    NzIconModule.forRoot(icons),
+
   ],
   providers: [
     TranslatePipe,
@@ -152,12 +158,12 @@ import { NotificationItemComponent } from './components/dialogs/notification-dra
       provide: HTTP_INTERCEPTORS,
       useClass: HttpCatchInterceptor,
       multi: true
-    },{
-      provide:MAT_DIALOG_DEFAULT_OPTIONS,
-      useValue:{
-        role:'dialog',
-        enterAnimationDuration:300,
-        exitAnimationDuration:300,
+    }, {
+      provide: MAT_DIALOG_DEFAULT_OPTIONS,
+      useValue: {
+        role: 'dialog',
+        enterAnimationDuration: 250,
+        exitAnimationDuration: 250,
       } as MatDialogConfig
     }
   ],

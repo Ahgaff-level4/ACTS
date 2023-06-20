@@ -36,11 +36,11 @@
         <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
       </li>
       <hr class="text-white my-2 mx-0 d-lg-none d-block">
-      <app-header-actions class="d-lg-none d-block" (click)="isShowDivIf=true" [isLoggedIn]="isLoggedIn">
+      <app-header-actions class="d-lg-none d-block" (hideHeader)="isShowDivIf=true" [isLoggedIn]="isLoggedIn">
       </app-header-actions>
     </ul>
 
-    <app-header-actions class="d-none d-lg-block" (click)="isShowDivIf=true" [isLoggedIn]="isLoggedIn">
+    <app-header-actions class="d-none d-lg-block" (hideHeader)="isShowDivIf=true" [isLoggedIn]="isLoggedIn">
     </app-header-actions>
   </div>
 </nav>

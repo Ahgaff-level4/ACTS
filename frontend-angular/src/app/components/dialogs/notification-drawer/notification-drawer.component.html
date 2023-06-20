@@ -6,9 +6,14 @@
       &nbsp;<mat-icon>notifications</mat-icon>
     </ng-template>
     <div mat-dialog-content>
-      <mat-list>
-        
-      </mat-list>
+      <div class="mb-3 py-0">
+        <div *ngFor="let n of nt.notifications.value; let i=index;">
+          <!--we don't use n, to loop in reverse so new notification appear above-->
+          <app-notification-item matBadgeSize="small" [matBadgeHidden]="nt.notifications.value[nt.notifications.value.length-1-i].shown==true"
+          matBadgeColor="warn" [dialogRef]="dialogRef" [matBadge]="'\u2060'" [item]="nt.notifications.value[nt.notifications.value.length-1-i]"></app-notification-item>
+          <mat-divider *ngIf="nt.notifications.value.length-1!=i"></mat-divider>
+        </div>
+      </div>
     </div>
   </mat-tab>
 

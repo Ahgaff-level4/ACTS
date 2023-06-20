@@ -54,13 +54,13 @@ $dark-theme: mat-dark-theme(
 	color: mat-color($my-primary);
 }
 .my-accent-text {
-	color: mat-color($my-accent);
+	color: mat-color($my-accent)!important;
 }
 a.my-accent-text:hover {
 	color: mat-color($my-accent);
 }
 .my-warn-text {
-	color: mat-color($my-warn);
+	color: mat-color($my-warn)!important;
 }
 .my-primary-bg {
 	background-color: mat-color($my-primary);

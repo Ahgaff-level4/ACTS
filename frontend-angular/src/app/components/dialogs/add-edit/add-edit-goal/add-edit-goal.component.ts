@@ -27,7 +27,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
    * - Either goal to be edit.
    * - Or childId to add the new goal into it */
   constructor(private fb:FormBuilder, public service: GoalService, public goalService: GoalService,
-    private ut: UtilityService, public dialogRef: MatDialogRef<any>, private dialog: MatDialog,
+    private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     private formService: FormService,private nt:NotificationService,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
     super();
@@ -79,7 +79,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   }
 
   selectActivity() {
-    this.dialog.open<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, { data: 'goal', direction: this.ut.getDirection() })
+    this.nt.openDialog<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, 'goal')
       .afterClosed().subscribe(v => {
         if (v != null) {
           this.formGroup.get('activityId')?.setValue(v.id);

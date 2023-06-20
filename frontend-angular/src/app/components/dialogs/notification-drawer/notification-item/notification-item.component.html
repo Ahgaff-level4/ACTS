@@ -1,37 +1,30 @@
-<!-- <div
-  class="ant-notification-notice ant-notification-notice-closable ng-tns-c99065493-1335 ng-trigger ng-trigger-notificationMotion"
-  style="opacity: 1; transform: translateX(0px);">
-  <div class="ant-notification-notice-content ng-tns-c99065493-1335 ng-star-inserted" style="">
-    <div class="ant-notification-notice-content ng-tns-c99065493-1335 ant-notification-notice-with-icon">
-      <div class="ng-tns-c99065493-1335 ant-notification-notice-with-icon"><span nz-icon="" nztype="info-circle"
-          class="anticon ant-notification-notice-icon ant-notification-notice-icon-info ng-tns-c99065493-1335 anticon-info-circle ng-star-inserted"><svg
-            viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em"
-            class="ng-tns-c99065493-1335" data-icon="info-circle" aria-hidden="true">
-            <path
-              d="M512 64C264.6 64 64 264.6 64 512s200.6 448 448 448 448-200.6 448-448S759.4 64 512 64zm0 820c-205.4 0-372-166.6-372-372s166.6-372 372-372 372 166.6 372 372-166.6 372-372 372z">
-            </path>
-            <path
-              d="M464 336a48 48 0 1096 0 48 48 0 10-96 0zm72 112h-48c-4.4 0-8 3.6-8 8v272c0 4.4 3.6 8 8 8h48c4.4 0 8-3.6 8-8V456c0-4.4-3.6-8-8-8z">
-            </path>
-          </svg></span>
-        <div class="ant-notification-notice-message ng-tns-c99065493-1335">Notification Title</div>
-        <div class="ant-notification-notice-description ng-tns-c99065493-1335">This is the content of the
-          notification. This is the content of the notification. This is the content of the notification.</div>
-      </div>
+<!--This template used in notification pop-up and in notifications drawer as shown below-->
+<ng-template #template let-notification="notification" let-data="data">
+  <div class="ant-notification-notice-content d-flex">
+    <div *ngIf="data.icon" class="align-items-center py-1">
+      <span nz-icon [nzType]="getNzType(data.icon)" [class]="getNzColor(data.icon) +' fs-3'"></span>
+
     </div>
-  </div><a tabindex="0" class="ant-notification-notice-close ng-tns-c99065493-1335"><span
-      class="ant-notification-notice-close-x ng-tns-c99065493-1335"><span nz-icon="" nztype="close"
-        class="anticon ant-notification-close-icon ng-tns-c99065493-1335 anticon-close ng-star-inserted" style=""><svg
-          viewBox="64 64 896 896" focusable="false" fill="currentColor" width="1em" height="1em"
-          class="ng-tns-c99065493-1335" data-icon="close" aria-hidden="true">
-          <path
-            d="M563.8 512l262.5-312.9c4.4-5.2.7-13.1-6.1-13.1h-79.8c-4.7 0-9.2 2.1-12.3 5.7L511.6 449.8 295.1 191.7c-3-3.6-7.5-5.7-12.3-5.7H203c-6.8 0-10.5 7.9-6.1 13.1L459.4 512 196.9 824.9A7.95 7.95 0 00203 838h79.8c4.7 0 9.2-2.1 12.3-5.7l216.5-258.1 216.5 258.1c3 3.6 7.5 5.7 12.3 5.7h79.8c6.8 0 10.5-7.9 6.1-13.1L563.8 512z">
-          </path>
-        </svg></span></span></a>
-</div> -->
-<mat-list-item>
-  <mat-icon *ngIf="icon" matListIcon>icon</mat-icon>
-  <h4 matListItemTitle>{{title}}</h4>
-  <p *ngIf="content" matListItemLine class="demo-2"> {{content}} </p>
-</mat-list-item>
-<mat-divider></mat-divider>
+    <div class="flex-fill px-3 " [dir]="ut.getDirection()">
+      <!-- <span nz-icon nzType="check-circle" nzTheme="outline"></span> -->
+      <div class="fw-normal fs-6 mb-1 position-relative">
+        {{data.title}}
+        <span *ngIf="dialogRef?.getState()===0" class="fs-7 fst-italic position-absolute text-opacity-75" style="top:-8px"
+          [ngClass]="{'end-0':ut.getDirection()=='ltr','start-0':ut.getDirection()=='rtl'}">{{display.fromNow(data.timestamp)}}</span>
+      </div>
+      <div class="d-inline">
+        {{data.content}}
+      </div>
+      <a *ngIf="data.link" mat-stroked-button color="primary" class="rounded-5 mx-3" [routerLink]="data.link"
+        (click)="notification.close()">
+        <span>{{'View'|translate}}</span>
+      </a>
+    </div>
+  </div>
+</ng-template>
+
+<!--This component will be a child comp. in notifications drawer and the template above will be shown below-->
+<div *ngIf="item" class="my-2">
+  <ng-container [ngTemplateOutlet]="template"
+    [ngTemplateOutletContext]="{data: item,notification:dialogRef}"></ng-container>
+</div>

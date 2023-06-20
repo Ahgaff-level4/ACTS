@@ -86,10 +86,13 @@ export const PRIVILEGE = {
   addActivity: AH,
   editActivity: AH,
   deleteActivity:AH,
+  //NOTIFICATION
+  broadcastMessage:A,
+  notificationDrawer:AHTP,
   //OTHER
   dashboard: A,
   backupRestore:A,
   /**print/export/copy table */
   printTable: AH,
-  broadcastMessage:A,
+
 }
