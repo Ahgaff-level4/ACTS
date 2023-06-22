@@ -68,7 +68,7 @@ export class ProgramController {
       by: user,
       controller: 'program',
       datetime: new Date(),
-      method: 'POST',
+      method: 'DELETE',
       payloadId: +id,
       payload: ret,
     });

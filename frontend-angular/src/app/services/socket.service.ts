@@ -1,10 +1,10 @@
 import { Injectable, OnDestroy, OnInit } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
-import { INotification, User } from '../../../../interfaces';
+import { IAccountEntity, INotification, User } from '../../../../interfaces';
 import { UtilityService } from './utility.service';
 import { Subscription, filter, first } from 'rxjs';
-import { NotificationService } from './notification.service';
+import { NotificationIcon, NotificationLink, NotificationService } from './notification.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,6 +12,7 @@ import { NotificationService } from './notification.service';
 export class SocketService implements OnDestroy {
   private sub = new Subscription();
   private socket: Socket | undefined;
+  private user: User | undefined;
   /**
    * Notification will be passed to Admin and Parent:
    * - Admin:
@@ -22,48 +23,50 @@ export class SocketService implements OnDestroy {
    *
    * NOTE: the server will handle the above condition and emit notification accordingly
    */
-  constructor(private ut: UtilityService, private nt:NotificationService) {
+  constructor(private ut: UtilityService, private nt: NotificationService) {
   }
   public connect(v: User | null) {
     console.log('SocketService : connect : user:', v);
 
-    // if (v == null) {
-    //   if (this.socket)
-    //     this.socket.close();
+    if (v == null) {
+      if (this.socket)
+        this.socket.close();
 
-    // } else {
-    //   if (this.socket)
-    //     this.socket.close();
-    //   this.socket = io(environment.SERVER_URL + 'notification');
-    //   this.socket = this.socket.connect();
-    //   this.socket.on('newNotification', this.newNotification);
-    //   this.socket.emit('registerUser', v);
-    // }
+    } else {
+      if (this.user && v.accountId == this.user.accountId)
+        return;
+      else if (this.socket)
+        this.socket.close();
+      this.user = v;
+      this.socket = io(environment.SERVER_URL + 'notification');
+      this.socket = this.socket.connect();
+      this.socket.on('newNotification', this.newNotification);
+      this.socket.emit('registerUser', v);
+      this.socket.on('onlineAccounts', (v: (IAccountEntity & { socketId: string,timestamp:string })[]) => {
+        this.nt.onlineAccounts.next(v);
+        console.log('onlineAccounts', v);
+      })
+    }
   }
 
   private newNotification = (n: INotification) => {
     console.log('newNotification', n);
-    if (!n || !this.socket || this.ut.user.value == null || !this.nt.notificationSettings.value.showNotification)
+    if (!n || this.ut.user.value == null || !this.nt.notificationSettings.value.showNotification)
       return;
 
-    let title = this.getTitle(n, this.ut.user.value);
+    let title = this.getTitle(n);
     let content = this.getContent(n, this.ut.user.value);
-    let href = this.getHref(n, this.ut.user.value);
-    if (title == null) {//parent will have title = null. So, swap title and content values to make text bigger
+    if (title == null) {//if title = null then swap title and content values to make text bigger
       title = content
       content = '';
     }
-    let ref = this.nt.notify(title, content, 'info', this.nt.notificationSettings.value.closeAfter);
-    if (href) {
-      ref.onClick.subscribe(() => this.ut.router.navigateByUrl(href as string));
-    }
-
+    let icon = this.getIcon(n);
+    let link = this.getHref(n);
+    this.nt.pushNotification(title, content, icon, link);
   }
 
-  private getTitle(n: INotification, user: User): string | null {
-    if (user.roles.includes('Admin')) {
-      return this.ut.translate('User') + ': ' + n.by.person.name;
-    } return null;
+  private getTitle(n: INotification): string | null {
+    return this.ut.translate('account') + ': ' + n.by.person.name;
   }
 
   private getContent(n: INotification, user: User): string {
@@ -86,12 +89,12 @@ export class SocketService implements OnDestroy {
       case 'restore': part2 = 'Restored the database'; break;
       case 'account': part2 = this.getPartTwoOfAccount(n, user); break;//account name/username maybe provided
       case 'activity': part2 = 'an activity'; break;
-      case 'child': part2 = 'a child'; break;
-      case 'evaluation': part2 = this.getPartTwoOfEvaluation(n, user); break;//maybe parent
-      case 'goal': part2 = this.getPartTwoOfGoal(n, user); break;//maybe parent
-      case 'strength': part2 = this.getPartTwoOfStrength(n, user); break;
-      case 'field': part2 = 'a field'; break;
-      case 'program': part2 = 'a program'; break;
+      case 'child': part2 = 'a child' + ' ' + n.payload?.person?.name ?? ''; break;
+      case 'evaluation': part2 = this.getPartTwoOfEvaluation(n); break;//maybe parent
+      case 'goal': part2 = this.getPartTwoOfGoal(n); break;//maybe parent
+      case 'strength': part2 = this.getPartTwoOfStrength(n); break;
+      case 'field': part2 = this.ut.translate('a field') + ' ' + n.payload?.name ?? ''; break;
+      case 'program': part2 = this.ut.translate('a program') + ' ' + n.payload?.name ?? ''; break;
       default: part2 = this.ut.translate(n.controller); break;
     }
     let content = '';
@@ -101,15 +104,31 @@ export class SocketService implements OnDestroy {
     return content;
   }
 
-  private getHref(n: INotification, user: User): string | undefined {
-    if (n.payloadId &&
-      (n.controller == 'child') &&
-      n.method != 'DELETE') {
-      return '/child/' + n.payloadId;//todo make child/account view information only
-    } else if (n.payloadId &&
-      n.controller == 'account' &&
-      n.method != 'DELETE')
-      return '/account/' + n.payloadId//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
+  private getIcon(n: INotification,): NotificationIcon {
+    let nzType, className;
+    switch (n.method) {
+      case 'POST': n.controller == 'login' ? (nzType = 'login') : (nzType = 'plus-circle'); break;//login has POST method
+      case 'DELETE': nzType = 'delete'; break;
+      case 'PATCH': (nzType = 'edit'); break;//patch in account controller means UpdateOldPassword
+      case 'PUT': (nzType = 'edit'); break;
+      default: (nzType = 'info-circle'); break;
+    }
+    return { nzType, class: className ?? 'text-info' };
+  }
+
+  private getHref(n: INotification,): NotificationLink | undefined {
+    if (n.payloadId) {
+      if ((n.controller == 'child') &&
+        n.method != 'DELETE') {
+        return { href: '/child/' + n.payloadId };//todo make child/account view information only
+      } else if (n.controller == 'account' &&
+        n.method != 'DELETE')
+        return { href: '/account/' + n.payloadId };//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
+      else if (n.controller == 'program')
+        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Programs'), href: '/program' }
+      else if (n.controller == 'field')
+        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Fields'), href: '/field' }
+    }
     return undefined;
   }
 
@@ -125,19 +144,19 @@ export class SocketService implements OnDestroy {
     return 'an account';
   }
 
-  private getPartTwoOfEvaluation(n: INotification, user: User): string {
+  private getPartTwoOfEvaluation(n: INotification): string {
     if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
       return 'New evaluation created for child' + ' ' + n.payload.person.name;
     return 'an evaluation';
   }
 
-  private getPartTwoOfGoal(n: INotification, user: User): string {
+  private getPartTwoOfGoal(n: INotification): string {
     if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
       return 'New goal created for child' + ' ' + n.payload.person.name;
     return 'a goal';
   }
 
-  private getPartTwoOfStrength(n: INotification, user: User): string {
+  private getPartTwoOfStrength(n: INotification): string {
     if (n.payload.person.name && n.method == 'POST')//parents only will have this payload
       return 'New strength created for child' + ' ' + n.payload.person.name;
     return 'a strength';

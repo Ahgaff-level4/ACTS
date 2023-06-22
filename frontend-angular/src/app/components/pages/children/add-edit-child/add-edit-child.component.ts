@@ -16,7 +16,7 @@ import { NotificationService } from 'src/app/services/notification.service';
   templateUrl: './add-edit-child.component.html',
   styleUrls: ['./add-edit-child.component.scss']
 })
-export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy, ComponentCanDeactivate {
+export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnDestroy {
   public childForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public child: IChildEntity | undefined;//child information to be edit or undefined for new child
@@ -27,9 +27,9 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
   public teachers!: IAccountEntity[];
   maxlength = { maxlength: 512 };
 
-  constructor(private fb:FormBuilder,public ut: UtilityService, private childService: ChildService,
+  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
     private accountService: AccountService, private formService: FormService,
-    private nt:NotificationService,) {
+    private nt: NotificationService,) {
     super();
   }
 
@@ -96,7 +96,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       this.ut.isLoading.next(true);
       FLAG: if (this.child?.id == null) {//Register a child
         let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
-        if (typeof p != 'object')
+        if (!p || typeof p != 'object')
           break FLAG;
         try {
           let dirtyFields = this.formService.extractDirty(this.childForm.controls);
@@ -120,8 +120,6 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       this.personForm?.formGroup?.enable();
       this.ut.isLoading.next(false);
     } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
-
-    // this.personForm.valid; do not submit if person field
   }
 
 
@@ -139,13 +137,14 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
     }
   }
 
-  public isSubmitting: boolean = false;
-  @HostListener('window:beforeunload')
-  public canDeactivate(): boolean {//should NOT be arrow function
-    // insert logic to check if there are pending changes here;
-    if ((() => (this.childForm.dirty || this.personForm?.formGroup.dirty) && !this.isSubmitting)())//to access `this`
-      return false; // returning false will show a confirm dialog before navigating away
-    return true;// returning true will navigate without confirmation
-  }
+  //!This is buggy
+  // public isSubmitting: boolean = false;
+  // @HostListener('window:beforeunload')
+  // public canDeactivate(): boolean {//should NOT be arrow function
+  //   // insert logic to check if there are pending changes here;
+  //   if ((() => (this.childForm.dirty || this.personForm?.formGroup.dirty) && !this.isSubmitting)())//to access `this`
+  //     return false; // returning false will show a confirm dialog before navigating away
+  //   return true;// returning true will navigate without confirmation
+  // }
 
 }

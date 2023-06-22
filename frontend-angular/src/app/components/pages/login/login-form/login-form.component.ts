@@ -44,6 +44,7 @@ export class LoginFormComponent implements OnInit {
           } else this.nt.errorDefaultDialog(v as any);
         }, error: e => {
           this.nt.errorDefaultDialog(e);
+          this.formGroup.enable()
         }, complete: () => this.formGroup.enable()
       })
   }

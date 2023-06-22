@@ -1,29 +1,29 @@
 <div *ngIf="child">
   <p *ngIf="child.isArchive===true" class="fw-bold w-100 text-center my-warn-bg text-white rounded-5">
     {{'Archived'|translate}}</p>
-  <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{child.person.name||'-'}}</p>
-  <p><span class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(child.person.birthDate,true)||'-'}}</p>
-  <p><span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.display.toDate(child.person.birthDate)||'-'}}</p>
-  <p><span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(child.person.gender)||'-'}}
+  <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{child.person.name||'–'}}</p>
+  <p><span class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(child.person.birthDate,true)||'–'}}</p>
+  <p><span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.display.toDate(child.person.birthDate)||'–'}}</p>
+  <p><span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(child.person.gender)||'–'}}
   </p>
   <p><span class="fw-bold">
-      {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(child.person.birthDate)||'-'}}</p>
+      {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(child.person.birthDate)||'–'}}</p>
   <p><span class="fw-bold">{{'Diagnostic'|translate}}:</span>&nbsp;{{child.diagnostic}}</p>
   <p><span class="fw-bold">
-      {{'Family information'|translate}}:</span>&nbsp;{{this.display.childFamilyInformation(child)||'-'}}</p>
-  <p><span class="fw-bold">{{'Parent kinship'|translate}}:</span>&nbsp;{{child.parentsKinship}}</p>
+      {{'Family information'|translate}}:</span>&nbsp;{{this.display.childFamilyInformation(child)||'–'}}</p>
+  <p><span class="fw-bold">{{'Parent kinship'|translate}}:</span>&nbsp;{{child.parentsKinship||'–'}}</p>
   <p><span class="fw-bold">
-      {{'Diagnostic date'|translate}}:</span>&nbsp;{{this.display.toDate(child.diagnosticDate)||'-'}}</p>
+      {{'Diagnostic date'|translate}}:</span>&nbsp;{{this.display.toDate(child.diagnosticDate)||'–'}}</p>
   <p><span class="fw-bold">
-      {{'Pregnancy state'|translate}}:</span>&nbsp;{{child.pregnancyState||'-'}}</p>
+      {{'Pregnancy state'|translate}}:</span>&nbsp;{{child.pregnancyState||'–'}}</p>
   <p><span class="fw-bold">
-      {{'Birth state'|translate}}:</span>&nbsp;{{child.birthState||'-'}}</p>
+      {{'Birth state'|translate}}:</span>&nbsp;{{child.birthState||'–'}}</p>
   <p><span class="fw-bold">
-      {{'Growth state'|translate}}:</span>&nbsp;{{child.growthState||'-'}}</p>
-  <p><span class="fw-bold">{{'Medicines'|translate}}:</span>&nbsp;{{child.medicine||'-'}}</p>
-  <p><span class="fw-bold">{{'Priority skills'|translate}}:</span>&nbsp;{{child.prioritySkills||'-'}}</p>
-  <p><span class="fw-bold">{{'Parent'|translate}}:</span>&nbsp;{{child.parent?.person?.name||'-'}}</p>
-  <p><span class="fw-bold">{{'Teachers'|translate}}:</span>&nbsp;{{this.display.childTeachers(child)||'-'}}</p>
+      {{'Growth state'|translate}}:</span>&nbsp;{{child.growthState||'–'}}</p>
+  <p><span class="fw-bold">{{'Medicines'|translate}}:</span>&nbsp;{{child.medicine||'–'}}</p>
+  <p><span class="fw-bold">{{'Priority skills'|translate}}:</span>&nbsp;{{child.prioritySkills||'–'}}</p>
+  <p><span class="fw-bold">{{'Parent'|translate}}:</span>&nbsp;{{child.parent?.person?.name||'–'}}</p>
+  <p><span class="fw-bold">{{'Teachers'|translate}}:</span>&nbsp;{{this.display.childTeachers(child)||'–'}}</p>
   <div *ngIf="!isPrinting" class="d-md-flex mx-4 pt-4 justify-content-evenly rounded-5">
     <button *ngIf="pr.canUser('editChildPage')" class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button
       color="primary" (click)="this.ut.router.navigate(['edit-child'], { state: { data: child } })">

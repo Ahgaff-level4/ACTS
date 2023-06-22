@@ -1,5 +1,5 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
-import { Socket } from "socket.io";
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
+import { Server, Socket } from "socket.io";
 import { IAccountEntity, INotification, User } from "../../../interfaces";
 import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
@@ -13,9 +13,9 @@ import { PersonEntity } from "src/management/person/person.entity";
 @Injectable()
 @WebSocketGateway({ namespace: '/notification', cors: { origin: '*', }, })//add cors origin if necessary
 export class NotificationGateway {
-	// @WebSocketServer()
-	// private server: Server;
-	private clients: { socket: Socket, user: User }[] = [];
+	@WebSocketServer()
+	private server: Server;//each role is a room.
+	private clients: { socket: Socket, user: User, timestamp: Date }[] = [];
 
 	constructor(@InjectDataSource() private dataSource: DataSource) { }
 
@@ -57,28 +57,41 @@ export class NotificationGateway {
 
 		for (const c of admins)
 			c.socket.emit('newNotification', n);
+
 		for (const c of parents) {
 			n.payload = interestedParents.filter(v => v.id == c.user.accountId)?.[0]?.children?.[0] ?? null;
 			c.socket.emit('newNotification', n);
 		}
 	}
 
-	private handleDisconnect(client: Socket) {//client close his browser this function called
+	private handleDisconnect(client: Socket) {//e.g. client closed his browser
 		// console.log('NotificationGateway : handleDisconnect : client:', client);
 		const indexOf = this.clients.map(v => v.socket.id).indexOf(client.id);
 		if (indexOf >= 0)//splice(-1,1) will splice last element! so we need to check if value exists
 			this.clients.splice(indexOf, 1);
+
+		this.server.in('Admin').emit('onlineAccounts', this.getOnlineAccounts(client.id))
 		console.log('socketId:', client.id, ' disconnected. Remaining connectors:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
 	}
 
 	@SubscribeMessage('registerUser')
 	private registerUser(@MessageBody() user: User | null, @ConnectedSocket() client: Socket) {//when client emit newNotification this function called. Also, user is JSON so be careful with Date object.
+		client.join(user?.roles || []);
 		const clientIds = this.clients.map(v => v.socket.id);
-		if (user && Number.isInteger(user?.accountId) && typeof client.id == 'string' && !clientIds.includes(client.id))
-			this.clients.push({ user, socket: client });
-		else if (user == null && clientIds.includes(client.id))
-			this.clients.splice(clientIds.indexOf(client.id), 1);
+		if (user && typeof client.id == 'string' && !clientIds.includes(client.id)){
+			const newClient = { user, socket: client, timestamp: new Date(), };
+			this.clients.push(newClient);
+			this.server.in('Admin').emit('onlineAccounts', this.getOnlineAccounts(client.id));
+			
+		}
 
 		console.log('socketId:', client.id, ' connected. Remaining connectors:', this.clients.map(v => ({ socketId: v.socket.id, user: v.user.username })));
+	}
+
+	/**@returns all online accounts except the account with the param `socketId`, if provided otherwise all onlineAccounts */
+	private getOnlineAccounts=(socketId?: string)=> {
+		if (socketId)
+			return this.clients.filter(v => v.socket.id != socketId).map(v => ({ ...v.user, socketId: v.socket.id, timestamp: v.timestamp }));
+		return this.clients.map(v => ({ ...v.user, socketId: v.socket.id, timestamp: v.timestamp }));
 	}
 }

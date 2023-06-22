@@ -32,7 +32,7 @@
       <mat-list-option *ngFor="let activity of activities" [value]="activity">
         <div matListItemTitle>{{activity.name}}</div>
         <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} –
-          {{activity.maxAge}}.&nbsp;&nbsp;&nbsp;{{'Field'|translate}}:&nbsp;{{activity.field?.name}}</div>
+          {{activity.maxAge}}&nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;{{'Field'|translate}}:&nbsp;{{activity.field?.name}}</div>
       </mat-list-option>
     </mat-selection-list>
   </div>

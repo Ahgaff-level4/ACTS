@@ -12,18 +12,18 @@ import { NotificationService } from 'src/app/services/notification.service';
   styleUrls: ['./add-edit-field.component.scss']
 })
 export class AddEditFieldComponent {
-  public formGroup: FormGroup;
+  public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb:FormBuilder, public service: FieldService,private nt:NotificationService,
+  constructor(private fb: FormBuilder, public service: FieldService, private nt: NotificationService,
     public dialogRef: MatDialogRef<any>, private formService: FormService, @Inject(MAT_DIALOG_DATA) public field?: IFieldEntity,) {
+  }
+
+  ngOnInit(): void {
     this.formGroup = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
       createdDatetime: [new Date(), [Validators.required]],
     });
-  }
-
-  ngOnInit(): void {
     if (this.field)
       this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.field));
   }

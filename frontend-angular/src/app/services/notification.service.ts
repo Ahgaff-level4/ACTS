@@ -4,7 +4,7 @@ import { ErrorResponse, IAccountEntity, SuccessResponse } from '../../../../inte
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilityService } from './utility.service';
 import { NotificationDrawerComponent } from '../components/dialogs/notification-drawer/notification-drawer.component';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { NzNotificationRef, NzNotificationService } from 'ng-zorro-antd/notification';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import { ComponentType } from '@angular/cdk/overlay';
@@ -26,23 +26,8 @@ export class NotificationService {
    * --------------------
    */
   public notificationSettings: BehaviorSubject<NotificationSettings> = new BehaviorSubject<NotificationSettings>(JSON.parse(localStorage.getItem('notifySettings') ?? 'null') ?? { showNotification: true, closeAfter: 10000 });
-  public notifications = new BehaviorSubject<NotificationShape[]>([
-    {
-      title: 'تقييم انضاف',
-      content: 'تم إضافة تقييم',
-      shown: false,
-      timestamp: new Date(2023, 6, 19),
-      link: '/child/101',
-    },
-    {
-      title: 'هدف انضاف',
-      content: 'تم إضافة هدف',
-      shown: true,
-      timestamp: new Date(),
-      icon: 'success',
-    },
-  ]);//live notifications only
-  public onlineAccounts = new BehaviorSubject<IAccountEntity[] | undefined>(undefined);
+  public notifications = new BehaviorSubject<NotificationShape[]>([]);//live notifications only
+  public onlineAccounts = new BehaviorSubject<OnlineAccount[] | undefined>(undefined);
 
   /**will be initialize when notification-item initialized. and that will be initialize in the app component initialized.
    * app => notification-item => this.template
@@ -52,10 +37,23 @@ export class NotificationService {
   constructor(private dialog: MatDialog, private ut: UtilityService, private nzNotification: NzNotificationService) { }
 
   /**append into `notifications` BehaviorSubject then emit & return the new values */
-  public appendNewNotification(notification: NotificationShape): NotificationShape[] {
+  private appendNewNotification(notification: NotificationShape): NotificationShape[] {
     const notifications = [...this.notifications.value, notification];
     this.notifications.next(notifications);
     return notifications;
+  }
+
+  /**
+   * Will call notify and append the provided notification to nt.notifications so that it shows on notification drawer.
+   * @param title
+   * @param content
+   * @param icon SHOULD be provided in the app.module icons array, the color is set by the `class` property (e.g. 'text-success','my-primary-text')
+   */
+  public pushNotification(title: string, content?: string, icon?: NotificationIcon, link?: NotificationLink): NzNotificationRef {
+    const newNotify = { title: this.ut.translate(title), content: this.ut.translate(content) ?? '', icon, link, timestamp: new Date(), shown: false, };
+    this.appendNewNotification(newNotify);
+
+    return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration: this.notificationSettings.value.closeAfter, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true });
   }
   /**
  * If title is null then show error message of something went wrong!
@@ -63,18 +61,16 @@ export class NotificationService {
  * @param content will be translated
  * @param type  notification icon will be based on the type or 'undefined'/'blank' for no icon
  */
-  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration: number = 40000) {
+  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration: number = 40000): NzNotificationRef {
     if (title == null) {
       console.trace('notify title is `undefined`!');
       title = 'Error!';
       content = 'Something went wrong!';
       type = 'error';
     }
-    const newNotify = { title:this.ut.translate(title), content: this.ut.translate(content) ?? '', icon:type, timestamp: new Date(), shown: false, };
-    this.appendNewNotification(newNotify);
+    const newNotify = { title: this.ut.translate(title), content: this.ut.translate(content) ?? '', icon: type, timestamp: new Date(), shown: false, };
     const nzDuration = duration <= 0 ? undefined : duration;
-    this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true });
-    return this.nzNotification.create(type ?? 'blank', newNotify.title, newNotify.content, { nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
+    return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   openNotificationsDrawer() {
@@ -143,12 +139,15 @@ export interface NotificationShape {
   content?: string,
   shown: boolean,
   /**href */
-  link?: string,
+  link?: NotificationLink;
   /**nzType */
-  icon?: 'success'|'warning'|'error'|string,
+  icon?: NotificationIcon,
   timestamp: Date,
 }
+export type NotificationLink = { btnText?: string, href: string };
+export type NotificationIcon = 'success' | 'warning' | 'error' | 'info' | { nzType: string, class: string };
 interface NotificationSettings {
   showNotification: boolean,
   closeAfter: number
 }
+export type OnlineAccount = IAccountEntity & { socketId: string, timestamp: string };

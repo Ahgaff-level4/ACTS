@@ -1,7 +1,10 @@
 import { Component } from '@angular/core';
 import { MatDialogRef } from '@angular/material/dialog';
-import { NotificationService } from 'src/app/services/notification.service';
+import { DisplayService } from 'src/app/services/display.service';
+import { NotificationService, OnlineAccount } from 'src/app/services/notification.service';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { UtilityService } from 'src/app/services/utility.service';
+import { SendMessageComponent } from './send-message/send-message.component';
 
 @Component({
   selector: 'app-notification-drawer',
@@ -9,7 +12,11 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
   styleUrls: ['./notification-drawer.component.scss']
 })
 export class NotificationDrawerComponent {
-  constructor(public pr:PrivilegeService,public nt:NotificationService,
-    public dialogRef:MatDialogRef<any>){}
+  constructor(public pr: PrivilegeService, public nt: NotificationService,
+    public dialogRef: MatDialogRef<any>, public display: DisplayService,
+    public ut: UtilityService) { }
 
+  openSendMessageDialog(account: OnlineAccount) {
+    this.nt.openDialog(SendMessageComponent, account);
+  }
 }

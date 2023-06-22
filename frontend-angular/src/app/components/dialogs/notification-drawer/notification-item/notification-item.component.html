@@ -1,30 +1,31 @@
 <!--This template used in notification pop-up and in notifications drawer as shown below-->
-<ng-template #template let-notification="notification" let-data="data">
+<ng-template #template let-notification let-data="data">
   <div class="ant-notification-notice-content d-flex">
     <div *ngIf="data.icon" class="align-items-center py-1">
       <span nz-icon [nzType]="getNzType(data.icon)" [class]="getNzColor(data.icon) +' fs-3'"></span>
 
     </div>
     <div class="flex-fill px-3 " [dir]="ut.getDirection()">
-      <!-- <span nz-icon nzType="check-circle" nzTheme="outline"></span> -->
       <div class="fw-normal fs-6 mb-1 position-relative">
         {{data.title}}
-        <span *ngIf="dialogRef?.getState()===0" class="fs-7 fst-italic position-absolute text-opacity-75" style="top:-8px"
+        <span *ngIf="item" class="fs-7 fst-italic position-absolute opacity-75" style="top:-8px"
           [ngClass]="{'end-0':ut.getDirection()=='ltr','start-0':ut.getDirection()=='rtl'}">{{display.fromNow(data.timestamp)}}</span>
       </div>
       <div class="d-inline">
         {{data.content}}
       </div>
-      <a *ngIf="data.link" mat-stroked-button color="primary" class="rounded-5 mx-3" [routerLink]="data.link"
-        (click)="notification.close()">
-        <span>{{'View'|translate}}</span>
-      </a>
+      <span class="d-inline" *ngIf="data.link" (click)="notification?.close?.()||data.close?.()">
+        <a mat-stroked-button color="primary" class="rounded-5 mx-3" [routerLink]="data.link.href">
+          <span>{{(data.link.btnText??'View')|translate}}</span>
+        </a>
+      </span>
     </div>
   </div>
 </ng-template>
 
 <!--This component will be a child comp. in notifications drawer and the template above will be shown below-->
-<div *ngIf="item" class="my-2">
+<div *ngIf="item" class="my-2" matBadgeSize="small" [matBadgeHidden]="item.shown==true" matBadgeColor="warn"
+  [matBadge]="'\u2060'">
   <ng-container [ngTemplateOutlet]="template"
-    [ngTemplateOutletContext]="{data: item,notification:dialogRef}"></ng-container>
+    [ngTemplateOutletContext]="{data: item,close:dialogRef?.close}"></ng-container>
 </div>
