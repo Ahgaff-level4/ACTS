@@ -1,0 +1,21 @@
+<h1 matDialogTitle>{{(account?'Send notification message':'Send broadcast message')|translate}}</h1>
+
+<mat-dialog-content>
+  <p>
+    {{'Send to'|translate}}:&nbsp;{{account?.person?.name??''}}
+  </p>
+  <ol *ngIf="!account">
+    <li *ngFor="let a of nt.onlineAccounts.value??[]"></li>
+  </ol>
+  <mat-form-field class="w-100" appearance="fill">
+    <mat-label>{{'Message content'|translate}}</mat-label>
+    <textarea placeholder="..." focus type="text" matInput [formControl]="formGroup.controls.message"
+      minlength="4"></textarea>
+  </mat-form-field>
+</mat-dialog-content>
+
+<mat-dialog-actions>
+  <button type="button" class="rounded-5" mat-button color="accent" matDialogClose>{{'Cancel'|translate}}</button>
+  <button type="submit" class="rounded-5" (click)="send()" [disabled]="!formGroup.valid" mat-button
+    color="primary">{{'Submit'|translate}}</button>
+</mat-dialog-actions>

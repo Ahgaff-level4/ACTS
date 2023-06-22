@@ -556,6 +556,7 @@
   "Evaluations of goal": "تقيمات الهدف",
   "Goal of child": "هدف الطفل",
   "Empty activity list": "قائمة الأنشطة فارغة",
+  "Empty list": "القائمة فارغة",
   "Evaluate date": "تاريخ التقييم",
   "Excellent": "ممتازة",
   "Strengths": "نقاط القوه",
@@ -640,6 +641,7 @@
   "a program": "برنامج",
   "a strength": "قوة",
   "Account": "الحساب",
+  "account": "حساب",
   "User": "المستخدم",
   "Logged in into the system": "تم تسجيل الدخول إلى النظام",
   "Logged out of the system": "تم تسجيل الخروج من النظام",
@@ -696,5 +698,10 @@
   "Completed goals":"اهداف مكتملة",
   "Continual goals":"اهداف مستمرة",
   "Online":"متصل الآن",
-  "New":"جديد"
+  "New":"جديد",
+  "Send notification message":"إرسال رسالة إشعار",
+  "Send to":"إرسال إلى",
+  "Message":"الرسالة",
+  "Message content":"محتوى الرسالة",
+  "Send broadcast message":""
 }
