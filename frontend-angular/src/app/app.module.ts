@@ -72,12 +72,12 @@ import { SendMessageComponent } from './components/dialogs/notification-drawer/s
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
-  NotificationOutline,
+  NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
-  InfoCircleOutline, NotificationOutline];
+  InfoCircleOutline, NotificationOutline, MessageOutline];
 @NgModule({
   declarations: [
     AppComponent,

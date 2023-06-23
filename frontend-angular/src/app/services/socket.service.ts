@@ -12,7 +12,7 @@ import { NotificationIcon, NotificationLink, NotificationService } from './notif
 export class SocketService implements OnDestroy {
   private sub = new Subscription();
   private socket: Socket | undefined;
-  private user: User | undefined|null;
+  private user: User | undefined | null;
   /**
    * Notification will be passed to Admin and Parent:
    * - Admin:
@@ -58,18 +58,40 @@ export class SocketService implements OnDestroy {
           return;
         const addedOnlineAccounts = this.nt.onlineAccounts.value.filter(v => !oldIds.includes(v.accountId));
         const subOnlineAccounts = old.filter(v => !newIds.includes(v.accountId));
-        console.log('SocketService : this.socket.on : addedOnlineAccounts:', addedOnlineAccounts);
-        console.log('SocketService : this.socket.on : subOnlineAccounts:', subOnlineAccounts);
         for (let online of addedOnlineAccounts)
           this.nt.pushNotification(['account', ': ', online.person?.name], 'Logged in into the system', { nzType: 'login', class: 'text-info' })
         for (let offline of subOnlineAccounts)
           this.nt.pushNotification(['account', ': ', offline.person?.name], 'Logged out of the system', { nzType: 'logout', class: 'text-info' })
-        console.log('onlineAccounts', v);
       });
       this.socket.on('message', (v: NotificationMessage) => {
-        this.nt.pushNotification(['Message from', ': ', v.from.person?.name], v.text, { nzType: 'notification', class: 'text-info' });
+        if (v.to == null)
+          this.nt.pushNotification(['Broadcast message from', ': ', v.from.person?.name], v.text, { nzType: 'notification', class: 'text-info' })
+        else this.nt.pushNotification(['Message from', ': ', v.from.person?.name], v.text, { nzType: 'message', class: 'text-info' });
       })
     }
+  }
+
+  /** Error alerts are handled.
+   * @param to is `User` obj if message to single user as 'notification message'
+   * if `to` is `null` then it is broadcast message.
+   * @returns True if the message sent successfully. False otherwise */
+  public async emitNotificationMessage(to: User|null, text: string): Promise<boolean> {
+    if (this.user && this.socket) {
+      try {
+        const res = await this.socket.timeout(10000).emitWithAck('sendMessage', { to, text, from: this.user })
+        if (res == 'success') {
+          this.nt.notify('Sent successfully', 'The message was successfully sent', 'success');
+          return true;
+        }
+      } catch (e) {
+        console.log('SocketService : emitNotificationMessage : e:', e);
+
+        this.nt.notify('Error!', 'Sorry, your request took too long to process. Please try again', 'error');
+        return false;
+      }
+    }
+    this.nt.notify(undefined);
+    return false;
   }
 
   private newNotification = (n: INotification) => {

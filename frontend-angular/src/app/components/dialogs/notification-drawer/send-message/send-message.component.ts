@@ -3,6 +3,7 @@ import { FormBuilder, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService, OnlineAccount } from 'src/app/services/notification.service';
+import { SocketService } from 'src/app/services/socket.service';
 
 @Component({
   selector: 'app-send-message',
@@ -11,10 +12,10 @@ import { NotificationService, OnlineAccount } from 'src/app/services/notificatio
 })
 export class SendMessageComponent implements OnInit {
   public formGroup = this.fb.group({
-    message: [null, [Validators.required, Validators.minLength(3)]],
+    message: ['', [Validators.required, Validators.minLength(2)]],
   });
   constructor(private dialogRef: MatDialogRef<any>, private fb: FormBuilder,
-    public nt: NotificationService,
+    public nt: NotificationService, private socketService: SocketService,
     /**State:
      * 1- account exist: then it is 'sent notification message' privately to single account.
      * 2- account is undefined: then it is 'broadcast message' sent to all online accounts.
@@ -27,11 +28,13 @@ export class SendMessageComponent implements OnInit {
       this.dialogRef.close();
     }
   }
-  send() {
+  async send() {
     this.formGroup.disable();
-    //todo some code
-    this.dialogRef.close();
-    //todo some code
-    this.formGroup.enable();
+    let res: boolean;
+    res = await this.socketService.emitNotificationMessage(this.account ?? null, this.formGroup.controls.message.value ?? '');
+    if (res == true)
+      this.dialogRef.close();
+    else
+      this.formGroup.enable();
   }
 }

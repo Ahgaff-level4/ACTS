@@ -15,7 +15,7 @@ export class NotificationItemComponent implements AfterViewInit, OnDestroy {
   @Input() dialogRef: MatDialogRef<any> | undefined;
 
   constructor(public nt: NotificationService, public ut: UtilityService,
-    public display: DisplayService) { }
+    public display: DisplayService) { this.item = undefined}
 
   getNzType(icon: NotificationIcon) {
     switch (icon) {

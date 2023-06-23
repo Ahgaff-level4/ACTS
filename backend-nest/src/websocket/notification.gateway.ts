@@ -97,9 +97,18 @@ export class NotificationGateway {
 		console.log('socketId:', newClient.id, ' connected. Remaining connectors:', this.clients.map(v => ({ socketId: v.id, user: v.data.user.username })));
 	}
 
-	@SubscribeMessage('sendNotificationMessage')
-	private sendNotificationMessage(@MessageBody() to: IAccountEntity & NotificationMessage, @ConnectedSocket() client: MySocket) {
-		this.clients.filter(v => v.data?.user.accountId == to.id).forEach(v => v.emit('message', to));
+	@SubscribeMessage('sendMessage')
+	private sendMessage(@ConnectedSocket() client: MySocket,
+		@MessageBody() message: NotificationMessage) {
+		if (message && message.from && message.text) {
+			if (message.to)
+				this.clients.filter(v => v.data?.user.accountId == message.to.accountId).forEach(v => v.emit('message', message));
+			else
+				this.clients.filter(v => v.data?.user.accountId != client.data?.user.accountId).forEach(v => v.emit('message', message));
+				
+			return 'success';
+		}
+		return 'failed';
 	}
 
 	/**@returns all online accounts except the account with the param `accountId`, if provided otherwise all onlineAccounts */
@@ -115,8 +124,8 @@ export class NotificationGateway {
 	/**Emit all online accounts (except the recipient) to all Admin accounts */
 	private emitOnlineAccounts = () => {
 		const adminAccounts = this.getAdminClients();
-		for (const admin of adminAccounts) 
+		for (const admin of adminAccounts)
 			admin.emit('onlineAccounts', this.clients.filter(v => v.data?.user.accountId != admin.data?.user.accountId).map(v => ({ ...v.data?.user, timestamp: v.data?.timestamp })));
 	}
-	
+
 }

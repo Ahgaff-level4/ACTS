@@ -1,16 +1,17 @@
 <h1 matDialogTitle>{{(account?'Send notification message':'Send broadcast message')|translate}}</h1>
 
 <mat-dialog-content class="mb-0 pb-0">
-  <p>
+  <p class="pb-0 mb-0">
     {{'Send to'|translate}}:&nbsp;{{account?.person?.name??''}}
   </p>
-  <ol *ngIf="!account">
-    <li *ngFor="let a of nt.onlineAccounts.value??[]"></li>
+  <ol class="" *ngIf="!account">
+    <li *ngFor="let a of nt.onlineAccounts.value??[]" class="">
+      {{a.person.name}}
+    </li>
   </ol>
   <mat-form-field class="w-100" appearance="fill">
     <mat-label>{{'Message content'|translate}}</mat-label>
-    <textarea placeholder="..." focus type="text" matInput [formControl]="formGroup.controls.message"
-      minlength="4"></textarea>
+    <textarea placeholder="..." focus type="text" matInput [formControl]="formGroup.controls.message"></textarea>
   </mat-form-field>
 </mat-dialog-content>
 

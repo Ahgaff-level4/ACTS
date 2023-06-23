@@ -277,6 +277,8 @@ export interface IDashboard {
 }
 
 export interface NotificationMessage {
-	from: IAccountEntity,
+	from: User,
+	/**`null` means it is broadcast notification message */
+	to:User|null,
 	text: string;
 }

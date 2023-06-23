@@ -699,10 +699,14 @@
   "Continual goals":"اهداف مستمرة",
   "Online":"متصل الآن",
   "New":"جديد",
-  "Send notification message":"إرسال رسالة إشعار",
+  "Send notification message":"إرسال إشعار",
   "Send to":"إرسال إلى",
   "Message":"الرسالة",
   "Message content":"محتوى الرسالة",
-  "Send broadcast message":"",
-  "Message from":"رسالة من"
+  "Send broadcast message":"إرسال إشعار للجميع",
+  "Message from":"رسالة من",
+  "Broadcast message from":"رسالة للجميع من",
+  "Sent successfully":"تم الإرسال بنجاح",
+  "The message was successfully sent":"تم إرسال الرسالة بنجاح",
+  "Sorry, your request took too long to process. Please try again":"عذرا، استغرق طلبك وقتًا طويلاً. يرجى المحاولة مرة أخرى"
 }

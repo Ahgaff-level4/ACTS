@@ -16,7 +16,7 @@ export class NotificationDrawerComponent {
     public dialogRef: MatDialogRef<any>, public display: DisplayService,
     public ut: UtilityService) { }
 
-  openSendMessageDialog(account: OnlineAccount) {
+  openSendMessageDialog(account?: OnlineAccount) {
     this.nt.openDialog(SendMessageComponent, account);
   }
 }
