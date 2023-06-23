@@ -32,7 +32,7 @@
         <div class="ant-notification-notice-content d-flex my-2">
           <div class="flex-fill px-3 " [dir]="ut.getDirection()">
             <div class="fw-normal fs-6 mb-1 position-relative">
-              {{account.person?.name}}
+              {{account?.person?.name}}
               <span class="fs-7 fst-italic position-absolute opacity-75" style="top:-8px"
                 [ngClass]="{'end-0':ut.getDirection()=='ltr','start-0':ut.getDirection()=='rtl'}">{{display.fromNow(account.timestamp,true)}}</span>
             </div>

@@ -29,8 +29,8 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   @Input('account') readonlyAccount: IAccountEntity | undefined;//was used in account table to show account info
 
 
-  constructor(private fb:FormBuilder, public ut: UtilityService, private accountService: AccountService,
-    private dialog: MatDialog, public formService: FormService,private nt:NotificationService,) {
+  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService,
+    private dialog: MatDialog, public formService: FormService, private nt: NotificationService,) {
     super();
   }
 
@@ -129,7 +129,10 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       }
       this.accountForm?.enable();
       this.personForm?.formGroup?.enable();
-    } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
+    } else {
+      this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
+      console.log(this.accountForm, this.personForm);
+    }
   }
 
 

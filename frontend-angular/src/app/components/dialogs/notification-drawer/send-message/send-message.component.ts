@@ -15,6 +15,10 @@ export class SendMessageComponent implements OnInit {
   });
   constructor(private dialogRef: MatDialogRef<any>, private fb: FormBuilder,
     public nt: NotificationService,
+    /**State:
+     * 1- account exist: then it is 'sent notification message' privately to single account.
+     * 2- account is undefined: then it is 'broadcast message' sent to all online accounts.
+     */
     @Inject(MAT_DIALOG_DATA) public account?: OnlineAccount) { }
 
   ngOnInit(): void {

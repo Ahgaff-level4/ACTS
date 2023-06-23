@@ -20,7 +20,6 @@ export class DashboardComponent extends UnsubOnDestroy {
         .sort((a, b) => a.person.createdDatetime < b.person.createdDatetime ? 1 : (a.person.createdDatetime > b.person.createdDatetime ? -1 : 0))
         .map((v) => ({ value: i--, name: new Date(v.person.createdDatetime) }))
     }] as any;
-    console.log('data', ret);
     return ret;
   }))
   constructor(public service: ReportService, public ut: UtilityService, public display: DisplayService) { super(); }

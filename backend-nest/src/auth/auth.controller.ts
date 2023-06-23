@@ -30,14 +30,14 @@ export class AuthController {
 		const user: User = { person: account.person, isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name, username: account.username, birthdate: account.person.birthDate, address: account.address, phones: [account.phone0, account.phone1, account.phone2, account.phone3, account.phone4, account.phone5, account.phone6, account.phone7, account.phone8, account.phone9] };
 		req.session['user'] = user;//todo specify session age base on loginInfo.isRememberMe user selection to be very short. Or do the right thing 🤷‍♂️
 
-		this.notify.emitNewNotification({
-			by: user,
-			datetime: new Date(),
-			controller: 'login',
-			method: 'POST',
-			payloadId: user.accountId,
-			payload: user,
-		});
+		// this.notify.emitNewNotification({
+		// 	by: user,
+		// 	datetime: new Date(),
+		// 	controller: 'login',
+		// 	method: 'POST',
+		// 	payloadId: user.accountId,
+		// 	payload: user,
+		// });
 		return { ...user };
 	}
 
@@ -47,14 +47,14 @@ export class AuthController {
 		// console.log('AuthController : isLogin : user:', user);
 
 		if (user && user.accountId) {
-			this.notify.emitNewNotification({
-				by: user,
-				datetime: new Date(),
-				controller: 'login',
-				method: null,
-				payloadId: user.accountId,
-				payload: user,
-			});
+			// this.notify.emitNewNotification({
+			// 	by: user,
+			// 	datetime: new Date(),
+			// 	controller: 'login',
+			// 	method: null,
+			// 	payloadId: user.accountId,
+			// 	payload: user,
+			// });
 			return { ...user };
 		}
 
@@ -64,21 +64,21 @@ export class AuthController {
 	@Get('logout')
 	logout(@Req() req: Request) {
 		return new Promise((res, rej) => {
-			let user: User | undefined;
+			// let user: User | undefined;
 			if (typeof req.session['user']?.accountId == 'number')
-				user = { ...req.session['user'] };
-			req.session['user'] = undefined;
+				// user = { ...req.session['user'] };
+			delete req.session['user'];
 			req.session.destroy((e) => {
 				if (e) rej(e);
-				if (user)
-					this.notify.emitNewNotification({
-						by: user,
-						datetime: new Date(),
-						controller: 'logout',
-						method: null,
-						payloadId: user.accountId,
-						payload: user,
-					});
+				// if (user)
+				// 	this.notify.emitNewNotification({
+				// 		by: user,
+				// 		datetime: new Date(),
+				// 		controller: 'logout',
+				// 		method: null,
+				// 		payloadId: user.accountId,
+				// 		payload: user,
+				// 	});
 				res({ success: true, message: R.string.loggedOutSuccessfully });
 			});
 		});

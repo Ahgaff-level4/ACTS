@@ -55,7 +55,6 @@ export class AccountService implements OnInit {
   post(account: ICreateAccount, manageLoading = false): Promise<IAccountEntity> {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.nt.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -96,7 +95,6 @@ export class AccountService implements OnInit {
   put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.nt.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
@@ -118,7 +116,6 @@ export class AccountService implements OnInit {
   delete(id: number, manageLoading = false) {
     return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
-        this.nt.notify(null);
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);

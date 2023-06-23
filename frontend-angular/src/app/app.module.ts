@@ -68,14 +68,16 @@ import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/d
 import { NotificationItemComponent } from './components/dialogs/notification-drawer/notification-item/notification-item.component';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
+import { SendMessageComponent } from './components/dialogs/notification-drawer/send-message/send-message.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
-  LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline
+  LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
+  NotificationOutline,
 } from '@ant-design/icons-angular/icons';
-import { SendMessageComponent } from './components/dialogs/notification-drawer/send-message/send-message.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
-  LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline];
+  LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
+  InfoCircleOutline, NotificationOutline];
 @NgModule({
   declarations: [
     AppComponent,

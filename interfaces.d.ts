@@ -260,18 +260,23 @@ export interface INotification {
 
 export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
 
-export interface CustomTimeframe{
-	from:string|Date,
-	to:string|Date,
+export interface CustomTimeframe {
+	from: string | Date,
+	to: string | Date,
 }
 
 export interface IChildReport {
 	child: IChildEntity;
 	goal: { completedCount: number, continualCount: number },
-	goalStrength:{goals:IGoalEntity[],strengths:IStrengthEntity[]}
+	goalStrength: { goals: IGoalEntity[], strengths: IStrengthEntity[] }
 }
 
 export interface IDashboard {
 	children: IChildEntity[],//depend on the timeframe.
-	childrenCount:number;//the number of children in the system despite the timeframe
+	childrenCount: number;//the number of children in the system despite the timeframe
+}
+
+export interface NotificationMessage {
+	from: IAccountEntity,
+	text: string;
 }

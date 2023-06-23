@@ -1,6 +1,6 @@
 import { Injectable, TemplateRef, inject } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ErrorResponse, IAccountEntity, SuccessResponse } from '../../../../interfaces';
+import { ErrorResponse, IAccountEntity, SuccessResponse, User } from '../../../../interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilityService } from './utility.service';
 import { NotificationDrawerComponent } from '../components/dialogs/notification-drawer/notification-drawer.component';
@@ -45,41 +45,63 @@ export class NotificationService {
 
   /**
    * Will call notify and append the provided notification to nt.notifications so that it shows on notification drawer.
-   * @param title
-   * @param content
+   * @param title can be array to translate each item. Note: it will be joined without space, add space as an array element.
+   * @param content can be array as `title`
    * @param icon SHOULD be provided in the app.module icons array, the color is set by the `class` property (e.g. 'text-success','my-primary-text')
    */
-  public pushNotification(title: string, content?: string, icon?: NotificationIcon, link?: NotificationLink): NzNotificationRef {
-    const newNotify = { title: this.ut.translate(title), content: this.ut.translate(content) ?? '', icon, link, timestamp: new Date(), shown: false, };
+
+  public pushNotification(title: string[] | string, content?: string | string[], icon?: NotificationIcon, link?: NotificationLink): NzNotificationRef {
+    let translatedTitle = ''
+    if (Array.isArray(title))
+      for (let str of title)
+        translatedTitle += this.ut.translate(str);
+    else translatedTitle = this.ut.translate(title);
+    let translatedContent = '';
+    if (Array.isArray(content))
+      for (let str of content)
+        translatedContent += this.ut.translate(str);
+    else translatedContent = this.ut.translate(content);
+
+    const newNotify = { title: translatedTitle, content: translatedContent ?? '', icon, link, timestamp: new Date(), shown: false, };
     this.appendNewNotification(newNotify);
 
     return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration: this.notificationSettings.value.closeAfter, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true });
   }
   /**
  * If title is null then show error message of something went wrong!
- * @param title will be translated
+ * @param title will be translated. null/undefined will be 'Error! Something went wrong' message.
  * @param content will be translated
  * @param type  notification icon will be based on the type or 'undefined'/'blank' for no icon
  */
-  public notify(title: string | null | undefined, content?: string, type?: 'success' | 'info' | 'warning' | 'error', duration: number = 40000): NzNotificationRef {
+  public notify(title: string | string[] | null | undefined, content?: string | string[], type?: 'success' | 'info' | 'warning' | 'error', duration: number = 40000): NzNotificationRef {
     if (title == null) {
       console.trace('notify title is `undefined`!');
       title = 'Error!';
       content = 'Something went wrong!';
       type = 'error';
     }
-    const newNotify = { title: this.ut.translate(title), content: this.ut.translate(content) ?? '', icon: type, timestamp: new Date(), shown: false, };
+    let translatedTitle = '';
+    if (Array.isArray(title))
+      for (let str of title)
+        translatedTitle += this.ut.translate(str);
+    else translatedTitle = this.ut.translate(title);
+    let translatedContent = '';
+    if (Array.isArray(content))
+      for (let str of content)
+        translatedContent += this.ut.translate(str);
+    else translatedContent = this.ut.translate(content)
+    const newNotify = { title: translatedTitle, content: translatedContent ?? '', icon: type, timestamp: new Date(), shown: false, };
     const nzDuration = duration <= 0 ? undefined : duration;
     return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
-  openNotificationsDrawer() {
+  public openNotificationsDrawer() {
     this.openDialog(NotificationDrawerComponent).afterClosed()
       .subscribe(() => this.notifications.next(this.notifications.value
         .map(v => ({ ...v, shown: true }))));
   }
 
-  unreadNotificationsCount(): number {
+  public unreadNotificationsCount(): number {
     return this.notifications.value.filter(v => v.shown == false).length;
   }
 
@@ -150,4 +172,4 @@ interface NotificationSettings {
   showNotification: boolean,
   closeAfter: number
 }
-export type OnlineAccount = IAccountEntity & { socketId: string, timestamp: string };
+export type OnlineAccount = User & { timestamp: string };
