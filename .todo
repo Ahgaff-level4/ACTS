@@ -1,5 +1,3 @@
-- Translate server error messages.
-
 - reduce bundle size by reusing one component instead of duplicate code.
 Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 5.19 MB with a total of 5.68 MB.
 

@@ -73,7 +73,7 @@ export class NotificationService {
  * @param content will be translated
  * @param type  notification icon will be based on the type or 'undefined'/'blank' for no icon
  */
-  public notify(title: string | string[] | null | undefined, content?: string | string[], type?: 'success' | 'info' | 'warning' | 'error', duration: number = 40000): NzNotificationRef {
+  public notify(title: string | string[] | null | undefined, content?: string | string[], type?: 'success' | 'info' | 'warning' | 'error', duration: number = 4000): NzNotificationRef {
     if (title == null) {
       console.trace('notify title is `undefined`!');
       title = 'Error!';
@@ -132,7 +132,7 @@ export class NotificationService {
       message = (appendMsg ? appendMsg : somethingWentWrong + ' ' + sorry);
     }
 
-    return this.showMsgDialog({ content: message, type: 'error' })
+    return this.showMsgDialog({ content: this.ut.translate(message), type: 'error' })
   }
 
   /**

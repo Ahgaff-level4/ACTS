@@ -38,6 +38,6 @@ export class DashboardComponent extends UnsubOnDestroy {
   }
 
   xAxisTickFormatting = (v?: any) => {
-    return this.display.fromNow(v, true)
+    return this.display.fromNow(v)
   }
 }

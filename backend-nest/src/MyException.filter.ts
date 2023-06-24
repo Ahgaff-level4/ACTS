@@ -8,7 +8,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
   catch(exception: HttpException, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
     const status = exception.getStatus();
     const res = {
       success: false,
@@ -19,11 +18,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
       error: {
         statusCode: status,
         exception,
-        request: {
-          body: request.body,
-          params: request.params,
-          query: request.query,
-        },
         timestamp: new Date().toISOString(),
       }
     };

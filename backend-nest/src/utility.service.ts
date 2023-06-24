@@ -61,6 +61,8 @@ export const R = {
         insufficientPrivilege: `You don't have sufficient privilege to do this action!`,
         loggedInSuccessfully: 'Logged in successfully',
         loggedOutSuccessfully: 'Logged out successfully',
+        invalidUsername: 'Invalid username!',
+        invalidPassword: 'Invalid password!',
         invalidUsernameOrPassword: 'Invalid username or password!',
         onlyAdminTeacher: 'Only Admin and Teacher are authorized!',
         onlyParent:'Only Parent is authorized!',

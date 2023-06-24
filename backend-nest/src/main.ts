@@ -28,15 +28,15 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
     }
     const constrains = recursion(error);
 
-    //beautify the message
+    //// beautify the message
     let message = '';
-    if (constrains.length <= 1)
+    // if (constrains.length <= 1)
       message = constrains[0];
-    else {
-      for (let i = 0; i < constrains.length; i++)
-        message += `${i + 1}- ${constrains[i]}.\n`;
-    }
-    message = message.trim();
+    // else {
+    //   for (let i = 0; i < constrains.length; i++)
+    //     message += `${i + 1}- ${constrains[i]}.\n`;
+    // }
+    // message = message.trim();
 
     throw new BadRequestException({ msg: 'Invalid object structure/values !', message, error })
   },

@@ -5,7 +5,7 @@
       {{'Notifications'|translate}}
       &nbsp;<mat-icon>notifications</mat-icon>
     </ng-template>
-    <div mat-dialog-content *ngIf="nt.notifications|async as notifications">
+    <div mat-dialog-content *ngIf="nt.notifications|async as notifications" class="pt-0">
       <p *ngIf="notifications.length == 0" class="text-center opacity-75 my-5">
         {{'Empty list'|translate}}
       </p>

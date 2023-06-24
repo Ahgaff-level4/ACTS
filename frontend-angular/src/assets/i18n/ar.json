@@ -454,7 +454,7 @@
   "You are about to delete the account: ": "أنت على وشك حذف الحساب: \"",
   " permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account.": "\" بشكل دائم. إذا كان للحساب دور ولي الأمر: لن يكون لأي طفل هذا الحساب بصفته ولي أمره بعد الآن. إذا كان الحساب له دور المعلم: أي طفل لديه هذا الحساب كمدرس لن يكون لديه بعد الآن. لن تتمكن من حذف الحساب إذا كان هناك هدف أو تقييم واحد على الأقل لا يزال موجودا وتم إنشاؤه بواسطة هذا الحساب.",
   " permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!": "\" بشكل دائم. أي نشاط موجود يحتوي على هذا المجال لن يحتوي عليه بعد الآن ، وسيكون له مجال فارغ بدلا من ذلك!",
-  " permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program.": "\" بشكل دائم. سيتم حذف جميع أنشطتها! ملاحظة: لن تتمكن من حذف البرنامج إذا كان هناك طفل لديه هدف واحد على الأقل يعتمد على هذا البرنامج.",
+  " permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program.": "\" بشكل دائم. سيتم حذف جميع أنشطته! ملاحظة: لن تتمكن من حذف البرنامج إذا كان هناك طفل لديه هدف واحد على الأقل يعتمد على هذا البرنامج.",
   "\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity.": "\" بشكل دائم. ملاحظة: لن تتمكن من حذف النشاط إذا كان هناك طفل لديه هدف واحد على الأقل يعتمد على هذا النشاط.",
   "\" permanently. If the child has finished the goal then edit the goal state as completed. NOTE: all evaluations of this goal will also be deleted permanently.": "\" بشكل دائم. إذا أنهى الطفل الهدف ، فقم بتعديل حالة الهدف كما تم التنافس عليها. ملاحظة: سيتم أيضا حذف جميع تقيمات هذا الهدف نهائيا.",
   "\" permanently.": "\" بشكل دائم.",
@@ -524,7 +524,7 @@
   "Parent": "ولي الأمر",
   "Admin": "مشرف",
   "Passwords do not match": "كلمات المرور غير متطابقة",
-  "Must not contain spaces": "يجب ألا تحتوي على مسافات",
+  "Must not contain spaces": "يجب ألا يحتوي على مسافة",
   "Phone": "الهاتف",
   "Phone number must contain only digits and '+' symbol": "يجب أن يحتوي رقم الهاتف على أرقام ويسمح برمز \"+\" في البداية فقط",
   "None": "لا احد",
@@ -742,5 +742,12 @@
   "Can access online accounts and send/broadcast notification message.":"يمكنه الوصول للمتصلين الان وإرسال إشعار خاصة او للجميع.",
   "Can access dashboard.":"يمكنه الوصول للإحصائيات العامة.",
   "Can create a backup and restore database.":"يمكنه إنشاء نسخة إحتياطية وإسترداد قاعدة البيانات.",
-  "Can print/export any table that can access.":"يمكنه طباعة وتصدير اي جدول يمكنه الوصول إليه."
+  "Can print/export any table that can access.":"يمكنه طباعة وتصدير اي جدول يمكنه الوصول إليه.",
+  "There is duplicated value should be unique!":"قيمة الحقل الفريد متكررة. يوجد في قاعدة البيانات قيمة بنفس القيمة المدخلة!",
+  "Logged in successfully":"تم تسجيل الدخول بنجاح",
+  "Logged out successfully":"تم تسجيل الخروج بنجاح",
+  "Only Admin and Teacher are authorized!":"لا يسمح إلا للمشرف والمدرس!",
+  "Only Parent is authorized!":"لا يسمح إلا للمعلم!",
+  "Invalid username!":"اسم المستخدم غير صالح!",
+  "Invalid password!":"كلمة المرور غير صالحة!"
 }
