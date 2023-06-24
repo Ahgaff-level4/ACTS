@@ -94,7 +94,7 @@ mat-checkbox.text-white div label {
   }
 }
 li > .nav-link {
-  opacity: 0.80 !important;
+  opacity: 0.8 !important;
   color: white !important;
   transition: all 250ms ease-out !important;
 }
@@ -119,7 +119,15 @@ mat-dialog-container {
   min-width: 120px !important;
 }
 
-.fs-7{
+.fs-7 {
   font-size: 0.8rem;
 }
 
+.cursor-pointer {
+  cursor: pointer;
+}
+
+mat-dialog-actions {
+  margin-right: 1.4rem !important;
+  margin-left: 1.4rem !important;
+}

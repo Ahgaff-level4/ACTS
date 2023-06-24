@@ -1,4 +1,6 @@
-<app-title *ngIf="readonlyAccount == null" [links]="[{title:(this.account?.id?'Edit account':'Register new account')},{link:'/account',title:'Accounts'}]" [isPrinting]="undefined"></app-title>
+<app-title *ngIf="readonlyAccount == null"
+  [links]="[{title:(this.account?.id?'Edit account':'Register new account')},{link:'/account',title:'Accounts'}]"
+  [isPrinting]="undefined"></app-title>
 <div class="container ">
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
@@ -46,7 +48,8 @@
         </mat-form-field>
       </div>
       <div *ngIf="account?.id" class="col-md-4 p-3"><!--Edit-->
-        <button class=" rounded-5" type="button" [disabled]="!!this.readonlyAccount" mat-stroked-button color="primary" (click)="resetPassword()">
+        <button class=" rounded-5" type="button" [disabled]="!!this.readonlyAccount" mat-stroked-button color="primary"
+          (click)="resetPassword()">
           {{'Reset password'|translate}}
         </button>
       </div>
@@ -56,19 +59,21 @@
     <div class="row">
       <div class="col-md-12 p-2">
         <h5>{{'Role'|translate}}</h5>
-        <mat-button-toggle-group formControlName="roles" multiple style="flex-wrap: wrap;">
-          <mat-button-toggle [matTooltip]="'Admin has all roles privileges.'|translate"
-            value="Admin">{{'Admin'|translate}}</mat-button-toggle>
-          <mat-button-toggle
-            [matTooltip]="'Head of Department can not access Account page. And can not create child\'s goal or evaluate a goal.'|translate"
-            value="HeadOfDepartment">{{"Head of Department"|translate}}</mat-button-toggle>
-          <mat-button-toggle [matTooltip]="'Teacher can not access Account page. Can not '|translate"
-            value="Teacher">{{'Teacher'|translate}}</mat-button-toggle>
-          <mat-button-toggle value="Parent">{{'Parent'|translate}}</mat-button-toggle>
-        </mat-button-toggle-group>
-        <mat-icon class="mx-2" [matTooltip]="'Admin has all roles privileges.'|translate">info</mat-icon>
+        <div class="d-flex align-items-center">
+
+          <mat-button-toggle-group formControlName="roles" multiple style="flex-wrap: wrap;">
+            <mat-button-toggle [matTooltip]="'Admin has all roles privileges.'|translate"
+              value="Admin">{{'Admin'|translate}}</mat-button-toggle>
+            <mat-button-toggle value="HeadOfDepartment">{{"Head of Department"|translate}}</mat-button-toggle>
+            <mat-button-toggle value="Teacher">{{'Teacher'|translate}}</mat-button-toggle>
+            <mat-button-toggle value="Parent">{{'Parent'|translate}}</mat-button-toggle>
+          </mat-button-toggle-group>
+          <button mat-icon-button (click)="showRolesInfo()" type="button" class="align-self-baseline" [matTooltip]="'Click to see more information'|translate">
+            <mat-icon class="mb-1">info</mat-icon>
+          </button>
+        </div>
         <mat-error style="font-size: small;font-weight: 500;"
-          class="mx-2 mat-error">{{getRolesErrorMessage()}}</mat-error>
+          class="mx-2 mat-error">{{getRolesErrorMessage()|translate}}</mat-error>
       </div>
     </div>
     <div *ngIf="accountForm.get('roles')?.value.includes('Parent')" class="row">
@@ -82,8 +87,8 @@
       <div *ngFor="let phoneField of phoneFields; let i = index" class="col-md-4 p-2">
         <mat-form-field>
           <mat-label>{{'Phone'|translate}}&nbsp;{{i+1}}</mat-label>
-          <input dir="ltr" matInput type="tel" formControlName="{{ phoneField }}" (input)="onPhoneChange(i)" placeholder="..."
-            maxlength="15" minlength="9" />
+          <input dir="ltr" matInput type="tel" formControlName="{{ phoneField }}" (input)="onPhoneChange(i)"
+            placeholder="..." maxlength="15" minlength="9" />
           <mat-error>{{getPhoneErrorMessage(phoneField)|translate:phoneMinMaxLength}}</mat-error>
         </mat-form-field>
       </div>

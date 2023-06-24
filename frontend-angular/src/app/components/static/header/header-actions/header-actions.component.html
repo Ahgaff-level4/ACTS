@@ -2,7 +2,7 @@
   <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!ut.user.value && hideLoginOut!=true"
     (click)="hideHeader.emit()" routerLink="/login">{{'Login'|translate}}</a>
   <button mat-raised-button color="accent" (click)="this.loginService.logout();hideHeader.emit()"
-    style="cursor:pointer;" class="rounded-5 min-width-120 nbsp opacity-100" *ngIf="ut.user.value && hideLoginOut!=true">
+     class="cursor-pointer rounded-5 min-width-120 nbsp opacity-100" *ngIf="ut.user.value && hideLoginOut!=true">
     {{'Logout'|translate}}</button>
 
     <button [matMenuTriggerFor]="langMenu" type="button" mat-icon-button [matTooltip]="'Application Language'|translate">

@@ -4,14 +4,16 @@
       <div>
         <h4 class="opacity-75 mx-3">{{titleText|translate}}</h4>
       </div>
-      <mat-icon [className]="titleColor" *ngIf="titleIcon" style="margin:6px 6px 0px 6px;">{{titleIcon}}</mat-icon>
+      <mat-icon [ngStyle]="{ 'width.px': 32, 'height.px': 32, 'font-size.px': 32 }" [className]="titleColor"
+        *ngIf="titleIcon" style="margin:0px 6px;">{{titleIcon}}</mat-icon>
     </div>
   </div>
   <div mat-dialog-content>
-    <p>{{content|translate}}</p>
+    <div *ngIf="isXSS"><p>{{content|translate}}</p></div>
+    <div *ngIf="!isXSS" [innerHtml]="content|translate"></div>
   </div>
 
-  <mat-dialog-actions align="end">
+  <mat-dialog-actions>
     <button mat-button class=" rounded-5" *ngFor="let b of buttons" (click)="dialogRef.close(b.type)"
       [color]="b.color">{{b.type|translate}}</button>
   </mat-dialog-actions>

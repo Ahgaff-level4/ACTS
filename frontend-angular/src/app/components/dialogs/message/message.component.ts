@@ -12,11 +12,13 @@ export class MessageDialogComponent {
   public content: string;
   public type: DialogType;
   public buttons: { color: 'primary' | 'accent' | 'warn', type: ButtonType }[];
+  public isXSS: boolean;
 
   constructor(public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) private data: MessageDialogData,) {
     this.type = this.data.type;
     this.content = this.data.content;
     this.buttons = this.data.buttons ?? [{ color: 'primary', type: 'Ok' }];
+    this.isXSS = this.data.isXSS ?? true;
 
     this.titleText = this.getTitleText(this.data?.title?.text);
     this.titleColor = this.getTitleColor(this.data?.title?.color);
@@ -47,7 +49,7 @@ export class MessageDialogComponent {
     else if (this.data.type === 'error')
       return 'text-danger';
     else if (this.data.type === 'info')
-      return 'text-warning';
+      return 'text-info';
     else if (this.data.type === 'success')
       return 'text-success';
     // else if (this.data.type === 'delete')
@@ -82,9 +84,11 @@ export interface MessageDialogData {
   /** Icon, Title text, and Title color are set by default based on the dialog type. If title object not declared */
   type: DialogType;
   /** default is `Ok`, color `primary` */
-  buttons?: { color: 'primary' | 'accent' | 'warn', type: ButtonType }[]
+  buttons?: { color: 'primary' | 'accent' | 'warn', type: ButtonType }[],
+  /**the content maybe vulnerable of XSS attacks. It is not vulnerable if for example it is hard coded and not depends on user input. Default is `true` */
+  isXSS?: boolean
 }
-type TitleColor = 'text-danger' | 'text-success' | 'text-warning' | '';
+type TitleColor = 'text-danger' | 'text-success' | 'text-warning' | 'text-info' | '';
 type TitleIcon = 'error' | 'warning' | 'info' | 'delete' | 'person_remove' | 'archive' | 'check_circle' | undefined;
 type DialogType = 'error' | 'info' | 'success' | 'confirm' //| 'delete';
-export type ButtonType = 'Ok' | 'Cancel' | 'Yes' | 'No' | 'Delete' | 'Login' | 'Archive'|'Continue'|'Resend';
+export type ButtonType = 'Ok' | 'Cancel' | 'Yes' | 'No' | 'Delete' | 'Login' | 'Archive' | 'Continue' | 'Resend';

@@ -23,7 +23,7 @@
     <div class="w-100 d-flex justify-content-between align-content-center text-white">
       <mat-checkbox class="text-white"
         [formControl]="formGroup.controls.isRememberMe">{{'Remember Me'|translate}}</mat-checkbox>
-      <div style="cursor: pointer;" class="anchor text-decoration-underline align-self-center" (click)="showForgetPasswordDialog()" mat-button>{{'Forget the password?'|translate}}</div>
+      <div class="anchor cursor-pointer text-decoration-underline align-self-center" (click)="showForgetPasswordDialog()" mat-button>{{'Forget the password?'|translate}}</div>
     </div>
     <br>
     <button [disabled]="!formGroup.valid" class="w-100 mb-3 rounded-5" mat-raised-button color="accent" type="submit"
