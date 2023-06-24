@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
+import { IAccountEntity, ICreatePerson, IPersonEntity, Role } from '../../../../../../../interfaces';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from 'src/app/services/CRUD/account.service';
@@ -9,6 +9,7 @@ import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dia
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { PRIVILEGE, PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-add-edit-account',
@@ -30,7 +31,8 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService,
-    private dialog: MatDialog, public formService: FormService, private nt: NotificationService,) {
+    private dialog: MatDialog, public formService: FormService, private nt: NotificationService,
+    private pr: PrivilegeService) {
     super();
   }
 
@@ -208,5 +210,110 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       this.phoneFields.push(`phone${index + 1}`);
     }
   }
+
+  showRolesInfo() {
+    this.nt.showMsgDialog({
+      title: { text: 'Roles information' },
+      content: `<p>${this.ut.translate('There are four roles: Admin, Head of Department, Teacher, and Parent.')}<br>
+    ${this.ut.translate('Each role has different and shared privileges the following list describe each role privileges')}:</p>
+    <ul>
+      <li>${this.ut.translate('Admin has all roles privileges and')}:
+        <ol>
+          ${this.rolePrivileges('Admin')
+          .filter(v=>!this.rolePrivileges('HeadOfDepartment').includes(v))
+          .filter(v=>!this.rolePrivileges('Teacher').includes(v))
+          .map(v => '<li>' + v + '</li>').join('\n')}
+        </ol>
+      </li>
+      <li>${this.ut.translate('Head of Department')}:
+        <ol>
+          ${this.rolePrivileges('HeadOfDepartment').map(v => '<li>' + v + '</li>').join('\n')}
+        </ol>
+      </li>
+      <li>${this.ut.translate('Teacher')}:
+        <ol>
+          ${this.rolePrivileges('Teacher').map(v => '<li>' + v + '</li>').join('\n')}
+        </ol>
+      </li>
+      <li>${this.ut.translate('Parent')}:
+        <ol>
+          ${this.rolePrivileges('Parent').map(v => '<li>' + v + '</li>').join('\n')}
+        </ol>
+      </li>
+    </ul>
+
+    `, type: 'info', isXSS: false
+    })
+  }
+
+  /**@returns translated array of can and cannot privileges (e.g.'Can access accounts page') */
+  rolePrivileges(role: Role): string[] {
+    const privileges = [];
+
+    if (PRIVILEGE.accountsPage.concat(PRIVILEGE.viewAccountPage).includes(role))
+      privileges.push('Can access accounts page.');
+    if (PRIVILEGE.editAccountPage.concat(PRIVILEGE.addAccountPage).includes(role))
+      privileges.push('Can add/edit/delete an account.');
+    if (PRIVILEGE.accountAddressPhone.includes(role))
+      privileges.push('Has address phones information.');
+    if (PRIVILEGE.fieldsPage.includes(role))
+      privileges.push('Can access fields page.');
+    if (PRIVILEGE.addField.concat(PRIVILEGE.editField).concat(PRIVILEGE.deleteField).includes(role))
+      privileges.push('Can add/edit/delete a field.');
+    if (PRIVILEGE.programsPage.includes(role))
+      privileges.push('Can access programs page.');
+    if (PRIVILEGE.addProgram.concat(PRIVILEGE.editProgram).concat(PRIVILEGE.deleteProgram).includes(role))
+      privileges.push('Can add/edit/delete a program.');
+    if (role == 'Parent')
+      privileges.push('Can access his children only.')
+    if (PRIVILEGE.childrenPage.concat(PRIVILEGE.viewChildPage).includes(role))
+      privileges.push('Can access children page.');
+    if (PRIVILEGE.addChildPage.includes(role))
+      privileges.push('Can access add child page.');
+    if (PRIVILEGE.editChildPage.includes(role))
+      privileges.push('Can access edit child page.');
+    if (PRIVILEGE.childReportPage.includes(role))
+      privileges.push('Can access report child page.');
+    if (PRIVILEGE.archiveChild.includes(role))
+      privileges.push('Can archive a child information.')
+    if (PRIVILEGE.childGoalsPage.includes(role))
+      privileges.push("Can access child's goals page.");
+    if (PRIVILEGE.addGoal.includes(role))
+      privileges.push("Can add a goal.")
+    if (PRIVILEGE.editGoal.concat(PRIVILEGE.deleteGoal).includes(role))
+      privileges.push("Can edit/delete a goal.")
+    if (PRIVILEGE.childStrengthsPage.includes(role))
+      privileges.push("Can access child's strengths page.");
+    if (PRIVILEGE.addStrength.includes(role))
+      privileges.push("Can add a strength.")
+    if (PRIVILEGE.editStrength.concat(PRIVILEGE.deleteStrength).includes(role))
+      privileges.push("Can edit/delete a strength.")
+    if (PRIVILEGE.goalEvaluationsPage.includes(role))
+      privileges.push("Can access goal's evaluations page.");
+    if (PRIVILEGE.addEvaluation.includes(role))
+      privileges.push("Can add an evaluation.")
+    if (PRIVILEGE.editEvaluation.concat(PRIVILEGE.deleteEvaluation).includes(role))
+      privileges.push("Can edit/delete an evaluation.")
+    if (PRIVILEGE.programActivitiesPage.includes(role))
+      privileges.push("Can access program's activities page.")
+    if (PRIVILEGE.specialActivitiesPage.includes(role))
+      privileges.push("Can access special activities page.")
+    if (PRIVILEGE.addActivity.concat(PRIVILEGE.editActivity).concat(PRIVILEGE.deleteActivity).includes(role))
+      privileges.push("Can add/edit/delete an activity.")
+    if (PRIVILEGE.notificationDrawer.includes(role))
+      privileges.push("Can view notifications drawer.")
+    if (PRIVILEGE.broadcastMessage.includes(role))
+      privileges.push('Can access online accounts and send/broadcast notification message.')
+    if (PRIVILEGE.dashboard.includes(role))
+      privileges.push('Can access dashboard.')
+    if (PRIVILEGE.backupRestore.includes(role))
+      privileges.push('Can create a backup and restore database.')
+    if (PRIVILEGE.printTable.includes(role))
+      privileges.push("Can print/export any table that can access.")
+
+    return privileges.map(v => this.ut.translate(v));
+  }
+
+
 
 }
