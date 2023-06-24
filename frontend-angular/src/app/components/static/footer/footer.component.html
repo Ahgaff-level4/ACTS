@@ -32,8 +32,8 @@
         <li *ngIf="pr.canUser('accountsPage')" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
         </li>
-        <li class="px-3 nav-item" routerLinkActive="active">
-          <a class="nav-link" routerLink="/settings">{{'Settings'|translate}}</a>
+        <li class="px-3 nav-item d-flex justify-content-center" routerLinkActive="active">
+          <app-header-actions [hideLoginOut]="true"></app-header-actions>
         </li>
       </ul>
     </div>

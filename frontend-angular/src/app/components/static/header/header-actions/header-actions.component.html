@@ -1,11 +1,29 @@
-<div class="nav-item opacity-100 px-2 d-flex flex-lg-row-reverse align-items-center" routerLinkActive="active">
-  <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!isLoggedIn"
+<div class="nav-item opacity-100 px-2 d-flex flex-lg-row-reverse nbsp align-items-center" routerLinkActive="active">
+  <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!ut.user.value && hideLoginOut!=true"
     (click)="hideHeader.emit()" routerLink="/login">{{'Login'|translate}}</a>
   <button mat-raised-button color="accent" (click)="this.loginService.logout();hideHeader.emit()"
-    style="cursor:pointer;" class="rounded-5 min-width-120 nbsp opacity-100" *ngIf="isLoggedIn">
+    style="cursor:pointer;" class="rounded-5 min-width-120 nbsp opacity-100" *ngIf="ut.user.value && hideLoginOut!=true">
     {{'Logout'|translate}}</button>
 
-  <button (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button" mat-icon-button
+    <button [matMenuTriggerFor]="langMenu" type="button" mat-icon-button [matTooltip]="'Application Language'|translate">
+      <mat-icon color="accent" class="mb-1">language</mat-icon>
+    </button>
+    <mat-menu #langMenu="matMenu" class="min-width-120">
+      <button class="d-flex justify-content-between min-width-120" mat-menu-item
+        (click)="this.translate.use('ar');hideHeader.emit()">
+        <mat-icon class="m-0"
+          [color]="translate.currentLang.includes('ar')&&'accent'">{{translate.currentLang.includes('ar')?'radio_button_checked':
+          'radio_button_unchecked'}}</mat-icon>
+        <span>{{'Arabic'|translate}}</span></button>
+      <button class="d-flex justify-content-between min-width-120" mat-menu-item
+        (click)="this.translate.use('en');hideHeader.emit()">
+        <mat-icon class="m-0"
+          [color]="translate.currentLang.includes('en')&&'accent'">{{translate.currentLang.includes('en')?'radio_button_checked':
+          'radio_button_unchecked'}}</mat-icon>
+        <span>{{'English'|translate}}</span></button>
+    </mat-menu>
+
+  <button *ngIf="ut.user.value" (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button" mat-icon-button
     [matTooltip]="'Notifications'|translate">
     <div style="margin-top:-4px;">
       <!-- <span nz-icon nzType="bell"
@@ -15,21 +33,7 @@
     </div>
   </button>
 
-  <button [matMenuTriggerFor]="langMenu" type="button" mat-icon-button [matTooltip]="'Application Language'|translate">
-    <mat-icon color="accent" class="mb-1">language</mat-icon>
-  </button>
-  <mat-menu #langMenu="matMenu">
-    <button class="d-flex justify-content-between min-width-120" mat-menu-item
-      (click)="this.translate.use('ar');hideHeader.emit()">
-      <mat-icon class="m-0"
-        [color]="translate.currentLang.includes('ar')&&'accent'">{{translate.currentLang.includes('ar')?'radio_button_checked':
-        'radio_button_unchecked'}}</mat-icon>
-      <span>{{'Arabic'|translate}}</span></button>
-    <button class="d-flex justify-content-between min-width-120" mat-menu-item
-      (click)="this.translate.use('en');hideHeader.emit()">
-      <mat-icon class="m-0"
-        [color]="translate.currentLang.includes('en')&&'accent'">{{translate.currentLang.includes('en')?'radio_button_checked':
-        'radio_button_unchecked'}}</mat-icon>
-      <span>{{'English'|translate}}</span></button>
-  </mat-menu>
+  <a routerLink="/settings" mat-icon-button [matTooltip]="'Settings'|translate">
+    <mat-icon color="accent" class="mb-1">settings</mat-icon>
+  </a>
 </div>

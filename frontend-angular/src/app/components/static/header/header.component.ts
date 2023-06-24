@@ -3,6 +3,7 @@ import { TranslateService } from '@ngx-translate/core';
 import { LoginService } from 'src/app/services/login.service';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-header',
@@ -12,16 +13,11 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class HeaderComponent implements OnInit {
   public isShowDivIf = true;
   public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
-  public isLoggedIn: boolean = false;
 
   constructor(public ut: UtilityService, public loginService: LoginService, public translate: TranslateService, public pr:PrivilegeService) {
   }
 
   ngOnInit(): void {
-    this.ut.user.subscribe((v) => {
-      console.log('header user is object', !!v)
-      this.isLoggedIn = v?.isLoggedIn ?? false;
-    });
   }
 
   changeLang() {

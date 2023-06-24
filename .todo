@@ -5,8 +5,6 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - fix each role privileges on add-edit-account tooltip or just make a dialog.
 
-- create simple Notification box to store live notifications. And only for Admin allow sending live message to all users. And live logged in accounts. And send direct(private) message to one account.
-
 - check if a child can have duplicate activity for different goals/strengths. CHILD SHOULD NOT have duplicate activity.
 - check host file domain name in PowerToys app, may enable you to run server on LAN.
 
