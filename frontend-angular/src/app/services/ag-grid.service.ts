@@ -86,6 +86,7 @@ export class AgGridService {
   }
 
   private dateFilterParam = {
+    filterParams: { browserDatePicker: true },
     comparator: function (filterLocalDateAtMidnight: string, cellValue: string) {
       var cellMoment = moment(cellValue, 'YYYY/M/D');
       if (cellMoment.isBefore(filterLocalDateAtMidnight))

@@ -17,7 +17,6 @@ export class LoginService {
   }
 
   logout() {
-    
     this.http.get<SuccessResponse>(env.AUTH + 'logout').subscribe({
       error: () => {
         this.ut.user.next(null);

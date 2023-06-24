@@ -1,27 +1,42 @@
 <div class="nav-item opacity-100 px-2 d-flex flex-lg-row-reverse nbsp align-items-center" routerLinkActive="active">
-  <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!ut.user.value && hideLoginOut!=true"
+  <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!ut.user.value"
     (click)="hideHeader.emit()" routerLink="/login">{{'Login'|translate}}</a>
-  <button mat-raised-button color="accent" (click)="this.loginService.logout();hideHeader.emit()"
-     class="cursor-pointer rounded-5 min-width-120 nbsp opacity-100" *ngIf="ut.user.value && hideLoginOut!=true">
-    {{'Logout'|translate}}</button>
-
-    <button [matMenuTriggerFor]="langMenu" type="button" mat-icon-button [matTooltip]="'Application Language'|translate">
-      <mat-icon color="accent" class="mb-1">language</mat-icon>
+  <!-- <button mat-raised-button color="accent" (click)="this.loginService.logout();hideHeader.emit()"
+     class="cursor-pointer rounded-5 min-width-120 nbsp opacity-100" *ngIf="ut.user.value">
+    {{'Logout'|translate}}</button> -->
+  <button *ngIf="ut.user.value" [matMenuTriggerFor]="accountMenu" type="button" mat-icon-button
+    [matTooltip]="'My account'|translate">
+    <mat-icon color="accent" class="mb-1">account_circle</mat-icon>
+  </button>
+  <mat-menu #accountMenu="matMenu">
+    <a mat-menu-item routerLink="/settings" fragment="my-account-information">
+      <mat-icon [class]="'icon-'+ut.getDirection()" color="accent">person</mat-icon>
+      <span>{{'My Account Information'|translate}}</span>
+    </a>
+    <mat-divider></mat-divider>
+    <button mat-menu-item (click)="loginService.logout()">
+      <mat-icon [class]="'icon-'+ut.getDirection()" color="accent">logout</mat-icon>
+      <span>{{'Logout'|translate}}</span>
     </button>
-    <mat-menu #langMenu="matMenu" class="min-width-120">
-      <button class="d-flex justify-content-between min-width-120" mat-menu-item
-        (click)="this.translate.use('ar');hideHeader.emit()">
-        <mat-icon class="m-0"
-          [color]="translate.currentLang.includes('ar')&&'accent'">{{translate.currentLang.includes('ar')?'radio_button_checked':
-          'radio_button_unchecked'}}</mat-icon>
-        <span>{{'Arabic'|translate}}</span></button>
-      <button class="d-flex justify-content-between min-width-120" mat-menu-item
-        (click)="this.translate.use('en');hideHeader.emit()">
-        <mat-icon class="m-0"
-          [color]="translate.currentLang.includes('en')&&'accent'">{{translate.currentLang.includes('en')?'radio_button_checked':
-          'radio_button_unchecked'}}</mat-icon>
-        <span>{{'English'|translate}}</span></button>
-    </mat-menu>
+  </mat-menu>
+
+  <button [matMenuTriggerFor]="langMenu" type="button" mat-icon-button [matTooltip]="'Application Language'|translate">
+    <mat-icon color="accent" class="mb-1">language</mat-icon>
+  </button>
+  <mat-menu #langMenu="matMenu" class="min-width-120">
+    <button class="d-flex justify-content-between min-width-120" mat-menu-item
+      (click)="this.translate.use('ar');hideHeader.emit()">
+      <mat-icon class="m-0"  [class]="'icon-'+ut.getDirection()"
+        [color]="translate.currentLang.includes('ar')&&'accent'">{{translate.currentLang.includes('ar')?'radio_button_checked':
+        'radio_button_unchecked'}}</mat-icon>
+      <span>{{'Arabic'|translate}}</span></button>
+    <button class="d-flex justify-content-between min-width-120" mat-menu-item
+      (click)="this.translate.use('en');hideHeader.emit()">
+      <mat-icon class="m-0"  [class]="'icon-'+ut.getDirection()"
+        [color]="translate.currentLang.includes('en')&&'accent'">{{translate.currentLang.includes('en')?'radio_button_checked':
+        'radio_button_unchecked'}}</mat-icon>
+      <span>{{'English'|translate}}</span></button>
+  </mat-menu>
 
   <button *ngIf="ut.user.value" (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button" mat-icon-button
     [matTooltip]="'Notifications'|translate">

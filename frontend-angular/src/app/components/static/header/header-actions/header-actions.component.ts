@@ -10,7 +10,6 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./header-actions.component.scss']
 })
 export class HeaderActionsComponent {
-  @Input() hideLoginOut:boolean|undefined;
   @Output() hideHeader = new EventEmitter<void>();//used for small screen
   constructor(public loginService: LoginService, public nt: NotificationService,
     public translate: TranslateService,public ut:UtilityService) { }

@@ -749,5 +749,6 @@
   "Only Admin and Teacher are authorized!":"لا يسمح إلا للمشرف والمدرس!",
   "Only Parent is authorized!":"لا يسمح إلا للمعلم!",
   "Invalid username!":"اسم المستخدم غير صالح!",
-  "Invalid password!":"كلمة المرور غير صالحة!"
+  "Invalid password!":"كلمة المرور غير صالحة!",
+  "My account":"حسابي"
 }
