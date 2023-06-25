@@ -132,8 +132,15 @@ mat-dialog-actions {
   margin-left: 1.4rem !important;
 }
 
-
-.icon-rtl {
+[dir="rtl"] [mat-menu-item] mat-icon {
   margin-left: 0px !important;
   margin-right: 16px !important;
+}
+
+[dir="rtl"] .cdk-overlay-connected-position-bounding-box mat-option {
+  direction: rtl !important;
+}
+
+[dir="rtl"] .cdk-overlay-connected-position-bounding-box mat-datepicker-content {
+  direction: rtl !important;
 }

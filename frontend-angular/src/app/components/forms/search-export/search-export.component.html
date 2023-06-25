@@ -10,23 +10,23 @@
     </button>
     <mat-menu #exportMenu="matMenu">
       <button mat-menu-item (click)="agGridService.exportCSV(gridOptions.api)">
-        <mat-icon [class]="'icon-'+ut.getDirection()" color="primary">download</mat-icon>
+        <mat-icon color="primary">download</mat-icon>
         <span>{{'Export as CSV'|translate}}</span>
       </button>
       <button mat-menu-item (click)="agGridService.exportExcel(gridOptions.api)">
-        <mat-icon [class]="'icon-'+ut.getDirection()" color="primary">download</mat-icon>
+        <mat-icon color="primary">download</mat-icon>
         <span>{{'Export as Excel'|translate}}</span>
       </button>
       <button mat-menu-item (click)="print.emit()">
-        <mat-icon [class]="'icon-'+ut.getDirection()" color="primary">print</mat-icon>
+        <mat-icon color="primary">print</mat-icon>
         <span>{{'Print'|translate}}</span>
       </button>
       <button mat-menu-item (click)="agGridService.exportClipboard(gridOptions.api,false)">
-        <mat-icon [class]="'icon-'+ut.getDirection()" color="primary">content_copy</mat-icon>
+        <mat-icon color="primary">content_copy</mat-icon>
         <span>{{'Copy table'|translate}}</span>
       </button>
       <button mat-menu-item (click)="agGridService.exportClipboard(gridOptions.api,true)">
-        <mat-icon [class]="'icon-'+ut.getDirection()" color="primary">table_view</mat-icon>
+        <mat-icon color="primary">table_view</mat-icon>
         <span>{{'Copy table (with headers)'|translate}}</span>
       </button>
     </mat-menu>

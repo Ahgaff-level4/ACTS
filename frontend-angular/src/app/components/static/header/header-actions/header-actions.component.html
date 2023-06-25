@@ -10,12 +10,12 @@
   </button>
   <mat-menu #accountMenu="matMenu">
     <a mat-menu-item routerLink="/settings" fragment="my-account-information">
-      <mat-icon [class]="'icon-'+ut.getDirection()" color="accent">person</mat-icon>
+      <mat-icon color="accent">person</mat-icon>
       <span>{{'My Account Information'|translate}}</span>
     </a>
     <mat-divider></mat-divider>
     <button mat-menu-item (click)="loginService.logout()">
-      <mat-icon [class]="'icon-'+ut.getDirection()" color="accent">logout</mat-icon>
+      <mat-icon color="accent">logout</mat-icon>
       <span>{{'Logout'|translate}}</span>
     </button>
   </mat-menu>
@@ -26,13 +26,13 @@
   <mat-menu #langMenu="matMenu" class="min-width-120">
     <button class="d-flex justify-content-between min-width-120" mat-menu-item
       (click)="this.translate.use('ar');hideHeader.emit()">
-      <mat-icon class="m-0"  [class]="'icon-'+ut.getDirection()"
+      <mat-icon class="m-0"
         [color]="translate.currentLang.includes('ar')&&'accent'">{{translate.currentLang.includes('ar')?'radio_button_checked':
         'radio_button_unchecked'}}</mat-icon>
       <span>{{'Arabic'|translate}}</span></button>
     <button class="d-flex justify-content-between min-width-120" mat-menu-item
       (click)="this.translate.use('en');hideHeader.emit()">
-      <mat-icon class="m-0"  [class]="'icon-'+ut.getDirection()"
+      <mat-icon class="m-0"
         [color]="translate.currentLang.includes('en')&&'accent'">{{translate.currentLang.includes('en')?'radio_button_checked':
         'radio_button_unchecked'}}</mat-icon>
       <span>{{'English'|translate}}</span></button>

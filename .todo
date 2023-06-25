@@ -23,3 +23,5 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 - add dashboard page in home's cards
 
 - send email reset password. after adding email field in Account, dah...
+
+- Teacher should see his children only

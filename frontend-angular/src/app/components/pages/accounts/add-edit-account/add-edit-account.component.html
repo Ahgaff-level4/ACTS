@@ -18,7 +18,7 @@
       <div *ngIf="!account?.id" class="col-md-4 p-2"><!--Add new-->
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Password'|translate}}</mat-label>
-          <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" minlength="4" maxlength="1000">
+          <input [type]="hide ? 'password' : 'text'" matInput autocomplete="new-password" formControlName="password" minlength="4" maxlength="1000">
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
@@ -28,7 +28,7 @@
       <div *ngIf="!account?.id" class="col-md-4 p-2"><!--Add new-->
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Repeat password'|translate}}</mat-label>
-          <input [type]="hide ? 'password' : 'text'" matInput formControlName="repeatPassword" minlength="4"
+          <input [type]="hide ? 'password' : 'text'" autocomplete="new-password" matInput formControlName="repeatPassword" minlength="4"
             maxlength="1000">
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hide">
@@ -40,7 +40,7 @@
       <div *ngIf="account?.id && accountForm.get('password')?.value" class="col-md-4 p-2"><!--Edit-->
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Password'|translate}}</mat-label>
-          <input [type]="hide ? 'password' : 'text'" matInput formControlName="password" [disabled]="true">
+          <input [type]="hide ? 'password' : 'text'" autocomplete="new-password" matInput formControlName="password" [disabled]="true">
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
