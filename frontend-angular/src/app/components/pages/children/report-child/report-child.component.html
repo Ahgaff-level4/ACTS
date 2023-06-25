@@ -1,10 +1,13 @@
 <div class="container">
-  <div class="d-flex justify-content-between align-items-end">
-    <app-title [links]="[{title:'Child Report'},{title:'Children',link:'/children'}]" [isPrinting]="isPrinting"></app-title>
-    <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button
-      color="primary"><mat-icon>print</mat-icon>{{'Print'|translate}}</button>
-  </div>
   <ng-container *ngIf="childReport$ |async as childReport">
+    <div class="d-flex justify-content-between align-items-end">
+      <app-title [links]="[{title:'Child Report',titleSuffix:childReport.child.person.name,titleLink:'Report'},
+    {title:childReport.child.person.name,link:'/child/'+childReport.child.id},
+
+    {title:'Children',link:'/children'}]" [isPrinting]="isPrinting"></app-title>
+      <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button
+        color="primary"><mat-icon>print</mat-icon>{{'Print'|translate}}</button>
+    </div>
     <p class="fw-normal text-center mx-md-5  fs-6">
       {{nowDatetime}}
     </p>
@@ -22,8 +25,10 @@
       <mat-form-field class="timeframe" appearance="outline">
         <mat-label>{{'Timeframe'|translate}}</mat-label>
         <mat-date-range-input [formGroup]="customTimeframeForm" [rangePicker]="picker9">
-          <input [value]="customTimeframeForm.controls.from.value" formControlName="from" matStartDate [placeholder]="'From'|translate">
-          <input [value]="customTimeframeForm.controls.to.value" formControlName="to" matEndDate [placeholder]="'To'|translate">
+          <input [value]="customTimeframeForm.controls.from.value" formControlName="from" matStartDate
+            [placeholder]="'From'|translate">
+          <input [value]="customTimeframeForm.controls.to.value" formControlName="to" matEndDate
+            [placeholder]="'To'|translate">
         </mat-date-range-input>
         <mat-datepicker-toggle matIconSuffix [for]="picker9"></mat-datepicker-toggle>
         <mat-date-range-picker #picker9>
@@ -32,8 +37,10 @@
             <button mat-raised-button color="primary" matDateRangePickerApply>{{'Apply'|translate}}</button>
           </mat-date-range-picker-actions>
         </mat-date-range-picker>
-        <mat-error *ngIf="customTimeframeForm.controls.from.hasError('matStartDateInvalid')">{{'Invalid start date'|translate}}</mat-error>
-        <mat-error *ngIf="customTimeframeForm.controls.to.hasError('matEndDateInvalid')">{{'Invalid end date'|translate}}</mat-error>
+        <mat-error *ngIf="customTimeframeForm.controls.from.hasError('matStartDateInvalid')">{{'Invalid start
+          date'|translate}}</mat-error>
+        <mat-error *ngIf="customTimeframeForm.controls.to.hasError('matEndDateInvalid')">{{'Invalid end
+          date'|translate}}</mat-error>
       </mat-form-field>
     </div>
     <mat-card-content dir="ltr" class="ms-md-5 mb-md-3">
@@ -49,8 +56,10 @@
       <mat-form-field class="timeframe" appearance="outline">
         <mat-label>{{'Timeframe'|translate}}</mat-label>
         <mat-date-range-input [formGroup]="customTimeframeForm" [rangePicker]="picker10">
-          <input [value]="customTimeframeForm.controls.from.value" formControlName="from" matStartDate [placeholder]="'From'|translate">
-          <input [value]="customTimeframeForm.controls.to.value" formControlName="to" matEndDate [placeholder]="'To'|translate">
+          <input [value]="customTimeframeForm.controls.from.value" formControlName="from" matStartDate
+            [placeholder]="'From'|translate">
+          <input [value]="customTimeframeForm.controls.to.value" formControlName="to" matEndDate
+            [placeholder]="'To'|translate">
         </mat-date-range-input>
         <mat-datepicker-toggle matIconSuffix [for]="picker10"></mat-datepicker-toggle>
         <mat-date-range-picker #picker10>
@@ -59,27 +68,19 @@
             <button mat-raised-button color="primary" matDateRangePickerApply>{{'Apply'|translate}}</button>
           </mat-date-range-picker-actions>
         </mat-date-range-picker>
-        <mat-error *ngIf="customTimeframeForm.controls.from.hasError('matStartDateInvalid')">{{'Invalid start date'|translate}}</mat-error>
-        <mat-error *ngIf="customTimeframeForm.controls.to.hasError('matEndDateInvalid')">{{'Invalid end date'|translate}}</mat-error>
+        <mat-error *ngIf="customTimeframeForm.controls.from.hasError('matStartDateInvalid')">{{'Invalid start
+          date'|translate}}</mat-error>
+        <mat-error *ngIf="customTimeframeForm.controls.to.hasError('matEndDateInvalid')">{{'Invalid end
+          date'|translate}}</mat-error>
       </mat-form-field>
     </div>
     <mat-card-content dir="ltr" style="min-height: 400px;" class="me-4 mb-md-3">
-      <ngx-charts-polar-chart
-      [legend]="true"
-      [animations]="true"
-      [showGridLines]="true"
-      [roundDomains]="false"
-      [gradient]="true"
-      [yAxisTickFormatting]="stringify"
-      [legendTitle]="'Activities types'|translate"
-      [showXAxisLabel]="true"
-      [showYAxisLabel]="true"
-      [xAxisLabel]="'Fields'|translate"
-      [yAxisLabel]="'Number of Activities'|translate"
-      [xAxis]="true"
-      [yAxis]="true"
-      [results]="activitiesFieldsPolar$|async">
-    </ngx-charts-polar-chart>
+      <ngx-charts-polar-chart [legend]="true" [animations]="true" [showGridLines]="true" [roundDomains]="false"
+        [gradient]="true" [yAxisTickFormatting]="stringify" [legendTitle]="'Activities types'|translate"
+        [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisLabel]="'Fields'|translate"
+        [yAxisLabel]="'Number of Activities'|translate" [xAxis]="true" [yAxis]="true"
+        [results]="activitiesFieldsPolar$|async">
+      </ngx-charts-polar-chart>
     </mat-card-content>
   </mat-card>
 </div>

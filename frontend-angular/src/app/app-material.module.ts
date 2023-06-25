@@ -27,6 +27,7 @@ import { NzNotificationModule } from 'ng-zorro-antd/notification';
 import {MatTabsModule} from '@angular/material/tabs';
 import {MatBadgeModule} from '@angular/material/badge';
 import {MatRadioModule} from '@angular/material/radio';
+import {MatChipsModule} from '@angular/material/chips';
 
 
 @NgModule({
@@ -59,6 +60,7 @@ import {MatRadioModule} from '@angular/material/radio';
     MatTabsModule,
     MatBadgeModule,
     MatRadioModule,
+    MatChipsModule,
   ],
 })
 export class AppMaterialModule {

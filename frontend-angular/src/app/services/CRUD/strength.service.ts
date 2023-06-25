@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { ReplaySubject } from 'rxjs';
+import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { IChildEntity, ICreateStrength, IStrengthEntity, SucResEditDel } from '../../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { UtilityService } from '../utility.service';
@@ -19,12 +19,10 @@ import { NotificationService } from '../notification.service';
  */
 export class StrengthService {
   /**Child object with its strengths. The idea is that: this child will be replaced every time user check another child strengths. And it is in service so it is shared with other components */
-  public childItsStrengths = new ReplaySubject<IChildEntity | undefined>(1)
-  private _childItsStrengths: undefined | IChildEntity;
+  public childItsStrengths$ = new BehaviorSubject<IChildEntity | undefined>(undefined)
 
   constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,
     private childService: ChildService, private goalService: GoalService) {
-    this.childItsStrengths.next(undefined);
   }
   /**
   * @returns if request succeeded, `resolve` with the added entity, and call fetch() to emit the new entities. Otherwise show error dialog and `reject`.
@@ -35,8 +33,8 @@ export class StrengthService {
       this.http.post<IStrengthEntity>(this.goalService.URL, field)
         .subscribe({
           next: (v) => {
-            if (this._childItsStrengths)
-              this.fetchChildItsStrengths(this._childItsStrengths.id);
+            if (this.childItsStrengths$.value)
+              this.fetchChildItsStrengths(this.childItsStrengths$.value.id);
             res(v);
           },
           error: (e) => {
@@ -54,8 +52,8 @@ export class StrengthService {
       this.http.patch<SucResEditDel>(this.goalService.URL + '/' + id, child)
         .subscribe({
           next: (v) => {
-            if (this._childItsStrengths)
-              this.fetchChildItsStrengths(this._childItsStrengths.id);
+            if (this.childItsStrengths$.value)
+              this.fetchChildItsStrengths(this.childItsStrengths$.value.id);
             res(v)
           },
           error: e => {
@@ -73,8 +71,8 @@ export class StrengthService {
       this.http.delete<SucResEditDel>(this.goalService.URL + '/' + id)
         .subscribe({
           next: (v) => {
-            if (this._childItsStrengths)
-              this.fetchChildItsStrengths(this._childItsStrengths.id);
+            if (this.childItsStrengths$.value)
+              this.fetchChildItsStrengths(this.childItsStrengths$.value.id);
             res(v);
           },
           error: (e) => {
@@ -97,8 +95,7 @@ export class StrengthService {
         .subscribe({
           next: v => {
             if (Array.isArray(v) && v.length != 0) {
-              this._childItsStrengths = v[0];
-              this.childItsStrengths.next(v[0]);
+              this.childItsStrengths$.next(v[0]);
               res(v[0]);
             }
             else {

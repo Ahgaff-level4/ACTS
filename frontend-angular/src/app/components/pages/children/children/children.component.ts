@@ -192,7 +192,6 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
   // Data that gets displayed in the grid
   public rowData = this.childService.children$.pipe(map(v => {
-    console.log('rowData = children')
     if (this.pr.canUser('archiveChild'))
       return this.ut.deepClone(v);
     else return this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed

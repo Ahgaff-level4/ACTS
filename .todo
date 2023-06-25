@@ -1,7 +1,7 @@
 - reduce bundle size by reusing one component instead of duplicate code.
 Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 5.19 MB with a total of 5.68 MB.
 
-- check if a child can have duplicate activity for different goals/strengths. CHILD SHOULD NOT have duplicate activity.
+  
 - check host file domain name in PowerToys app, may enable you to run server on LAN.
 
 - Add visitors of the site in the ~Dashboard? Is NestJs provide such thing?

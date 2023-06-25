@@ -137,6 +137,14 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
     }
   }
 
+  showArchiveInfo() {
+    this.nt.showMsgDialog({
+      title: { text: 'Archive child information' },
+      content: "Archiving a child will hide the child information from all pages and won't count their data in most report, such as children page. Only Admin can view archived children in the Children page by applying ‘Archive’ filter. Note: a parent of this child won't be able to view its information.",
+      type: 'info',
+    })
+  }
+
   //!This is buggy
   // public isSubmitting: boolean = false;
   // @HostListener('window:beforeunload')

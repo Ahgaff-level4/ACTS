@@ -39,7 +39,6 @@ export class LoginFormComponent implements OnInit {
         next: (v: User) => {
           if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
             this.ut.user.next(v);
-            //todo redirect to previous page ?? '/main'
             this.ut.router.navigate(['main']);
           } else this.nt.errorDefaultDialog(v as any);
         }, error: e => {

@@ -1,8 +1,8 @@
 <app-title [links]="this.activitiesOf == 'program' ? [
-{title: 'Activities of program', param: this.service.programItsActivities$.value?.name ?? ''}, {
+{title: 'Activities of program', titleSuffix: this.service.programItsActivities$.value?.name ?? ''}, {
   title: 'Programs', link: '/program'}
   ] : [
-  { title: 'Activities of field', param: this.service.fieldItsActivities$.value?.name ?? ''},
+  { title: 'Activities of field', titleSuffix: this.service.fieldItsActivities$.value?.name ?? ''},
   { title: 'Fields', link: '/field'}]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"

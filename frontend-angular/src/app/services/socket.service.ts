@@ -26,12 +26,10 @@ export class SocketService implements OnDestroy {
   constructor(private ut: UtilityService, private nt: NotificationService) {
   }
   public connect(v: User | null) {
-    console.log('SocketService : connect : user:', v);
     if (v == null) {
       if (this.socket) {
         this.socket.close();
         this.socket = undefined;
-        console.log('SocketService : connect : close:', v);
       }
       this.user = v;
 

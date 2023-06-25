@@ -21,7 +21,6 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
   public nowDatetime = '';
   public isPrinting = false;
   public goalsStatePieData$: Observable<{ name: string, value: number }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
-    console.log(v)
     return [{ name: this.ut.translate('Completed'), value: v!.goal.completedCount },
     { name: this.ut.translate('Continual'), value: v!.goal.continualCount }];
   }));

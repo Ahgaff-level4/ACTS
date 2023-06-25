@@ -100,7 +100,7 @@ export class StrengthComponent extends UnsubOnDestroy {
       next: async params => {
         let childId = params.get('id');
         if (typeof childId === 'string')
-          this.sub.add(this.service.childItsStrengths.subscribe(async v => {
+          this.sub.add(this.service.childItsStrengths$.subscribe(async v => {
             if (v && v.id == +(childId as string))
               this.childItsStrengths = this.ut.deepClone(v);
             else await this.service.fetchChildItsStrengths(+(childId as string), true).catch(() => { });

@@ -8,6 +8,7 @@ import { SelectActivityComponent } from '../../select-activity/select-activity.c
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-strength',
@@ -20,9 +21,9 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new strength */
-  public child: IChildEntity | undefined;
+  public child$!: BehaviorSubject<IChildEntity | undefined>;
 
-  constructor(private fb:FormBuilder, public service: StrengthService, public strengthService: StrengthService,
+  constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>,
     private formService: FormService, private nt: NotificationService,
     /**Either goal to be edit. Or childId to add the new goal into it */
@@ -39,11 +40,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
       assignDatetime: [new Date(), [Validators.required]],
     });
 
-    this.sub.add(this.strengthService.childItsStrengths.subscribe(v => {
-      if (v == null)
-        this.nt.errorDefaultDialog().afterClosed().subscribe(() => this.dialogRef.close());
-      else this.child = v;
-    }));
+    this.child$ = this.strengthService.childItsStrengths$;
 
     if (typeof this.strengthOrChildId === 'object') {
       this.formGroup.setValue(this.formService.extractFrom(this.formGroup.controls, this.strengthOrChildId));
@@ -59,10 +56,10 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.strengthOrChildId == 'number') {//add new
-        if (this.child?.id == null || this.ut.user.value?.accountId == null)
+        if (this.child$.value?.id == null || this.ut.user.value?.accountId == null)
           return this.nt.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.child?.id, teacherId: this.ut.user.value?.accountId }, true);
+          await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.ut.user.value?.accountId }, true);
           this.nt.notify("Added successfully", 'The strength has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }
@@ -80,14 +77,17 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
   }
 
   selectActivity() {
-    this.nt.openDialog<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, 'strength')
-      .afterClosed().subscribe(v => {
-        if (v != null) {
-          this.formGroup.get('activityId')?.setValue(v.id);
-          this.formGroup.get('activityId')?.markAsDirty();
-          this.selectedActivity = v;
-        }
-        else this.formGroup.get('activityId')?.setErrors({ dirty: true })
-      });
+    if (!this.child$.value)
+      this.nt.notify(undefined);
+    else
+      this.nt.openDialog<SelectActivityComponent, { child: IChildEntity, state: 'goal' | 'strength' }, IActivityEntity>(SelectActivityComponent, { child: this.child$.value, state: 'strength' })
+        .afterClosed().subscribe(v => {
+          if (v != null) {
+            this.formGroup.get('activityId')?.setValue(v.id);
+            this.formGroup.get('activityId')?.markAsDirty();
+            this.selectedActivity = v;
+          }
+          else this.formGroup.get('activityId')?.setErrors({ dirty: true })
+        });
   }
 }

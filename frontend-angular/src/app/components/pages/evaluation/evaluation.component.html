@@ -1,5 +1,5 @@
-<app-title [links]="[{title:'Evaluations of goal',param:service.goalItsEvaluations$.value?.activity?.name},
-{title:'Goals of',param:service.goalItsEvaluations$.value?.child?.person?.name,link:service.goalItsEvaluations$.value?.child?.id?'/child/'+service.goalItsEvaluations$.value?.child?.id+'/goals':undefined},
+<app-title [links]="[{title:'Evaluations of goal',titleSuffix:service.goalItsEvaluations$.value?.activity?.name},
+{title:'Goals of',titleSuffix:service.goalItsEvaluations$.value?.child?.person?.name,link:service.goalItsEvaluations$.value?.child?.id?'/child/'+service.goalItsEvaluations$.value?.child?.id+'/goals':undefined},
 {title:'Children',link:'/children'},]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"

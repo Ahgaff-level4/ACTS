@@ -26,9 +26,9 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   /** used to add/edit goal base on `goalOrChildId` type:
    * - Either goal to be edit.
    * - Or childId to add the new goal into it */
-  constructor(private fb:FormBuilder, public service: GoalService, public goalService: GoalService,
+  constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
     private ut: UtilityService, public dialogRef: MatDialogRef<any>,
-    private formService: FormService,private nt:NotificationService,
+    private formService: FormService, private nt: NotificationService,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
     super();
   }
@@ -79,14 +79,18 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   }
 
   selectActivity() {
-    this.nt.openDialog<SelectActivityComponent, 'goal' | 'strength', IActivityEntity>(SelectActivityComponent, 'goal')
-      .afterClosed().subscribe(v => {
-        if (v != null) {
-          this.formGroup.get('activityId')?.setValue(v.id);
-          this.formGroup.get('activityId')?.markAsDirty();
-          this.selectedActivity = v;
-        }
-        else this.formGroup.get('activityId')?.setErrors({ dirty: true })
-      });
+    if (!this.child$.value)
+      this.nt.notify(undefined);
+    else
+      this.nt.openDialog<SelectActivityComponent, { child: IChildEntity, state: 'goal' | 'strength' }, IActivityEntity>(SelectActivityComponent, { child: this.child$.value, state: 'goal' })
+        .afterClosed().subscribe(v => {
+          if (v != null) {
+            this.formGroup.get('activityId')?.setValue(v.id);
+            this.formGroup.get('activityId')?.markAsDirty();
+            this.selectedActivity = v;
+          }
+          else this.formGroup.get('activityId')?.setErrors({ dirty: true })
+        });
+
   }
 }

@@ -22,7 +22,6 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   public filterByAgeTwoWay: 'age' | 'all' = 'age';
   public filterByFieldsTwoWay: IFieldEntity[] = [];
   public activities: IActivityEntity[] | [] = [];
-  public child$: BehaviorSubject<IChildEntity | undefined> = new BehaviorSubject<IChildEntity | undefined>(undefined);
   /**
    * This dialog is used in the following state:
    * - 'goal' for choosing the goal's activity.
@@ -31,14 +30,23 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService,
     private ut: UtilityService, private goalService: GoalService, private strengthService: StrengthService,
     private activityService: ActivityService, private dialog: MatDialog, public fieldService: FieldService,
-    @Inject(MAT_DIALOG_DATA) public state: 'goal' | 'strength') {
+    @Inject(MAT_DIALOG_DATA) public data: { child: IChildEntity, state: 'goal' | 'strength' }) {
     super();
   }
 
   ngOnInit(): void {
-    if (this.state == 'goal')
-      this.child$ = this.goalService.childItsGoals$;
-    // else this.child$ = this.strengthService.childItsStrengths;
+    if (!this.data.child.goals)
+      this.sub.add(this.goalService.childItsGoals$.subscribe(v => {
+        if (v?.id == this.data.child.id)
+          this.data.child.goals = v.goals;
+        else this.goalService.fetchChildItsGoals(this.data.child.id);
+      }));
+    else if (!this.data.child.strengths)
+      this.sub.add(this.strengthService.childItsStrengths$.subscribe(v => {
+        if (v?.id == this.data.child.id)
+          this.data.child.strengths = v.strengths;
+        else this.strengthService.fetchChildItsStrengths(this.data.child.id);
+      }))
   }
 
   onSelectionChangeProgram(value: IProgramEntity | undefined) {
@@ -59,8 +67,8 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   filterByAge(callAllFilters: boolean = true) {
     if (this.filterByAgeTwoWay == 'age' &&
       this.chosenProgram?.activities &&
-      this.child$.value?.person?.birthDate) { //filter by age
-      var age = this.ut.calcAge(this.child$.value?.person?.birthDate);
+      this.data.child?.person?.birthDate) { //filter by age
+      var age = this.ut.calcAge(this.data.child.person?.birthDate);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
           if (v.maxAge == null || v.minAge == null || (age < v.maxAge && age > v.minAge))
@@ -89,5 +97,13 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
         if (typeof v === 'object')
           this.dialogRef.close(v);
       });
+  }
+
+  isActivityChildGoal(activity: IActivityEntity): boolean {
+    return this.data.child.goals?.map(v => v.activityId).includes(activity.id);
+  }
+
+  isActivityChildStrength(activity: IActivityEntity): boolean {
+    return this.data.child.strengths?.map(v => v.activityId).includes(activity.id);
   }
 }
