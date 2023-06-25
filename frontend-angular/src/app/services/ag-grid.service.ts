@@ -224,7 +224,7 @@ export class AgGridService {
         gridOptions.paginationAutoPageSize = isAuto;
         gridOptions.paginationPageSize = size;
         gridOptions.api?.setSideBarVisible(true)
-        gridOptions.api?.refreshCells();
+        gridOptions.api?.redrawRows();
         gridOptions.api?.setDomLayout('autoHeight');
         if (typeof printTableArgs == 'function')
           printTableArgs(false);
@@ -265,7 +265,7 @@ export class AgGridService {
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
         prevState && e.columnApi.applyColumnState({ state: prevState });
-        prevState && e.api.refreshCells();
+        prevState && e.api.redrawRows();
         onGridReady && onGridReady(e);
       },//save table state in Pinned, Moved, and Visible.
       onColumnPinned: e => { localStorage.setItem(keyTableName, JSON.stringify(e.columnApi.getColumnState())) },

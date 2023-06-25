@@ -111,7 +111,7 @@ export class AccountComponent {
     this.accountService.fetch();
     this.accountService.accounts.subscribe(v => {
       this.rowData = this.ut.deepClone(v);
-      this.gridOptions?.api?.refreshCells()
+      this.gridOptions?.api?.redrawRows()
     });
   }
 
@@ -127,7 +127,7 @@ export class AccountComponent {
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
       this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.accountService.edit(item) : this.nt.notify(null) }),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
 

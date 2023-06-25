@@ -1,21 +1,24 @@
-<app-title [links]="[{title:'Activities of program',param:program?.name},
-{title:'Programs',link:'/program'}]" [isPrinting]="isPrinting"></app-title>
+<app-title [links]="this.activitiesOf == 'program' ? [
+{title: 'Activities of program', param: this.service.programItsActivities$.value?.name ?? ''}, {
+  title: 'Programs', link: '/program'}
+  ] : [
+  { title: 'Activities of field', param: this.service.fieldItsActivities$.value?.name ?? ''},
+  { title: 'Fields', link: '/field'}]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
-  <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
-  (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
+  <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
+    (print)="printTable()"></app-search-export>
 
   <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
-    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="program?.activities"
+    <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions" [rowData]="rowData"
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
   <app-table-controllers *ngIf="!isPrinting"
-  [button1]="{show:this.pr.canUser('addActivity'),text:'Add new activity',icon:'add'}"
-  (button1Click)="addEdit(program?.id)"
-  [button2]="{show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
-  (button2Click)="addEdit(selectedItem)"
-  [button3]="{disabled:selectedItem==null,show:this.pr.canUser('deleteActivity'),tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'}"
-  (button3Click)="deleteDialog(selectedItem)"
-  ></app-table-controllers>
+    [button1]="this.activitiesOf=='program'?{show:this.pr.canUser('addActivity'),text:'Add new activity',icon:'add'}:undefined"
+    (button1Click)="this.activitiesOf=='program'?addEdit(selectedItem?.programId):undefined"
+    [button2]="{show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
+    (button2Click)="addEdit(selectedItem)"
+    [button3]="{disabled:selectedItem==null,show:this.pr.canUser('deleteActivity'),tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'}"
+    (button3Click)="deleteDialog(selectedItem)"></app-table-controllers>
 </div>

@@ -6,6 +6,8 @@ import { CreateField, FieldEntity, UpdateField } from './field.entity';
 import { NotificationGateway } from 'src/websocket/notification.gateway';
 import { UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
+import { ActivityEntity } from '../activity/activity.entity';
+import { ProgramEntity } from '../program/program.entity';
 @Controller('api/field')
 export class FieldController {
 
@@ -31,6 +33,16 @@ export class FieldController {
   findAll() {
     return this.repo.createQueryBuilder('field')
       .loadRelationCountAndMap('field.activityCount', 'field.activities')
+      .getMany();
+  }
+  
+  @Get(':id')
+  @Roles('Admin', 'HeadOfDepartment', 'Teacher')
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.repo.createQueryBuilder('field')
+      .leftJoinAndMapMany('field.activities', ActivityEntity, 'activity', 'activity.fieldId=field.id')
+      .leftJoinAndMapOne('activity.program', ProgramEntity, 'program', 'activity.programId=program.id')
+      .where({ id })
       .getMany();
   }
 

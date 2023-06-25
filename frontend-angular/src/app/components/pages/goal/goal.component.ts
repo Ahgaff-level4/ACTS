@@ -32,7 +32,7 @@ export class GoalComponent extends UnsubOnDestroy {
     } catch (e) {
       if (this.service.childItsGoals$.value)
         await this.service.fetchChildItsGoals(this.service.childItsGoals$.value.id).catch(() => { });
-      this.gridOptions?.api?.refreshCells();
+      this.gridOptions?.api?.redrawRows();
     }
   }
 
@@ -190,14 +190,14 @@ export class GoalComponent extends UnsubOnDestroy {
         // e.api.getFilterInstance('state')?.setModel({ values: ['continual'] });
       }
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
 
   /** @param goalOrChildId is either a goal to be Edit. Or childId to be Add */
   addEdit(goalOrChildId?: IGoalEntity | number) {
     if (typeof goalOrChildId != 'object' && typeof goalOrChildId != 'number')
-      this.nt.errorDefaultDialog(undefined);
+      this.nt.notify(undefined);
     else
       this.dialog
         .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId, direction: this.ut.getDirection() })

@@ -33,7 +33,7 @@ export class StrengthComponent extends UnsubOnDestroy {
     } catch (e) {
       if (this.childItsStrengths)
         await this.service.fetchChildItsStrengths(this.childItsStrengths.id).catch(() => { });
-      this.gridOptions?.api?.refreshCells();
+      this.gridOptions?.api?.redrawRows();
     }
   }
 
@@ -136,13 +136,13 @@ export class StrengthComponent extends UnsubOnDestroy {
     ...this.agGrid.commonGridOptions('strengths table', this.columnDefs, this.pr.canUser('editStrength'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
   /** @param strengthOrChildId is either a strength to be Edit. Or childId to be Add */
   addEdit(strengthOrChildId?: IStrengthEntity | number) {
     if (typeof strengthOrChildId != 'object' && typeof strengthOrChildId != 'number')
-      this.nt.errorDefaultDialog(undefined);
+      this.nt.notify(undefined);
     else
       this.dialog
         .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId ,direction:this.ut.getDirection()})

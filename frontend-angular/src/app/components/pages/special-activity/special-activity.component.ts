@@ -33,10 +33,8 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
       this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
-      this.sub.add(this.service.specialActivities.subscribe(v => {
-        this.rowData = this.ut.deepClone(v);
-        this.gridOptions?.api?.refreshCells();
-      }));
+      await this.service.fetchSpecialActivities();
+      this.gridOptions?.api?.redrawRows();
     }
   }
 
@@ -79,7 +77,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     },
   ];
 
-  constructor(public service: ActivityService,private ut:UtilityService,
+  constructor(public service: ActivityService, private ut: UtilityService,
     private dialog: MatDialog, public agGrid: AgGridService, private fieldService: FieldService,
     public pr: PrivilegeService, private nt: NotificationService,) {
     super();
@@ -91,7 +89,11 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
     }));
-    this.sub.add(this.service.specialActivities.subscribe(v => this.rowData = this.ut.deepClone(v)));
+    this.sub.add(this.service.specialActivities$.subscribe(v => {
+      if (v)
+        this.rowData = this.ut.deepClone(v);
+      else this.service.fetchSpecialActivities(true);
+    }))
   }
 
   applySearch(event: Event) {
@@ -108,13 +110,13 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       this.menuItems, this.printTable, (item) => { this.edit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
   /** `data` is Activity to be Edit. */
   edit(data?: IActivityEntity) {
     if (typeof data != 'object' && typeof data != 'number')
-      this.nt.errorDefaultDialog(undefined);
+      this.nt.notify(undefined);
     else
       this.dialog
         .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() })

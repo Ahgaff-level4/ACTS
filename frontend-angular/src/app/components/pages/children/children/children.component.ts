@@ -253,7 +253,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
       }
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
 }

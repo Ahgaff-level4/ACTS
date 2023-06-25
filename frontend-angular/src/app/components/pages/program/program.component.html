@@ -11,7 +11,7 @@
   <app-table-controllers *ngIf="!isPrinting"
   [button1]="{show:this.pr.canUser('addProgram'),text:'Add new program',icon:'add'}"
   (button1Click)="addEdit()"
-  [anchor2]="{show:this.pr.canUser('programActivitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected program',link:selectedItem?'/program/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'}"
+  [anchor2]="{show:this.pr.canUser('activitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected program',link:selectedItem?'/program/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'}"
   [button3]="{show:this.pr.canUser('editProgram'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
   (button3Click)="addEdit(selectedItem)"
   [button4]="{disabled:selectedItem==null,show:this.pr.canUser('deleteProgram'),tooltip:'Delete the selected program',color:'warn',text:'Delete',icon:'delete'}"

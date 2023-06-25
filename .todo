@@ -4,11 +4,7 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 - check if a child can have duplicate activity for different goals/strengths. CHILD SHOULD NOT have duplicate activity.
 - check host file domain name in PowerToys app, may enable you to run server on LAN.
 
--try deleting PersonController so that when new child/account added, its person is embedded with the child/account object. Is TypeORM will handle it correctly?
-
 - Add visitors of the site in the ~Dashboard? Is NestJs provide such thing?
-
-- Add page that shows activities of a specific field. try reuse Program component.
 
 - Child should has specific program, and it should be selected as default when selecting an activity.
 

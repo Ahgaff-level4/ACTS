@@ -82,7 +82,7 @@ export class PrivilegeService {
       privileges.push("Can add an evaluation.")
     if (PRIVILEGE.editEvaluation.concat(PRIVILEGE.deleteEvaluation).includes(role))
       privileges.push("Can edit/delete an evaluation.")
-    if (PRIVILEGE.programActivitiesPage.includes(role))
+    if (PRIVILEGE.activitiesPage.includes(role))
       privileges.push("Can access program's activities page.")
     if (PRIVILEGE.specialActivitiesPage.includes(role))
       privileges.push("Can access special activities page.")
@@ -150,7 +150,7 @@ export const PRIVILEGE = {
   editEvaluation: AHT,
   deleteEvaluation: AHT,
   //ACTIVITY
-  programActivitiesPage: AHT,
+  activitiesPage: AHT,
   specialActivitiesPage: AH,
   addActivity: AH,
   editActivity: AH,

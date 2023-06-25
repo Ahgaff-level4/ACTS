@@ -35,15 +35,12 @@ export class UtilityService {
         next: res => {
           if (typeof res?.accountId === 'number' && Array.isArray(res?.roles)) {
             this.user.next(res);
-            console.log('ut : isLogin:', res);
             resolve(res);
           } else {
-            console.log('ut : isLogin:', res);
             this.user.next(null);
             resolve(null);
           }
         }, error: () => {
-          console.log('ut : isLogin:', null);
           this.user.next(null);
           resolve(null);
         }
@@ -89,7 +86,6 @@ export class UtilityService {
     return new Promise((res, rej) => {
       route.paramMap.pipe(first()).subscribe(v => {
         const p = v.get(param);
-        console.log('param', p);
         if (p && Number.isInteger(+p))
           res(+p);
         else rej();

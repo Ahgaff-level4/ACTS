@@ -79,7 +79,7 @@ export class ProgramComponent extends UnsubOnDestroy {
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
   constructor(private service: ProgramService, public ut: UtilityService,private nt:NotificationService,

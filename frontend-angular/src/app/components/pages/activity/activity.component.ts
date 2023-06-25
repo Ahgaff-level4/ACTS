@@ -1,6 +1,6 @@
 import { Component, OnDestroy, ViewChild } from '@angular/core';
 import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { IActivityEntity, IProgramEntity } from '../../../../../../interfaces';
+import { IActivityEntity, IFieldEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MatPaginator } from '@angular/material/paginator';
 import { MatSort } from '@angular/material/sort';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
@@ -17,6 +17,7 @@ import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { TitleLink } from '../../static/title/title.component';
 
 @Component({
   selector: 'app-activity',
@@ -28,16 +29,22 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   public quickFilter: string = '';
   public isPrinting: boolean = false;
   /**don't use `rowData` 'cause Program has activities of `rowData`*/
-  public program: IProgramEntity | undefined;
+  // public program: IProgramEntity | undefined;
+  public rowData: IActivityEntity[] | undefined;
+  /**Activities of either a program or field */
+  public activitiesOf: 'field' | 'program' | undefined;
 
   private onCellValueChange = async (e: NewValueParams<IActivityEntity>) => {
     try {
       await this.service.patchInSpecialActivities(e.data.id, { [e.colDef.field as keyof IActivityEntity]: e.newValue });
       this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
-      if (this.program)
-        await this.service.fetchProgramItsActivities(this.program.id).catch(() => { });
-      this.gridOptions?.api?.refreshCells();
+      if (this.activitiesOf == 'program' && this.service.programItsActivities$.value)
+        await this.service.fetchProgramItsActivities(this.service.programItsActivities$.value.id).catch(() => { });
+      else if (this.activitiesOf == 'field' && this.service.fieldItsActivities$.value)
+        await this.service.fetchFieldItsActivities(this.service.fieldItsActivities$.value.id).catch(() => { })
+      else console.trace('unexpected reach here!')
+      this.gridOptions?.api?.redrawRows();
     }
   }
 
@@ -78,6 +85,13 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
       // filterParams: assigned on init
     },
     {
+      field: 'program.name',
+      headerName: 'Program',
+      type: 'enum',
+      valueGetter: (v) => v.data?.program?.name ?? this.ut.translate('«Special activity»'),
+      // filterParams: assigned on init
+    },
+    {
       field: 'createdDatetime',
       headerName: 'Created Date',
       type: 'fromNow',
@@ -97,8 +111,9 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
 
 
   constructor(public service: ActivityService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute,private nt:NotificationService,
-    private fieldService: FieldService, public agGrid: AgGridService, public pr: PrivilegeService) {
+    private route: ActivatedRoute, private nt: NotificationService,
+    private fieldService: FieldService, public agGrid: AgGridService,
+    public pr: PrivilegeService, private programService: ProgramService,) {
     super();
   }
 
@@ -108,19 +123,39 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
     this.ut.isLoading.next(true);
     this.route.paramMap.subscribe({
       next: async params => {
-        let programId = params.get('id');
-        if (typeof programId == 'string')
-          this.sub.add(this.service.programItsActivities.subscribe(async v => {
-            if (v && v.id == +(programId as string))
-              this.program = this.ut.deepClone(v);
-            else await this.service.fetchProgramItsActivities(+(programId as string), true).catch(() => { });
+        let programOrField = params.get('programOrField');
+        let id = params.get('id');
+        if (typeof id == 'string' && (programOrField == 'field' || programOrField == 'program')) {
+          this.activitiesOf = programOrField;
+          this.columnDefs.splice(this.activitiesOf == 'program' ? this.columnDefs.map(v => v.field).indexOf('program.name') : this.columnDefs.map(v => v.field).indexOf('field.name'), 1);
+          this.gridOptions.api?.setColumnDefs(this.columnDefs);
+          if (this.activitiesOf == 'program')
+            this.sub.add(this.service.programItsActivities$.subscribe(async v => {
+              if (v && v.id == +(id as string)) {
+                this.rowData = this.ut.deepClone(v.activities);
+              }
+              else await this.service.fetchProgramItsActivities(+(id as string), true).catch(() => { });
+            }));
+          else this.sub.add(this.service.fieldItsActivities$.subscribe(async v => {
+            if (v && v.id == +(id as string))
+              this.rowData = this.ut.deepClone(v.activities);
+            else await this.service.fetchFieldItsActivities(+(id as string), true).catch(() => { })
           }));
-        else this.nt.errorDefaultDialog("Sorry, there was a problem fetching the program's activities. Please try again later or check your connection.");
+        } else {
+          this.nt.errorDefaultDialog("Sorry, there was a problem fetching the activities. Please try again later or check your connection.");
+          this.ut.router.navigateByUrl('/404');
+        }
         this.ut.isLoading.next(false);
       }, error: () => this.ut.isLoading.next(false)
     });
+
     this.fieldService.fields$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('field.name');
+      if (col)
+        col.filterParams = { values: v.map(n => n.name) }
+    });
+    this.programService.programs$.subscribe(v => {
+      let col = this.gridOptions.api?.getColumnDef('program.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
     });
@@ -138,18 +173,20 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   public gridOptions: GridOptions<IActivityEntity> = {
     ...this.agGrid.commonGridOptions('activities table', this.columnDefs, this.pr.canUser('editActivity'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
-      (e) => e.api.sizeColumnsToFit()
+      (e) => {
+        e.api.sizeColumnsToFit();
+      }
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
   /** `data` is either Activity to be Edit. Or programId to be Add */
   addEdit(data?: IActivityEntity | number) {
     if (typeof data != 'object' && typeof data != 'number')
-      this.nt.errorDefaultDialog(undefined);
+      this.nt.notify(undefined);
     else
-      this.dialog
-        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() });
+      this.nt
+        .openDialog<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, data);
   }
 
   deleteDialog(activity: IActivityEntity | undefined) {
@@ -172,4 +209,5 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
         }
       });
   }
+
 }

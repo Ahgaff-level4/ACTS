@@ -82,7 +82,7 @@ export class FieldComponent extends UnsubOnDestroy {
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
-    onRowClicked: (v) => this.selectedItem = v.data,
+    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
   }
 
   /** if `data` param passed then it is Edit. Otherwise will be Add */

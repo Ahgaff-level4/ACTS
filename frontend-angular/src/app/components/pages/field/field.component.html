@@ -12,9 +12,10 @@
   <app-table-controllers *ngIf="!isPrinting"
   [button1]="{show:this.pr.canUser('addField'),text:'Add new field',icon:'add'}"
   (button1Click)="addEdit()"
-  [button2]="{show:this.pr.canUser('editField'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
-  (button2Click)="addEdit(selectedItem)"
-  [button3]="{disabled:selectedItem==null,show:this.pr.canUser('deleteField'),tooltip:'Delete the selected field',color:'warn',text:'Delete',icon:'delete'}"
-  (button3Click)="deleteDialog(selectedItem)"
+  [anchor2]="{show:this.pr.canUser('activitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected field',link:selectedItem?'/field/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'}"
+  [button3]="{show:this.pr.canUser('editField'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
+  (button3Click)="addEdit(selectedItem)"
+  [button4]="{disabled:selectedItem==null,show:this.pr.canUser('deleteField'),tooltip:'Delete the selected field',color:'warn',text:'Delete',icon:'delete'}"
+  (button4Click)="deleteDialog(selectedItem)"
   ></app-table-controllers>
 </div>

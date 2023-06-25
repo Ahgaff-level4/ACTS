@@ -11,7 +11,7 @@ Shared component to set the title for any page (No need for translation). Ex: `[
 - links array is ordered as 0 index is the current page followed by previous page, previous previous...
 - links array at least should has one element (current page).*/
 export class TitleComponent implements OnInit {
-  @Input() links: Link[] = [];
+  @Input() links: TitleLink[] = [];
   /**Hide back button when printing */
   @Input('isPrinting') isPrinting: boolean | undefined;
 
@@ -26,7 +26,7 @@ export class TitleComponent implements OnInit {
   }
 
   /**Add "Page" prefix to the link's title. (e.g. 'Page title_name') */
-  tooltipOf(link: Link) {
+  tooltipOf(link: TitleLink) {
     if (link == this.links[0])
       return this.ut.translate('Current page');
     return this.ut.getDirection() == 'rtl' ?
@@ -35,7 +35,7 @@ export class TitleComponent implements OnInit {
   }
 }
 
-interface Link {
+export interface TitleLink {
   title: string,
   param?: string,
   link?: string

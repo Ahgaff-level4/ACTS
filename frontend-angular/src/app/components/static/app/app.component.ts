@@ -1,11 +1,9 @@
-import { animate, animateChild, group, keyframes, query, style, transition, trigger } from '@angular/animations';
-import { Component, Input, OnDestroy, OnInit } from '@angular/core';
-import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
-import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import { animate, group, query, style, transition, trigger } from '@angular/animations';
+import { ChangeDetectorRef, Component } from '@angular/core';
+import { DateAdapter } from '@angular/material/core';
+import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
-import { Subscription } from 'rxjs';
 import { SocketService } from 'src/app/services/socket.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
@@ -45,7 +43,9 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 export class AppComponent extends UnsubOnDestroy {
 
   public isLoading: boolean = true;
-  constructor(public translate: TranslateService, private websocket: SocketService, private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>, private router: Router) {
+  constructor(public translate: TranslateService, private websocket: SocketService,
+    private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>,
+    private cd: ChangeDetectorRef) {
     super()
   }
 
@@ -56,7 +56,7 @@ export class AppComponent extends UnsubOnDestroy {
     this.translate.setDefaultLang('en');
     this.translate.use(localStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//in the constructor to speed up language used
     this.sub.add(this.translate.onLangChange.subscribe(() => this.handleOnLangChange()));
-    this.sub.add(this.router.events.subscribe({
+    this.sub.add(this.ut.router.events.subscribe({
       next: (event) => {
         if (event instanceof NavigationStart)
           this.ut.isLoading.next(true)
@@ -65,7 +65,10 @@ export class AppComponent extends UnsubOnDestroy {
       }, error: () => this.ut.isLoading.next(false)
     }));
 
-    this.sub.add(this.ut.isLoading.subscribe(v => this.isLoading = v));
+    this.sub.add(this.ut.isLoading.subscribe(v => {
+      this.isLoading = v;
+      this.cd.detectChanges();
+    }));
     this.handleOnLangChange();
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (this.ut.user.value == null && isRememberMe != 'false')
