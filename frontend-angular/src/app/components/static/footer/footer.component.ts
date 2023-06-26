@@ -7,7 +7,5 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
-  constructor(public pr:PrivilegeService) { }
-
-
+  constructor(public pr: PrivilegeService) { }
 }

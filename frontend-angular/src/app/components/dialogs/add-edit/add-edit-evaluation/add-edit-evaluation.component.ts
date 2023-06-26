@@ -2,10 +2,10 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { IEvaluationEntity } from '../../../../../../../interfaces';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-add-edit-evaluation',
@@ -16,7 +16,7 @@ export class AddEditEvaluationComponent {
   public formGroup!: FormGroup;
   protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb:FormBuilder, public service: EvaluationService, private ut: UtilityService,
+  constructor(private fb:FormBuilder, public service: EvaluationService, private pr:PrivilegeService,
     public dialogRef: MatDialogRef<any>, private formService: FormService,private nt:NotificationService,
     /** @param data is either an evaluation to be Edit. Or goalId to be Add */
     @Inject(MAT_DIALOG_DATA) public evaluationOrGoalId?: IEvaluationEntity | number,) {
@@ -29,7 +29,7 @@ export class AddEditEvaluationComponent {
       mainstream: [null, [Validators.maxLength(512)]],
       note: [null, [Validators.maxLength(512)]],
       rate: [null, [Validators.required]],
-      teacherId: [this.ut.user.value?.accountId, [Validators.required]],
+      teacherId: [this.pr.user.value?.accountId, [Validators.required]],
       evaluationDatetime: [new Date(), [Validators.required]],
     });
 

@@ -1,52 +1,24 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { SuccessResponse, User, ErrorResponse } from './../../../../interfaces.d';
 import { BehaviorSubject, first } from 'rxjs';
-import { environment as env } from 'src/environments/environment';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import * as moment from 'moment';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CalcAgePipe } from '../pipes/calc-age.pipe';
-import { NotificationService } from './notification.service';
-import { NzNotificationService } from 'ng-zorro-antd/notification';
+import { Privilege } from './privilege.service';
 @Injectable({
   providedIn: 'root',
 })
 export class UtilityService {
-  public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);//null means not loggedIn and there is no user info
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth', 'Twentieth', 'Twenty-first', 'Twenty-second', 'Twenty-third', 'Twenty-fourth', 'Twenty-fifth', 'Twenty-sixth', 'Twenty-seventh', 'Twenty-eighth', 'Twenty-ninth', 'Thirtieth'];
   public isLoading = new BehaviorSubject<boolean>(false);
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
-    private calcAgePipe: CalcAgePipe, private dialog: MatDialog,
+    private calcAgePipe: CalcAgePipe,
     public router: Router, private translateService: TranslateService,) {
   }
 
-  /**
-   * promise that will return `User` if user is logged in into the server and has its own session in the server.
-   * Also, this function will call `user.next(...)` accordingly.
-   * Never rejected.
-   */
-  public isLogin = (): Promise<User | null> => {
-    return new Promise<User | null>((resolve) => {
-      this.http.get<User>(env.AUTH + 'isLogin').subscribe({
-        next: res => {
-          if (typeof res?.accountId === 'number' && Array.isArray(res?.roles)) {
-            this.user.next(res);
-            resolve(res);
-          } else {
-            this.user.next(null);
-            resolve(null);
-          }
-        }, error: () => {
-          this.user.next(null);
-          resolve(null);
-        }
-      });
-    });
-  }
+
 
   /**
    * We recommend using pipe translate (e.g., `<h1>{{title | translate}}</h1>`)
@@ -94,3 +66,64 @@ export class UtilityService {
   }
 }
 
+/**First page should be Home; used in home's cards.
+ * Last page should be Settings; used in header and footer links.
+ */
+export const PAGES: IPage[] = [
+  {
+    title: 'Home',
+    link:'/',
+    img:'assets/img/logo.png',
+    desc:'Home page',
+  },
+  {
+    title: 'Children',
+    link: '/children',
+    img: 'assets/img/girl.svg', alt: 'girl photo',
+    desc: 'Children information',
+    privilege: 'childrenPage'
+  },
+  {
+    title: "Programs",
+    img: "assets/img/Program.svg",
+    link: "/program",
+    desc: "Programs information",
+    privilege: 'programsPage'
+  },
+  {
+    title: "Fields",
+    img: "assets/img/Field.svg",
+    link: "/field",
+    desc: "Fields information",
+    privilege: 'fieldsPage'
+  },
+  {
+    title: "Special Activities",
+    img: "assets/img/Activity.svg",
+    link: "/special-activities",
+    desc: "Special Activities information",
+    privilege: 'specialActivitiesPage'
+  },
+  {
+    title: 'Accounts',
+    link: '/account',
+    img: 'assets/img/Account.svg',
+    desc: 'Manage all users accounts',
+    privilege: 'accountsPage'
+  },
+  {
+    title: 'Settings',
+    link: '/settings',
+    img: 'assets/img/Setting.svg',
+    desc: 'Settings and preference',
+  },
+];
+
+export interface IPage {
+  title: string,
+  link: string,
+  img: string,
+  alt?: string,
+  desc: string,
+  privilege?: Privilege
+}

@@ -1,65 +1,14 @@
 import { Component, OnInit } from '@angular/core';
-import { Action, PrivilegeService } from 'src/app/services/privilege.service';
+import { Privilege, PrivilegeService } from 'src/app/services/privilege.service';
+import { IPage, PAGES } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
   styleUrls: ['./home.component.scss']
 })
-export class HomeComponent implements OnInit {
+export class HomeComponent {
   constructor(public pr: PrivilegeService) { }
 
-  public cards!: Card[];
-
-  ngOnInit(): void {
-    const _cards: Card[] = [
-      {
-        title: 'Children',
-        link: '/children',
-        img: 'assets/img/girl.svg', alt: 'girl photo',
-        desc: 'Children information',
-        role: 'childrenPage'
-      },
-      {
-        title: "Special Activities",
-        img: "assets/img/Activity.svg",
-        link: "/special-activities",
-        desc: "Special Activities information",
-        role: 'specialActivitiesPage'
-      },
-      {
-        title: "Programs",
-        img: "assets/img/Program.svg",
-        link: "/program",
-        desc: "Programs information",
-        role: 'programsPage'
-      },
-      {
-        title: 'Accounts',
-        link: '/account',
-        img: 'assets/img/Account.svg',
-        desc: 'Manage all users accounts',
-        role: 'accountsPage'
-      },
-      {
-        title: 'Settings',
-        link: '/settings',
-        img: 'assets/img/Setting.svg',
-        desc: 'Settings and preference',
-      },
-      //todo field page
-    ];
-
-    this.cards = _cards.filter(v => v.role ? this.pr.canUser(v.role) : true);
-  }
 }
 
-interface Card {
-  title: string,
-  link: string,
-  img: string,
-  alt?: string,
-  desc: string,
-  role?: Action
-
-}

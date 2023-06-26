@@ -1,9 +1,10 @@
 import { animate, group, query, style, transition, trigger } from '@angular/animations';
-import { ChangeDetectorRef, Component } from '@angular/core';
+import { Component } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
 import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
+import { LoginService } from 'src/app/services/login.service';
 import { SocketService } from 'src/app/services/socket.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
@@ -43,12 +44,13 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 export class AppComponent extends UnsubOnDestroy {
 
   constructor(public translate: TranslateService, private websocket: SocketService,
-    private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>,) {
+    private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>,
+    private loginService: LoginService,) {
     super()
   }
 
   async ngOnInit() {
-    this.sub.add(this.ut.user.subscribe(v => this.websocket.connect(v)));//just to initialize it.
+    this.sub.add(this.loginService.pr.user.subscribe(v => this.websocket.connect(v)));//just to initialize it.
     // Register translation languages
     this.translate.addLangs(['en', 'ar']);
     this.translate.setDefaultLang('en');
@@ -65,8 +67,8 @@ export class AppComponent extends UnsubOnDestroy {
 
     this.handleOnLangChange();
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
-    if (this.ut.user.value == null && isRememberMe != 'false')
-      this.ut.user.next(await this.ut.isLogin());
+    if (this.loginService.pr.user.value == null && isRememberMe != 'false')
+      this.loginService.pr.user.next(await this.loginService.isLogin());
   }
 
   handleOnLangChange = async () => {

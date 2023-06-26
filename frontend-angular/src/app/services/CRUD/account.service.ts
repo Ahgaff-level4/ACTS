@@ -76,7 +76,7 @@ export class AccountService implements OnInit {
   changePassword(changePassword: IChangePassword, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
-      this.http.patch<SucResEditDel>(this.URL + '/' + this.ut.user.value?.accountId, changePassword)
+      this.http.patch<SucResEditDel>(this.URL + '/' + this.pr.user.value?.accountId, changePassword)
         .subscribe({
           next: (v) => {
             this.fetch();
@@ -156,7 +156,7 @@ export class AccountService implements OnInit {
   }
 
   reenter(password: string): Observable<User> {
-    let username = this.ut.user.value?.username;
+    let username = this.pr.user.value?.username;
     if (typeof username === 'string')
       return this.http.post<User>(env.AUTH + 'login', { username, password });
     return throwError(() => 'You must login!')

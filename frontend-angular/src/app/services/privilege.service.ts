@@ -1,23 +1,26 @@
 import { Injectable } from '@angular/core';
-import { Role } from '../../../../interfaces';
-import { UtilityService } from './utility.service';
+import { Role, User } from '../../../../interfaces';
+import { IPage, PAGES, UtilityService } from './utility.service';
+import { BehaviorSubject, Observable, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class PrivilegeService {
+  /**null means not loggedIn */
+  public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
   constructor(private ut: UtilityService) {
   }
 
-  public canUser(actions: Action[]): boolean;
-  public canUser(...actions: Action[]): boolean;
-  public canUser(action: Action): boolean;
-  public canUser(action: Action | Action[]): boolean {
+  public canUser(actions: Privilege[]): boolean;
+  public canUser(...actions: Privilege[]): boolean;
+  public canUser(action: Privilege): boolean;
+  public canUser(action: Privilege | Privilege[]): boolean {
     if (Array.isArray(action))
-      return action.every(v => this.userHasAny(PRIVILEGE[v]));
+      return action.every(v => this.userHasAny(PRIVILEGES[v]));
     else
-      return this.userHasAny(PRIVILEGE[action])
+      return this.userHasAny(PRIVILEGES[action])
   }
 
   /**
@@ -25,78 +28,95 @@ export class PrivilegeService {
  */
   private userHasAny(...roles: Role[] | Role[][]): boolean {
     const allowedRoles: Role[] = Array.isArray(roles[0]) ? roles[0] as Role[] : roles as Role[];
-    if (this.ut.user.value)
-      for (let r of this.ut.user.value.roles)
+    if (this.user.value)
+      for (let r of this.user.value.roles)
         if (allowedRoles.includes(r))
           return true;
 
     return false;
   }
 
+  /**Returns the pages that user has privilege to access */
+  public getUserPages(): Observable<IPage[]>
+  public getUserPages(without: 'Home'): Observable<IPage[]>
+  public getUserPages(without: 'Settings'): Observable<IPage[]>
+  public getUserPages(without?: 'Home' | 'Settings') {
+    return this.user.pipe(map(v=>{
+      const pages = PAGES.filter(v => v.privilege ? this.canUser(v.privilege) : true);
+      if (without == 'Home') {
+        const [home, ...noHome] = pages;
+        return noHome;
+      } else if (without == 'Settings') {
+        pages.pop();
+        return pages;
+      }
+      return pages;
+    }))
+  }
 
   /**@returns translated array of can and cannot privileges (e.g.'Can access accounts page') */
   rolePrivileges(role: Role): string[] {
     const privileges = [];
 
-    if (PRIVILEGE.accountsPage.concat(PRIVILEGE.viewAccountPage).includes(role))
+    if (PRIVILEGES.accountsPage.concat(PRIVILEGES.viewAccountPage).includes(role))
       privileges.push('Can access accounts page.');
-    if (PRIVILEGE.editAccountPage.concat(PRIVILEGE.addAccountPage).includes(role))
+    if (PRIVILEGES.editAccountPage.concat(PRIVILEGES.addAccountPage).includes(role))
       privileges.push('Can add/edit/delete an account.');
-    if (PRIVILEGE.accountAddressPhone.includes(role))
+    if (PRIVILEGES.accountAddressPhone.includes(role))
       privileges.push('Has address phones information.');
-    if (PRIVILEGE.fieldsPage.includes(role))
+    if (PRIVILEGES.fieldsPage.includes(role))
       privileges.push('Can access fields page.');
-    if (PRIVILEGE.addField.concat(PRIVILEGE.editField).concat(PRIVILEGE.deleteField).includes(role))
+    if (PRIVILEGES.addField.concat(PRIVILEGES.editField).concat(PRIVILEGES.deleteField).includes(role))
       privileges.push('Can add/edit/delete a field.');
-    if (PRIVILEGE.programsPage.includes(role))
+    if (PRIVILEGES.programsPage.includes(role))
       privileges.push('Can access programs page.');
-    if (PRIVILEGE.addProgram.concat(PRIVILEGE.editProgram).concat(PRIVILEGE.deleteProgram).includes(role))
+    if (PRIVILEGES.addProgram.concat(PRIVILEGES.editProgram).concat(PRIVILEGES.deleteProgram).includes(role))
       privileges.push('Can add/edit/delete a program.');
     if (role == 'Parent')
       privileges.push('Can access his children only.')
-    if (PRIVILEGE.childrenPage.concat(PRIVILEGE.viewChildPage).includes(role))
+    if (PRIVILEGES.childrenPage.concat(PRIVILEGES.viewChildPage).includes(role))
       privileges.push('Can access children page.');
-    if (PRIVILEGE.addChildPage.includes(role))
+    if (PRIVILEGES.addChildPage.includes(role))
       privileges.push('Can access add child page.');
-    if (PRIVILEGE.editChildPage.includes(role))
+    if (PRIVILEGES.editChildPage.includes(role))
       privileges.push('Can access edit child page.');
-    if (PRIVILEGE.childReportPage.includes(role))
+    if (PRIVILEGES.childReportPage.includes(role))
       privileges.push('Can access report child page.');
-    if (PRIVILEGE.archiveChild.includes(role))
+    if (PRIVILEGES.archiveChild.includes(role))
       privileges.push('Can archive a child information.')
-    if (PRIVILEGE.childGoalsPage.includes(role))
+    if (PRIVILEGES.childGoalsPage.includes(role))
       privileges.push("Can access child's goals page.");
-    if (PRIVILEGE.addGoal.includes(role))
+    if (PRIVILEGES.addGoal.includes(role))
       privileges.push("Can add a goal.")
-    if (PRIVILEGE.editGoal.concat(PRIVILEGE.deleteGoal).includes(role))
+    if (PRIVILEGES.editGoal.concat(PRIVILEGES.deleteGoal).includes(role))
       privileges.push("Can edit/delete a goal.")
-    if (PRIVILEGE.childStrengthsPage.includes(role))
+    if (PRIVILEGES.childStrengthsPage.includes(role))
       privileges.push("Can access child's strengths page.");
-    if (PRIVILEGE.addStrength.includes(role))
+    if (PRIVILEGES.addStrength.includes(role))
       privileges.push("Can add a strength.")
-    if (PRIVILEGE.editStrength.concat(PRIVILEGE.deleteStrength).includes(role))
+    if (PRIVILEGES.editStrength.concat(PRIVILEGES.deleteStrength).includes(role))
       privileges.push("Can edit/delete a strength.")
-    if (PRIVILEGE.goalEvaluationsPage.includes(role))
+    if (PRIVILEGES.goalEvaluationsPage.includes(role))
       privileges.push("Can access goal's evaluations page.");
-    if (PRIVILEGE.addEvaluation.includes(role))
+    if (PRIVILEGES.addEvaluation.includes(role))
       privileges.push("Can add an evaluation.")
-    if (PRIVILEGE.editEvaluation.concat(PRIVILEGE.deleteEvaluation).includes(role))
+    if (PRIVILEGES.editEvaluation.concat(PRIVILEGES.deleteEvaluation).includes(role))
       privileges.push("Can edit/delete an evaluation.")
-    if (PRIVILEGE.activitiesPage.includes(role))
+    if (PRIVILEGES.activitiesPage.includes(role))
       privileges.push("Can access program's activities page.")
-    if (PRIVILEGE.specialActivitiesPage.includes(role))
+    if (PRIVILEGES.specialActivitiesPage.includes(role))
       privileges.push("Can access special activities page.")
-    if (PRIVILEGE.addActivity.concat(PRIVILEGE.editActivity).concat(PRIVILEGE.deleteActivity).includes(role))
+    if (PRIVILEGES.addActivity.concat(PRIVILEGES.editActivity).concat(PRIVILEGES.deleteActivity).includes(role))
       privileges.push("Can add/edit/delete an activity.")
-    if (PRIVILEGE.notificationDrawer.includes(role))
+    if (PRIVILEGES.notificationDrawer.includes(role))
       privileges.push("Can view notifications drawer.")
-    if (PRIVILEGE.broadcastMessage.includes(role))
+    if (PRIVILEGES.broadcastMessage.includes(role))
       privileges.push('Can access online accounts and send/broadcast notification message.')
-    if (PRIVILEGE.dashboard.includes(role))
+    if (PRIVILEGES.dashboard.includes(role))
       privileges.push('Can access dashboard.')
-    if (PRIVILEGE.backupRestore.includes(role))
+    if (PRIVILEGES.backupRestore.includes(role))
       privileges.push('Can create a backup and restore database.')
-    if (PRIVILEGE.printTable.includes(role))
+    if (PRIVILEGES.printTable.includes(role))
       privileges.push("Can print/export any table that can access.")
 
     return privileges.map(v => this.ut.translate(v));
@@ -109,8 +129,8 @@ const AHT: Role[] = ['Admin', 'HeadOfDepartment', 'Teacher'];
 const AHTP: Role[] = ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'];
 const P: Role[] = ['Parent'];
 const AT: Role[] = ['Admin', 'Teacher']
-export type Action = keyof typeof PRIVILEGE;
-export const PRIVILEGE = {
+export type Privilege = keyof typeof PRIVILEGES;
+export const PRIVILEGES = {
   //ACCOUNT
   accountsPage: A,
   viewAccountPage: A,

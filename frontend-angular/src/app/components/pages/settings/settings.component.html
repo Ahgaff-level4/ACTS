@@ -12,18 +12,18 @@
     </mat-card-content>
   </mat-card>
 
-  <div id="my-account-information" *ngIf="ut.user.value">
+  <div id="my-account-information" *ngIf="pr.user.value">
     <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'My Account Information'|translate}}</h4>
     <mat-card class="m-4 shadow rounded-5">
       <mat-card-content>
         <p class="opacity-75">
           *{{'Only Admin can change your account information, and you can only change your password.'|translate}}</p>
-        <p>{{'Name'|translate}}:&nbsp;{{ut.user.value.person.name}}</p>
-        <p>{{'Username'|translate}}:&nbsp;{{ut.user.value.username}}</p>
-        <p *ngIf="ut.user.value.birthdate">
-          {{'Birthdate'|translate}}:&nbsp;{{ut.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{ut.user.value.birthdate|fromNow:true}}
+        <p>{{'Name'|translate}}:&nbsp;{{pr.user.value.person.name}}</p>
+        <p>{{'Username'|translate}}:&nbsp;{{pr.user.value.username}}</p>
+        <p *ngIf="pr.user.value.birthdate">
+          {{'Birthdate'|translate}}:&nbsp;{{pr.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{pr.user.value.birthdate|fromNow:true}}
         </p>
-        <p>{{'Roles'|translate}}:&nbsp;{{display.accountRoles(ut.user.value.roles)}}</p>
+        <p>{{'Roles'|translate}}:&nbsp;{{display.accountRoles(pr.user.value.roles)}}</p>
         <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">
           {{'Change my password'|translate}}
         </button>
@@ -31,7 +31,7 @@
     </mat-card>
   </div>
 
-  <div *ngIf="ut.user.value">
+  <div *ngIf="pr.user.value">
     <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Notifications'|translate}}</h4>
     <mat-card class="m-4 shadow rounded-5">
       <mat-card-content class="row m-3 mb-0 d-flex">

@@ -1,10 +1,11 @@
-import { Injectable, OnDestroy, OnInit } from '@angular/core';
+import { Injectable, OnDestroy } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
-import { IAccountEntity, INotification, NotificationMessage, User } from '../../../../interfaces';
+import { INotification, NotificationMessage, User } from '../../../../interfaces';
 import { UtilityService } from './utility.service';
-import { Subscription, filter, first } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { NotificationIcon, NotificationLink, NotificationService } from './notification.service';
+import { PrivilegeService } from './privilege.service';
 
 @Injectable({
   providedIn: 'root'
@@ -23,7 +24,7 @@ export class SocketService implements OnDestroy {
    *
    * NOTE: the server will handle the above condition and emit notification accordingly
    */
-  constructor(private ut: UtilityService, private nt: NotificationService) {
+  constructor(private ut: UtilityService, private nt: NotificationService, private pr: PrivilegeService) {
   }
   public connect(v: User | null) {
     if (v == null) {
@@ -73,7 +74,7 @@ export class SocketService implements OnDestroy {
    * @param to is `User` obj if message to single user as 'notification message'
    * if `to` is `null` then it is broadcast message.
    * @returns True if the message sent successfully. False otherwise */
-  public async emitNotificationMessage(to: User|null, text: string): Promise<boolean> {
+  public async emitNotificationMessage(to: User | null, text: string): Promise<boolean> {
     if (this.user && this.socket) {
       try {
         const res = await this.socket.timeout(10000).emitWithAck('sendMessage', { to, text, from: this.user })
@@ -94,11 +95,11 @@ export class SocketService implements OnDestroy {
 
   private newNotification = (n: INotification) => {
     console.log('newNotification', n);
-    if (!n || this.ut.user.value == null || !this.nt.notificationSettings.value.showNotification)
+    if (!n || this.pr.user.value == null || !this.nt.notificationSettings.value.showNotification)
       return;
 
     let title = this.getTitle(n);
-    let content = this.getContent(n, this.ut.user.value);
+    let content = this.getContent(n, this.pr.user.value);
     if (title == null) {//if title = null then swap title and content values to make text bigger
       title = content
       content = '';

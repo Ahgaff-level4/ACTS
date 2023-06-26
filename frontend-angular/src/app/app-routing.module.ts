@@ -21,8 +21,10 @@ import { ReportChildComponent } from './components/pages/children/report-child/r
 import { Component } from 'ag-grid-community';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
 import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
-import { PRIVILEGE } from './services/privilege.service';
+import { PRIVILEGES } from './services/privilege.service';
 import { NotificationService } from './services/notification.service';
+import { AboutUsComponent } from './components/pages/about-us/about.component';
+import { LoginService } from './services/login.service';
 
 export interface ComponentCanDeactivate {
   /**@returns false to prevent user navigating. true otherwise */
@@ -54,14 +56,15 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
   const ut = inject(UtilityService);
   const nt = inject(NotificationService);
+  const loginService = inject(LoginService);
   let allowRoles: Role[] = route.data['allowRoles'] as Role[];
   if (!Array.isArray(allowRoles) || allowRoles.length === 0)
     throw 'Expected allowRoles to be typeof Role[]. Got:' + allowRoles;
   var user: User;
-  if (ut.user.value == null) {
+  if (loginService.pr.user.value == null) {
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (isRememberMe != 'false') {//try re-login if user session in the server still alive
-      let isLogin = await ut.isLogin();
+      let isLogin = await loginService.isLogin();
       if (isLogin == null) {//show error dialog if user's session is not alive with the server
         showUnauthorizeDialog();
         return false;
@@ -70,7 +73,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
       showUnauthorizeDialog();
       return false;
     }
-  } else user = ut.user.value;
+  } else user = loginService.pr.user.value;
 
   for (let r of allowRoles)
     if (hasRole(user, r))
@@ -108,32 +111,33 @@ export const routes: Routes = [
   { path: 'home', redirectTo: '/' },
   { path: 'index', redirectTo: '/' },
   { path: 'login', component: LoginComponent, title: titlePrefix + 'Login', data: { animation: 'loginPage' } },
-  { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGE.fieldsPage, animation: 'fieldPage' } },
-  { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.programsPage, animation: 'programPage' } },
-  { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.accountsPage, animation: 'accountPage' } },
-  { path: 'account/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.viewAccountPage, animation: 'viewAccountPage' } },
-  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.addAccountPage, animation: 'addAccountPage' } },
-  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.editAccountPage, animation: 'editAccountPage' } },
-  { path: ':programOrField/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.activitiesPage, animation: 'activitiesPage' } },
-  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.childrenPage, animation: 'childrenPage' } },
-  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.addChildPage, animation: 'addChildPage' } },
-  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.editChildPage, animation: 'editChildPage' } },
-  { path: 'child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.childGoalsPage, animation: 'childGoalsPage' } },
-  { path: 'child/:childId/goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.goalEvaluationsPage, animation: 'goalEvaluationsPage' } },
-  { path: 'goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.goalEvaluationsPage, animation: 'goalEvaluationsPage' } },
-  { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.childStrengthsPage, animation: 'childStrengthsPage' } },
-  { path: 'child/:id', component: ViewChildComponent, title: titlePrefix + 'Child info', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.viewChildPage, animation: 'viewChildPage' } },
-  { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.specialActivitiesPage, animation: 'specialActivitiesPage' } },
+  { path: 'field', component: FieldComponent, title: titlePrefix + 'Field', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.fieldsPage, animation: 'fieldPage' } },
+  { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.programsPage, animation: 'programPage' } },
+  { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.accountsPage, animation: 'accountPage' } },
+  { path: 'account/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.viewAccountPage, animation: 'viewAccountPage' } },
+  { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.addAccountPage, animation: 'addAccountPage' } },
+  { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editAccountPage, animation: 'editAccountPage' } },
+  { path: ':programOrField/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.activitiesPage, animation: 'activitiesPage' } },
+  { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childrenPage, animation: 'childrenPage' } },
+  { path: 'add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.addChildPage, animation: 'addChildPage' } },
+  { path: 'edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
+  { path: 'child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childGoalsPage, animation: 'childGoalsPage' } },
+  { path: 'child/:childId/goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.goalEvaluationsPage, animation: 'goalEvaluationsPage' } },
+  { path: 'goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.goalEvaluationsPage, animation: 'goalEvaluationsPage' } },
+  { path: 'child/:id/strengths', component: StrengthComponent, title: titlePrefix + 'Strengths', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childStrengthsPage, animation: 'childStrengthsPage' } },
+  { path: 'child/:id', component: ViewChildComponent, title: titlePrefix + 'Child info', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.viewChildPage, animation: 'viewChildPage' } },
+  { path: 'special-activities', component: SpecialActivityComponent, title: titlePrefix + 'Special Activities', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.specialActivitiesPage, animation: 'specialActivitiesPage' } },
   { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', data: { animation: 'settingsPage' } },
-  { path: 'child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: { allowRoles:PRIVILEGE.childReportPage, animation: 'childReportPage' } },
+  { path: 'child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childReportPage, animation: 'childReportPage' } },
+  { path: 'about', component: AboutUsComponent, title: titlePrefix + 'About Us', data: { animation: 'AboutUsPage' } },
   { path: '**', component: Page404Component, title: 'Page Not Found', data: { animation: 'pageNotFoundPage' } },
 ];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes, {
     scrollPositionRestoration: 'enabled',
-    anchorScrolling:'enabled',
-    onSameUrlNavigation:'reload'
+    anchorScrolling: 'enabled',
+    onSameUrlNavigation: 'reload'
   })],
   exports: [RouterModule]
 })

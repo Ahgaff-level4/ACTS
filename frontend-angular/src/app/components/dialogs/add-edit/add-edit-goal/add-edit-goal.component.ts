@@ -1,14 +1,14 @@
 import { Component, Inject, OnDestroy } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/CRUD/goal.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IGoalEntity } from '../../../../../../../interfaces';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 import { BehaviorSubject, Subscription } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-add-edit-goal',
@@ -27,7 +27,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
    * - Either goal to be edit.
    * - Or childId to add the new goal into it */
   constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
-    private ut: UtilityService, public dialogRef: MatDialogRef<any>,
+    private pr:PrivilegeService, public dialogRef: MatDialogRef<any>,
     private formService: FormService, private nt: NotificationService,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
     super();
@@ -58,10 +58,10 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.goalOrChildId == 'number') {//add new
-        if (this.child$.value?.id == undefined || this.ut.user.value?.accountId == undefined)
+        if (this.child$.value?.id == undefined || this.pr.user.value?.accountId == undefined)
           return this.nt.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.ut.user.value.accountId }, true);
+          await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.pr.user.value.accountId }, true);
           this.nt.notify("Added successfully", 'The goal has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }

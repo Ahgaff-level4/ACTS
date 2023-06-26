@@ -1,6 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { MatDialogRef } from '@angular/material/dialog';
 import { LoginService } from 'src/app/services/login.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { User } from '../../../../../../../interfaces';
@@ -25,10 +24,10 @@ export class LoginFormComponent implements OnInit {
    * - as dialog.
    */
   constructor(private loginService: LoginService, private ut: UtilityService,
-    private nt:NotificationService,) { }
+    private nt: NotificationService,) { }
 
   ngOnInit(): void {
-    this.ut.user.next(null);//if user redirect here he should not be considered logged in anymore.
+    this.loginService.pr.user.next(null);//if user redirect here he should not be considered logged in anymore.
   }
 
   public submit() {
@@ -38,7 +37,7 @@ export class LoginFormComponent implements OnInit {
       .subscribe({
         next: (v: User) => {
           if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
-            this.ut.user.next(v);
+            this.loginService.pr.user.next(v);
             this.ut.router.navigate(['main']);
           } else this.nt.errorDefaultDialog(v as any);
         }, error: e => {

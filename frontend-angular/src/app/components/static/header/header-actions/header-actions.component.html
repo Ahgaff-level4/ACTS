@@ -1,10 +1,10 @@
 <div class="nav-item opacity-100 px-2 d-flex flex-lg-row-reverse nbsp align-items-center" routerLinkActive="active">
-  <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!ut.user.value"
+  <a class="min-width-120 rounded-5 opacity-100" mat-raised-button color="accent" *ngIf="!loginService.pr.user.value"
     (click)="hideHeader.emit()" routerLink="/login">{{'Login'|translate}}</a>
   <!-- <button mat-raised-button color="accent" (click)="this.loginService.logout();hideHeader.emit()"
-     class="cursor-pointer rounded-5 min-width-120 nbsp opacity-100" *ngIf="ut.user.value">
+     class="cursor-pointer rounded-5 min-width-120 nbsp opacity-100" *ngIf="loginService.pr.user.value">
     {{'Logout'|translate}}</button> -->
-  <button *ngIf="ut.user.value" [matMenuTriggerFor]="accountMenu" type="button" mat-icon-button
+  <button *ngIf="loginService.pr.user.value" [matMenuTriggerFor]="accountMenu" type="button" mat-icon-button
     [matTooltip]="'My account'|translate">
     <mat-icon color="accent" class="mb-1">account_circle</mat-icon>
   </button>
@@ -40,7 +40,7 @@
       <span>{{'English'|translate}}</span></button>
   </mat-menu>
 
-  <button *ngIf="ut.user.value" (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button" mat-icon-button
+  <button *ngIf="loginService.pr.user.value" (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button" mat-icon-button
     [matTooltip]="'Notifications'|translate">
     <div style="margin-top:-4px;">
       <!-- <span nz-icon nzType="bell"

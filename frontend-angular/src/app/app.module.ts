@@ -69,6 +69,7 @@ import { NotificationItemComponent } from './components/dialogs/notification-dra
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { SendMessageComponent } from './components/dialogs/notification-drawer/send-message/send-message.component';
+import { AboutUsComponent } from './components/pages/about-us/about.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
@@ -127,6 +128,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     NotificationDrawerComponent,
     NotificationItemComponent,
     SendMessageComponent,
+    AboutUsComponent,
   ],
   imports: [
     BrowserModule,

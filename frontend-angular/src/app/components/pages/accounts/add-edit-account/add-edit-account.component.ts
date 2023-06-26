@@ -1,6 +1,6 @@
 import { AfterViewInit, Component, Input, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { IAccountEntity, ICreatePerson, IPersonEntity, Role } from '../../../../../../../interfaces';
+import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
 import { UtilityService } from 'src/app/services/utility.service';
 import { AccountService } from 'src/app/services/CRUD/account.service';
@@ -9,7 +9,7 @@ import { PasswordDialogComponent } from 'src/app/components/dialogs/password-dia
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
-import { PRIVILEGE, PrivilegeService } from 'src/app/services/privilege.service';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-add-edit-account',

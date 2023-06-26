@@ -12,24 +12,8 @@
     </button>
     <ul id="navbarResponsive" [ngClass]="!isShowDivIf?'show':''"
       class="navbar-nav w-100 collapse navbar-collapse mt-lg-0 mx-0 px-5 mt-3 justify-content-evenly">
-      <li (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
-      </li>
-      <li *ngIf="pr.canUser('childrenPage')" (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/children">{{'Children'|translate}}</a>
-      </li>
-      <li *ngIf="pr.canUser('programsPage')" (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/program">{{'Programs'|translate}}</a>
-      </li>
-      <li *ngIf="pr.canUser('fieldsPage')" (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/field">{{'Fields'|translate}}</a>
-      </li>
-      <li *ngIf="pr.canUser('specialActivitiesPage')" (click)="isShowDivIf=true" class="nav-item"
-        routerLinkActive="active">
-        <a class="nav-link nbsp" routerLink="/special-activities">{{'Special Activities'|translate}}</a>
-      </li>
-      <li *ngIf="pr.canUser('accountsPage')" (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
-        <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
+      <li *ngFor="let p of pr.getUserPages('Settings')|async" (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
+        <a class="nav-link" [routerLink]="p.link">{{p.title|translate}}</a>
       </li>
       <mat-divider class="w-25 center border-white border-opacity-25 d-lg-none d-block"></mat-divider>
       <app-header-actions class="d-lg-none d-block" (hideHeader)="isShowDivIf=true">

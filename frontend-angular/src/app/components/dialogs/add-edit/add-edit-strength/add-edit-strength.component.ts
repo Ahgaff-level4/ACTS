@@ -2,13 +2,13 @@ import { Component, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { IActivityEntity, IChildEntity, IStrengthEntity } from '../../../../../../../interfaces';
 import { StrengthService } from 'src/app/services/CRUD/strength.service';
-import { UtilityService } from 'src/app/services/utility.service';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { SelectActivityComponent } from '../../select-activity/select-activity.component';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { BehaviorSubject } from 'rxjs';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-add-edit-strength',
@@ -24,7 +24,7 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
   public child$!: BehaviorSubject<IChildEntity | undefined>;
 
   constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
-    private ut: UtilityService, public dialogRef: MatDialogRef<any>,
+    private pr:PrivilegeService, public dialogRef: MatDialogRef<any>,
     private formService: FormService, private nt: NotificationService,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
@@ -56,10 +56,10 @@ export class AddEditStrengthComponent extends UnsubOnDestroy {
     if (this.formGroup.valid) {
       this.formGroup.disable();
       if (typeof this.strengthOrChildId == 'number') {//add new
-        if (this.child$.value?.id == null || this.ut.user.value?.accountId == null)
+        if (this.child$.value?.id == null || this.pr.user.value?.accountId == null)
           return this.nt.errorDefaultDialog();
         try {
-          await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.ut.user.value?.accountId }, true);
+          await this.service.post({ ...this.formGroup.value, childId: this.child$.value.id, teacherId: this.pr.user.value?.accountId }, true);
           this.nt.notify("Added successfully", 'The strength has been added successfully', 'success');
           this.dialogRef.close('added');
         } catch (e) { }

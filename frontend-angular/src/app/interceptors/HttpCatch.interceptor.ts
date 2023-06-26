@@ -24,8 +24,8 @@ export class HttpCatchInterceptor implements HttpInterceptor {
             this.showNetworkErrorDialog();
             return EMPTY;//call complete of the observable.
           } else if (error?.status === 401 && error.error?.action == 'login') {
-            // if (this.ut.user.value)
-            //   this.ut.user.next(null);
+            // if (this.pr.user.value)
+            //   this.pr.user.next(null);
 
             this.showUnauthorizeDialog();
 
