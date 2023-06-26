@@ -1,5 +1,5 @@
-<nav style="border-bottom-left-radius:1.4rem; border-bottom-right-radius:1.4rem;"
-  [ngClass]="{'shadow':ut.router.url!='/'}" class="navbar navbar-expand-lg navbar-dark my-primary-bg w-100 px-1">
+<nav style="border-bottom-left-radius:1.4rem; border-bottom-right-radius:1.4rem;z-index:99999"
+  class="navbar shadow position-fixed top-0 navbar-expand-lg navbar-dark my-primary-bg w-100">
   <div class="d-flex w-100 justify-content-between align-items-center"
     [ngClass]="!isShowDivIf?'flex-wrap':'flex-nowrap'">
     <a routerLink="/"><img class="image mx-2" src="/assets/img/logo.png" alt="ACTS logo" /></a>
@@ -10,8 +10,7 @@
       aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
-    <!-- *ngIf="!isShowDivIf" --- hide and show -->
-    <ul id="navbarResponsive" [ngClass]="!isShowDivIf?'d-block':'d-none'"
+    <ul id="navbarResponsive" [ngClass]="!isShowDivIf?'show':''"
       class="navbar-nav w-100 collapse navbar-collapse mt-lg-0 mx-0 px-5 mt-3 justify-content-evenly">
       <li (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="/">{{'Home'|translate}}</a>
@@ -32,8 +31,8 @@
       <li *ngIf="pr.canUser('accountsPage')" (click)="isShowDivIf=true" class="nav-item" routerLinkActive="active">
         <a class="nav-link" routerLink="/account">{{'Accounts'|translate}}</a>
       </li>
-      <hr class="text-white my-2 mx-0 d-lg-none d-block">
-      <app-header-actions class="d-lg-none d-block" (hideHeader)="isShowDivIf=true" >
+      <mat-divider class="w-25 center border-white border-opacity-25 d-lg-none d-block"></mat-divider>
+      <app-header-actions class="d-lg-none d-block" (hideHeader)="isShowDivIf=true">
       </app-header-actions>
     </ul>
 
@@ -41,3 +40,4 @@
     </app-header-actions>
   </div>
 </nav>
+<div style="height:4.5rem" class="w-100"></div>

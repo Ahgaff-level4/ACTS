@@ -42,10 +42,8 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 })
 export class AppComponent extends UnsubOnDestroy {
 
-  public isLoading: boolean = true;
   constructor(public translate: TranslateService, private websocket: SocketService,
-    private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>,
-    private cd: ChangeDetectorRef) {
+    private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>,) {
     super()
   }
 
@@ -65,10 +63,6 @@ export class AppComponent extends UnsubOnDestroy {
       }, error: () => this.ut.isLoading.next(false)
     }));
 
-    this.sub.add(this.ut.isLoading.subscribe(v => {
-      this.isLoading = v;
-      this.cd.detectChanges();
-    }));
     this.handleOnLangChange();
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';
     if (this.ut.user.value == null && isRememberMe != 'false')

@@ -9,12 +9,14 @@
     <mat-icon color="accent" class="mb-1">account_circle</mat-icon>
   </button>
   <mat-menu #accountMenu="matMenu">
-    <a mat-menu-item routerLink="/settings" fragment="my-account-information">
-      <mat-icon color="accent">person</mat-icon>
-      <span>{{'My Account Information'|translate}}</span>
-    </a>
+    <div (click)="hideHeader.emit()">
+      <a mat-menu-item routerLink="/settings" fragment="my-account-information">
+        <mat-icon color="accent">person</mat-icon>
+        <span>{{'My Account Information'|translate}}</span>
+      </a>
+    </div>
     <mat-divider></mat-divider>
-    <button mat-menu-item (click)="loginService.logout()">
+    <button mat-menu-item (click)="loginService.logout();hideHeader.emit()">
       <mat-icon color="accent">logout</mat-icon>
       <span>{{'Logout'|translate}}</span>
     </button>
@@ -48,7 +50,9 @@
     </div>
   </button>
 
-  <a routerLink="/settings" mat-icon-button [matTooltip]="'Settings'|translate">
-    <mat-icon color="accent" class="mb-1">settings</mat-icon>
-  </a>
+  <div (click)="hideHeader.emit()">
+    <a routerLink="/settings" mat-icon-button [matTooltip]="'Settings'|translate">
+      <mat-icon color="accent" class="mb-1">settings</mat-icon>
+    </a>
+  </div>
 </div>
