@@ -34,7 +34,6 @@ export class AccountService {
             .getMany())
             .map(this.extractRoles)
             .map(this.deletePassword)
-            .map(this.shapeBaseOnRole);
     }
 
     async findOne(id: number) {
@@ -44,10 +43,12 @@ export class AccountService {
             .leftJoinAndSelect('account.rolesEntities', 'roles')
             .leftJoinAndSelect('account.evaluations', 'evaluations')
             .leftJoinAndSelect('account.goals', 'goals')
+            .leftJoinAndSelect('account.children', 'children')
+            .leftJoinAndSelect('account.teaches', 'teaches')
             .where('account.id=:id', { id })
             .getMany())
             .map(this.extractRoles)
-            .map(this.shapeBaseOnRole);
+            .map(this.deletePassword);
     }
 
     /**
@@ -57,8 +58,8 @@ export class AccountService {
         if (updateAccount.password)
             updateAccount.password = await this.generateHashSalt(updateAccount.password);
 
-        const oldPassword = (await this.repo.findOneByOrFail({id})).password;
-        
+        const oldPassword = (await this.repo.findOneByOrFail({ id })).password;
+
         if (!(await bcrypt.compare(updateAccount.oldPassword, oldPassword)))
             throw new BadRequestException('Old password is invalid!');
 
@@ -81,7 +82,7 @@ export class AccountService {
                     updateAccount.rolesEntities = [...updateAccount.rolesEntities, roleEntity];
                 else updateAccount.rolesEntities = [roleEntity];
             }
-        return this.repo.save({...updateAccount,id});
+        return this.repo.save({ ...updateAccount, id });
     }
 
     remove(id: number) {

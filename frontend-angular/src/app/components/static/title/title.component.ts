@@ -55,7 +55,8 @@ export interface TitleLink {
   link?: string
   /**The link text. Default is title value. Note: title will be used as tooltip for the `titleLink` */
   titleLink?: string
-  titleLinkSuffix?: string
+  titleLinkSuffix?: string;
+  fragment?:string;
   /**Default is `false` */
   hide?: boolean;
 }

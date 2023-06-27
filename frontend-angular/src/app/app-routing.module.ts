@@ -115,6 +115,7 @@ export const routes: Routes = [
   { path: 'program', component: ProgramComponent, title: titlePrefix + 'Program', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.programsPage, animation: 'programPage' } },
   { path: 'account', component: AccountComponent, title: titlePrefix + 'Account', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.accountsPage, animation: 'accountPage' } },
   { path: 'account/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.viewAccountPage, animation: 'viewAccountPage' } },
+  { path: 'child/:childId/teacher/:id', component: ViewAccountComponent, title: titlePrefix + 'Account info', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.viewAccountPage, animation: 'viewAccountPage' } },
   { path: 'add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.addAccountPage, animation: 'addAccountPage' } },
   { path: 'edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editAccountPage, animation: 'editAccountPage' } },
   { path: ':programOrField/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.activitiesPage, animation: 'activitiesPage' } },

@@ -1,8 +1,8 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
-import { BehaviorSubject, Observable, ReplaySubject, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, catchError, map, tap, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
@@ -18,8 +18,8 @@ export class AccountService implements OnInit {
   public isLoggerIn: boolean = false;
 
   constructor(private http: HttpClient, private ut: UtilityService,
-    private pr:PrivilegeService, private dialog: MatDialog,
-    private nt:NotificationService,) {
+    private pr: PrivilegeService, private dialog: MatDialog,
+    private nt: NotificationService,) {
     if (this.pr.canUser('accountsPage'))
       this.fetch();
   }
@@ -46,6 +46,18 @@ export class AccountService implements OnInit {
           }, complete: () => manageLoading && this.ut.isLoading.next(false),
         });
     })
+  }
+
+  public fetchOne(id: number, manageLoading = false): Observable<IAccountEntity> {
+    manageLoading && this.ut.isLoading.next(true);
+    return this.http.get<IAccountEntity[]>(this.URL + '/' + id).pipe(
+      tap(() => manageLoading && this.ut.isLoading.next(false)),
+      map(v => {
+        if (v[0])
+          return v[0];
+        throw 'Not found';
+      })
+    )
   }
 
   /**

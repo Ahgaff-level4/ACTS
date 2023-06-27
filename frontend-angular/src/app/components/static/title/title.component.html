@@ -5,14 +5,14 @@
       <mat-icon class="mb-1" color="primary">{{'arrow_back'|translate}}</mat-icon>
     </a>
     <div>
-      <h1 *ngIf="links.length ==1" class="pb-0 mb-1">{{links[0].title|translate}}<span
-          *ngIf="links[0].titleSuffix">:&nbsp;{{links[0].titleSuffix}}</span></h1>
-      <h2 *ngIf="links.length !=1" class="pb-0 mb-1">{{links[0].title|translate}}<span
-          *ngIf="links[0].titleSuffix">:&nbsp;{{links[0].titleSuffix}}</span></h2>
+      <h1 *ngIf="links.length ==1" class="pb-0 mb-1">{{(links[0].title)|translate}}<span
+          *ngIf="links[0]?.titleSuffix">:&nbsp;{{links[0].titleSuffix}}</span></h1>
+      <h2 *ngIf="links.length !=1" class="pb-0 mb-1">{{(links[0].title)|translate}}<span
+          *ngIf="links[0]?.titleSuffix">:&nbsp;{{links[0].titleSuffix}}</span></h2>
       <div *ngIf="links.length>1 && isPrinting!=true">
         <div *ngFor="let link of links; let i=index;" class="d-inline ">
           <a [routerLink]="links[links.length - 1 - i].link??'./'" [matTooltip]="tooltipOf(links[links.length - 1 - i])"
-            [class]="'my-accent-text '+(links.length-1 != i?'opacity-75':'')">
+            [class]="'my-accent-text '+(links.length-1 != i?'opacity-75':'')" [fragment]="links[links.length -1 -i].fragment">
             {{(getLinkText(links[links.length - 1 - i]))|translate}}<span
               *ngIf="getLinkTextSuffix(links[links.length-1-i])">
               :&nbsp;{{getLinkTextSuffix(links[links.length-1-i])}}</span>

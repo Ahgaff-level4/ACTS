@@ -1,8 +1,8 @@
-<app-title [links]="[{title:'Account information',titleLink:account?.person?.name},{title:'Accounts',link:'/account'}]"
+<app-title [links]="(links|async)??[{ title: 'Accounts', link: '/account' }]"
   [isPrinting]="undefined"></app-title>
 <div class="container">
   <app-card>
-    <div *ngIf="account">
+    <div *ngIf="account$|async as account">
       <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{account.person.name||'–'}}</p>
       <p><span
           class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(account.person.birthDate,true)||'–'}}

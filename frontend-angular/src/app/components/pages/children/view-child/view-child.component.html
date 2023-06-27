@@ -1,12 +1,36 @@
-<app-title [links]="[{title:'Child information',titleLink:child?.person?.name},{title:'Children',link:'/children'}]"
-  [isPrinting]="undefined"></app-title>
+<app-title
+  [links]="[
+    { title: 'Child information', titleLink: child?.person?.name },
+    { title: 'Children', link: '/children' }
+  ]"
+  [isPrinting]="undefined"
+></app-title>
 <div class="container">
   <!-- <h4 class="m-4 p-4 mt-0 pt-0 mb-0 pb-0 fw-normal">{{'Personal information'|translate}}</h4> -->
   <app-card>
-      <app-child-info [child]="child"></app-child-info>
+    <app-child-info [child]="child"></app-child-info>
   </app-card>
 
-  <app-card *ngIf="child && child.teachers && child.teachers.length >0" cardTitle="Child Teachers">
-
+  <app-card id="teachers"
+    *ngIf="child && child.teachers && child.teachers.length > 0"
+    cardTitle="Child Teachers"
+  >
+    <mat-list>
+      <div *ngFor="let teacher of child.teachers" class="d-flex">
+        <mat-list-item class="flex-fill">
+          <div matListItemTitle>{{ teacher.person.name }}</div>
+          <div matListItemLine>
+            {{ "Username" | translate }}:&nbsp;{{ teacher.username }}
+          </div>
+        </mat-list-item>
+        <a class="align-self-center"
+          mat-icon-button
+          [routerLink]="'./teacher/' + teacher.id"
+          [matTooltip]="'View all information' | translate"
+        >
+          <mat-icon color="primary" class="mb-1">wysiwyg</mat-icon>
+        </a>
+      </div>
+    </mat-list>
   </app-card>
 </div>

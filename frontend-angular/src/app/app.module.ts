@@ -24,7 +24,7 @@ import { DatePipe } from './pipes/date.pipe';
 import { DateTimeWeekPipe } from './pipes/date-time-week.pipe';
 import { FromNowPipe } from './pipes/from-now.pipe';
 import { PersonFormComponent } from './components/forms/person-form/person-form.component';
-import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { AddEditFieldComponent } from './components/dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { SpinnerComponent } from './components/static/spinner/spinner.component';
@@ -70,13 +70,13 @@ import { NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { SendMessageComponent } from './components/dialogs/notification-drawer/send-message/send-message.component';
 import { AboutUsComponent } from './components/pages/about-us/about.component';
+import { CardComponent } from './components/static/card/card.component';
+import { TimeframeComponent } from './components/forms/timeframe/timeframe.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
-import { CardComponent } from './components/static/card/card.component';
-import { TimeframeComponent } from './components/forms/timeframe/timeframe.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
