@@ -1,0 +1,44 @@
+<div class="align-self-start px-3 w-100">
+  <mat-form-field class="timeframe" appearance="outline">
+    <mat-label>{{ "Timeframe" | translate }}</mat-label>
+    <mat-date-range-input [max]="now" [formGroup]="timeframeFormGroup" [rangePicker]="picker10">
+      <input [value]="timeframeFormGroup.controls.from.value" [formControl]="timeframeFormGroup.controls.from"
+        matStartDate [placeholder]="'From' | translate" />
+      <input [value]="timeframeFormGroup.controls.to.value" [formControl]="timeframeFormGroup.controls.to" matEndDate
+        [placeholder]="'To' | translate" />
+    </mat-date-range-input>
+    <mat-datepicker-toggle matIconSuffix [for]="picker10"></mat-datepicker-toggle>
+    <mat-date-range-picker #picker10>
+      <mat-date-range-picker-actions>
+        <button mat-icon-button color="primary" [matMenuTriggerFor]="exportMenu" [matTooltip]="'Select duration'|translate">
+          <mat-icon color="primary" class="mb-1">select_all</mat-icon>
+        </button>
+        <mat-menu #exportMenu="matMenu">
+          <button mat-menu-item matDatepickerCancel (click)="setTimeframe('All Time')">
+            {{ "All time" | translate }}
+          </button>
+          <button mat-menu-item matDatepickerCancel (click)="setTimeframe('Yearly')">
+            {{ "Yearly" | translate }}
+          </button>
+          <button mat-menu-item matDatepickerCancel (click)="setTimeframe('Monthly')">
+            {{ "Monthly" | translate }}
+          </button>
+          <button mat-menu-item matDatepickerCancel (click)="setTimeframe('Weekly')">
+            {{ "Weekly" | translate }}
+          </button>
+        </mat-menu>
+
+        <button mat-button matDateRangePickerCancel color="accent" class="rounded-5">
+          {{ "Cancel" | translate }}
+        </button>
+        <button mat-flat-button color="primary" matDateRangePickerApply class="rounded-5">
+          {{ "Apply" | translate }}
+        </button>
+      </mat-date-range-picker-actions>
+    </mat-date-range-picker>
+    <mat-error *ngIf="timeframeFormGroup.controls.from.hasError('matStartDateInvalid')">{{
+      "Invalid start date" | translate }}</mat-error>
+    <mat-error *ngIf="timeframeFormGroup.controls.to.hasError('matEndDateInvalid')">{{
+      "Invalid end date" | translate }}</mat-error>
+  </mat-form-field>
+</div>

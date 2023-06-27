@@ -29,10 +29,11 @@ export class StrengthComponent extends UnsubOnDestroy {
   private onCellValueChange = async (e: NewValueParams<IStrengthEntity>) => {
     try {
       await this.service.patch(e.data.id, { [e.colDef.field as keyof IStrengthEntity]: e.newValue });
-      this.nt.notify('Edited successfully',undefined,'success')
+      this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       if (this.childItsStrengths)
         await this.service.fetchChildItsStrengths(this.childItsStrengths.id).catch(() => { });
+      this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows();
     }
   }
@@ -88,9 +89,10 @@ export class StrengthComponent extends UnsubOnDestroy {
   ];
 
   constructor(public service: StrengthService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute,private nt:NotificationService,
-    public agGrid: AgGridService, private fieldService:FieldService,
-    private programService:ProgramService,public pr:PrivilegeService) {super();
+    private dialog: MatDialog, private route: ActivatedRoute, private nt: NotificationService,
+    public agGrid: AgGridService, private fieldService: FieldService,
+    private programService: ProgramService, public pr: PrivilegeService) {
+    super();
   }
 
 
@@ -99,13 +101,17 @@ export class StrengthComponent extends UnsubOnDestroy {
     this.route.paramMap.subscribe({
       next: async params => {
         let childId = params.get('id');
-        if (typeof childId === 'string')
+        if (typeof childId === 'string') {
+          this.service.fetchChildItsStrengths(+(childId as string), true);
           this.sub.add(this.service.childItsStrengths$.subscribe(async v => {
             if (v && v.id == +(childId as string))
               this.childItsStrengths = this.ut.deepClone(v);
-            else await this.service.fetchChildItsStrengths(+(childId as string), true).catch(() => { });
           }));
-        else this.nt.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.")
+        }
+        else {
+          this.nt.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.");
+          this.ut.router.navigateByUrl('/404');
+        }
       },
     });
 
@@ -136,7 +142,7 @@ export class StrengthComponent extends UnsubOnDestroy {
     ...this.agGrid.commonGridOptions('strengths table', this.columnDefs, this.pr.canUser('editStrength'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
   /** @param strengthOrChildId is either a strength to be Edit. Or childId to be Add */
@@ -145,7 +151,7 @@ export class StrengthComponent extends UnsubOnDestroy {
       this.nt.notify(undefined);
     else
       this.dialog
-        .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId ,direction:this.ut.getDirection()})
+        .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId, direction: this.ut.getDirection() })
   }
 
   deleteDialog(strength?: IStrengthEntity) {
@@ -160,7 +166,7 @@ export class StrengthComponent extends UnsubOnDestroy {
         if (v === 'Delete') {
           try {
             await this.service.delete(strength.id, true);
-            this.nt.notify("Deleted successfully",'The strength has been deleted successfully','success');
+            this.nt.notify("Deleted successfully", 'The strength has been deleted successfully', 'success');
           } catch (e) { }
         }
       })

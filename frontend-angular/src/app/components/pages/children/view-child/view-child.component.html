@@ -1,9 +1,12 @@
-<app-title [links]="[{title:'Child information'},{title:'Children',link:'/children'}]" [isPrinting]="undefined"></app-title>
+<app-title [links]="[{title:'Child information',titleLink:child?.person?.name},{title:'Children',link:'/children'}]"
+  [isPrinting]="undefined"></app-title>
 <div class="container">
-    <!-- <h4 class="m-4 p-4 mt-0 pt-0 mb-0 pb-0 fw-normal">{{'Personal information'|translate}}</h4> -->
-    <mat-card class="mx-lg-5 shadow d-flex rounded-5">
-      <mat-card-content>
-        <app-child-info [child]="child"></app-child-info>
-      </mat-card-content>
-    </mat-card>
+  <!-- <h4 class="m-4 p-4 mt-0 pt-0 mb-0 pb-0 fw-normal">{{'Personal information'|translate}}</h4> -->
+  <app-card>
+      <app-child-info [child]="child"></app-child-info>
+  </app-card>
+
+  <app-card *ngIf="child && child.teachers && child.teachers.length >0" cardTitle="Child Teachers">
+
+  </app-card>
 </div>

@@ -24,7 +24,7 @@ export class AgGridService {
    * - if field is number then set `type='number'`. Default filter is for string.
    * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, },`
    */
-  constructor(private ut: UtilityService, private clipboard: Clipboard,private nt:NotificationService,
+  constructor(private ut: UtilityService, private clipboard: Clipboard, private nt: NotificationService,
     private pr: PrivilegeService, private display: DisplayService) { }
 
   /**
@@ -212,6 +212,7 @@ export class AgGridService {
       gridOptions.paginationPageSize = 1000;
       gridOptions.api?.setDomLayout('print');
       gridOptions.api?.setSideBarVisible(false)
+      gridOptions.api?.refreshCells()
       gridOptions.api?.redrawRows();
       if (typeof printTableArgs == 'function')
         printTableArgs(true);
@@ -223,7 +224,8 @@ export class AgGridService {
       setTimeout(() => {
         gridOptions.paginationAutoPageSize = isAuto;
         gridOptions.paginationPageSize = size;
-        gridOptions.api?.setSideBarVisible(true)
+        gridOptions.api?.setSideBarVisible(true);
+        gridOptions.api?.refreshCells();
         gridOptions.api?.redrawRows();
         gridOptions.api?.setDomLayout('autoHeight');
         if (typeof printTableArgs == 'function')
@@ -265,6 +267,7 @@ export class AgGridService {
       onGridReady: e => {//restore table state
         let prevState = JSON.parse(localStorage.getItem(keyTableName) ?? 'null');
         prevState && e.columnApi.applyColumnState({ state: prevState });
+        prevState && e.api.refreshCells();
         prevState && e.api.redrawRows();
         onGridReady && onGridReady(e);
       },//save table state in Pinned, Moved, and Visible.

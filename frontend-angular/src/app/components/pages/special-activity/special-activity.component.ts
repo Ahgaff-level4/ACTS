@@ -34,6 +34,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       this.nt.notify('Edited successfully', undefined, 'success')
     } catch (e) {
       await this.service.fetchSpecialActivities();
+      this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows();
     }
   }
@@ -89,10 +90,10 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
     }));
+    this.service.fetchSpecialActivities(true);
     this.sub.add(this.service.specialActivities$.subscribe(v => {
       if (v)
         this.rowData = this.ut.deepClone(v);
-      else this.service.fetchSpecialActivities(true);
     }))
   }
 
@@ -110,7 +111,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       this.menuItems, this.printTable, (item) => { this.edit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
   /** `data` is Activity to be Edit. */

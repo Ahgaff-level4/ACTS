@@ -32,6 +32,7 @@ export class GoalComponent extends UnsubOnDestroy {
     } catch (e) {
       if (this.service.childItsGoals$.value)
         await this.service.fetchChildItsGoals(this.service.childItsGoals$.value.id).catch(() => { });
+      this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows();
     }
   }
@@ -124,14 +125,14 @@ export class GoalComponent extends UnsubOnDestroy {
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">rate_review</mat-icon>`,
       action: (v) => this.evaluate(v?.id),
       tooltip: 'Evaluate the selected goal',
-      disabled:!this.pr.canUser('addEvaluation'),
+      disabled: !this.pr.canUser('addEvaluation'),
     },
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
       action: (v) => v && this.service.childItsGoals$.value ? this.ut.router.navigateByUrl('/child/' + this.service.childItsGoals$.value.id + '/goal/' + v.id + '/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
-      disabled:!this.pr.canUser('goalEvaluationsPage'),
+      disabled: !this.pr.canUser('goalEvaluationsPage'),
     },
     {
       name: 'Delete',
@@ -143,7 +144,7 @@ export class GoalComponent extends UnsubOnDestroy {
   ];
 
 
-  constructor(public service: GoalService, public ut: UtilityService,private nt:NotificationService,
+  constructor(public service: GoalService, public ut: UtilityService, private nt: NotificationService,
     private dialog: MatDialog, private route: ActivatedRoute, public agGrid: AgGridService,
     private fieldService: FieldService, private programService: ProgramService,
     public pr: PrivilegeService) {
@@ -190,7 +191,7 @@ export class GoalComponent extends UnsubOnDestroy {
         // e.api.getFilterInstance('state')?.setModel({ values: ['continual'] });
       }
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
 

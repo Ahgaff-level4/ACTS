@@ -75,6 +75,8 @@ import {
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
+import { CardComponent } from './components/static/card/card.component';
+import { TimeframeComponent } from './components/forms/timeframe/timeframe.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -129,6 +131,8 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     NotificationItemComponent,
     SendMessageComponent,
     AboutUsComponent,
+    CardComponent,
+    TimeframeComponent,
   ],
   imports: [
     BrowserModule,

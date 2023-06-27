@@ -258,7 +258,7 @@ export interface INotification {
 
 }
 
-export type Timeframe = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
+export type TimeframeDuration = 'All Time' | 'Yearly' | 'Monthly' | 'Weekly';
 
 export interface CustomTimeframe {
 	from: string | Date,

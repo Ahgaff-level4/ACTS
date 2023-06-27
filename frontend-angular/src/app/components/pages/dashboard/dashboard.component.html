@@ -1,40 +1,31 @@
 <div class="container">
   <div class="d-flex justify-content-between align-items-end">
-    <app-title [links]="[{title:'Dashboard'}]" [isPrinting]="undefined"></app-title>
+    <app-title
+      [links]="[{ title: 'Dashboard' }]"
+      [isPrinting]="undefined"
+    ></app-title>
   </div>
-  <h4 class="my-4 p-4 mt-0 pt-0 mb-0 pb-0 fw-normal">{{'Children'|translate}}</h4>
-  <mat-card class="my-4 shadow d-flex rounded-5">
-    <div class="mt-3 align-self-start px-3 w-100">
-      <mat-form-field class=" timeframe" appearance="outline">
-        <mat-label>{{'Timeframe'|translate}}</mat-label>
-        <mat-select value="Yearly" (selectionChange)="updateChart($event.value)" class="mt-2">
-          <mat-option value="All Time">{{'All time'|translate}}</mat-option>
-          <mat-option value="Yearly">{{'Yearly'|translate}}</mat-option>
-          <mat-option value="Monthly">{{'Monthly'|translate}}</mat-option>
-          <mat-option value="Weekly">{{'Weekly'|translate}}</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
-    <mat-card-content dir="ltr" class="me-3 me-md-5 mb-md-3">
+  <app-card cardTitle="Children">
+    <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+    <div dir="ltr" class="me-3 me-md-5 mb-md-3">
       <ngx-charts-area-chart
-      [results]="childrenRegisterData$ |async"
-      [gradient]="true"
-      [legend]="false"
-      [animations]="true"
-      [xAxis]="true"
-      [yAxis]="true"
-      [showGridLines]="true"
-      [roundDomains]="false"
-      [showXAxisLabel]="true"
-      [showYAxisLabel]="true"
-      [xAxisTickFormatting]="xAxisTickFormatting"
-      [xAxisLabel]="'Register Date'|translate"
-      [yAxisLabel]="'Number of Children'|translate"
-      [gradient]="true"
-      [timeline]="true"
+        [results]="childrenRegisterData$ | async"
+        [gradient]="true"
+        [legend]="false"
+        [animations]="true"
+        [xAxis]="true"
+        [yAxis]="true"
+        [showGridLines]="true"
+        [roundDomains]="false"
+        [showXAxisLabel]="true"
+        [showYAxisLabel]="true"
+        [xAxisTickFormatting]="xAxisTickFormatting"
+        [xAxisLabel]="'Register Date' | translate"
+        [yAxisLabel]="'Number of Children' | translate"
+        [gradient]="true"
+        [timeline]="true"
       >
       </ngx-charts-area-chart>
-    </mat-card-content>
-
-  </mat-card>
+    </div>
+  </app-card>
 </div>

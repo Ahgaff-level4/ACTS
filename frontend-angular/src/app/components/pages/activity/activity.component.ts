@@ -43,7 +43,8 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
         await this.service.fetchProgramItsActivities(this.service.programItsActivities$.value.id).catch(() => { });
       else if (this.activitiesOf == 'field' && this.service.fieldItsActivities$.value)
         await this.service.fetchFieldItsActivities(this.service.fieldItsActivities$.value.id).catch(() => { })
-      else console.trace('unexpected reach here!')
+      else console.trace('unexpected reach here!');
+      this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows();
     }
   }

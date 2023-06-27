@@ -1,10 +1,12 @@
 import { Component } from '@angular/core';
-import { IDashboard, Timeframe } from '../../../../../../interfaces';
-import { BehaviorSubject, Observable, filter, map } from 'rxjs';
+import { CustomTimeframe, IDashboard, TimeframeDuration } from '../../../../../../interfaces';
+import { BehaviorSubject, Observable, filter, map, throttleTime } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { ReportService } from 'src/app/services/report.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { DisplayService } from 'src/app/services/display.service';
+import { FormControl, FormGroup } from '@angular/forms';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -21,16 +23,35 @@ export class DashboardComponent extends UnsubOnDestroy {
         .map((v) => ({ value: i--, name: new Date(v.person.createdDatetime) }))
     }] as any;
     return ret;
-  }))
-  constructor(public service: ReportService, public ut: UtilityService, public display: DisplayService) { super(); }
+  }));
+  public timeframeFormGroup = new FormGroup({
+    from: new FormControl<Date>(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate())),//Default Yearly
+    to: new FormControl<Date>(new Date()),
+  });
+  constructor(public service: ReportService, public ut: UtilityService,
+    private nt: NotificationService, public display: DisplayService) { super(); }
 
   ngOnInit() {
-    this.sub.add(this.service.fetchDashboard().subscribe(v => this.dashboard$.next(v)));
+    this.sub.add(this.service.fetchDashboard({
+      from: this.timeframeFormGroup.controls.from.value!.toString(),
+      to: this.timeframeFormGroup.controls.to.value!.toString()
+    }).subscribe(v => this.dashboard$.next(v)));
+
+    this.sub.add(this.timeframeFormGroup.valueChanges.pipe(throttleTime(300, undefined, { leading: false, trailing: true })).subscribe(v => {
+      if (v.to && v.from && this.timeframeFormGroup.valid && v.from < v.to)
+        this.updateDashboard({ to: v.to, from: v.from });
+      else this.nt.notify('Invalid Field', 'Invalid date range', 'error')
+    }));
   }
 
-  updateChart(timeframe: Timeframe) {
+  updateDashboard(timeframe?: CustomTimeframe) {
+    if (!timeframe)
+      timeframe = {
+        from: this.timeframeFormGroup.controls.from.value!.toString(),
+        to: this.timeframeFormGroup.controls.to.value!.toString()
+      };
     if (this.dashboard$.value) {
-      this.sub.add(this.service.fetchDashboard({ timeframe })
+      this.sub.add(this.service.fetchDashboard(timeframe)
         .subscribe(v => {
           this.dashboard$.next(v);
         }));

@@ -87,6 +87,10 @@ export class ProgramComponent extends UnsubOnDestroy {
     super();
   }
 
+  ngOnInit(){
+    this.service.fetch();
+  }
+
   applySearch(event: Event) {
     this.quickFilter = (event.target as HTMLInputElement).value;
   }

@@ -1,7 +1,7 @@
 import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { Between, DataSource, Equal, FindOptionsWhere, MoreThan, MoreThanOrEqual, Not } from 'typeorm';
-import { CustomTimeframe, IChildReport, IDashboard, Timeframe } from '../../../../interfaces';
+import { Between, DataSource, MoreThanOrEqual, Not } from 'typeorm';
+import { CustomTimeframe, IChildReport, IDashboard, TimeframeDuration } from '../../../../interfaces';
 import { ChildEntity } from '../child/child.entity';
 import { PersonEntity } from '../person/person.entity';
 import { AccountEntity } from '../account/account.entity';
@@ -15,18 +15,16 @@ export class ReportController {
 
 	@Roles('Admin')
 	@Get('dashboard')
-	async getDashboard(@Query() query: { timeframe: Timeframe }): Promise<IDashboard> {
-		let timeframe: Date
-		switch (query.timeframe) {//default 'Yearly'
-			case 'Weekly': timeframe = new Date(new Date().getTime() - 7 * 24 * 60 * 60 * 1000); break;
-			case 'Monthly': timeframe = new Date(new Date().getFullYear(), new Date().getMonth() - 1, new Date().getDate()); break;
-			case 'All Time': timeframe = new Date(0); break;
-			default: timeframe = new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate()); break;
-		}
+	async getDashboard(@Query() query: CustomTimeframe): Promise<IDashboard> {
+		if (!query.from)
+			query.from = new Date(0);//default is All Time
+		if (!query.to)
+			query.to = new Date();//to now
 
 		const children = (await this.dataSource.getRepository(ChildEntity)
-			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: MoreThanOrEqual(timeframe) } } })
+			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: Between(new Date(query.from), new Date(query.to))} } })
 		);
+		
 		const childrenCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false }))
 
 		return { children, childrenCount }
@@ -35,9 +33,8 @@ export class ReportController {
 	@Get('child/:id')
 	@Roles('Admin', 'HeadOfDepartment')
 	async getChildReport(@Param('id', ParseIntPipe) id: number, @Query() query: CustomTimeframe): Promise<IChildReport> {
-		console.log('query', query);
 		if (!query.from)
-			query.from = new Date(0);//from minimum allowed date
+			query.from = new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') + '-01');//first day at current month. Ex:'2023-06-17' => '2023-06-01'
 		if (!query.to)
 			query.to = new Date();//to now
 

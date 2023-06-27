@@ -33,7 +33,8 @@ export class EvaluationComponent extends UnsubOnDestroy {
     } catch (e) {
       if (this.service.goalItsEvaluations$.value)
         await this.service.fetchGoalItsEvaluations(this.service.goalItsEvaluations$.value.id).catch(() => { });
-      // this.gridOptions?.api?.redrawRows();
+      this.gridOptions?.api?.refreshCells()
+      this.gridOptions?.api?.redrawRows();
     }
   }
 
@@ -94,7 +95,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
 
   constructor(public service: EvaluationService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute,private nt:NotificationService,
+    private dialog: MatDialog, private route: ActivatedRoute, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -124,7 +125,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
     ...this.agGrid.commonGridOptions('evaluations table', this.columnDefs, this.pr.canUser('editEvaluation'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
   /** @param data is either a evaluation to be Edit. Or goalId to be Add */

@@ -109,6 +109,7 @@
   "previous": "الصفحة السابقة",
   "loadingOoo": "جار التحميل...",
   "selectAll": "اختر الكل",
+  "Select":"تحديد",
   "searchOoo": "بحث...",
   "blanks": "(فراغات)",
   "filterOoo": "تصفية...",
@@ -760,5 +761,7 @@
   "Archive child information":"ارشفة معلومات الطفل",
   "This activity is goal to the child":"يوجد هذا النشاط كهدف لدى الطفل",
   "This activity is strength to the child":"يوجد هذا النشاط كنقطة قوة لدى الطفل",
-  "Strength":"نقطة قوة"
+  "Strength":"نقطة قوة",
+  "Child Teachers":"مدرسين الطفل",
+  "Select duration":"تحديد فترة"
 }

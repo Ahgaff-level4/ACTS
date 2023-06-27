@@ -111,6 +111,7 @@ export class AccountComponent {
     this.accountService.fetch();
     this.accountService.accounts.subscribe(v => {
       this.rowData = this.ut.deepClone(v);
+      this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows()
     });
   }

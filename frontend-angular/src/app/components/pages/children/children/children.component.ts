@@ -1,17 +1,15 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ColDef, GridOptions, ISetFilterParams, MenuItemDef, NewValueParams, SetFilterParams, SetFilterValuesFuncParams, } from 'ag-grid-enterprise';
-import { MatMenuTrigger } from '@angular/material/menu';
+import { ColDef, GridOptions, ISetFilterParams, NewValueParams, } from 'ag-grid-enterprise';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { Observable, Subscription, finalize, first, map, tap } from 'rxjs';
+import { map } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
-// import{RowClickedEvent} from 'ag-grid-enterprise/dist/lib/'
+
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
@@ -199,9 +197,13 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
-    public ut: UtilityService, public pr: PrivilegeService,private nt:NotificationService,
+    public ut: UtilityService, public pr: PrivilegeService, private nt: NotificationService,
     public display: DisplayService) {
     super();
+  }
+
+  ngOnInit() {
+    this.childService.fetchChildren(true);
   }
 
   applySearch(event: Event) {
@@ -252,7 +254,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
       }
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
 }

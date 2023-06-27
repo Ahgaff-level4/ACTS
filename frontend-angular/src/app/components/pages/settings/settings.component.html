@@ -1,76 +1,62 @@
 <app-title [links]="[{title:'Settings'}]" [isPrinting]="undefined"></app-title>
-<div class="container">
-  <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Application Language'|translate}}</h4>
-  <mat-card class="m-4 shadow rounded-5">
-    <mat-card-content class="d-flex m-3 justify-content-center">
-      <mat-button-toggle-group class="w-75 rounded-5" aria-label="Choose language">
-        <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='ar'"
-          (change)="this.translate.use('ar')">عربي</mat-button-toggle>
-        <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='en'"
-          (change)="this.translate.use('en')">English</mat-button-toggle>
-      </mat-button-toggle-group>
-    </mat-card-content>
-  </mat-card>
-
-  <div id="my-account-information" *ngIf="pr.user.value">
-    <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'My Account Information'|translate}}</h4>
-    <mat-card class="m-4 shadow rounded-5">
-      <mat-card-content>
-        <p class="opacity-75">
-          *{{'Only Admin can change your account information, and you can only change your password.'|translate}}</p>
-        <p>{{'Name'|translate}}:&nbsp;{{pr.user.value.person.name}}</p>
-        <p>{{'Username'|translate}}:&nbsp;{{pr.user.value.username}}</p>
-        <p *ngIf="pr.user.value.birthdate">
-          {{'Birthdate'|translate}}:&nbsp;{{pr.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{pr.user.value.birthdate|fromNow:true}}
-        </p>
-        <p>{{'Roles'|translate}}:&nbsp;{{display.accountRoles(pr.user.value.roles)}}</p>
-        <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">
-          {{'Change my password'|translate}}
-        </button>
-      </mat-card-content>
-    </mat-card>
+<app-card cardTitle="Application Language">
+  <div class="d-flex m-3 justify-content-center">
+    <mat-button-toggle-group class="w-75 rounded-5" aria-label="Choose language">
+      <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='ar'"
+        (change)="this.translate.use('ar')">عربي</mat-button-toggle>
+      <mat-button-toggle class="w-50" [checked]="this.translate.currentLang=='en'"
+        (change)="this.translate.use('en')">English</mat-button-toggle>
+    </mat-button-toggle-group>
   </div>
+</app-card>
 
-  <div *ngIf="pr.user.value">
-    <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Notifications'|translate}}</h4>
-    <mat-card class="m-4 shadow rounded-5">
-      <mat-card-content class="row m-3 mb-0 d-flex">
-        <mat-slide-toggle class="col-md-8 align-self-baseline mt-3" (change)="changeNotification($event.checked)" [checked]="(nt.notificationSettings|async)?.showNotification"
-          color="primary">{{'Show notifications'|translate}}</mat-slide-toggle>
-        <mat-form-field class="col-md-4">
-          <mat-label>{{'Close after'|translate}}</mat-label>
-            <input matInput [disabled]="!(nt.notificationSettings|async)?.showNotification" type="number" [(ngModel)]="closeAfter" (change)="changeNotification($event)" (keyup)="changeNotification($event)"
-            [placeholder]="'0 for infinity'|translate" />
-          <span matTextSuffix>{{'Seconds'|translate}}</span>
-        </mat-form-field>
-      </mat-card-content>
-    </mat-card>
+<app-card id="my-account-information" *ngIf="pr.user.value" cardTitle="My Account Information">
+  <p class="opacity-75">
+    *{{'Only Admin can change your account information, and you can only change your password.'|translate}}</p>
+  <p>{{'Name'|translate}}:&nbsp;{{pr.user.value.person.name}}</p>
+  <p>{{'Username'|translate}}:&nbsp;{{pr.user.value.username}}</p>
+  <p *ngIf="pr.user.value.birthdate">
+    {{'Birthdate'|translate}}:&nbsp;{{pr.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{pr.user.value.birthdate|fromNow:true}}
+  </p>
+  <p>{{'Roles'|translate}}:&nbsp;{{display.accountRoles(pr.user.value.roles)}}</p>
+  <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">
+    {{'Change my password'|translate}}
+  </button>
+</app-card>
+
+<app-card *ngIf="pr.user.value" cardTitle="Notifications">
+  <div class="row m-3 mb-0 d-flex">
+    <mat-slide-toggle class="col-md-8 align-self-baseline mt-3" (change)="changeNotification($event.checked)"
+      [checked]="(nt.notificationSettings|async)?.showNotification" color="primary">
+      {{'Show notifications'|translate}}
+    </mat-slide-toggle>
+    <mat-form-field class="col-md-4">
+      <mat-label>{{'Close after'|translate}}</mat-label>
+      <input matInput [disabled]="!(nt.notificationSettings|async)?.showNotification" type="number"
+        [(ngModel)]="closeAfter" (change)="changeNotification($event)" (keyup)="changeNotification($event)"
+        [placeholder]="'0 for infinity'|translate" />
+      <span matTextSuffix>{{'Seconds'|translate}}</span>
+    </mat-form-field>
   </div>
+</app-card>
 
-  <div *ngIf="this.pr.canUser('backupRestore')">
-    <h4 class="m-4 mb-0 p-4 pb-0 fw-normal">{{'Backup & Recovery'|translate}}</h4>
-    <mat-card class="m-4 shadow rounded-5">
-      <mat-card-content>
-        <p>{{'Backup and recovery is a process of creating and storing copies of the system data that can be used to
-          protect your system information in case of a system failure, malware attack, or accidental
-          deletion.'|translate}}</p>
-        <p>{{'Click on Create Backup File button to create a backup of the entire database and download it as a backup
-          file. You can also use this file to restore your database to its previous state if something goes
-          wrong.'|translate}}</p>
-        <p>{{'Click on Restore Database button to restore the database from a backup, choose the backup file you want to
-          use. Your database will be overwritten with the data from the backup file. The restore process will replace
-          your current database with the backup version. You will be able to access your data as it was before the
-          failure.'|translate}}</p>
-        <a [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button [href]="this.API+'backup'"
-          download color="primary">{{'Create Backup File'|translate}}</a>
+<app-card *ngIf="this.pr.canUser('backupRestore')" cardTitle="Backup & Recovery">
+  <p>{{'Backup and recovery is a process of creating and storing copies of the system data that can be used to protect
+    your system information in case of a system failure, malware attack, or accidental deletion.'|translate}}</p>
+  <p>{{'Click on Create Backup File button to create a backup of the entire database and download it as a backup file.
+    You can also use this file to restore your database to its previous state if something goes wrong.'|translate}}
+  </p>
+  <p>{{'Click on Restore Database button to restore the database from a backup, choose the backup file you want to
+    use. Your database will be overwritten with the data from the backup file. The restore process will replace your
+    current database with the backup version. You will be able to access your data as it was before the
+    failure.'|translate}}</p>
+  <a [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button [href]="this.API+'backup'" download
+    color="primary">{{'Create Backup File'|translate}}</a>
 
-        <input #fileInput type="file" name="backup" (change)="onFileSelected($event)" accept=".sql.gz" hidden>
-        <button [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button (click)="restore()"
-          color="warn">{{'Restore Database'|translate}}</button>
+  <input #fileInput type="file" name="backup" (change)="onFileSelected($event)" accept=".sql.gz" hidden>
+  <button [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button (click)="restore()"
+    color="warn">{{'Restore Database'|translate}}</button>
 
-        <mat-progress-bar *ngIf="uploadProgress != null" class="mt-2" mode="determinate"
-          [value]="uploadProgress"></mat-progress-bar>
-      </mat-card-content>
-    </mat-card>
-  </div>
-</div>
+  <mat-progress-bar *ngIf="uploadProgress != null" class="mt-2" mode="determinate"
+    [value]="uploadProgress"></mat-progress-bar>
+</app-card>

@@ -1,12 +1,11 @@
-import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { BehaviorSubject, Observable, combineLatest, filter, interval, map, merge, mergeAll, mergeMap, tap, throttleTime } from 'rxjs';
+import { BehaviorSubject, Observable, combineLatest, filter, interval, map, tap, throttleTime } from 'rxjs';
 import { ReportService, } from 'src/app/services/report.service';
-import { CustomTimeframe, IChildReport, IFieldEntity, Timeframe } from '../../../../../../../interfaces';
+import { CustomTimeframe, IChildReport, IFieldEntity } from '../../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormControl, FormGroup } from '@angular/forms';
-import { MatDateRangePicker, MatDatepicker } from '@angular/material/datepicker';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -34,7 +33,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     return [{
       name: this.ut.translate('Completed goals'), series: fields.map(f => ({
         name: f.name,
-        value: report.goalStrength.goals.filter(g => g.state != 'continual' && g.activity.fieldId == f.id).length
+        value: report.goalStrength.goals.filter(g => g.state == 'completed' && g.activity.fieldId == f.id).length
       }))
     }, {
       name: this.ut.translate('Continual goals'), series: fields.map(f => ({
@@ -49,14 +48,14 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     }]
   }))
 
-  public customTimeframeForm = new FormGroup({
+  public timeframeFormGroup = new FormGroup({
     from: new FormControl<Date>(new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') + '-01')),//current date at day one. Ex:'2023-06-17' => '2023-06-01'
     to: new FormControl<Date>(new Date()),
   });
 
 
   constructor(private route: ActivatedRoute, public service: ReportService,
-    public ut: UtilityService, public fieldService: FieldService,private nt:NotificationService,
+    public ut: UtilityService, public fieldService: FieldService, private nt: NotificationService,
     public display: DisplayService) { super(); }
 
   ngOnInit(): void {
@@ -68,8 +67,8 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     );
 
 
-    this.sub.add(this.customTimeframeForm.valueChanges.pipe(throttleTime(300, undefined, { leading: false, trailing: true })).subscribe(v => {
-      if (this.childReport$.value && v.to && v.from && this.customTimeframeForm.valid && v.from < v.to)
+    this.sub.add(this.timeframeFormGroup.valueChanges.pipe(throttleTime(300, undefined, { leading: false, trailing: true })).subscribe(v => {
+      if (this.childReport$.value && v.to && v.from && this.timeframeFormGroup.valid && v.from < v.to)
         this.updateReport({ to: v.to, from: v.from });
       else this.nt.notify('Invalid Field', 'Invalid date range', 'error')
     }));
@@ -79,7 +78,10 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
         let childId = params.get('id');
         if (typeof childId == 'string')
           this.service.fetchChildReport(+childId).pipe(tap(v => this.childReport$.next(v))).subscribe();
-        else this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.")
+        else {
+          this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.");
+          this.ut.router.navigateByUrl('/404');
+        }
       },
     }));
   }
@@ -87,11 +89,13 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
   updateReport(timeframe?: CustomTimeframe) {
     if (!timeframe)
       timeframe = {
-        from: this.customTimeframeForm.controls.from.value!.toString(),
-        to: this.customTimeframeForm.controls.to.value!.toString()
+        from: this.timeframeFormGroup.controls.from.value!.toString(),
+        to: this.timeframeFormGroup.controls.to.value!.toString()
       };
     if (this.childReport$.value)
-      this.service.fetchChildReport(this.childReport$.value.child.id, timeframe).pipe(tap(v => this.childReport$.next(v))).subscribe();
+      this.service.fetchChildReport(this.childReport$.value.child.id, timeframe)
+        .pipe(tap(v => this.childReport$.next(v)),tap(v=>console.log(v))).subscribe();
+
   }
 
 

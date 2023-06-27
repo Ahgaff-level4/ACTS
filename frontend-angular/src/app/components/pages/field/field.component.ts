@@ -63,9 +63,13 @@ export class FieldComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(private service: FieldService, public ut: UtilityService,private nt:NotificationService,
+  constructor(private service: FieldService, public ut: UtilityService, private nt: NotificationService,
     private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
+  }
+
+  ngOnInit() {
+    this.service.fetch(true);
   }
 
   applySearch(event: Event) {
@@ -82,7 +86,7 @@ export class FieldComponent extends UnsubOnDestroy {
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
   /** if `data` param passed then it is Edit. Otherwise will be Add */
