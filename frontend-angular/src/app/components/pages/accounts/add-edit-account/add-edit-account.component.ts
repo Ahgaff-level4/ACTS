@@ -104,18 +104,18 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       this.accountForm?.disable();
       this.personForm?.formGroup?.disable();
       if (this.account?.id == null) {//Register new account
-        this.ut.isLoading.next(true);
-        let person = await this.personForm.submit().catch(() => { this.ut.isLoading.next(false) });
-        this.ut.isLoading.next(false);
-        if (typeof person != 'object')
-          return;
+        // this.ut.isLoading.next(true);
+        // let person = await this.personForm.submit().catch(() => { this.ut.isLoading.next(false) });
+        // this.ut.isLoading.next(false);
+        // if (typeof person != 'object')
+          // return;
         try {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
-          await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
+          await this.accountService.post({ ...accountFields, person:this.personForm.getCreatePerson() }, true);//include personId property
           this.nt.notify("Added successfully", 'The new account has been registered successfully', 'success');
           this.ut.router.navigate(['/account']);
         } catch (e) {
-          this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
+          // this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
         this.ut.isLoading.next(true);

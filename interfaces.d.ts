@@ -120,13 +120,14 @@ export interface ICreateChild {
 	/** Default is false (i.e., NOT archive) */
 	isArchive?: boolean | null;
 	parentId?: number | null;
-	personId: number;
+	person: ICreatePerson;
 }
 
 export interface IChildEntity extends ICreateChild {
 	id: number;
-	parent?: IAccountEntity | null;
 	person: IPersonEntity;
+	personId: number;
+	parent?: IAccountEntity | null;
 	goals: IGoalEntity[];
 	strengths: IStrengthEntity[];
 	teachers: IAccountEntity[];

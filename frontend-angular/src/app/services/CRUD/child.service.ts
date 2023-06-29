@@ -1,6 +1,6 @@
 import { Injectable, OnInit } from '@angular/core';
 import { BehaviorSubject, EMPTY, Observable, ReplaySubject, Subject, catchError, filter, first, multicast, refCount, share, shareReplay, tap } from 'rxjs';
-import { IChildEntity, ICreateChild, SucResEditDel } from '../../../../../interfaces';
+import { IChildEntity, ICreateChild, ICreatePerson, SucResEditDel } from '../../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
@@ -68,7 +68,7 @@ export class ChildService {
     });
   }
 
-  patchChild(id: number, child: Partial<IChildEntity>, manageLoading = false): Promise<SucResEditDel> {
+  patchChild(id: number, child: Partial<IChildEntity>& {person:Partial<ICreatePerson>&{id:number}|null}, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
       manageLoading && this.ut.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.childURL + '/' + id, child)
