@@ -94,25 +94,24 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       this.personForm?.formGroup?.disable();
 
       this.ut.isLoading.next(true);
-      if (this.child?.id == null) {//Register a child
-        // let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
-        // if (!p || typeof p != 'object')
-        //   break FLAG;
+      FLAG: if (this.child?.id == null) {//Register a child
+        let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
+        if (!p || typeof p != 'object')
+          break FLAG;
         try {
           let dirtyFields = this.formService.extractDirty(this.childForm.controls);
-          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, person: this.personForm.getCreatePerson() }, true);
+          await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
           this.nt.notify("Added successfully", 'The new child has been registered successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) {
-          // this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
+          this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
         }
       } else {//edit the child
-        // await this.personForm.submitEdit().catch(() => { });
+        await this.personForm.submitEdit().catch(() => { });
         let dirtyFields = this.formService.extractDirty(this.childForm.controls);
-        let dirtyPerson = this.personForm.getUpdatePerson();
         try {
-          if (dirtyFields != null || dirtyPerson != null)
-            await this.childService.patchChild(this.child.id, {...dirtyFields,person:dirtyPerson as ICreatePerson}, true);
+          if (dirtyFields != null)
+            await this.childService.patchChild(this.child.id, dirtyFields, true);
           this.nt.notify("Edited successfully", 'The child has been edited successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) { }

@@ -18,7 +18,7 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   protected minlength = { minlength: 4 };
   protected nowDate = new Date();
 
-  constructor(private fb: FormBuilder, public personService: PersonService, private formService: FormService) {
+  constructor(private fb:FormBuilder, public personService: PersonService, private formService: FormService) {
     super();
   }
 
@@ -41,16 +41,15 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   /**
    * Called by the parent component. Hint: using `@ViewChild` decorator
    */
-  public getCreatePerson(): ICreatePerson {
-    return this.formService.extractDirty(this.formGroup.controls) as ICreatePerson;
+  public submit(): Promise<IPersonEntity> {
+    return this.personService.postPerson(this.formService.extractDirty(this.formGroup.controls) as ICreatePerson);
   }
 
-  /** null if there is no dirty fields*/
-  public getUpdatePerson(): Partial<ICreatePerson> & {id:number} | null {
-    let dirty = this.formService.extractDirty(this.formGroup.controls);
-    if (dirty == null)
-      return null;
-    return { ...dirty, id: (this.person as IPersonEntity).id } as Partial<ICreatePerson> & {id:number};
+  /** void if there is no dirty fields*/
+  public async submitEdit(): Promise<SucResEditDel | void> {
+    let dirtyFields = this.formService.extractDirty(this.formGroup.controls);
+    if (dirtyFields != null)
+      return await this.personService.patchPerson((this.person as IPersonEntity).id, dirtyFields).catch(() => { });
   }
 
 }

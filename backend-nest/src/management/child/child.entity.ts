@@ -1,7 +1,7 @@
 import { PartialType } from "@nestjs/mapped-types";
-import { IsNumber, IsOptional, IsString, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean, IsArray, IsObject } from "class-validator";
-import { CreatePerson, PersonEntity } from "../person/person.entity";
-import { IAccountEntity, IChildEntity, ICreateChild, ICreatePerson, IGoalEntity, IPersonEntity, IStrengthEntity } from './../../../../interfaces.d'
+import { IsNumber, IsOptional, IsString, MaxLength, IsDate, MinDate, MaxDate, IsInt, IsPositive, IsBoolean, IsArray } from "class-validator";
+import { PersonEntity } from "../person/person.entity";
+import { IAccountEntity, IChildEntity, ICreateChild, IGoalEntity, IPersonEntity, IStrengthEntity } from './../../../../interfaces.d'
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn, ViewColumn, ViewEntity } from "typeorm";
 import { Type } from "class-transformer";
 import { GoalEntity } from "../goal/Goal.entity";
@@ -78,26 +78,21 @@ export class CreateChild implements ICreateChild {
 	@Column({ type: 'int', unsigned: true, unique: false, nullable: true })
 	public parentId?: number;
 
+	@IsNumber() @IsPositive() @IsInt()
+	@ViewColumn()
+	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
+	public personId: number;
+
 	@IsArray() @Type(() => AccountEntity) @IsOptional()
 	@ManyToMany(() => AccountEntity, (account) => account.teaches, { onDelete: 'CASCADE' })
 	public teachers: IAccountEntity[];
-
-	@Type(() => CreatePerson) @IsObject()
-	@OneToOne(() => PersonEntity, { nullable: false, onDelete: 'CASCADE' })
-	@JoinColumn()
-	public person: ICreatePerson;
 }
 
 @Entity()
 export class ChildEntity extends CreateChild implements IChildEntity {
 	@ViewColumn()
 	@PrimaryGeneratedColumn({ type: 'int', unsigned: true })
-	public id: number; 
-	
-	public override person: IPersonEntity;
-	@ViewColumn()
-	@Column({ type: 'int', unsigned: true, unique: true, nullable: false })
-	public personId: number;
+	public id: number;
 
 	@ManyToOne(() => AccountEntity, (parent) => parent.children, { nullable: true, onDelete: 'SET NULL' })
 	public parent?: IAccountEntity;
@@ -105,6 +100,10 @@ export class ChildEntity extends CreateChild implements IChildEntity {
 	@OneToMany(() => GoalEntity, (goal) => goal.child)
 	public goals: IGoalEntity[];
 	public strengths: IStrengthEntity[];//a place holder
+
+	@OneToOne(() => PersonEntity, { nullable: false, onDelete: 'CASCADE' })
+	@JoinColumn()
+	public person: IPersonEntity;
 }
 
 export class UpdateChild extends PartialType(CreateChild) { }

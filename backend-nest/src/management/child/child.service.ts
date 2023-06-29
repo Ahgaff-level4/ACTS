@@ -1,8 +1,8 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
-import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
-import { DataSource, Repository } from 'typeorm';
-import { PersonEntity } from '../person/person.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Not, Repository } from 'typeorm';
+import { PersonEntity, PersonView } from '../person/person.entity';
 import { GoalEntity } from '../goal/Goal.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { FieldEntity } from '../field/field.entity';
@@ -22,7 +22,7 @@ export class ChildService {
       .where('teacher.id=:accountId', { accountId })
       .getMany();
   }
-
+  
   findAllParentChildren(accountId: number) {
     return this.repo
       .createQueryBuilder('child')
@@ -34,28 +34,10 @@ export class ChildService {
       .where('child.parentId=:accountId', { accountId })
       .getMany();
   }
-  constructor(@InjectRepository(ChildEntity) private repo: Repository<ChildEntity>,
-    @InjectDataSource() private dataSource: DataSource,) { }
+  constructor(@InjectRepository(ChildEntity) private repo: Repository<ChildEntity>) { }
 
-  async create(createChild: CreateChild) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    const childRepo = queryRunner.manager.getRepository(ChildEntity);
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      // const person = await queryRunner.manager.getRepository(PersonEntity).save(createChild.person);
-      // createChild.person = person;
-      const child = await childRepo.save(childRepo.create(createChild));
-      await queryRunner.commitTransaction();
-      return child;
-    } catch (err) {
-      // since we have errors lets rollback the changes we made
-      await queryRunner.rollbackTransaction();
-      throw new BadRequestException()
-    } finally {
-      // you need to release a queryRunner which was manually instantiated
-      await queryRunner.release();
-    }
+  create(createChild: CreateChild) {
+    return this.repo.save(this.repo.create(createChild))
   }
 
   async findAll() {
@@ -97,23 +79,7 @@ export class ChildService {
       .getMany();
   }
 
-  async update(id: number, updateChild: UpdateChild) {
-    const queryRunner = this.dataSource.createQueryRunner();
-    const childRepo = queryRunner.manager.getRepository(ChildEntity);
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-    try {
-      const child = await childRepo.update(id,updateChild);
-      await queryRunner.commitTransaction();
-      return child;
-    } catch (err) {
-      // since we have errors lets rollback the changes we made
-      await queryRunner.rollbackTransaction();
-      throw new BadRequestException()
-    } finally {
-      // you need to release a queryRunner which was manually instantiated
-      await queryRunner.release();
-    }
+  update(id: number, updateChild: UpdateChild) {
     return this.repo.save({ ...updateChild, id });
   }
 
