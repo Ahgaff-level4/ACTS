@@ -1,10 +1,10 @@
-import { Body, Controller, Delete, Get, Inject, Param, ParseBoolPipe, ParseIntPipe, Patch, Post, Query, UseInterceptors } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post } from '@nestjs/common';
 import { ActivityService } from './activity.service';
 import { Roles } from 'src/auth/Role.guard';
 import { CreateActivity, UpdateActivity } from './activity.entity';
 import { UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 @Roles('Admin', 'HeadOfDepartment')
 @Controller('api/activity')
 export class ActivityController {

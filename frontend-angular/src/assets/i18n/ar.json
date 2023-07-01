@@ -528,7 +528,7 @@
   "Teacher": "مدرس",
   "Parent": "ولي الأمر",
   "Admin": "مشرف",
-  "Passwords do not match": "كلمات المرور غير متطابقة",
+  "Passwords do not match": "كلمة المرور غير متطابقة",
   "Must not contain spaces": "يجب ألا يحتوي على مسافة",
   "Phone": "الهاتف",
   "Phone number must contain only digits and '+' symbol": "يجب أن يحتوي رقم الهاتف على أرقام ويسمح برمز \"+\" في البداية فقط",
@@ -764,5 +764,7 @@
   "This activity is strength to the child":"يوجد هذا النشاط كنقطة قوة لدى الطفل",
   "Strength":"نقطة قوة",
   "Child Teachers":"مدرسين الطفل",
-  "Select duration":"تحديد فترة"
+  "Select duration":"تحديد فترة",
+  "Change image":"تغيير الصورة",
+  "Choose image":"اختر صورة"
 }

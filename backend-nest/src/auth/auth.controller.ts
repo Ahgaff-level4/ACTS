@@ -8,7 +8,6 @@ import { AccountEntity, CreateAccount } from 'src/management/account/account.ent
 import { Session as Express_Session } from 'express-session';
 import { User, ILoginInfo } from '../../../interfaces';
 import { PickType } from '@nestjs/mapped-types';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
 
 export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 	implements ILoginInfo {
@@ -16,7 +15,7 @@ export class LoginInfo extends PickType(CreateAccount, ['username', 'password'])
 
 @Controller('api/auth')
 export class AuthController {
-	constructor(private authService: AuthService, private notify: NotificationGateway) { }
+	constructor(private authService: AuthService) { }
 
 	@Post('login')
 	async login(@Req() req: Request, @Body() loginInfo: LoginInfo) {

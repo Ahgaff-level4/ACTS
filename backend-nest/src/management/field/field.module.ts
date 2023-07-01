@@ -2,7 +2,7 @@ import { Module } from "@nestjs/common";
 import { FieldController } from './field.controller';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { FieldEntity } from "./field.entity";
-import { NotificationModule } from "src/websocket/notification.module";
+import { NotificationModule } from "src/notification/notification.module";
 
 @Module({
   imports:[TypeOrmModule.forFeature([FieldEntity]),NotificationModule],

@@ -41,6 +41,7 @@
     "mysqldump": "^3.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "sanitize-filename": "^1.6.3",
     "typeorm": "^0.3.12",
     "zlib": "^1.0.5"
   },

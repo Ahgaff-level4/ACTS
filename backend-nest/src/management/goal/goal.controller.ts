@@ -11,7 +11,7 @@ import { ActivityEntity } from '../activity/activity.entity';
 import { ChildEntity } from '../child/child.entity';
 import { UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Controller('api/goal')
 export class GoalController {

@@ -12,7 +12,7 @@ export class PersonService {
 
   constructor(private http: HttpClient, private nt:NotificationService,) { }
 
-  postPerson(person: ICreatePerson): Promise<IPersonEntity> {
+  postPerson(person: FormData): Promise<IPersonEntity> {
     return new Promise((res, rej) => {
       this.http.post<IPersonEntity>(this.personURL, person)
         .subscribe({
@@ -25,7 +25,7 @@ export class PersonService {
     });
   }
 
-  patchPerson(id:number, person: Partial<ICreatePerson>): Promise<SucResEditDel> {
+  patchPerson(id:number, person: FormData): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
       this.http.patch<SucResEditDel>(this.personURL + '/' + id, person)
         .subscribe({

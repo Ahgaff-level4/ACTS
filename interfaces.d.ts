@@ -159,6 +159,7 @@ export interface ICreatePerson {
 
 export interface IPersonEntity extends ICreatePerson {
 	id: number;
+	image?:string;
 }
 
 export interface ICreateStrength {

@@ -115,7 +115,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
           this.nt.notify("Added successfully", 'The new account has been registered successfully', 'success');
           this.ut.router.navigate(['/account']);
         } catch (e) {
-          this.personForm.personService.deletePerson(person.id);//if creating an account run into some problem but person created successfully then just delete the person :>
+          this.personForm.personService.deletePerson(person.id,true);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
         this.ut.isLoading.next(true);

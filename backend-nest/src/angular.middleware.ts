@@ -12,7 +12,12 @@ const allowedExt = [
 	'.woff',
 	'.ttf',
 	'.svg',
-	'.mp4'
+	'.mp4',
+	'.pdf',
+	'.gif',
+	'.jpeg',
+	'.tiff',
+	'.bmp'
 ];
 
 const resolvePath = (file: string) => resolve(`./dist-angular/${file}`);
@@ -20,10 +25,10 @@ const resolvePath = (file: string) => resolve(`./dist-angular/${file}`);
 @Injectable()
 export class AngularMiddleware implements NestMiddleware {
 	use(req: Request, res: Response, next: NextFunction) {
-		if (req.url.indexOf('/api') !== -1) {
+		if (req.url.includes('/api')) {
 			next();
-		} else if (allowedExt.filter(ext => req.url.indexOf(ext) > 0).length > 0) {
-			res.sendFile(resolvePath(req.url));
+		} else if (req.url.startsWith('/assets') || allowedExt.some(v => req.url.includes(v))) {
+			res.sendFile(decodeURI(resolvePath(req.url)));
 		} else {
 			res.sendFile(resolvePath('index.html'));
 		}

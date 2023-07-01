@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Not, Repository } from 'typeorm';
-import { PersonEntity, PersonView } from '../person/person.entity';
+import { Repository } from 'typeorm';
+import { PersonEntity } from '../person/person.entity';
 import { GoalEntity } from '../goal/Goal.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { FieldEntity } from '../field/field.entity';

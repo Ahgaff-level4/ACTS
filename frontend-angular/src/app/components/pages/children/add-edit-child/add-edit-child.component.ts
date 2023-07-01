@@ -104,7 +104,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
           this.nt.notify("Added successfully", 'The new child has been registered successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) {
-          this.personForm.personService.deletePerson(p.id);//if creating a child run some problem but person created successfully then just delete the person :>
+          this.personForm.personService.deletePerson(p.id,true);//if creating a child run some problem but person created successfully then just delete the person :>
         }
       } else {//edit the child
         await this.personForm.submitEdit().catch(() => { });

@@ -1,11 +1,11 @@
-import { BadRequestException, Injectable, UnauthorizedException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt'
 import { AccountEntity, ChangePassword, CreateAccount, UpdateAccount } from './account.entity';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { PersonView } from '../person/person.entity';
 import { RoleEntity } from './role/role.entity';
 import { R } from 'src/utility.service';
+import { PersonEntity } from '../person/person.entity';
 @Injectable()
 export class AccountService {
 
@@ -29,7 +29,7 @@ export class AccountService {
     async findAll() {
         return (await this.repo
             .createQueryBuilder('account')
-            .leftJoinAndMapOne('account.person', PersonView, 'person', 'account.personId=person.id')
+            .leftJoinAndMapOne('account.person', PersonEntity, 'person', 'account.personId=person.id')
             .leftJoinAndSelect('account.rolesEntities', 'roles')
             .getMany())
             .map(this.extractRoles)
@@ -39,7 +39,7 @@ export class AccountService {
     async findOne(id: number) {
         return (await this.repo
             .createQueryBuilder('account')
-            .leftJoinAndMapOne('account.person', PersonView, 'person', 'account.personId=person.id')
+            .leftJoinAndMapOne('account.person', PersonEntity, 'person', 'account.personId=person.id')
             .leftJoinAndSelect('account.rolesEntities', 'roles')
             .leftJoinAndSelect('account.evaluations', 'evaluations')
             .leftJoinAndSelect('account.goals', 'goals')

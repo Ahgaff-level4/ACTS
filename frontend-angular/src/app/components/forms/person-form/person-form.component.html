@@ -1,45 +1,64 @@
 <form [formGroup]="formGroup" class="container-fluid">
-  <div class="row">
-    <div class="col-md-8 p-2">
-      <mat-form-field class="w-100" appearance="fill">
-        <mat-label>{{'Name'|translate}}</mat-label>
-        <mat-icon matPrefix class="material-symbols-rounded">person</mat-icon>
-        <input type="text" matInput placeholder="..." formControlName="name" required minlength="4" maxlength="50">
-        <mat-error *ngIf="formGroup.controls['name'].errors?.['required']">{{'You must enter a value'|translate}}</mat-error>
-        <mat-error *ngIf="formGroup.controls['name'].errors?.['minlength']">{{'Minimum length is '|translate:minlength}}</mat-error>
-      </mat-form-field>
+  <div class="row flex-row-reverse">
+    <div class="col-md-3 d-flex flex-column justify-content-center">
+      <img #imageRef class="mx-auto d-block" style="height: 9.5rem;max-width: 100%;"
+        [attr.src]="image?undefined:('assets/person-images/'+(formGroup.controls['image'].value??'default.svg'))" />
+      <input #imageInput type="file" name="image" (change)="onFileChange($event)" accept="image/*" hidden>
+      <button type="button" class="w-75 mt-2 mx-auto rounded-5 mb-3 mb-md-0" mat-stroked-button (click)="imageInput.click()"
+        color="primary">{{(formGroup.get('image')?.value != null||image?'Change image':'Choose image')|translate}}</button>
     </div>
-    <div class="col-md-4 p-2">
-      <mat-form-field  style="max-width: 250px;width:100%" appearance="fill">
-        <mat-label>{{'Birthdate'|translate}}</mat-label>
-        <input matInput [matDatepicker]="picker" placeholder="..." formControlName="birthDate">
-        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-        <mat-datepicker startView="multi-year" #picker></mat-datepicker>
-      </mat-form-field>
-    </div>
-  </div>
-
-  <div class="row">
-    <div class="col-md-4 p-2">
-      <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
-        <mat-label>{{'Gender'|translate}}</mat-label>
-        <mat-icon matPrefix *ngIf="formGroup.controls['gender'].value=='Male'">male</mat-icon>
-        <mat-icon matPrefix *ngIf="formGroup.controls['gender'].value=='Female'">female</mat-icon>
-        <mat-select required placeholder="..." formControlName="gender">
-          <mat-option value="Male">{{'Male'|translate}}</mat-option>
-          <mat-option value="Female">{{'Female'|translate}}</mat-option>
-        </mat-select>
-        <mat-error *ngIf="formGroup.controls['gender'].errors?.['required']">{{'You must choose a value'|translate}}</mat-error>
-      </mat-form-field>
-    </div>
-    <div class="col-md-4 p-2">
-      <mat-form-field  style="max-width: 250px;width:100%">
-        <mat-label>{{'Register date'|translate}}</mat-label>
-        <input required matInput [matDatepicker]="picker2" [max]="nowDate" placeholder="..." formControlName="createdDatetime">
-        <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-        <mat-datepicker #picker2></mat-datepicker>
-        <mat-error *ngIf="formGroup.controls['createdDatetime'].errors?.['required']">{{'You must choose a date'|translate}}</mat-error>
-      </mat-form-field>
+    <div class="col-md-9 p-2 align-self-start">
+      <div class="row">
+        <div class="col-md-12">
+          <mat-form-field class="w-100" appearance="fill">
+            <mat-label>{{'Name'|translate}}</mat-label>
+            <mat-icon matPrefix class="material-symbols-rounded">person</mat-icon>
+            <input type="text" matInput placeholder="..." formControlName="name" required minlength="4" maxlength="100">
+            <mat-error *ngIf="formGroup.controls['name'].errors?.['required']">
+              {{'You must enter a value'|translate}}
+            </mat-error>
+            <mat-error *ngIf="formGroup.controls['name'].errors?.['minlength']">
+              {{'Minimum length is '|translate:minlength}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
+      <div class="row mt-md-3">
+        <div class="col-md-4">
+          <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+            <mat-label>{{'Gender'|translate}}</mat-label>
+            <mat-icon matPrefix *ngIf="formGroup.controls['gender'].value=='Male'">male</mat-icon>
+            <mat-icon matPrefix *ngIf="formGroup.controls['gender'].value=='Female'">female</mat-icon>
+            <mat-select required placeholder="..." formControlName="gender">
+              <mat-option value="Male">{{'Male'|translate}}</mat-option>
+              <mat-option value="Female">{{'Female'|translate}}</mat-option>
+            </mat-select>
+            <mat-error *ngIf="formGroup.controls['gender'].errors?.['required']">
+              {{'You must choose a value'|translate}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+            <mat-label>{{'Birthdate'|translate}}</mat-label>
+            <input matInput [matDatepicker]="picker" placeholder="..." formControlName="birthDate">
+            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker startView="multi-year" #picker></mat-datepicker>
+          </mat-form-field>
+        </div>
+        <div class="col-md-4">
+          <mat-form-field style="max-width: 250px;width:100%">
+            <mat-label>{{'Register date'|translate}}</mat-label>
+            <input required matInput [matDatepicker]="picker2" [max]="nowDate" placeholder="..."
+              formControlName="createdDatetime">
+            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
+            <mat-datepicker #picker2></mat-datepicker>
+            <mat-error *ngIf="formGroup.controls['createdDatetime'].errors?.['required']">
+              {{'You must choose a date'|translate}}
+            </mat-error>
+          </mat-form-field>
+        </div>
+      </div>
     </div>
   </div>
 </form>

@@ -5,7 +5,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ActivityEntity } from '../activity/activity.entity';
 import { FieldEntity } from '../field/field.entity';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 import { UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
 @Roles('Admin', 'HeadOfDepartment')

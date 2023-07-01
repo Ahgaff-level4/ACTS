@@ -1,8 +1,8 @@
-import { Body, Controller, Delete, Get, Inject, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { ChangePassword, CreateAccount, UpdateAccount } from './account.entity';
 import { Roles } from 'src/auth/Role.guard';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 import { UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
 

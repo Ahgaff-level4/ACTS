@@ -3,7 +3,7 @@ import { Roles } from 'src/auth/Role.guard';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateField, FieldEntity, UpdateField } from './field.entity';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 import { UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
 import { ActivityEntity } from '../activity/activity.entity';

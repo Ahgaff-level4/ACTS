@@ -11,15 +11,7 @@ import { RolesGuard } from './auth/Role.guard';
 import { AuthModule } from './auth/auth.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { config } from 'dotenv'
-import { FieldEntity } from './management/field/field.entity';
-import { PersonEntity, PersonView } from './management/person/person.entity';
-import { AccountEntity } from './management/account/account.entity';
 import { PersonModule } from './management/person/person.module';
-import { ActivityEntity } from './management/activity/activity.entity';
-import { ChildEntity } from './management/child/child.entity';
-import { EvaluationEntity } from './management/evaluation/evaluation.entity';
-import { GoalEntity } from './management/goal/Goal.entity';
-import { ProgramEntity } from './management/program/program.entity';
 import { OtherModule } from './management/other/other.module';
 import { ReportModule } from './management/report/report.module';
 import { AppController } from './app.controller';
@@ -35,13 +27,9 @@ config();
       username: process.env.USER_DB,
       password: process.env.PASSWORD_DB,
       database: process.env.DATABASE,
-      entities: [AccountEntity, ActivityEntity,
-        ChildEntity, EvaluationEntity, FieldEntity,
-        GoalEntity, PersonEntity, PersonView, ProgramEntity
-      ],
-      synchronize: true,
+      synchronize: process.env.PRODUCTION == 'false' ? true : false,
       autoLoadEntities: true,
-      retryAttempts: 1
+      retryAttempts: 1,
     }),
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,

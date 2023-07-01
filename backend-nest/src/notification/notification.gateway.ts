@@ -1,5 +1,5 @@
-import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway, WebSocketServer } from "@nestjs/websockets";
-import { Server, Socket } from "socket.io";
+import { ConnectedSocket, MessageBody, SubscribeMessage, WebSocketGateway } from "@nestjs/websockets";
+import { Socket } from "socket.io";
 import { IAccountEntity, INotification, NotificationMessage, User } from "../../../interfaces";
 import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";

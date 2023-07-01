@@ -8,7 +8,7 @@ import mysqldump from 'mysqldump';
 import { createInterface } from 'readline/promises';
 import { Roles } from 'src/auth/Role.guard';
 import { UserMust } from 'src/utility.service';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 import { Readable } from 'stream';
 import { DataSource } from 'typeorm';
 import { createGunzip, createGzip } from 'zlib';

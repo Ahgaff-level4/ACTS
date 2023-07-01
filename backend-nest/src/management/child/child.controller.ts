@@ -4,7 +4,7 @@ import { CreateChild, UpdateChild } from './child.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { R, UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
-import { NotificationGateway } from 'src/websocket/notification.gateway';
+import { NotificationGateway } from 'src/notification/notification.gateway';
 
 @Controller('api/child')
 export class ChildController {

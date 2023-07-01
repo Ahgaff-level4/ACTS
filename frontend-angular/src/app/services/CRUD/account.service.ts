@@ -1,13 +1,14 @@
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
-import { BehaviorSubject, Observable, ReplaySubject, catchError, map, tap, throwError } from 'rxjs';
+import { Observable, ReplaySubject, map, tap, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from '../privilege.service';
 import { NotificationService } from '../notification.service';
+import { PersonService } from './person.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,7 +20,7 @@ export class AccountService implements OnInit {
 
   constructor(private http: HttpClient, private ut: UtilityService,
     private pr: PrivilegeService, private dialog: MatDialog,
-    private nt: NotificationService,) {
+    private nt: NotificationService,private personService:PersonService) {
     if (this.pr.canUser('accountsPage'))
       this.fetch();
   }
@@ -125,13 +126,14 @@ export class AccountService implements OnInit {
     })
   }
 
-  delete(id: number, manageLoading = false) {
-    return new Promise(async (res, rej) => {
+  delete(account: IAccountEntity, manageLoading = false) {
+    return Promise.all([
+      new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
         return rej();
       }
       manageLoading && this.ut.isLoading.next(true);
-      this.http.delete<SucResEditDel>(this.URL + '/' + id)
+      this.http.delete<SucResEditDel>(this.URL + '/' + account.id)
         .subscribe({
           next: (v) => {
             this.fetch();
@@ -142,7 +144,8 @@ export class AccountService implements OnInit {
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
           }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
         })
-    })
+    }),
+    this.personService.deletePerson(account.personId,false)]);
   }
 
   /**
@@ -183,7 +186,7 @@ export class AccountService implements OnInit {
     }).afterClosed().subscribe(async (v) => {
       if (v === 'Delete') {
         try {
-          await this.delete(account.id, true);
+          await this.delete(account, true);
           this.nt.notify("Deleted successfully", 'The account has been deleted successfully', 'success');
         } catch (e) { }
       }

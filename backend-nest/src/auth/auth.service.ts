@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
-import { Role } from './../../../interfaces.d';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { AccountEntity } from 'src/management/account/account.entity';
 import { AccountService } from 'src/management/account/account.service';
-import { PersonView } from 'src/management/person/person.entity';
+import { PersonEntity } from 'src/management/person/person.entity';
 
 @Injectable()
 export class AuthService {
@@ -13,7 +12,7 @@ export class AuthService {
 	async findAccountsBy(username: string): Promise<AccountEntity[]> {
 		return (await this.dataSource.manager.getRepository(AccountEntity)
 			.createQueryBuilder('account')
-			.leftJoinAndMapOne('account.person', PersonView, 'person', 'person.id=account.personId')
+			.leftJoinAndMapOne('account.person', PersonEntity, 'person', 'person.id=account.personId')
 			.leftJoinAndSelect('account.rolesEntities', 'roles')
 			.where('account.username = :username', { username })
 			.getMany())
