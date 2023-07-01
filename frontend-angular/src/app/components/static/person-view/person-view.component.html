@@ -1,0 +1,20 @@
+<div class="d-flex justify-content-between">
+  <div class="flex-fill">
+    <p>
+      <span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{person.name||'–'}}
+    </p>
+    <p>
+      <span class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(person.birthDate,true)||'–'}}
+    </p>
+    <p>
+      <span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.display.toDate(person.birthDate)||'–'}}
+    </p>
+    <p>
+      <span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(person.gender)||'–'}}
+    </p>
+    <p><span class="fw-bold">
+      {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(person.birthDate)||'–'}}</p>
+  </div>
+  <img #imageRef class="mx-3" style="height:11rem"
+  [src]="'assets/person-images/'+(person.image??'default.svg')" />
+</div>

@@ -53,7 +53,11 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
     });
     this.child = history.state.data;
     this.person = this.child?.person;
-    this.sub = this.accountService.accounts.subscribe((v) => {
+    this.sub = this.accountService.accounts$.subscribe((v) => {
+      if (v == undefined) {
+        this.accountService.fetch();
+        return;
+      }
       this.parents = v.filter(v => v.roles.includes('Parent'));
       this.teachers = v.filter(v => v.roles.includes('Teacher'));
       if (this.child?.teachers)
@@ -104,7 +108,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
           this.nt.notify("Added successfully", 'The new child has been registered successfully', 'success');
           this.ut.router.navigate(['/children']);
         } catch (e) {
-          this.personForm.personService.deletePerson(p.id,true);//if creating a child run some problem but person created successfully then just delete the person :>
+          this.personForm.personService.deletePerson(p.id, true);//if creating a child run some problem but person created successfully then just delete the person :>
         }
       } else {//edit the child
         await this.personForm.submitEdit().catch(() => { });

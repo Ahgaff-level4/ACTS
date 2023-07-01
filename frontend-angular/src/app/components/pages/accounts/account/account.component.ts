@@ -1,23 +1,19 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { IAccountEntity } from '../../../../../../../interfaces';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { animate, state, style, transition, trigger } from '@angular/animations';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { ColDef, GridOptions, SetFilterParams } from 'ag-grid-community';
+import { ColDef, GridOptions } from 'ag-grid-community';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
 })
-export class AccountComponent {
+export class AccountComponent extends UnsubOnDestroy {
   public selectedItem?: IAccountEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
@@ -103,17 +99,19 @@ export class AccountComponent {
   ];
 
   constructor(public accountService: AccountService, public ut: UtilityService,
-    public nt:NotificationService,
+    public nt: NotificationService,
     public agGrid: AgGridService, public display: DisplayService) {
+    super()
   }
 
   ngOnInit(): void {
     this.accountService.fetch();
-    this.accountService.accounts.subscribe(v => {
+    this.sub.add(this.accountService.accounts$.subscribe(v => {
+      if (v == undefined) return;
       this.rowData = this.ut.deepClone(v);
       this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows()
-    });
+    }));
   }
 
   applySearch(event: Event) {
@@ -128,13 +126,13 @@ export class AccountComponent {
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
       this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.accountService.edit(item) : this.nt.notify(null) }),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
 
 
-  ngOnDestroy() {
-
+  override ngOnDestroy() {
     this.accountService.isLoggerIn = false;
+    super.ngOnDestroy();
   }
 }

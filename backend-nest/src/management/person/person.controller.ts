@@ -40,18 +40,15 @@ export class PersonController {
     //THIS IS OVER ENGINEERING :)
     const originalPerson: IPersonEntity = await this.repo.findOneBy({ id: +id });
     let res;
-    if (updatePerson.name && originalPerson.image) {//person's name is updated
-      const oldImageName = this.imageName(originalPerson.name, id, originalPerson.image);
-      const newImageName = this.imageName(updatePerson.name, id, originalPerson.image);
+    if (originalPerson.image) {//update image name
+      const oldImageName = originalPerson.image;
+      const newImageName = this.imageName(updatePerson.name ?? originalPerson.name, id, file?.originalname ?? originalPerson.image);
       await rename(this.imagePath(oldImageName), this.imagePath(newImageName));//rename the image file name
       res = await this.repo.update(id, { image: newImageName });
-      originalPerson.image = newImageName;
     }
-    if (file) {//image is updated
+    if (file) {//update image data
       const fileName = this.imageName(updatePerson.name ?? originalPerson.name, originalPerson.id, file.originalname);
       await writeFile(this.imagePath(fileName), file.buffer);
-      if (!originalPerson.image)
-        res = await this.repo.update(id, { image: fileName });
     }
     return Object.keys(updatePerson).length == 0 ? res : this.repo.update(id, updatePerson);
   }

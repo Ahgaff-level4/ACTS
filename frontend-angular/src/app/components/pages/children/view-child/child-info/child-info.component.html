@@ -1,15 +1,8 @@
 <div *ngIf="child">
   <p *ngIf="child.isArchive===true" class="fw-bold w-100 text-center my-warn-bg text-white rounded-5">
     {{'Archived'|translate}}</p>
-  <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{child.person.name||'–'}}</p>
-  <p><span class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(child.person.birthDate,true)||'–'}}
-  </p>
-  <p><span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.display.toDate(child.person.birthDate)||'–'}}
-  </p>
-  <p><span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(child.person.gender)||'–'}}
-  </p>
-  <p><span class="fw-bold">
-      {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(child.person.birthDate)||'–'}}</p>
+  <app-person-view [person]="child.person"></app-person-view>
+
   <p><span class="fw-bold">{{'Diagnostic'|translate}}:</span>&nbsp;{{child.diagnostic}}</p>
   <p><span class="fw-bold">
       {{'Family information'|translate}}:</span>&nbsp;{{this.display.childFamilyInformation(child)||'–'}}</p>

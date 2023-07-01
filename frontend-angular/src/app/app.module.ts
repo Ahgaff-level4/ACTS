@@ -72,6 +72,7 @@ import { SendMessageComponent } from './components/dialogs/notification-drawer/s
 import { AboutUsComponent } from './components/pages/about-us/about.component';
 import { CardComponent } from './components/static/card/card.component';
 import { TimeframeComponent } from './components/forms/timeframe/timeframe.component';
+import { PersonViewComponent } from './components/static/person-view/person-view.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
@@ -133,6 +134,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     AboutUsComponent,
     CardComponent,
     TimeframeComponent,
+    PersonViewComponent,
   ],
   imports: [
     BrowserModule,

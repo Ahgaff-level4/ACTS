@@ -3,17 +3,9 @@
 <div class="container">
   <app-card>
     <div *ngIf="account$|async as account">
-      <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{account.person.name||'–'}}</p>
-      <p><span
-          class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(account.person.birthDate,true)||'–'}}
-      </p>
-      <p><span
-          class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.display.toDate(account.person.birthDate)||'–'}}
-      </p>
-      <p><span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(account.person.gender)||'–'}}
-      </p>
-      <p><span class="fw-bold">
-          {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(account.person.birthDate)||'–'}}</p>
+
+      <app-person-view [person]="account.person"></app-person-view>
+
       <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{account.username||'–'}}</p>
       <p *ngIf="pr.canUser('accountAddressPhone')"><span class="fw-bold">
           {{'Address'|translate}}:</span>&nbsp;{{account.address||'–'}}</p>
@@ -30,7 +22,7 @@
           <mat-icon>edit</mat-icon>{{'Edit'|translate}}
         </button>
         <button class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="warn"
-          (click)="service.deleteAccount(this.account)"><mat-icon>person_remove</mat-icon>
+          (click)="deleteTheAccount(account)"><mat-icon>person_remove</mat-icon>
           {{'Delete'|translate}}</button>
       </div>
     </div>

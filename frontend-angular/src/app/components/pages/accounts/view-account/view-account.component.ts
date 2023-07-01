@@ -51,9 +51,20 @@ export class ViewAccountComponent extends UnsubOnDestroy {
         { title: 'Child information', titleLink: child.person.name, link: '/child/' + child.id },
         { title: 'Children', link: '/children' }
       ] :
-      [{ title: 'Account information', titleLink: account.person?.name },
-      { title: 'Accounts', link: '/account' }];
+        [{ title: 'Account information', titleLink: account.person?.name },
+        { title: 'Accounts', link: '/account' }];
       return links
     }))
+  }
+
+  deleteTheAccount(account: IAccountEntity) {//navigate back on delete
+    this.links.pipe(map(v => {
+      return v[1].link ?? '/account';
+    })).subscribe((link) => {
+      this.service.deleteAccount(account).then(v => {
+        if (v == 'deleted')
+          this.ut.router.navigateByUrl(link);
+      })
+    });
   }
 }

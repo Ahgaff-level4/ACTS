@@ -105,7 +105,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       this.personForm?.formGroup?.disable();
       if (this.account?.id == null) {//Register new account
         this.ut.isLoading.next(true);
-        let person = await this.personForm.submit().catch(() => { this.ut.isLoading.next(false) });
+        let person = await this.accountService.sensitiveWrapper(()=>this.personForm?.submit()).catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
         if (typeof person != 'object')
           return;
@@ -115,11 +115,11 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
           this.nt.notify("Added successfully", 'The new account has been registered successfully', 'success');
           this.ut.router.navigate(['/account']);
         } catch (e) {
-          this.personForm.personService.deletePerson(person.id,true);//if creating an account run into some problem but person created successfully then just delete the person :>
+          this.personForm.personService.deletePerson(person.id, true);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
         this.ut.isLoading.next(true);
-        await this.personForm.submitEdit().catch(() => { this.ut.isLoading.next(false) });
+        await this.accountService.sensitiveWrapper(()=>this.personForm?.submitEdit()).catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
         let dirtyFields = this.formService.extractDirty(this.accountForm.controls);
         try {
@@ -220,8 +220,8 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
       <li>${this.ut.translate('Admin has all roles privileges and')}:
         <ol>
           ${this.pr.rolePrivileges('Admin')
-          .filter(v=>!this.pr.rolePrivileges('HeadOfDepartment').includes(v))
-          .filter(v=>!this.pr.rolePrivileges('Teacher').includes(v))
+          .filter(v => !this.pr.rolePrivileges('HeadOfDepartment').includes(v))
+          .filter(v => !this.pr.rolePrivileges('Teacher').includes(v))
           .map(v => '<li>' + v + '</li>').join('\n')}
         </ol>
       </li>

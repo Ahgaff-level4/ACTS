@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
-import { Observable, ReplaySubject, map, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, ReplaySubject, map, tap, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
 import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
@@ -15,14 +15,12 @@ import { PersonService } from './person.service';
 })
 export class AccountService implements OnInit {
   public URL = env.API + 'account';
-  public accounts = new ReplaySubject<IAccountEntity[]>();
+  public accounts$ = new BehaviorSubject<IAccountEntity[] | undefined>(undefined);
   public isLoggerIn: boolean = false;
 
   constructor(private http: HttpClient, private ut: UtilityService,
     private pr: PrivilegeService, private dialog: MatDialog,
-    private nt: NotificationService,private personService:PersonService) {
-    if (this.pr.canUser('accountsPage'))
-      this.fetch();
+    private nt: NotificationService, private personService: PersonService) {
   }
 
   ngOnInit(): void {
@@ -39,7 +37,7 @@ export class AccountService implements OnInit {
       this.http.get<IAccountEntity[]>(this.URL, { params: { 'FK': true } })
         .subscribe({
           next: (v) => {
-            this.accounts.next(v);
+            this.accounts$.next(v);
             res();
           }, error: (e) => {
             manageLoading && this.ut.isLoading.next(false);
@@ -126,26 +124,34 @@ export class AccountService implements OnInit {
     })
   }
 
-  delete(account: IAccountEntity, manageLoading = false) {
-    return Promise.all([
-      new Promise(async (res, rej) => {
+  delete(account: IAccountEntity, manageLoading = false): Promise<SucResEditDel> {
+    return new Promise(async (res, rej) => {
       if ((await this.sensitive().catch(() => false) !== true)) {
         return rej();
       }
-      manageLoading && this.ut.isLoading.next(true);
-      this.http.delete<SucResEditDel>(this.URL + '/' + account.id)
-        .subscribe({
-          next: (v) => {
-            this.fetch();
-            res(v);
-          },
-          error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
-            this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
-        })
-    }),
-    this.personService.deletePerson(account.personId,false)]);
+      try {
+        const success = await Promise.all([
+          new Promise(async (res, rej) => {
+            manageLoading && this.ut.isLoading.next(true);
+            this.http.delete<SucResEditDel>(this.URL + '/' + account.id)
+              .subscribe({
+                next: (v) => {
+                  this.fetch();
+                  res(v);
+                },
+                error: (e) => {
+                  manageLoading && this.ut.isLoading.next(false);
+                  this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
+                }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+              })
+          }),
+          this.personService.deletePerson(account.personId, false)
+        ]);
+        return res(success[1]);
+      } catch (e) {
+        return rej(e);
+      }
+    });
   }
 
   /**
@@ -157,17 +163,36 @@ export class AccountService implements OnInit {
   private sensitive(): Promise<boolean> {
     return new Promise((res, rej) => {
       if (this.isLoggerIn === true)
-        res(true);
+        return res(true);
       else this.dialog.open<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, { data: false, direction: this.ut.getDirection() })
         .afterClosed().subscribe((v) => {
           if (v === true) {
             this.isLoggerIn = v;
-            res(true);
+            return res(true);
           } else {
-            rej(false);
+            return rej(false);
           }
         });
     })
+  }
+
+  /**person add/edit/delete is not sensitive. But when the person is bind to account person! We need to call the person's functions such as add/edit... in a sensitive way that what the wrapper will do
+   * @param fun is the function to be wrapped.
+   * @param param is any param that should be provided to the wrapped function.
+   * @return the function returns value
+   */
+  public sensitiveWrapper<T>(fun: (v?: any) => T, param?: any): Promise<T> {
+    return new Promise(async (res, rej) => {
+      if ((await this.sensitive().catch(() => false) !== true)) {
+        return rej();
+      }
+      try {
+        return res(fun(param));
+      } catch (e) {
+        return rej(e);
+      }
+    })
+
   }
 
   reenter(password: string): Observable<User> {
@@ -177,19 +202,23 @@ export class AccountService implements OnInit {
     return throwError(() => 'You must login!')
   }
 
-  /**pop-up a delete confirmation dialog, then delete if user approve */
-  deleteAccount(account: IAccountEntity) {
-    this.nt.showMsgDialog({
-      content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
-      type: 'confirm',
-      buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
-    }).afterClosed().subscribe(async (v) => {
-      if (v === 'Delete') {
-        try {
-          await this.delete(account, true);
-          this.nt.notify("Deleted successfully", 'The account has been deleted successfully', 'success');
-        } catch (e) { }
-      }
+  /**pop-up a delete confirmation dialog, then if user approve: delete and resolve with 'deleted' */
+  deleteAccount(account: IAccountEntity): Promise<'deleted'> {
+    return new Promise((res, rej) => {
+      this.nt.showMsgDialog({
+        content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
+        type: 'confirm',
+        buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
+      }).afterClosed().subscribe(async (v) => {
+        if (v === 'Delete') {
+          try {
+            await this.delete(account, true);
+            this.nt.notify("Deleted successfully", 'The account has been deleted successfully', 'success');
+            return res('deleted');
+          } catch (e) { }
+        }
+      })
+
     })
   }
 
