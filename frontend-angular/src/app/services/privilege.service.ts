@@ -62,8 +62,6 @@ export class PrivilegeService {
       privileges.push('Can access accounts page.');
     if (PRIVILEGES.editAccountPage.concat(PRIVILEGES.addAccountPage).includes(role))
       privileges.push('Can add/edit/delete an account.');
-    if (PRIVILEGES.accountAddressPhone.includes(role))
-      privileges.push('Has address phones information.');
     if (PRIVILEGES.fieldsPage.includes(role))
       privileges.push('Can access fields page.');
     if (PRIVILEGES.addField.concat(PRIVILEGES.editField).concat(PRIVILEGES.deleteField).includes(role))
@@ -136,7 +134,6 @@ export const PRIVILEGES = {
   viewAccountPage: A,
   addAccountPage: A,
   editAccountPage: A,
-  accountAddressPhone: P,
   //FIELD
   fieldsPage: AHT,
   addField: AH,

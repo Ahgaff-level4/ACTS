@@ -1,4 +1,4 @@
-<app-title *ngIf="readonlyAccount == null"
+<app-title
   [links]="[{title:(this.account?.id?'Edit account':'Register new account')},{link:'/account',title:'Accounts'}]"
   [isPrinting]="undefined"></app-title>
 <div class="container ">
@@ -48,7 +48,7 @@
         </mat-form-field>
       </div>
       <div *ngIf="account?.id" class="col-md-4 p-3"><!--Edit-->
-        <button class=" rounded-5" type="button" [disabled]="!!this.readonlyAccount" mat-stroked-button color="primary"
+        <button class=" rounded-5" type="button" mat-stroked-button color="primary"
           (click)="resetPassword()">
           {{'Reset password'|translate}}
         </button>
@@ -76,7 +76,7 @@
           class="mx-2 mat-error">{{getRolesErrorMessage()|translate}}</mat-error>
       </div>
     </div>
-    <div *ngIf="accountForm.get('roles')?.value.includes('Parent')" class="row">
+    <div class="row">
       <div class="col-md-8 p-2">
         <mat-form-field style="width:90%">
           <mat-label>{{'Address'|translate}}</mat-label>
@@ -93,7 +93,7 @@
         </mat-form-field>
       </div>
     </div>
-    <div *ngIf="readonlyAccount == null" class="d-flex mt-4 mb-5 pb-5">
+    <div class="d-flex mt-4 mb-5 pb-5">
       <button [disabled]="isLoading" class="w-75 mx-auto rounded-5" type="submit" mat-raised-button color="primary">
         {{(account?.id == null?'Submit':'Edit')|translate}} </button>
     </div>

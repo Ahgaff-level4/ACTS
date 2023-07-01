@@ -49,6 +49,8 @@ export class PersonController {
     if (file) {//update image data
       const fileName = this.imageName(updatePerson.name ?? originalPerson.name, originalPerson.id, file.originalname);
       await writeFile(this.imagePath(fileName), file.buffer);
+      if (fileName != originalPerson.image)
+        res = await this.repo.update(id, { image: fileName });
     }
     return Object.keys(updatePerson).length == 0 ? res : this.repo.update(id, updatePerson);
   }

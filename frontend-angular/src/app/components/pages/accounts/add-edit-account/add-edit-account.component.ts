@@ -16,7 +16,7 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
   templateUrl: './add-edit-account.component.html',
   styleUrls: ['./add-edit-account.component.scss']
 })
-export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, AfterViewInit {
+export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
   public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
@@ -27,7 +27,6 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   isLoading = false;
   hide = true;
   phoneFields: string[] = [];
-  @Input('account') readonlyAccount: IAccountEntity | undefined;//was used in account table to show account info
 
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService,
@@ -37,9 +36,6 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
   }
 
   ngOnInit(): void {
-    if (this.readonlyAccount)
-      this.account = this.readonlyAccount;
-    else
       this.account = history.state.data;
 
     let maxPhone = -1;
@@ -85,14 +81,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit, A
     this.sub.add(this.ut.isLoading.subscribe(v => this.isLoading = v));
   }
 
-  ngAfterViewInit(): void {
-    if (this.readonlyAccount && this.personForm) {
-      this.accountForm.disable();
-      this.personForm.formGroup.disable();
-      this.accountForm.setValue(this.formService.extractFrom(this.accountForm.controls, this.readonlyAccount));
-      this.personForm.formGroup.setValue(this.formService.extractFrom(this.personForm.formGroup.controls, this.readonlyAccount.person))
-    }
-  }
+
 
   async submit() {
     this.formService.trimFormGroup(this.personForm?.formGroup as FormGroup);

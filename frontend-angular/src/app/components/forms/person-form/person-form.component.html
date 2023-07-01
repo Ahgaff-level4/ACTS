@@ -1,11 +1,11 @@
 <form [formGroup]="formGroup" class="container-fluid">
   <div class="row flex-row-reverse">
     <div class="col-md-3 d-flex flex-column justify-content-center">
-      <img #imageRef class="mx-auto d-block" style="height: 9.5rem;max-width: 100%;"
+      <img #imageRef class="mx-auto rounded-3 d-block" style="height: 9.5rem;max-width: 100%;"
         [attr.src]="image?undefined:('assets/person-images/'+(formGroup.controls['image'].value??'default.svg'))" />
       <input #imageInput type="file" name="image" (change)="onFileChange($event)" accept="image/*" hidden>
-      <button type="button" class="w-75 mt-2 mx-auto rounded-5 mb-3 mb-md-0" mat-stroked-button (click)="imageInput.click()"
-        color="primary">{{(formGroup.get('image')?.value != null||image?'Change image':'Choose image')|translate}}</button>
+      <button type="button" class="w-75 nbsp mt-2 mx-auto rounded-5 mb-3 mb-md-0" mat-stroked-button (click)="imageInput.click()"
+        color="primary">{{(formGroup.get('image')?.value != null||image?'Change image':'Choose image')|translate}}<mat-icon>edit</mat-icon></button>
     </div>
     <div class="col-md-9 p-2 align-self-start">
       <div class="row">

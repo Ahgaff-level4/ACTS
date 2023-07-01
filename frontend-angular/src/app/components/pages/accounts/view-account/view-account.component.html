@@ -7,9 +7,9 @@
       <app-person-view [person]="account.person"></app-person-view>
 
       <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{account.username||'–'}}</p>
-      <p *ngIf="pr.canUser('accountAddressPhone')"><span class="fw-bold">
+      <p><span class="fw-bold">
           {{'Address'|translate}}:</span>&nbsp;{{account.address||'–'}}</p>
-      <p *ngIf="pr.canUser('accountAddressPhone')"><span
+      <p><span
           class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{display.accountPhones(account)||'–'}}</p>
       <p><span class="fw-bold">
           {{'Roles'|translate}}:</span>&nbsp;{{display.accountRoles(account.roles)||'–'}}</p>
