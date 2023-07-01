@@ -19,7 +19,7 @@
   "You must enter a value": "يجب إدخال قيمة",
   "You must choose a value": "يجب إختيار قيمة",
   "You must choose a date": "يجب تحديد تاريخ",
-  "You must choose an activity": "",
+  "You must choose an activity": "يجب إختيار نشاط!",
   "Minimum length is ": "اقل عدد احرف هو {{minlength}}",
   "Maximum length is ": "اكثر عدد احرف هو {{maxlength}}",
   "Arabic": "عربي",
@@ -767,5 +767,7 @@
   "Child Teachers":"مدرسين الطفل",
   "Select duration":"تحديد فترة",
   "Change image":"تغيير الصورة",
-  "Choose image":"اختر صورة"
+  "Choose image":"اختر صورة",
+  "Child's program":"برنامج الطفل",
+  "This program is the child program":"هذا البرنامج هو برنامج الطفل"
 }

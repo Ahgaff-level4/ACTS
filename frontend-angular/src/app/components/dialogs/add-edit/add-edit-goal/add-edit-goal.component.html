@@ -14,10 +14,8 @@
         <div class="row" *ngIf="selectedActivity">
           <div class="col-md-12">
             <mat-list>
-              <mat-list-item>
-                <div matListItemTitle>{{selectedActivity.name}}</div>
-                <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{selectedActivity.minAge}} –
-                  {{selectedActivity.maxAge}}</div>
+              <mat-list-item style="min-height: 4.2rem;">
+                <app-activity-item [activity]="selectedActivity" [child]="(child$|async)??undefined"></app-activity-item>
               </mat-list-item>
             </mat-list>
           </div>

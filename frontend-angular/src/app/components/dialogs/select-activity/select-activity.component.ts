@@ -8,9 +8,7 @@ import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
-import { SelectionChangedEvent } from 'ag-grid-community';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
-import { BehaviorSubject, Observable } from 'rxjs';
 
 @Component({
   selector: 'app-select-activity',
@@ -19,7 +17,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
 })
 export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   public chosenProgram: IProgramEntity | undefined;
-  public filterByAgeTwoWay: 'age' | 'all' = 'age';
+  public filterByAgeTwoWay: 'age' | 'all' = this.data.child.person.birthDate ? 'age' : 'all';
   public filterByFieldsTwoWay: IFieldEntity[] = [];
   public activities: IActivityEntity[] | [] = [];
   /**
@@ -97,13 +95,5 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
         if (typeof v === 'object')
           this.dialogRef.close(v);
       });
-  }
-
-  isActivityChildGoal(activity: IActivityEntity): boolean {
-    return this.data.child.goals?.map(v => v.activityId).includes(activity.id);
-  }
-
-  isActivityChildStrength(activity: IActivityEntity): boolean {
-    return this.data.child.strengths?.map(v => v.activityId).includes(activity.id);
   }
 }

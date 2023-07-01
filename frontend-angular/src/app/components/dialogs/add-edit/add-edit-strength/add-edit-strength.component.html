@@ -1,23 +1,26 @@
 <div>
-  <h1 mat-dialog-title>{{((strengthOrChildId|type: 'object')?'Edit strength':'Add new strength')|translate}}</h1>
+  <h1 mat-dialog-title>
+    {{((strengthOrChildId|type: 'object')?'Edit strength':'Add new strength')|translate}}
+  </h1>
   <form [formGroup]="formGroup" class="container-fluid" (submit)="submit($event)">
     <div mat-dialog-content>
       <div class="mb-3">
         <div class="row">
           <div class="col-md-12">
-            <button class="w-100 rounded-5" type="button" mat-flat-button color="primary"
-              (click)="selectActivity()">{{(selectedActivity?'Change the activity':'Choose an activity')|translate}}</button>
-            <mat-error *ngIf="formGroup.get('activityId')?.errors?.['dirty']" style="font-size: small;font-weight: 500;" class="mx-2 mat-error">{{'You must choose an activity'|translate}}</mat-error>
+            <button class="w-100 rounded-5" type="button" mat-flat-button color="primary" (click)="selectActivity()">
+              {{(selectedActivity?'Change the activity':'Choose an activity')|translate}}
+            </button>
+            <mat-error *ngIf="formGroup.get('activityId')?.errors?.['dirty']" style="font-size: small;font-weight: 500;"
+              class="mx-2 mat-error">{{'You must choose an activity'|translate}}</mat-error>
           </div>
         </div>
 
         <div class="row" *ngIf="selectedActivity">
           <div class="col-md-12">
             <mat-list>
-              <mat-list-item>
-                <div matListItemTitle>{{selectedActivity.name}}</div>
-                <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{selectedActivity.minAge}} –
-                  {{selectedActivity.maxAge}}</div>
+              <mat-list-item style="min-height: 4.2rem;">
+                <app-activity-item [activity]="selectedActivity"
+                  [child]="(child$|async)??undefined"></app-activity-item>
               </mat-list-item>
             </mat-list>
           </div>
@@ -43,7 +46,9 @@
               formControlName="assignDatetime">
             <mat-datepicker-toggle matSuffix [for]="picker6"></mat-datepicker-toggle>
             <mat-datepicker #picker6></mat-datepicker>
-            <mat-error *ngIf="formGroup.get('assignDatetime')?.errors?.['required']">{{'You must choose a date'|translate}}</mat-error>
+            <mat-error *ngIf="formGroup.get('assignDatetime')?.errors?.['required']">
+              {{'You must choose a date'|translate}}
+            </mat-error>
           </mat-form-field>
         </div>
       </div>

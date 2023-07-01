@@ -19,6 +19,7 @@ export class ChildService {
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
       .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
       .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
+      .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .where('teacher.id=:accountId', { accountId })
       .getMany();
   }
@@ -31,6 +32,7 @@ export class ChildService {
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
       .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
       .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
+      .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .where('child.parentId=:accountId', { accountId })
       .getMany();
   }
@@ -48,6 +50,7 @@ export class ChildService {
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', 'teacher.personId=teacherPerson.id')
       .leftJoinAndMapOne('child.parent', AccountEntity, 'parentAccount', 'child.parentId=parentAccount.id')
       .leftJoinAndMapOne('parentAccount.person', PersonEntity, 'parentPerson', 'parentAccount.personId=parentPerson.id')
+      .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .getMany();
   }
 
@@ -59,21 +62,23 @@ export class ChildService {
       .leftJoinAndMapOne('goal.teacher', AccountEntity, 'teacher', "goal.teacherId=teacher.id")
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', "teacher.personId=teacherPerson.id")
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
-      .leftJoinAndMapOne('activity.program', ProgramEntity, 'program', 'activity.programId=program.id')
+      .leftJoinAndMapOne('activity.program', ProgramEntity, 'activityProgram', 'activity.programId=activityProgram.id')
+      .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .where('child.id=:id', { id })
       // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();
-  }
-
-  async findOneItsStrengths(id: number) {
-    return this.repo.createQueryBuilder('child')
+    }
+    
+    async findOneItsStrengths(id: number) {
+      return this.repo.createQueryBuilder('child')
       .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
       .leftJoinAndMapMany('child.strengths', GoalEntity, 'goal', 'child.id=goal.childId AND goal.state = :state', { state: 'strength' })
       .leftJoinAndMapOne('goal.activity', ActivityEntity, 'activity', "goal.activityId=activity.id")
       .leftJoinAndMapOne('goal.teacher', AccountEntity, 'teacher', "goal.teacherId=teacher.id")
       .leftJoinAndMapOne('teacher.person', PersonEntity, 'teacherPerson', "teacher.personId=teacherPerson.id")
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
-      .leftJoinAndMapOne('activity.program', ProgramEntity, 'program', 'activity.programId=program.id')
+      .leftJoinAndMapOne('activity.program', ProgramEntity, 'activityProgram', 'activity.programId=activityProgram.id')
+      .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .where('child.id=:id', { id })
       // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();

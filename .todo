@@ -16,4 +16,4 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - send email reset password. after adding email field in Account, dah...
 
-- Teacher should see his children only
+- add children of a teacher/parent in account-view page. Like in child-view for teachers

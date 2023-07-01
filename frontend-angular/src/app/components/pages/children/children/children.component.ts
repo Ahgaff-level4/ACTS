@@ -9,6 +9,7 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 
 @Component({
   selector: 'app-children',
@@ -160,30 +161,30 @@ export class ChildrenComponent extends UnsubOnDestroy {
       headerName: 'Parent',
       tooltipValueGetter: (v) => v.data?.parent?.username ? this.ut.translate('Username') + ': ' + v.data.parent.username : '',
     },
-
-    ...this.pr.canUser('archiveChild') ?//add isArchive column if user can add/edit. We are forced to duplicate teacher column for false closure unless we do a function and make it big deal.
-      [{
-        field: 'teachers',
-        headerName: 'Teachers',
-        valueGetter: (v) => this.display.childTeachers(v.data),
-        tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
-      }, {
-        field: 'isArchive',
-        headerName: 'Archive',
-        type: 'enum',
-        filterParams: {
-          values: [true, false],
-          valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive')
-        } as ISetFilterParams<IChildEntity, boolean>,
-        valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive'),
-        hide: true,
-      }] as ColDef<IChildEntity>[] : [{
-        field: 'teachers',
-        headerName: 'Teachers',
-        valueGetter: (v) => v.data?.teachers.map(v => v.person.name).join(this.ut.translate(', ')),
-        tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
-      }] as ColDef<IChildEntity>[],
-
+    {
+      field: 'teachers',
+      headerName: 'Teachers',
+      valueGetter: (v) => this.display.childTeachers(v.data),
+      tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
+    },
+    {
+      field: 'program.name',
+      headerName: 'Program',
+      type: 'enum',
+      valueGetter: (v) => v.data?.program?.name,
+      // filterParams: assigned on init
+    },
+    {
+      field: 'isArchive',
+      headerName: 'Archive',
+      type: 'enum',
+      filterParams: {
+        values: [true, false],
+        valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive')
+      } as ISetFilterParams<IChildEntity, boolean>,
+      valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive'),
+      hide: true,
+    }
   ];
 
 
@@ -198,12 +199,17 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
     public ut: UtilityService, public pr: PrivilegeService, private nt: NotificationService,
-    public display: DisplayService) {
+    public display: DisplayService, private programService: ProgramService) {
     super();
   }
 
   ngOnInit() {
     this.childService.fetchChildren(true);
+    this.sub.add(this.programService.programs$.subscribe(v => {
+      let col = this.gridOptions.api?.getColumnDef('program.name');
+      if (col)
+        col.filterParams = { values: v.map(n => n.name) }
+    }));
   }
 
   applySearch(event: Event) {
@@ -252,6 +258,11 @@ export class ChildrenComponent extends UnsubOnDestroy {
       this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) },
       (e) => {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
+        if (!this.pr.canUser('archiveChild')) {
+          this.columnDefs.splice(this.columnDefs.map(v => v.field).indexOf('isArchive'), 1);
+          this.gridOptions.api?.setColumnDefs(this.columnDefs);
+        }
+        this.gridOptions.api?.redrawRows();
       }
     ),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,

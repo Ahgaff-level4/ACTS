@@ -1,15 +1,14 @@
-import { AfterViewChecked, AfterViewInit, Component, Input, OnDestroy, OnInit, ViewChild, HostListener } from '@angular/core';
-import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity, IProgramEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
-import { Observable, Subscription } from 'rxjs';
 import { AccountService } from 'src/app/services/CRUD/account.service';
-import { ComponentCanDeactivate } from 'src/app/app-routing.module';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 
 @Component({
   selector: 'app-add-edit-child',
@@ -29,7 +28,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
     private accountService: AccountService, private formService: FormService,
-    private nt: NotificationService,) {
+    private nt: NotificationService, public programService: ProgramService) {
     super();
   }
 
@@ -48,12 +47,13 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       behaviors: [null, [Validators.maxLength(512)]],
       prioritySkills: [null, [Validators.maxLength(512)]],
       parentId: [null],
+      programId: [null],
       isArchive: [false],
       teachers: [[]]//array of IDs of teacher.
     });
     this.child = history.state.data;
     this.person = this.child?.person;
-    this.sub = this.accountService.accounts$.subscribe((v) => {
+    this.sub.add(this.accountService.accounts$.subscribe((v) => {
       if (v == undefined) {
         this.accountService.fetch();
         return;
@@ -63,7 +63,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       if (this.child?.teachers)
         for (let c of this.child.teachers)
           this.teachers = this.teachers.map(t => c.id == t.id ? c : t);
-    });
+    }));
 
     if (this.child) {
       this.childForm?.setValue(this.formService.extractFrom(this.childForm.controls, this.child));

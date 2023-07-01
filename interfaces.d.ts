@@ -121,6 +121,7 @@ export interface ICreateChild {
 	isArchive?: boolean | null;
 	parentId?: number | null;
 	personId: number;
+	programId?: number;
 }
 
 export interface IChildEntity extends ICreateChild {
@@ -130,6 +131,7 @@ export interface IChildEntity extends ICreateChild {
 	goals: IGoalEntity[];
 	strengths: IStrengthEntity[];
 	teachers: IAccountEntity[];
+	program?: IProgramEntity;
 	familyMembers?: number | null;
 	/** registerDate: (is person.createdDatetime) */
 }
@@ -159,7 +161,7 @@ export interface ICreatePerson {
 
 export interface IPersonEntity extends ICreatePerson {
 	id: number;
-	image?:string;
+	image?: string;
 }
 
 export interface ICreateStrength {
@@ -280,6 +282,6 @@ export interface IDashboard {
 export interface NotificationMessage {
 	from: User,
 	/**`null` means it is broadcast notification message */
-	to:User|null,
+	to: User | null,
 	text: string;
 }

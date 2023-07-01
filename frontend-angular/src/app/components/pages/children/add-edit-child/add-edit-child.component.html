@@ -152,7 +152,7 @@
         <mat-form-field class="w-100">
           <mat-label>{{'Parent'|translate}}</mat-label>
           <mat-select formControlName="parentId">
-            <mat-option [value]="null">--&nbsp;{{"None"|translate}}&nbsp;--</mat-option>
+            <mat-option class="text-center" [value]="null">&mdash;</mat-option>
             <mat-option *ngFor="let parent of parents" [value]="parent.id">
               <span style="font-size: medium;" class="d-block pt-2">{{parent.person.name}}</span>&nbsp;
               <span style="font-size: small;" class="opacity-75">{{parent.username}}</span>
@@ -174,7 +174,18 @@
           </mat-select>
         </mat-form-field>
       </div>
-      <div *ngIf="child?.id" class="col-md-6 p-2">
+      <div class="col-md-3 p-2">
+        <mat-form-field class="w-100">
+          <mat-label>{{'Program'|translate}}</mat-label>
+          <mat-select formControlName="programId">
+            <mat-option class="text-center" [value]="null">&mdash;</mat-option>
+            <mat-option *ngFor="let program of programService.programs$|async" [value]="program.id">
+              {{program.name}}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div *ngIf="child?.id" class="col-md-3 p-2">
         <div class="d-flex align-items-center mx-2 mt-2">
           <mat-slide-toggle (change)="archiveChanged()" color="warn"
             formControlName="isArchive">{{'Archive'|translate}}</mat-slide-toggle>

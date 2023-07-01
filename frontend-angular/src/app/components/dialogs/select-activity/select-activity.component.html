@@ -4,7 +4,10 @@
   <mat-selection-list #listProgram [multiple]="false"
     (selectionChange)="onSelectionChangeProgram(listProgram?.selectedOptions?.selected?.[0]?.value)">
     <mat-list-option *ngFor="let program of this.programService.programs$|async" [value]="program">
-      {{program.name}}
+      {{program.name}} <mat-chip *ngIf="data.child.programId==program.id" class="mx-2 h-100" color="primary"
+        [highlighted]="true" [matTooltip]="'This program is the child program'|translate">
+        {{"Child's program"|translate}}
+      </mat-chip>
     </mat-list-option>
   </mat-selection-list>
 
@@ -12,8 +15,11 @@
     <!-- <h5 class="pt-3 fw-normal pb-1 mb-0">{{'Choose an activity'|translate}}</h5> -->
     <mat-button-toggle-group [(ngModel)]="filterByAgeTwoWay" (change)="filterByAge()" class="w-100"
       aria-label="Filter activities">
-      <mat-button-toggle class="w-100" value="all">{{'All activities'|translate}}</mat-button-toggle>
-      <mat-button-toggle class="w-100" [matTooltip]="'Filter activities within age range of the child age'|translate"
+      <mat-button-toggle [disabled]="!data.child.person.birthDate" class="w-100" value="all">
+        {{'All activities'|translate}}
+      </mat-button-toggle>
+      <mat-button-toggle [disabled]="!data.child.person.birthDate" class="w-100"
+        [matTooltip]="('Filter activities within age range of the child age'|translate)+(data.child.person.birthDate?(' '+'('+(data.child.person.birthDate|fromNow:true)+')'):'')"
         value="age" [checked]="true">{{'Filter by child age'|translate}}</mat-button-toggle>
     </mat-button-toggle-group>
     <mat-form-field class="w-100 mt-2" appearance="outline">
@@ -29,17 +35,8 @@
     </p>
     <mat-selection-list #listActivity [multiple]="false"
       (selectionChange)="onSelectionChangeActivity(listActivity?.selectedOptions?.selected?.[0]?.value)">
-      <mat-list-option *ngFor="let activity of activities" [value]="activity">
-        <div matListItemTitle>{{activity.name}}</div>
-        <div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} –
-          {{activity.maxAge}}&nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;{{'Field'|translate}}:&nbsp;{{activity.field?.name}}
-          <mat-chip *ngIf="isActivityChildGoal(activity)" class="mx-2 h-100" color="primary" [highlighted]="true" [matTooltip]="'This activity is goal to the child'|translate">
-            {{'Goal'|translate}}
-          </mat-chip>
-          <mat-chip *ngIf="isActivityChildStrength(activity)" class="mx-2 h-100" color="primary" [highlighted]="true" [matTooltip]="'This activity is strength to the child'|translate">
-            {{'Strength'|translate}}
-          </mat-chip>
-        </div>
+      <mat-list-option *ngFor="let activity of activities" [value]="activity" style="min-height: 4.2rem;">
+        <app-activity-item class="d-inline" [activity]="activity" [child]="data.child"></app-activity-item>
       </mat-list-option>
     </mat-selection-list>
   </div>

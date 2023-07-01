@@ -150,16 +150,16 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
       }, error: () => this.ut.isLoading.next(false)
     });
 
-    this.fieldService.fields$.subscribe(v => {
+    this.sub.add(this.fieldService.fields$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('field.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
-    });
-    this.programService.programs$.subscribe(v => {
+    }));
+    this.sub.add(this.programService.programs$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('program.name');
       if (col)
         col.filterParams = { values: v.map(n => n.name) }
-    });
+    }));
   }
 
   applySearch(event: Event) {

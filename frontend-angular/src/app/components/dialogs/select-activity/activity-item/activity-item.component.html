@@ -1,0 +1,12 @@
+<div matListItemTitle>{{activity.name}}</div>
+<div matListItemLine>{{'Age range'|translate}}:&nbsp;{{activity.minAge}} –
+  {{activity.maxAge}}&nbsp;&nbsp;&nbsp;&#8226;&nbsp;&nbsp;&nbsp;{{'Field'|translate}}:&nbsp;{{activity.field?.name}}
+  <mat-chip *ngIf="isActivityChildGoal(activity)" class="mx-2 h-100" color="warn" [highlighted]="true"
+    [matTooltip]="'This activity is goal to the child'|translate">
+    {{'Goal'|translate}}
+  </mat-chip>
+  <mat-chip *ngIf="isActivityChildStrength(activity)" class="mx-2 h-100" color="warn" [highlighted]="true"
+    [matTooltip]="'This activity is strength to the child'|translate">
+    {{'Strength'|translate}}
+  </mat-chip>
+</div>
