@@ -1,0 +1,11 @@
+<div class="d-flex">
+  <mat-list-item class="">
+    <div matListItemTitle>{{ titleText|translate }}</div>
+    <div matListItemLine>
+      {{(content??'')|translate}}
+    </div>
+  </mat-list-item>
+  <a *ngIf="link" class="align-self-center" mat-icon-button [routerLink]="link" [matTooltip]="(linkTooltip??'')| translate">
+    <mat-icon color="primary" class="mb-1">wysiwyg</mat-icon>
+  </a>
+</div>

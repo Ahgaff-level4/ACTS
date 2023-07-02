@@ -1,12 +1,11 @@
 import { animate, group, query, style, transition, trigger } from '@angular/animations';
 import { Component } from '@angular/core';
 import { DateAdapter } from '@angular/material/core';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, RouterOutlet } from '@angular/router';
+import { RouterOutlet } from '@angular/router';
 import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 import { LoginService } from 'src/app/services/login.service';
 import { SocketService } from 'src/app/services/socket.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
@@ -44,8 +43,7 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 export class AppComponent extends UnsubOnDestroy {
 
   constructor(public translate: TranslateService, private websocket: SocketService,
-    private ut: UtilityService, private dateAdapter: DateAdapter<moment.Moment>,
-    private loginService: LoginService,) {
+    private dateAdapter: DateAdapter<moment.Moment>, private loginService: LoginService) {
     super()
   }
 
@@ -56,14 +54,6 @@ export class AppComponent extends UnsubOnDestroy {
     this.translate.setDefaultLang('en');
     this.translate.use(localStorage.getItem('lang') === 'ar' ? 'ar' : 'en');//in the constructor to speed up language used
     this.sub.add(this.translate.onLangChange.subscribe(() => this.handleOnLangChange()));
-    this.sub.add(this.ut.router.events.subscribe({
-      next: (event) => {
-        if (event instanceof NavigationStart)
-          this.ut.isLoading.next(true)
-        else if (event instanceof NavigationEnd || event instanceof NavigationCancel || event instanceof NavigationError)
-          this.ut.isLoading.next(false);
-      }, error: () => this.ut.isLoading.next(false)
-    }));
 
     this.handleOnLangChange();
     var isRememberMe: 'true' | 'false' = localStorage.getItem('isRememberMe') as 'true' | 'false';

@@ -1,6 +1,5 @@
 <app-title [links]="[{title:'Strengths of', titleSuffix:childItsStrengths?.person?.name,titleLink:'Strengths'},
-{title:service.childItsStrengths$.value?.person?.name??'',link:'/child/'+service.childItsStrengths$.value?.id},
-
+{title:service.childItsStrengths$.value?.person?.name??'',link:'children/child/'+service.childItsStrengths$.value?.id},
 {title:'Children',link:'/children'}]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"

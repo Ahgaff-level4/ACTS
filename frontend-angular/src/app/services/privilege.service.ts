@@ -126,6 +126,7 @@ const AH: Role[] = ['Admin', 'HeadOfDepartment'];
 const AHT: Role[] = ['Admin', 'HeadOfDepartment', 'Teacher'];
 const AHTP: Role[] = ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'];
 const P: Role[] = ['Parent'];
+const T: Role[] = ['Teacher'];
 const AT: Role[] = ['Admin', 'Teacher']
 export type Privilege = keyof typeof PRIVILEGES;
 export const PRIVILEGES = {

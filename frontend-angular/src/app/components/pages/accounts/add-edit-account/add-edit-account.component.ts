@@ -102,7 +102,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
           const { repeatPassword, ...accountFields } = this.accountForm.value;//exclude repeatPassword property
           await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
           this.nt.notify("Added successfully", 'The new account has been registered successfully', 'success');
-          this.ut.router.navigate(['/account']);
+          this.ut.router.navigate(['/accounts']);
         } catch (e) {
           this.personForm.personService.deletePerson(person.id, true);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
@@ -115,7 +115,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
           this.nt.notify("Edited successfully", 'The account has been edited successfully', 'success');
-          this.ut.router.navigate(['/account']);
+          this.ut.router.navigate(['/accounts']);
         } catch (e) { }
       }
       this.accountForm?.enable();

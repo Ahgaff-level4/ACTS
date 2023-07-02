@@ -164,14 +164,14 @@ export class SocketService implements OnDestroy {
     if (n.payloadId) {
       if ((n.controller == 'child') &&
         n.method != 'DELETE') {
-        return { href: '/child/' + n.payloadId };//todo make child/account view information only
+        return { href: 'children/child/' + n.payloadId };//todo make child/account view information only
       } else if (n.controller == 'account' &&
         n.method != 'DELETE')
         return { href: '/account/' + n.payloadId };//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
       else if (n.controller == 'program')
-        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Programs'), href: '/program' }
+        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Programs'), href: '/programs' }
       else if (n.controller == 'field')
-        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Fields'), href: '/field' }
+        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Fields'), href: '/fields' }
     }
     return undefined;
   }

@@ -27,7 +27,7 @@
   "Call the administrator to reset your password. If you are the administrator then try to access the system with another account that has Admin privilege, so that you can reset this account password. If nothing of the previous steps works then try to contact the technician who set up this system.": "تواصل مع المشرف لإعادة كلمة المرور. إذا كنت انت المشرف إذا حاول تسجيل الدخول بإستخدام حساب اخر يحمل صلاحيات المشرف ثم اعد كلمة المرور لهذا الحساب. إذا لم تنجح إحدى الطرق السابقة إذا تواصل مع الفني الذي ثبت هذا النظام.",
   "You must login!": "يجب تسجيل الدخول اولاً!",
   "Insufficient privilege!": "ليس لديك صلاحية!",
-  "You don't have sufficient privilege to do this action!": "ليس لديك صلاحية!",
+  "You don't have sufficient privilege to do this action!": "عذرًا، ليس لديك صلاحية للوصول إلى هذه الصفحة، أو لفعل هذه العملية. حاول تسجيل الدخول، إذا كنت مسجل الدخول إذا هذه الصفحة/العملية تحتاج إلى دور غير دورك.",
   "Children": "الأطفال",
   "Name": "الاسم",
   "Age": "العمر",
@@ -387,7 +387,7 @@
   "ACTS - Home": "الرئيسية - ACTS",
   "Checked": "مختار",
   "Unchecked": "غير مختار",
-  "You don't have sufficient privilege to edit!": "ليس لديك امتياز كاف للتعديل!",
+  "You don't have sufficient privilege to edit!": "ليس لديك صلاحيات للتعديل!",
   "Created": "تم إنشاء",
   "No data available": "لا توجد بيانات متاحة",
   "Added successfully": "تمت الإضافة بنجاح",
@@ -769,5 +769,7 @@
   "Change image":"تغيير الصورة",
   "Choose image":"اختر صورة",
   "Child's program":"برنامج الطفل",
-  "This program is the child program":"هذا البرنامج هو برنامج الطفل"
+  "This program is the child program":"هذا البرنامج هو برنامج الطفل",
+  "Login by another account":"تسجيل الدخول بحساب آخر",
+  "Teaches Children":"يدرس الأطفال"
 }

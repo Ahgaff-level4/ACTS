@@ -18,7 +18,7 @@ import { ChildService } from 'src/app/services/CRUD/child.service';
 })
 export class ViewAccountComponent extends UnsubOnDestroy {
   public account$!: Observable<IAccountEntity>;
-  public links: Observable<TitleLink[]> = new Observable(s => s.next([{ title: 'Accounts', link: '/account' }]));//init
+  public links$: Observable<TitleLink[]> = new Observable(s => s.next([{ title: 'Accounts', link: '/accounts' }]));//init
   constructor(private route: ActivatedRoute, public service: AccountService, private nt: NotificationService,
     public ut: UtilityService, public pr: PrivilegeService, public display: DisplayService, private childService: ChildService) { super(); }
 
@@ -42,7 +42,7 @@ export class ViewAccountComponent extends UnsubOnDestroy {
       }));
 
     this.account$ = obs.pipe(map(v => v[0]));
-    this.links = obs.pipe(map(v => {
+    this.links$ = obs.pipe(map(v => {
       let account: IAccountEntity = v[0];
       let child: IChildEntity | undefined = v[1];
       let links: TitleLink[] = child?.person?.name ? [
@@ -52,14 +52,14 @@ export class ViewAccountComponent extends UnsubOnDestroy {
         { title: 'Children', link: '/children' }
       ] :
         [{ title: 'Account information', titleLink: account.person?.name },
-        { title: 'Accounts', link: '/account' }];
+        { title: 'Accounts', link: '/accounts' }];
       return links
     }))
   }
 
   deleteTheAccount(account: IAccountEntity) {//navigate back on delete
-    this.links.pipe(map(v => {
-      return v[1].link ?? '/account';
+    this.links$.pipe(map(v => {
+      return v[1].link ?? '/accounts';
     })).subscribe((link) => {
       this.service.deleteAccount(account).then(v => {
         if (v == 'deleted')

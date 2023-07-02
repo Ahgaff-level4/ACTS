@@ -10,8 +10,8 @@ import { DateTimeWeekPipe } from '../pipes/date-time-week.pipe';
 })
 export class DisplayService {
 
-  constructor(private ut: UtilityService,private toDatePipe: DatePipe,
-    private fromNowPipe: FromNowPipe,private dateTimeWeekPipe: DateTimeWeekPipe,) { }
+  constructor(private ut: UtilityService, private toDatePipe: DatePipe,
+    private fromNowPipe: FromNowPipe, private dateTimeWeekPipe: DateTimeWeekPipe,) { }
 
 
   /**User friendly to display a child's teachers name */
@@ -78,5 +78,10 @@ export class DisplayService {
   /**@returns string format as 'yyyy/M/D. h:mm A. dddd' */
   public toDateTimeWeek(value: string | Date | moment.Moment | null | undefined): string {
     return this.dateTimeWeekPipe.transform(value);
+  }
+
+  /** display the children that the teacher teaches, specifically children name array joined by a comma */
+  accountTeaches(teacher: IAccountEntity): string {
+    return teacher.teaches?.map(c => c.person?.name).join(this.ut.translate(', ')) ?? '';
   }
 }

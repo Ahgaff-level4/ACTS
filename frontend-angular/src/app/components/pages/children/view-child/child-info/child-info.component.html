@@ -23,8 +23,8 @@
 
   <app-control-buttons *ngIf="!isPrinting"
     [buttons]="[null,{show:pr.canUser('editChildPage'),text:'Edit',icon:'edit'},
-      {show:pr.canUser('childGoalsPage'),link:'/child/'+child.id+'/goals',text:'Goals',icon:'sports_score'},
-      {show:pr.canUser('childStrengthsPage'),link:'/child/'+child.id+'/strengths',text:'Strengths',icon:'fitness_center'},
-      {show:hideReport != true && this.pr.canUser('childReportPage'),link:'/child/'+child.id+'/report',text:'Report',icon:'analytics'}]"
+      {show:pr.canUser('childGoalsPage'),link:'children/child/'+child.id+'/goals',text:'Goals',icon:'sports_score'},
+      {show:pr.canUser('childStrengthsPage'),link:'children/child/'+child.id+'/strengths',text:'Strengths',icon:'fitness_center'},
+      {show:hideReport != true && this.pr.canUser('childReportPage'),link:'children/child/'+child.id+'/report',text:'Report',icon:'analytics'}]"
     (click1)="ut.router.navigate(['edit-child'], { state: { data: child } })"></app-control-buttons>
 </div>

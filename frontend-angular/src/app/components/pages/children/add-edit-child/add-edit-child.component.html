@@ -1,6 +1,6 @@
 <!--Note: this component used in add/edit child page AND in children table-->
 <app-title [links]="[{title:(child?.id?'Edit child information':'Register a child'),titleLink:this.child?'Edit':undefined},
-{hide:!this.child,title:child?.person?.name??'',link:'/child/'+child?.id},
+{hide:!this.child,title:child?.person?.name??'',link:'/children/child/'+child?.id},
 {title:'Children',link:'/children'}]" [isPrinting]="undefined"></app-title>
 <div class="container">
   <app-person-form [(person)]="person"></app-person-form>

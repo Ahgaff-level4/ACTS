@@ -1,26 +1,30 @@
-<app-title [links]="(links|async)??[{ title: 'Accounts', link: '/account' }]"
-  [isPrinting]="undefined"></app-title>
-<div class="container">
+<app-title *ngIf="links$|async as links" [links]="links" [isPrinting]="undefined"></app-title>
+<div class="container" *ngIf="account$|async as account">
   <app-card>
-    <div *ngIf="account$|async as account">
+    <app-person-view [person]="account.person"></app-person-view>
+    <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{account.username||'–'}}</p>
+    <p><span class="fw-bold">
+        {{'Address'|translate}}:</span>&nbsp;{{account.address||'–'}}</p>
+    <p><span class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{display.accountPhones(account)||'–'}}</p>
+    <p><span class="fw-bold">
+        {{'Roles'|translate}}:</span>&nbsp;{{display.accountRoles(account.roles)||'–'}}</p>
 
-      <app-person-view [person]="account.person"></app-person-view>
+    <p *ngIf="account.roles.includes('Teacher')"><span
+        class="fw-bold">{{'Teaches'|translate}}:</span>&nbsp;{{display.accountTeaches(account)}}</p>
+    <app-control-buttons [buttons]="[null,{text:'Edit',icon:'edit',},
+        {text:'Delete',icon:'person_remove',color:'warn'}]" (click1)="service.edit(this.account)"
+      (click2)="deleteTheAccount(account)"></app-control-buttons>
+  </app-card>
 
-      <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{account.username||'–'}}</p>
-      <p><span class="fw-bold">
-          {{'Address'|translate}}:</span>&nbsp;{{account.address||'–'}}</p>
-      <p><span
-          class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{display.accountPhones(account)||'–'}}</p>
-      <p><span class="fw-bold">
-          {{'Roles'|translate}}:</span>&nbsp;{{display.accountRoles(account.roles)||'–'}}</p>
-
-      <app-control-buttons
-        [buttons]="[null,{text:'Edit',icon:'edit',},
-        {text:'Delete',icon:'person_remove',color:'warn'}]"
-        (click1)="service.edit(this.account)"
-        (click2)="deleteTheAccount(account)"
-      ></app-control-buttons>
-
-    </div>
+  <app-card id="teaches" *ngIf="account.roles.includes('Teacher')"
+    cardTitle="Teaches Children">
+    <mat-list>
+      <div *ngFor="let child of account.teaches;let i=index;">
+        <app-entity-item [titleText]="child.person.name"
+          [link]="pr.canUser('viewChildPage')?('./child/' + child.id):undefined"
+          [linkTooltip]="'View all information'"></app-entity-item>
+        <mat-divider *ngIf="account.teaches.length -1 != i" class="mx-3"></mat-divider>
+      </div>
+    </mat-list>
   </app-card>
 </div>

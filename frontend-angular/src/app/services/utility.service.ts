@@ -86,14 +86,14 @@ export const PAGES: IPage[] = [
   {
     title: "Programs",
     img: "assets/img/Program.svg",
-    link: "/program",
+    link: "/programs",
     desc: "Programs information",
     privilege: 'programsPage'
   },
   {
     title: "Fields",
     img: "assets/img/Field.svg",
-    link: "/field",
+    link: "/fields",
     desc: "Fields information",
     privilege: 'fieldsPage'
   },
@@ -106,7 +106,7 @@ export const PAGES: IPage[] = [
   },
   {
     title: 'Accounts',
-    link: '/account',
+    link: '/accounts',
     img: 'assets/img/Account.svg',
     desc: 'Manage all users accounts',
     privilege: 'accountsPage'

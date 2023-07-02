@@ -91,4 +91,4 @@ export interface MessageDialogData {
 type TitleColor = 'text-danger' | 'text-success' | 'text-warning' | 'text-info' | '';
 type TitleIcon = 'error' | 'warning' | 'info' | 'delete' | 'person_remove' | 'archive' | 'check_circle' | undefined;
 type DialogType = 'error' | 'info' | 'success' | 'confirm' //| 'delete';
-export type ButtonType = 'Ok' | 'Cancel' | 'Yes' | 'No' | 'Delete' | 'Login' | 'Archive' | 'Continue' | 'Resend';
+export type ButtonType = 'Ok' | 'Cancel' | 'Yes' | 'No' | 'Delete' | 'Login' | 'Login by another account' | 'Archive' | 'Continue' | 'Resend';

@@ -1,5 +1,5 @@
 <app-title header="Goals" [links]="[{title:'Goals of',titleSuffix:service.childItsGoals$.value?.person?.name,titleLink:'Goals'},
-  {title:service.childItsGoals$.value?.person?.name??'',link:'/child/'+service.childItsGoals$.value?.id},
+  {title:service.childItsGoals$.value?.person?.name??'',link:'children/child/'+service.childItsGoals$.value?.id},
   {title:'Children',link:'/children'}]" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
@@ -15,7 +15,7 @@
   <app-control-buttons *ngIf="!isPrinting"
     [buttons]="[{show:this.pr.canUser('addGoal'),text:'Add new goal',icon:'add'},
     {show:this.pr.canUser('addEvaluation'),disabled:selectedItem==null,tooltip:'Evaluate the selected goal',text:'Evaluate',icon:'rate_review'},
-    {show:this.pr.canUser('goalEvaluationsPage'),link:selectedItem&&service.childItsGoals$.value?'/child/'+service.childItsGoals$.value.id+'/goal/'+selectedItem.id+'/evaluations':'./',disabled:selectedItem==null,tooltip:'View evaluations of the selected goal',icon:'reviews',text:'Evaluations'},
+    {show:this.pr.canUser('goalEvaluationsPage'),link:selectedItem&&service.childItsGoals$.value?'children/child/'+service.childItsGoals$.value.id+'/goal/'+selectedItem.id+'/evaluations':'./',disabled:selectedItem==null,tooltip:'View evaluations of the selected goal',icon:'reviews',text:'Evaluations'},
     {show:this.pr.canUser('editGoal'),disabled:selectedItem==null,icon:'edit',text:'Edit',tooltip:'Edit the selected row',},
     {show:this.pr.canUser('deleteGoal'),disabled:selectedItem==null,tooltip:'Delete the selected goal',icon:'delete',text:'Delete',color:'warn'},]"
     (click0)="addEdit(service.childItsGoals$.value?.id)"

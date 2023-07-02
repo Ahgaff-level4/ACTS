@@ -130,7 +130,7 @@ export class GoalComponent extends UnsubOnDestroy {
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
-      action: (v) => v && this.service.childItsGoals$.value ? this.ut.router.navigateByUrl('/child/' + this.service.childItsGoals$.value.id + '/goal/' + v.id + '/evaluations') : '',
+      action: (v) => v && this.service.childItsGoals$.value ? this.ut.router.navigateByUrl('children/child/' + this.service.childItsGoals$.value.id + '/goal/' + v.id + '/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
       disabled: !this.pr.canUser('goalEvaluationsPage'),
     },
