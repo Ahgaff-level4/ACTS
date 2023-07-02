@@ -14,11 +14,11 @@
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <app-table-controllers *ngIf="!isPrinting"
-    [button1]="this.activitiesOf=='program'?{show:this.pr.canUser('addActivity'),text:'Add new activity',icon:'add'}:undefined"
-    (button1Click)="this.activitiesOf=='program'?addEdit(selectedItem?.programId):undefined"
-    [button2]="{show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
-    (button2Click)="addEdit(selectedItem)"
-    [button3]="{disabled:selectedItem==null,show:this.pr.canUser('deleteActivity'),tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'}"
-    (button3Click)="deleteDialog(selectedItem)"></app-table-controllers>
+  <app-control-buttons *ngIf="!isPrinting"
+    [buttons]="[this.activitiesOf=='program'?{show:this.pr.canUser('addActivity'),text:'Add new activity',icon:'add'}:null,
+    {show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'},
+    {disabled:selectedItem==null,show:this.pr.canUser('deleteActivity'),tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'}]"
+    (click0)="this.activitiesOf=='program'?addEdit(selectedItem?.programId):undefined"
+    (click1)="addEdit(selectedItem)"
+    (click2)="deleteDialog(selectedItem)"></app-control-buttons>
 </div>

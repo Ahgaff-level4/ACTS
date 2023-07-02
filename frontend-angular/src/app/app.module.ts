@@ -61,7 +61,7 @@ import { ViewAccountComponent } from './components/pages/accounts/view-account/v
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 import { SearchExportComponent } from './components/forms/search-export/search-export.component';
-import { TableControllersComponent } from './components/forms/table-controllers/table-controllers.component';
+import { ControlButtonsComponent } from './components/forms/control-buttons/control-buttons.component';
 import { HeaderActionsComponent } from './components/static/header/header-actions/header-actions.component';
 import { NotificationDrawerComponent } from './components/dialogs/notification-drawer/notification-drawer.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
@@ -127,7 +127,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     ViewAccountComponent,
     DashboardComponent,
     SearchExportComponent,
-    TableControllersComponent,
+    ControlButtonsComponent,
     HeaderActionsComponent,
     NotificationDrawerComponent,
     NotificationItemComponent,

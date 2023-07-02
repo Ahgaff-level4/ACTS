@@ -47,7 +47,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       field: 'goals.0.child.person.name',
       headerName: "child's name",//headerName will be translated
       type: 'long',
-      tooltipValueGetter: v => v.data?.goals?.length == 0 ? 'This activity is not bind to any child! We strongly recommend deleting it' : v.data?.goals?.[0]?.child?.person?.name,
+      tooltipValueGetter: v => v.data?.goals?.length == 0 ? this.ut.translate('This activity is not bind to any child! We strongly recommend deleting it') : v.data?.goals?.[0]?.child?.person?.name,
     },
     {
       field: 'name',

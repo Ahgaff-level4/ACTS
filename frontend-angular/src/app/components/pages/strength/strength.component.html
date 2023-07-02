@@ -12,10 +12,10 @@
       [rowData]="childItsStrengths?.strengths" domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <app-table-controllers *ngIf="!isPrinting" [button1]="{show:this.pr.canUser('addStrength'),text:'Add new strength',icon:'add'}"
-    (button1Click)="addEdit(childItsStrengths?.id)"
-    [button2]="{show:this.pr.canUser('editStrength'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'}"
-    (button2Click)="addEdit(this.selectedItem)"
-    [button3]="{show:this.pr.canUser('deleteStrength'),disabled:selectedItem==null,tooltip:'Delete the selected strength',color:'warn',icon:'delete',text:'Delete'}"
-    (button3Click)="deleteDialog(this.selectedItem)"></app-table-controllers>
+  <app-control-buttons *ngIf="!isPrinting"
+    [buttons]="[{show:this.pr.canUser('addStrength'),text:'Add new strength',icon:'add'},
+      {show:this.pr.canUser('editStrength'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'},
+      {show:this.pr.canUser('deleteStrength'),disabled:selectedItem==null,tooltip:'Delete the selected strength',color:'warn',icon:'delete',text:'Delete'},]"
+    (click0)="addEdit(childItsStrengths?.id)" (click1)="addEdit(this.selectedItem)"
+    (click2)="deleteDialog(this.selectedItem)"></app-control-buttons>
 </div>

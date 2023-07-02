@@ -128,8 +128,6 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
         let id = params.get('id');
         if (typeof id == 'string' && (programOrField == 'field' || programOrField == 'program')) {
           this.activitiesOf = programOrField;
-          this.columnDefs.splice(this.activitiesOf == 'program' ? this.columnDefs.map(v => v.field).indexOf('program.name') : this.columnDefs.map(v => v.field).indexOf('field.name'), 1);
-          this.gridOptions.api?.setColumnDefs(this.columnDefs);
           if (this.activitiesOf == 'program')
             this.sub.add(this.service.programItsActivities$.subscribe(async v => {
               if (v && v.id == +(id as string)) {
@@ -175,6 +173,11 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
     ...this.agGrid.commonGridOptions('activities table', this.columnDefs, this.pr.canUser('editActivity'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => {
+        if (this.activitiesOf) {
+          this.columnDefs.splice(this.columnDefs.map(v => v.field).indexOf(this.activitiesOf + '.name'), 1);
+          this.gridOptions.api?.setColumnDefs(this.columnDefs);
+          this.gridOptions.api?.redrawRows();
+        }
         e.api.sizeColumnsToFit();
       }
     ),

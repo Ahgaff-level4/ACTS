@@ -13,18 +13,14 @@
           class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{display.accountPhones(account)||'–'}}</p>
       <p><span class="fw-bold">
           {{'Roles'|translate}}:</span>&nbsp;{{display.accountRoles(account.roles)||'–'}}</p>
-      <div class="d-md-flex mx-4 pt-4 justify-content-evenly rounded-5">
-        <a class="w-100 mx-3 mb-2 rounded-5" mat-raised-button color="primary" routerLink="/add-account">
-          {{'Register new account'|translate}}<mat-icon>person_add</mat-icon>
-        </a>
-        <button class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="primary"
-          (click)="service.edit(this.account)">
-          <mat-icon>edit</mat-icon>{{'Edit'|translate}}
-        </button>
-        <button class="w-100 mx-3 mb-2 rounded-5" mat-stroked-button color="warn"
-          (click)="deleteTheAccount(account)"><mat-icon>person_remove</mat-icon>
-          {{'Delete'|translate}}</button>
-      </div>
+
+      <app-control-buttons
+        [buttons]="[null,{text:'Edit',icon:'edit',},
+        {text:'Delete',icon:'person_remove',color:'warn'}]"
+        (click1)="service.edit(this.account)"
+        (click2)="deleteTheAccount(account)"
+      ></app-control-buttons>
+
     </div>
   </app-card>
 </div>

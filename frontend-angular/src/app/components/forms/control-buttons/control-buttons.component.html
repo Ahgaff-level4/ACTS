@@ -1,5 +1,17 @@
 <div class="d-flex flex-column flex-md-row justify-content-md-evenly">
-  <button *ngIf="button1 && button1.show != false" class="w-100 nbsp mx-0 mb-2 rounded-5 mx-md-2"
+  <button *ngIf="buttons[0]" class="w-100 nbsp mx-0 mb-2 rounded-5 mx-md-2"
+    [matTooltip]="(buttons[0].tooltip??'')|translate" (click)="clicked(0)" mat-raised-button
+    [disabled]="buttons[0].disabled==true" [color]="buttons[0].color??'primary'">
+    {{buttons[0].text|translate}}<mat-icon>{{buttons[0].icon}}</mat-icon>
+  </button>
+
+  <button *ngFor="let stk of getStrokedButtons(); let i = index;" class="w-100 mx-0 mb-2 rounded-5 nbsp mx-md-2"
+  [matTooltip]="(stk.tooltip??'')|translate" (click)="clicked(i+1)" mat-stroked-button
+  [disabled]="stk.disabled==true" [color]="stk.color??'primary'">
+  {{stk.text|translate}}<mat-icon>{{stk.icon}}</mat-icon>
+</button>
+
+  <!-- <button *ngIf="button1 && button1.show != false" class="w-100 nbsp mx-0 mb-2 rounded-5 mx-md-2"
     [matTooltip]="(button1.tooltip??'')|translate" (click)="button1Click.emit()" mat-raised-button
     [disabled]="button1.disabled==true" [color]="button1.color??'primary'">
     {{button1.text|translate}}<mat-icon>{{button1.icon}}</mat-icon>
@@ -51,14 +63,14 @@
     {{anchor5.text|translate}}
   </a>
   <button *ngIf="button5 && button5.show != false" class="nbsp w-100 mx-0 mb-2 rounded-5 mx-md-2"
-  [matTooltip]="(button5.tooltip??'')|translate" (click)="button5Click.emit()" mat-stroked-button
-  [disabled]="button5.disabled==true" [color]="button5.color??'primary'">
-  {{button5.text|translate}}<mat-icon>{{button5.icon}}</mat-icon>
-</button>
+    [matTooltip]="(button5.tooltip??'')|translate" (click)="button5Click.emit()" mat-stroked-button
+    [disabled]="button5.disabled==true" [color]="button5.color??'primary'">
+    {{button5.text|translate}}<mat-icon>{{button5.icon}}</mat-icon>
+  </button>
   <a *ngIf="anchor6 && anchor6.show != false" [routerLink]="anchor6.link" [disabled]="anchor6.disabled==true"
     [matTooltip]="(anchor6.tooltip??'')|translate" mat-stroked-button [color]="anchor6.color??'primary'"
     class="nbsp w-100 mx-0 mb-2 rounded-5 mx-md-2">
     <mat-icon>{{anchor6.icon}}</mat-icon>
     {{anchor6.text|translate}}
-  </a>
+  </a> -->
 </div>

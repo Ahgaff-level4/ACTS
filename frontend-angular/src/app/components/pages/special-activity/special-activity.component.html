@@ -9,9 +9,9 @@
       domLayout='autoHeight' [quickFilterText]="quickFilter"></ag-grid-angular>
   </div>
 
-  <app-table-controllers *ngIf="!isPrinting"
-    [button2]="{show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'}"
-    (button2Click)="edit(selectedItem)"
-    [button3]="{show:this.pr.canUser('deleteActivity'),disabled:selectedItem==null,tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'}"
-    (button3Click)="deleteDialog(selectedItem)"></app-table-controllers>
+  <app-control-buttons *ngIf="!isPrinting"
+    [buttons]="[null,{show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'},
+      {show:this.pr.canUser('deleteActivity'),disabled:selectedItem==null,tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'},]"
+    (click1)="edit(selectedItem)"
+    (click2)="deleteDialog(selectedItem)"></app-control-buttons>
 </div>
