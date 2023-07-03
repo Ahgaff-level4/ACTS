@@ -1,29 +1,10 @@
 <div class="container">
   <ng-container *ngIf="childReport$ | async as childReport">
     <div class="d-flex justify-content-between align-items-end">
-      <app-title
-        [links]="[
-          {
-            title: 'Child Report',
-            titleSuffix: childReport.child.person.name,
-            titleLink: 'Report'
-          },
-          {
-            title: childReport.child.person.name,
-            link: 'children/child/' + childReport.child.id
-          },
-
-          { title: 'Children', link: '/children' }
-        ]"
-        [isPrinting]="isPrinting"
-      ></app-title>
-      <button
-        *ngIf="!isPrinting"
-        (click)="printHandle()"
-        class="mx-1 mx-md-5 rounded-5"
-        mat-stroked-button
-        color="primary"
-      >
+      <app-title [link]="{title: 'Child Report',titleSuffix: childReport.child.person.name,titleLink: 'Report'}"
+        [isPrinting]="isPrinting"></app-title>
+      <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button
+        color="primary">
         <mat-icon>print</mat-icon>{{ "Print" | translate }}
       </button>
     </div>
@@ -31,23 +12,15 @@
       {{ nowDatetime }}
     </p>
     <app-card cardTitle="Personal information">
-      <app-child-info
-        [hideReport]="true"
-        [isPrinting]="isPrinting"
-        [child]="childReport.child"
-      ></app-child-info>
+      <app-child-info [hideReport]="true" [isPrinting]="isPrinting" [child]="childReport.child"></app-child-info>
     </app-card>
   </ng-container>
 
   <app-card cardTitle="Goals state">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
     <div dir="ltr" class="ms-md-5 mb-md-3">
-      <ngx-charts-advanced-pie-chart
-        [view]="[0, 200]"
-        [results]="goalsStatePieData$ | async"
-        [gradient]="true"
-        [label]="'Total' | translate"
-      >
+      <ngx-charts-advanced-pie-chart [view]="[0, 200]" [results]="goalsStatePieData$ | async" [gradient]="true"
+        [label]="'Total' | translate">
       </ngx-charts-advanced-pie-chart>
     </div>
   </app-card>
@@ -55,21 +28,10 @@
   <app-card cardTitle="Activities fields">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
     <div dir="ltr" style="min-height: 400px" class="me-4 mb-md-3">
-      <ngx-charts-polar-chart
-        [legend]="true"
-        [animations]="true"
-        [showGridLines]="true"
-        [roundDomains]="false"
-        [gradient]="true"
-        [yAxis]="true"
-        [results]="activitiesFieldsPolar$ | async"
-        [yAxisTickFormatting]="stringify"
-        [legendTitle]="'Activities types' | translate"
-        [showXAxisLabel]="true"
-        [showYAxisLabel]="true"
-        [xAxisLabel]="'Fields' | translate"
-        [yAxisLabel]="'Number of Activities' | translate"
-        >
+      <ngx-charts-polar-chart [legend]="true" [animations]="true" [showGridLines]="true" [roundDomains]="false"
+        [gradient]="true" [yAxis]="true" [results]="activitiesFieldsPolar$ | async" [yAxisTickFormatting]="stringify"
+        [legendTitle]="'Activities types' | translate" [showXAxisLabel]="true" [showYAxisLabel]="true"
+        [xAxisLabel]="'Fields' | translate" [yAxisLabel]="'Number of Activities' | translate">
       </ngx-charts-polar-chart>
     </div>
   </app-card>

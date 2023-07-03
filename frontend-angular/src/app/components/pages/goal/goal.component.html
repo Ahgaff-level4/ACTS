@@ -1,6 +1,4 @@
-<app-title header="Goals" [links]="[{title:'Goals of',titleSuffix:service.childItsGoals$.value?.person?.name,titleLink:'Goals'},
-  {title:service.childItsGoals$.value?.person?.name??'',link:'children/child/'+service.childItsGoals$.value?.id},
-  {title:'Children',link:'/children'}]" [isPrinting]="isPrinting"></app-title>
+<app-title [link]="{title:'Goals of',titleSuffix:service.childItsGoals$.value?.person?.name,titleLink:'Goals',link:'/children/child/'+service.childItsGoals$.value?.id+'/goals'}" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
     (print)="printTable()"></app-search-export>

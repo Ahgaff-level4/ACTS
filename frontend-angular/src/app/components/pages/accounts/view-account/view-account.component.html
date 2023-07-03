@@ -1,4 +1,4 @@
-<app-title *ngIf="links$|async as links" [links]="links" [isPrinting]="undefined"></app-title>
+<app-title *ngIf="account$|async as account" [back]="back" [link]=" { title: 'Account information', titleLink: account.person.name }" [isPrinting]="undefined"></app-title>
 <div class="container" *ngIf="account$|async as account">
   <app-card>
     <app-person-view [person]="account.person"></app-person-view>

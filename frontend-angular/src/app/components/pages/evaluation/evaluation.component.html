@@ -1,7 +1,4 @@
-<app-title [links]="[{title:'Evaluations of goal',titleSuffix:service.goalItsEvaluations$.value?.activity?.name},
-{title:'Goals',link:'children/child/'+service.goalItsEvaluations$.value?.child?.id+'/goals'},
-{title:service.goalItsEvaluations$.value?.child?.person?.name??'',link:'children/child/'+service.goalItsEvaluations$.value?.child?.id},
-{title:'Children',link:'/children'},]" [isPrinting]="isPrinting"></app-title>
+<app-title [link]="{title:'Evaluations of goal',titleSuffix:service.goalItsEvaluations$.value?.activity?.name,}" [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
   (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>

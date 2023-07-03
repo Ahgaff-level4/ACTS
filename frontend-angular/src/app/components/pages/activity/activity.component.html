@@ -1,9 +1,8 @@
-<app-title [links]="this.activitiesOf == 'program' ? [
-{title: 'Activities of program', titleSuffix: this.service.programItsActivities$.value?.name ?? ''}, {
-  title: 'Programs', link: '/programs'}
-  ] : [
-  { title: 'Activities of field', titleSuffix: this.service.fieldItsActivities$.value?.name ?? ''},
-  { title: 'Fields', link: '/fields'}]" [isPrinting]="isPrinting"></app-title>
+<app-title [link]="this.activitiesOf == 'program' ?
+  {title: 'Activities of program', titleSuffix: this.service.programItsActivities$.value?.name ?? ''}
+    :
+  { title: 'Activities of field', titleSuffix: this.service.fieldItsActivities$.value?.name ?? ''}"
+  [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
     (print)="printTable()"></app-search-export>
@@ -18,7 +17,6 @@
     [buttons]="[this.activitiesOf=='program'?{show:this.pr.canUser('addActivity'),text:'Add new activity',icon:'add'}:null,
     {show:this.pr.canUser('editActivity'),disabled:selectedItem==null,tooltip:'Edit the selected row',text:'Edit',icon:'edit'},
     {disabled:selectedItem==null,show:this.pr.canUser('deleteActivity'),tooltip:'Delete the selected activity',color:'warn',text:'Delete',icon:'delete'}]"
-    (click0)="this.activitiesOf=='program'?addEdit(selectedItem?.programId):undefined"
-    (click1)="addEdit(selectedItem)"
+    (click0)="this.activitiesOf=='program'?addEdit(selectedItem?.programId):undefined" (click1)="addEdit(selectedItem)"
     (click2)="deleteDialog(selectedItem)"></app-control-buttons>
 </div>
