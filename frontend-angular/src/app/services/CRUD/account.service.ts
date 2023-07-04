@@ -221,9 +221,4 @@ export class AccountService implements OnInit {
 
     })
   }
-
-  /**navigate to edit-account page */
-  edit(account: IAccountEntity) {
-    this.ut.router.navigate(['edit-account'], { state: { data: account } });
-  }
 }

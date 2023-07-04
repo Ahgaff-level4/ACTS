@@ -2,12 +2,18 @@ import { Location as NgLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { firstValueFrom } from 'rxjs';
 import { ACTS_Segment } from 'src/app/app-routing.module';
+import { AccountService } from 'src/app/services/CRUD/account.service';
 import { ChildService } from 'src/app/services/CRUD/child.service';
+import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
+import { FieldService } from 'src/app/services/CRUD/field.service';
+import { GoalService } from 'src/app/services/CRUD/goal.service';
+import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { TitlePathService } from 'src/app/services/title-path.service';
 import { UtilityService } from 'src/app/services/utility.service';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
-  selector: 'app-title[isPrinting][link]',
+  selector: 'app-title[isPrinting]',
   templateUrl: './title.component.html',
   styleUrls: ['./title.component.scss']
 })/**
@@ -33,9 +39,9 @@ Shared component to set the title for any page (No need for translation). Ex: `[
 
 
 
-export class TitleComponent implements OnInit {
-  private links: TitleLink[] = [];//todo delete line
-  @Input() link!: TitleLink;
+export class TitleComponent extends UnsubOnDestroy implements OnInit {
+  public links: TitleLink[] = [];
+  @Input() link?: TitleLink;//todo delete this line
   /**Hide back button when printing */
   @Input('isPrinting') isPrinting: boolean | undefined;
   @Input() back?: EventEmitter<void>;
@@ -43,52 +49,130 @@ export class TitleComponent implements OnInit {
   /**back button will navigate to links[1] */
   // protected back: Link | undefined;
   constructor(public ut: UtilityService, private location: NgLocation,
-    public service: TitlePathService, private childService:ChildService) { }
+    private childService: ChildService, private programService: ProgramService,
+    private fieldService: FieldService, private evaluationService: EvaluationService,
+    private accountService: AccountService,) { super() }
 
   ngOnInit(): void {
     const path = this.location.path();
-    this.link.link = path;
+    if (this.link) this.link.link = path;
     this.calcLinks(path);
 
     this.back?.subscribe(() => {
-      if (this.service.links[1].link)
-        this.ut.router.navigateByUrl(this.service.links[1].link)
+      if (this.links[1].link)
+        this.ut.router.navigateByUrl(this.links[1].link)
     });
 
-    if (this.service.links.length == 0)
-      throw "TitleComponent expects `links` array with at least one element! Got links=" + this.service.links;
-    if (this.service.links[1] && typeof this.service.links[1].link != 'string')
-      throw 'TitleComponent expect previous(links[1]) to have property link as `links[1].link` but links[1]=' + this.service.links[1].link + '. This is error because if links[1] exist then show back arrow icon but it has no link!'
-    this.service.links = this.service.links.filter(v => v.hide != true);
+    if (this.links.length == 0)
+      throw "TitleComponent expects `links` array with at least one element! Got links=" + this.links;
+    if (this.links[1] && typeof this.links[1].link != 'string')
+      throw 'TitleComponent expect previous(links[1]) to have property link as `links[1].link` but links[1]=' + this.links[1].link + '. This is error because if links[1] exist then show back arrow icon but it has no link!'
+    this.links = this.links.filter(v => v.hide != true);
   }
 
   async calcLinks(path: string) {
-    console.log('is input link reach when navigationEnd', this.link);
-    // this.service.links.push(this.link);
-    // this.service.links = [];
     const segments = path.split('/') as ACTS_Segment[];
-    if (path.includes('child/'))
-      this.service.links = [this.link, ...this.service.links];
-    else
-      this.service.links = [this.link];
-    // for (let i = 0; i < segments.length; i++) {
-    //   let s = segments[i];
-    //   if (s == 'children')
-    //     this.links.push({ title: 'Children', link: '/children' })
-    //   else if (s == 'child') {
-    //     let id = +segments[i + 1];
-    //     if (Number.isInteger(id)) {
-    //       const children = await firstValueFrom(this.childService.children$)
-    //       this.links.push({ title: 'Child information', titleLink: children.find(v => v.id == id)?.person?.name })
-    //     }//todo if else for other pages
-    //   }else
-    // }
 
+    for (let i = 0; i < segments.length; i++) {
+      let s = segments[i];
+      if (s == 'children')
+        this.links.push({ title: 'Children', link: '/children' });
+      else if (s == 'settings')
+        this.links.push({ title: 'Settings', link: '/settings' });
+      else if (s == 'special-activities')
+        this.links.push({ title: 'Special Activities', link: '/special-activities' });
+      else if (s == 'programs')
+        this.links.push({ title: 'Programs', link: '/programs' });
+      else if (s == 'fields')
+        this.links.push({ title: 'Fields', link: '/fields' });
+      else if (s == 'accounts')
+        this.links.push({ title: 'Accounts', link: '/accounts' });
+      else if (s == 'add-child' || s == 'edit-child')
+        this.links.push({ title: (s == 'edit-child' ? 'Edit child information' : 'Register a child'), titleLink: s == 'edit-child' ? 'Edit' : 'Add' });
+      else if (s == 'add-account' || s == 'edit-account')
+        this.links.push({ title: (s == 'edit-account' ? 'Edit account' : 'Register new account'), titleLink: s == 'edit-account' ? 'Edit' : 'Add' });
+      else if (s == 'child') {
+        let id = +segments[i + 1];
+        if (Number.isInteger(id)) {
+          const child = (await firstValueFrom(this.childService.children$)).find(v => v.id == id);
+          this.links.push({ title: 'Child information', titleLink: child?.person?.name, link: '/children/child/' + child?.id });
+        }
+      }
+      else if (s == 'report' && this.links[this.links.length - 1].title == 'Child information') {
+        let prevLink = this.links[this.links.length - 1];
+        this.links.push({ title: 'Child Report', titleSuffix: prevLink.titleLink, titleLink: 'Report' })
+      }
+      else if (s == 'goals') {
+        let prevLink = this.links[this.links.length - 1];//goals is exist after child so last element will be child information link
+        this.links.push({ title: 'Goals of', titleSuffix: prevLink.titleLink, titleLink: 'Goals', link: prevLink.link + '/goals' })
+      }
+      else if (s == 'strengths') {
+        let prevLink = this.links[this.links.length - 1];//strengths is exist after child so last element will be child information link
+        this.links.push({ title: 'Strengths of', titleSuffix: prevLink.titleLink, titleLink: 'Strengths', link: prevLink.link + '/strengths' })
+      }
+      else if (s == 'program') {//there is no program/field page these are for activities so we will jump activities segment
+        let id = +segments[i + 1];
+        if (Number.isInteger(id)) {
+          let program = (await firstValueFrom(this.programService.programs$)).find(v => v.id == id);
+          this.links.push({ title: 'Activities of program', titleSuffix: program?.name ?? '', link: '/programs/program/' + id + '/activities' })
+        }
+      }
+      else if (s == 'field') {
+        let id = +segments[i + 1];
+        if (Number.isInteger(id)) {
+          let field = (await firstValueFrom(this.fieldService.fields$)).find(v => v.id == id);
+          this.links.push({ title: 'Activities of field', titleSuffix: field?.name ?? '', link: '/fields/field/' + id + '/activities' })
+        }
+      }
+      else if (s == 'goal') {//there is no goal page, goal url is for evaluations so we will jump evaluations segment
+        let id = +segments[i + 1];
+        if (Number.isInteger(id)) {
+          this.links.push({ title: 'Evaluations of goal', })
+          this.sub.add(this.evaluationService.goalItsEvaluations$.subscribe(goal => {
+            if (goal) {
+              let l = this.links.find(v => v.title == 'Evaluations of goal')
+              if (l) l.titleSuffix = goal.activity.name;
+            }
+          }));
+        }
+      }
+      else if (s == 'account') {
+        let id = +segments[i + 1];
+        if (Number.isInteger(id)) {
+          this.links.push({ title: 'Account information', link: '/accounts/account/' + id })
+          this.sub.add(this.accountService.accounts$.subscribe(accounts => {
+            if (accounts) {
+              let account = accounts.find(v => v.id == id);
+              let l = this.links.find(v => v.title == 'Account information');
+              console.log('accounts', accounts, 'account', account, 'link', l);
+              if (l && account) l.titleLink = account.person.name;
+            } else this.accountService.fetch();
+          }));
+        }
+      }
+      else if (s == 'teachers') {//come as 'children/child/:id/teachers/...'
+        let prevLink = this.links[this.links.length - 1];
+        this.links.push({ title: 'Child Teachers', link: prevLink.link, fragment: 'teachers' });//same previous link page but different fragment
+      }
+      else if (s == 'teaches') {
+        let prevLink = this.links[this.links.length - 1];
+        this.links.push({ title: 'Teaches Children', link: prevLink.link, fragment: 'teaches' });//same previous link page but different fragment
+      }
+      else if (s == 'kids') {
+        let prevLink = this.links[this.links.length - 1];
+        this.links.push({ title: 'Parent Children', link: prevLink.link, fragment: 'kids' });//same previous link page but different fragment
+      }
+    }
+
+    this.links.reverse();
+
+    if (this.links.length == 0 && this.link)
+      this.links = [this.link];
   }
 
   /**Add "Page" prefix to the link's title. (e.g. 'Page title_name') */
   tooltipOf(link: TitleLink | undefined) {
-    if (link == this.service.links[0])
+    if (link == this.links[0])
       return this.ut.translate('Current page');
     return this.ut.getDirection() == 'rtl' ?
       (this.ut.translate('page') + ' ' + this.ut.translate(link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : ''))
@@ -119,6 +203,7 @@ export interface TitleLink {
   fragment?: string;
   /**Default is `false` */
   hide?: boolean;
+  class?: string;
 }
 /**
  * Provided:...

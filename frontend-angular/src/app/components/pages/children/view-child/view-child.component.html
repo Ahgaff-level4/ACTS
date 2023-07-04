@@ -1,17 +1,20 @@
-<app-title [link]="{ title: 'Child information', titleLink: child?.person?.name }" [isPrinting]="undefined"></app-title>
+<app-title [isPrinting]="undefined"></app-title>
 <div class="container">
   <!-- <h4 class="m-4 p-4 mt-0 pt-0 mb-0 pb-0 fw-normal">{{'Personal information'|translate}}</h4> -->
   <app-card>
     <app-child-info [child]="child"></app-child-info>
   </app-card>
 
-  <app-card id="teachers" *ngIf="child && child.teachers && child.teachers.length > 0" cardTitle="Child Teachers">
+  <app-card id="teachers" cardTitle="Child Teachers">
     <mat-list>
-      <div *ngFor="let teacher of child.teachers;let i=index;">
+      <div *ngFor="let teacher of child?.teachers;let i=index;">
         <app-entity-item [titleText]="teacher.person.name" [content]="('Username'| translate)+': '+ teacher.username"
-          [link]="pr.canUser('viewAccountPage')?('./teacher/' + teacher.id):undefined" [linkTooltip]="'View all information'"></app-entity-item>
-        <mat-divider *ngIf="child.teachers.length -1 != i" class="mx-3"></mat-divider>
+          [link]="pr.canUser('viewAccountPage')?('./teachers/account/' + teacher.id):undefined" [linkTooltip]="'View all information'"></app-entity-item>
+        <mat-divider *ngIf="child && child.teachers.length -1 != i" class="mx-3"></mat-divider>
       </div>
+      <p *ngIf="child && child.teachers && child.teachers.length == 0" class="text-center fst-italic opacity-50 my-2">
+        {{'Empty list'|translate}}
+      </p>
     </mat-list>
   </app-card>
 </div>

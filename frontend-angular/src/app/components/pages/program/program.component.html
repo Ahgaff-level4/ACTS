@@ -1,4 +1,4 @@
-<app-title [link]="{title:'Programs',link:'/programs'}" [isPrinting]="isPrinting"></app-title>
+<app-title [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
   (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
@@ -10,7 +10,7 @@
 
   <app-control-buttons *ngIf="!isPrinting"
   [buttons]="[{show:this.pr.canUser('addProgram'),text:'Add new program',icon:'add'},
-  {show:this.pr.canUser('activitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected program',link:selectedItem?'/program/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'},
+  {show:this.pr.canUser('activitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected program',link:selectedItem?'/programs/program/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'},
   {show:this.pr.canUser('editProgram'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'},
   {disabled:selectedItem==null,show:this.pr.canUser('deleteProgram'),tooltip:'Delete the selected program',color:'warn',text:'Delete',icon:'delete'}]"
   (click0)="addEdit()"

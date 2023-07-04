@@ -61,7 +61,7 @@ export class ProgramComponent extends UnsubOnDestroy {
     {
       name: 'Activities',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">interests</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('/program/' + v.id + '/activities') : '',
+      action: (v) => v ? this.ut.router.navigateByUrl('/programs/program/' + v.id + '/activities') : '',
       tooltip: 'View activities of the selected program',
     },
     {

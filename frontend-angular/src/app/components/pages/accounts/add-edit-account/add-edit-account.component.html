@@ -1,6 +1,4 @@
-<app-title
-  [link]="{title:(this.account?.id?'Edit account':'Register new account')}"
-  [isPrinting]="undefined"></app-title>
+<app-title [isPrinting]="undefined"></app-title>
 <div class="container ">
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>

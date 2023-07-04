@@ -771,5 +771,7 @@
   "Child's program":"برنامج الطفل",
   "This program is the child program":"هذا البرنامج هو برنامج الطفل",
   "Login by another account":"تسجيل الدخول بحساب آخر",
-  "Teaches Children":"يدرس الأطفال"
+  "Teaches Children":"أطفال المدرس",
+  "Teaches":"يدرس",
+  "Parent Children":"أطفال ولي الأمر"
 }

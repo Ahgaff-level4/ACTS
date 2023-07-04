@@ -1,4 +1,4 @@
-<app-title *ngIf="account$|async as account" [back]="back" [link]=" { title: 'Account information', titleLink: account.person.name }" [isPrinting]="undefined"></app-title>
+<app-title [back]="back" [isPrinting]="undefined"></app-title>
 <div class="container" *ngIf="account$|async as account">
   <app-card>
     <app-person-view [person]="account.person"></app-person-view>
@@ -9,22 +9,39 @@
     <p><span class="fw-bold">
         {{'Roles'|translate}}:</span>&nbsp;{{display.accountRoles(account.roles)||'–'}}</p>
 
-    <p *ngIf="account.roles.includes('Teacher')"><span
+    <p *ngIf="accountHasAny(account,'Teacher','Admin')"><span
         class="fw-bold">{{'Teaches'|translate}}:</span>&nbsp;{{display.accountTeaches(account)}}</p>
     <app-control-buttons [buttons]="[null,{text:'Edit',icon:'edit',},
-        {text:'Delete',icon:'person_remove',color:'warn'}]" (click1)="service.edit(this.account)"
+        {text:'Delete',icon:'person_remove',color:'warn'}]"
+      (click1)="this.ut.router.navigate(['edit-account'], { state: { data: account },relativeTo:this.route })"
       (click2)="deleteTheAccount(account)"></app-control-buttons>
   </app-card>
 
-  <app-card id="teaches" *ngIf="account.roles.includes('Teacher')"
-    cardTitle="Teaches Children">
+  <app-card id="teaches" *ngIf="accountHasAny(account,'Teacher','Admin')" cardTitle="Teaches Children">
     <mat-list>
       <div *ngFor="let child of account.teaches;let i=index;">
         <app-entity-item [titleText]="child.person.name"
-          [link]="pr.canUser('viewChildPage')?('./child/' + child.id):undefined"
+          [link]="pr.canUser('viewChildPage')?('./teaches/child/' + child.id):undefined"
           [linkTooltip]="'View all information'"></app-entity-item>
         <mat-divider *ngIf="account.teaches.length -1 != i" class="mx-3"></mat-divider>
       </div>
+      <p *ngIf="account.teaches && account.teaches.length == 0" class="text-center fst-italic opacity-50 my-2">
+        {{'Empty list'|translate}}
+      </p>
+    </mat-list>
+  </app-card>
+
+  <app-card id="kids" *ngIf="accountHasAny(account,'Parent','Admin')" cardTitle="Parent Children">
+    <mat-list>
+      <div *ngFor="let child of account.children;let i=index;">
+        <app-entity-item [titleText]="child.person.name"
+          [link]="pr.canUser('viewChildPage')?('./kids/child/' + child.id):undefined"
+          [linkTooltip]="'View all information'"></app-entity-item>
+        <mat-divider *ngIf="account.children.length -1 != i" class="mx-3"></mat-divider>
+      </div>
+      <p *ngIf="account.children && account.children.length == 0" class="text-center fst-italic opacity-50 my-2">
+        {{'Empty list'|translate}}
+      </p>
     </mat-list>
   </app-card>
 </div>

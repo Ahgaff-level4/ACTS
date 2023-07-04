@@ -1,4 +1,4 @@
-<app-title [link]="{title:'Special Activities',link:'/special-activities'}" [isPrinting]="isPrinting"></app-title>
+<app-title [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
     (print)="printTable()"></app-search-export>

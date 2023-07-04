@@ -1,7 +1,4 @@
-<app-title [link]="this.activitiesOf == 'program' ?
-  {title: 'Activities of program', titleSuffix: this.service.programItsActivities$.value?.name ?? ''}
-    :
-  { title: 'Activities of field', titleSuffix: this.service.fieldItsActivities$.value?.name ?? ''}"
+<app-title 
   [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"

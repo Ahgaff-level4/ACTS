@@ -1,23 +1,23 @@
 <div class="container mt-4 mb-4">
   <div class="d-flex mt-3">
-    <a *ngIf="service.links[1] && (isPrinting!=true)" [routerLink]="service.links[1].link??'./'" class="mx-2 align-self-center"
-      [matTooltip]="tooltipOf(service.links[1])"  [fragment]="service.links[1].fragment" mat-icon-button color="primary">
+    <a *ngIf="links[1] && (isPrinting!=true)" [routerLink]="links[1].link??'./'" class="mx-2 align-self-center"
+      [matTooltip]="tooltipOf(links[1])"  [fragment]="links[1].fragment" mat-icon-button color="primary">
       <mat-icon class="mb-1" color="primary">{{'arrow_back'|translate}}</mat-icon>
     </a>
     <div>
-      <h1 *ngIf="service.links.length ==1" class="pb-0 mb-1">{{(service.links[0].title)|translate}}<span
-          *ngIf="service.links[0]?.titleSuffix">:&nbsp;{{service.links[0].titleSuffix}}</span></h1>
-      <h2 *ngIf="service.links.length !=1" class="pb-0 mb-1">{{(service.links[0].title)|translate}}<span
-          *ngIf="service.links[0]?.titleSuffix">:&nbsp;{{service.links[0].titleSuffix}}</span></h2>
-      <div *ngIf="service.links.length>1 && isPrinting!=true">
-        <div *ngFor="let link of service.links; let i=index;" class="d-inline ">
-          <a [routerLink]="service.links[service.links.length - 1 - i].link??'./'" [matTooltip]="tooltipOf(service.links[service.links.length - 1 - i])"
-            [class]="'my-accent-text '+(service.links.length-1 != i?'opacity-75':'')" [fragment]="service.links[service.links.length -1 -i].fragment">
-            {{(getLinkText(service.links[service.links.length - 1 - i]))|translate}}<span
-              *ngIf="getLinkTextSuffix(service.links[service.links.length-1-i])">
-              :&nbsp;{{getLinkTextSuffix(service.links[service.links.length-1-i])}}</span>
+      <h1 *ngIf="links.length ==1" [ngClass]="links[0].class" class="pb-0 mb-1">{{(links[0].title)|translate}}<span
+          *ngIf="links[0]?.titleSuffix">:&nbsp;{{links[0].titleSuffix}}</span></h1>
+      <h2 *ngIf="links.length !=1" [ngClass]="links[0].class" class="pb-0 mb-1">{{(links[0].title)|translate}}<span
+          *ngIf="links[0]?.titleSuffix">:&nbsp;{{links[0].titleSuffix}}</span></h2>
+      <div *ngIf="links.length>1 && isPrinting!=true">
+        <div *ngFor="let link of links; let i=index;" class="d-inline ">
+          <a [routerLink]="links[links.length - 1 - i]==links[0]?'./':(links[links.length - 1 - i].link??'./')" [matTooltip]="tooltipOf(links[links.length - 1 - i])"
+            [class]="'my-accent-text '+(links.length-1 != i?'opacity-75':'')" [fragment]="links[links.length -1 -i].fragment">
+            {{(getLinkText(links[links.length - 1 - i]))|translate}}<span
+              *ngIf="getLinkTextSuffix(links[links.length-1-i])">
+              :&nbsp;{{getLinkTextSuffix(links[links.length-1-i])}}</span>
           </a>
-          <span *ngIf="service.links.length-1 != i">&nbsp;>&nbsp;</span>
+          <span *ngIf="links.length-1 != i">&nbsp;>&nbsp;</span>
         </div>
       </div>
     </div>

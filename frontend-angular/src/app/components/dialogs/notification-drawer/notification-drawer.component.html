@@ -6,7 +6,7 @@
       &nbsp;<mat-icon>notifications</mat-icon>
     </ng-template>
     <div mat-dialog-content *ngIf="nt.notifications|async as notifications" class="pt-0">
-      <p *ngIf="notifications.length == 0" class="text-center opacity-75 my-5">
+      <p *ngIf="notifications.length == 0" class="text-center fst-italic opacity-50 my-5">
         {{'Empty list'|translate}}
       </p>
       <div *ngFor="let n of notifications; let i=index;" class="my-3">
@@ -30,7 +30,7 @@
       </button>
     </div>
     <div mat-dialog-content class="pt-0">
-      <p *ngIf="!nt.onlineAccounts.value || nt.onlineAccounts.value.length == 0" class="text-center opacity-75 my-5">
+      <p *ngIf="!nt.onlineAccounts.value || nt.onlineAccounts.value.length == 0" class="text-center fst-italic opacity-50 my-5">
         {{((nt.onlineAccounts|async)==null?'Loading...':'Empty list')|translate}}
       </p>
       <div *ngFor="let account of (nt.onlineAccounts|async)??[];let i=index" class="my-3">

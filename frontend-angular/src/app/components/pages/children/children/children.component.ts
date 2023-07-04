@@ -218,7 +218,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
   edit(child: IChildEntity | undefined) {
     if (child || this.selectedItem)
-      this.ut.router.navigate(['edit-child'], { state: { data: child ?? this.selectedItem } });
+      this.ut.router.navigate(['children','edit-child'], { state: { data: child ?? this.selectedItem } });
   }
 
   printTable() {

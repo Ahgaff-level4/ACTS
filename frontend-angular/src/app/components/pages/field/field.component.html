@@ -1,4 +1,4 @@
-<app-title [link]="{title:'Fields',link:'/fields'}" [isPrinting]="isPrinting"></app-title>
+<app-title [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
   (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
@@ -11,7 +11,7 @@
 
   <app-control-buttons *ngIf="!isPrinting"
   [buttons]="[{show:this.pr.canUser('addField'),text:'Add new field',icon:'add'},
-  {show:this.pr.canUser('activitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected field',link:selectedItem?'/field/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'},
+  {show:this.pr.canUser('activitiesPage'),disabled:selectedItem==null,tooltip:'View activities of the selected field',link:selectedItem?'/fields/field/'+selectedItem.id+'/activities':'./',text:'Activities',icon:'interests'},
   {show:this.pr.canUser('editField'),disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'},
   {disabled:selectedItem==null,show:this.pr.canUser('deleteField'),tooltip:'Delete the selected field',color:'warn',text:'Delete',icon:'delete'},]"
   (click0)="addEdit()"

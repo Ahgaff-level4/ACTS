@@ -1,4 +1,4 @@
-<app-title [link]="{ title: 'Children' }" [isPrinting]="isPrinting"></app-title>
+<app-title [isPrinting]="isPrinting"></app-title>
 <div class="container">
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions" (keyup)="applySearch($event)"
     (print)="printTable()"></app-search-export>
@@ -10,7 +10,7 @@
   </div>
 
   <app-control-buttons *ngIf="!isPrinting"
-    [buttons]="[{text:'Register a child',icon:'person_add',link:'/add-child',show:this.pr.canUser('addChildPage'),},
+    [buttons]="[{text:'Register a child',icon:'person_add',link:'/children/add-child',show:this.pr.canUser('addChildPage'),},
       {text:'View',icon:'wysiwyg',disabled:selectedItem==null,tooltip:'View all information',link:selectedItem?'children/child/'+selectedItem!.id:'./',},
       {text:'Edit',icon:'edit', show:this.pr.canUser('editChildPage'),disabled:selectedItem==null,tooltip:'Edit the selected row',},
       {text:'Goals',icon:'sports_score',disabled:selectedItem==null,tooltip:'View goals of the selected child',link:selectedItem?'children/child/'+selectedItem!.id+'/goals':'./',},

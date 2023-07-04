@@ -87,7 +87,7 @@ export class AccountComponent extends UnsubOnDestroy {
     {
       name: 'View',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">wysiwyg</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('/account/' + v.id) : '',
+      action: (v) => v ? this.ut.router.navigateByUrl('/accounts/account/' + v.id) : '',
       tooltip: 'View all information',
     },
     {
@@ -125,7 +125,7 @@ export class AccountComponent extends UnsubOnDestroy {
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
-      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.accountService.edit(item) : this.nt.notify(null) }),
+      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.ut.router.navigate(['accounts','edit-account'], { state: { data: item } }): this.nt.notify(null) }),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 

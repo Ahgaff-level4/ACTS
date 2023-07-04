@@ -1,5 +1,5 @@
 import { Component, EventEmitter } from '@angular/core';
-import { IAccountEntity, IChildEntity } from '../../../../../../../interfaces';
+import { IAccountEntity, IChildEntity, Role } from '../../../../../../../interfaces';
 import { EMPTY, Observable, catchError, combineLatest, concatAll, map, tap } from 'rxjs';
 import { ActivatedRoute } from '@angular/router';
 import { AccountService } from 'src/app/services/CRUD/account.service';
@@ -18,54 +18,41 @@ import { ChildService } from 'src/app/services/CRUD/child.service';
 })
 export class ViewAccountComponent extends UnsubOnDestroy {
   public account$!: Observable<IAccountEntity>;
-  // public links$: Observable<TitleLink[]> = new Observable(s => s.next([{ title: 'Accounts', link: '/accounts' }]));//init
-  constructor(private route: ActivatedRoute, public service: AccountService, private nt: NotificationService,
+
+  constructor(public route: ActivatedRoute, public service: AccountService, private nt: NotificationService,
     public ut: UtilityService, public pr: PrivilegeService, public display: DisplayService, private childService: ChildService) { super(); }
 
   ngOnInit(): void {
-    this.ut.isLoading.next(true);
-    let obs: Observable<[IAccountEntity, IChildEntity] | [IAccountEntity]> = this.route.paramMap.pipe(map(params => {
-      let accountId = +(params.get('id') ?? -1);
-      let childId = +(params.get('childId') ?? -1);
-      if (accountId > 0)
-        if (childId > 0)
-          return combineLatest([this.service.fetchOne(accountId), this.childService.children$.pipe(map(v => v.filter(v => v.id == childId)[0]))])
-        else
-          return combineLatest([this.service.fetchOne(accountId)])
-      else throw 'not found';
-    }), concatAll(), tap(() => this.ut.isLoading.next(false)),
-      catchError(() => {
-        this.ut.isLoading.next(false);
-        this.nt.errorDefaultDialog("Sorry, there was a problem fetching the account information. Please try again later or check your connection.");
-        this.ut.router.navigateByUrl('404');
-        return EMPTY;
-      }));
+    let accountId = +(this.route.snapshot.paramMap.get('id') ?? 'null');
 
-    this.account$ = obs.pipe(map(v => v[0]));
-    // this.links$ = obs.pipe(map(v => {
-    //   let account: IAccountEntity = v[0];
-    //   let child: IChildEntity | undefined = v[1];
-    //   let links: TitleLink[] = child?.person?.name ? [
-    //    ,
-    //     { title: 'Child Teachers', link: '/child/' + child.id, fragment: 'teachers' },
-    //     { title: 'Child information', titleLink: child.person.name, link: '/child/' + child.id },
-    //     { title: 'Children', link: '/children' }
-    //   ] :
-    //     [{ title: 'Account information', titleLink: account.person?.name },
-    //     { title: 'Accounts', link: '/accounts' }];
-    //   return links
-    // }))
+    if (Number.isInteger(accountId))
+      this.account$ = this.service.fetchOne(accountId,true).pipe(
+        catchError(() => {
+          this.ut.isLoading.next(false);
+          this.nt.errorDefaultDialog("Sorry, there was a problem fetching the account information. Please try again later or check your connection.");
+          this.ut.router.navigateByUrl('404');
+          return EMPTY;
+        }));
+    else {
+      this.ut.isLoading.next(false);
+      this.nt.errorDefaultDialog("Sorry, there was a problem fetching the account information. Please try again later or check your connection.");
+      this.ut.router.navigateByUrl('404');
+    }
+
   }
 
   public back = new EventEmitter<void>();
   deleteTheAccount(account: IAccountEntity) {//navigate back on delete
-    // this.links$.pipe(map(v => {
-    //   return v[1].link ?? '/accounts';
-    // })).subscribe((link) => {
     this.service.deleteAccount(account).then(v => {
       if (v == 'deleted')
         this.back.emit();
-    })
-    // });
+    });
+  }
+
+  accountHasAny(account: IAccountEntity, ...roles: Role[]): boolean {
+    for (let r of account.roles)
+      if (roles.includes(r))
+        return true;
+    return false;
   }
 }
