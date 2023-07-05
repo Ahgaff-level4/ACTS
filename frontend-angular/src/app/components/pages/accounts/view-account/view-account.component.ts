@@ -26,7 +26,13 @@ export class ViewAccountComponent extends UnsubOnDestroy {
     let accountId = +(this.route.snapshot.paramMap.get('id') ?? 'null');
 
     if (Number.isInteger(accountId))
-      this.account$ = this.service.fetchOne(accountId,true).pipe(
+      this.account$ = this.service.fetchOne(accountId, true).pipe(tap(() => {
+        setTimeout(() => {//hash won't works if account is loading...
+          const hash = location.hash;
+          location.hash = '#';
+          location.hash = hash;
+        });
+      }),
         catchError(() => {
           this.ut.isLoading.next(false);
           this.nt.errorDefaultDialog("Sorry, there was a problem fetching the account information. Please try again later or check your connection.");

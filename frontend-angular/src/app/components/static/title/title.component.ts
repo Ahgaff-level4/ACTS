@@ -1,5 +1,6 @@
 import { Location as NgLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { NavigationEnd } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ACTS_Segment } from 'src/app/app-routing.module';
 import { AccountService } from 'src/app/services/CRUD/account.service';
@@ -51,13 +52,17 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
   constructor(public ut: UtilityService, private location: NgLocation,
     private childService: ChildService, private programService: ProgramService,
     private fieldService: FieldService, private evaluationService: EvaluationService,
-    private accountService: AccountService,) { super() }
+    private accountService: AccountService,
+  ) { super() }
 
   ngOnInit(): void {
     const path = this.location.path();
     if (this.link) this.link.link = path;
     this.calcLinks(path);
-
+    // this.sub.add(this.ut.router.events.subscribe((event) => {
+    //   if (event instanceof NavigationEnd)
+    //     this.calcLinks(this.location.path());
+    // }));
     this.back?.subscribe(() => {
       if (this.links[1].link)
         this.ut.router.navigateByUrl(this.links[1].link)
@@ -72,6 +77,12 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
   async calcLinks(path: string) {
     const segments = path.split('/') as ACTS_Segment[];
+    // let i = 0;
+    // if (segments.length > this.service.links.length) {
+    //   i = this.service.links.length + 1;
+    //   this.links = this.service.links;
+    //   // this.links.reverse();
+    // } else this.links = [];
 
     for (let i = 0; i < segments.length; i++) {
       let s = segments[i];
@@ -95,7 +106,8 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
         let id = +segments[i + 1];
         if (Number.isInteger(id)) {
           const child = (await firstValueFrom(this.childService.children$)).find(v => v.id == id);
-          this.links.push({ title: 'Child information', titleLink: child?.person?.name, link: '/children/child/' + child?.id });
+          let prevLink = this.links[this.links.length - 1];
+          this.links.push({ title: 'Child information', titleLink: child?.person?.name, link: (prevLink?.link ? (prevLink.fragment ? (prevLink.link + '/' + prevLink.fragment) : prevLink.link) : '') + '/child/' + id });
         }
       }
       else if (s == 'report' && this.links[this.links.length - 1].title == 'Child information') {
@@ -139,12 +151,13 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
       else if (s == 'account') {
         let id = +segments[i + 1];
         if (Number.isInteger(id)) {
-          this.links.push({ title: 'Account information', link: '/accounts/account/' + id })
+          let prevLink = this.links[this.links.length - 1];
+          let accountLink = (prevLink?.link ? (prevLink.fragment ? (prevLink.link + '/' + prevLink.fragment) : prevLink.link) : '') + '/account/' + id;
+          this.links.push({ title: 'Account information', link: accountLink })
           this.sub.add(this.accountService.accounts$.subscribe(accounts => {
             if (accounts) {
               let account = accounts.find(v => v.id == id);
-              let l = this.links.find(v => v.title == 'Account information');
-              console.log('accounts', accounts, 'account', account, 'link', l);
+              let l = this.links.find(v => v.link == accountLink);
               if (l && account) l.titleLink = account.person.name;
             } else this.accountService.fetch();
           }));
@@ -152,19 +165,17 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
       }
       else if (s == 'teachers') {//come as 'children/child/:id/teachers/...'
         let prevLink = this.links[this.links.length - 1];
-        this.links.push({ title: 'Child Teachers', link: prevLink.link, fragment: 'teachers' });//same previous link page but different fragment
+        this.links.push({ title: 'Child Teachers', link: prevLink?.link, fragment: 'teachers' });//same previous link page but different fragment
       }
       else if (s == 'teaches') {
         let prevLink = this.links[this.links.length - 1];
-        this.links.push({ title: 'Teaches Children', link: prevLink.link, fragment: 'teaches' });//same previous link page but different fragment
+        this.links.push({ title: 'Teaches Children', link: prevLink?.link, fragment: 'teaches' });//same previous link page but different fragment
       }
       else if (s == 'kids') {
         let prevLink = this.links[this.links.length - 1];
-        this.links.push({ title: 'Parent Children', link: prevLink.link, fragment: 'kids' });//same previous link page but different fragment
+        this.links.push({ title: 'Parent Children', link: prevLink?.link, fragment: 'kids' });//same previous link page but different fragment
       }
     }
-
-    this.links.reverse();
 
     if (this.links.length == 0 && this.link)
       this.links = [this.link];
