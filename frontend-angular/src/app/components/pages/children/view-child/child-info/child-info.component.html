@@ -17,7 +17,14 @@
       {{'Growth state'|translate}}:</span>&nbsp;{{child.growthState||'–'}}</p>
   <p><span class="fw-bold">{{'Medicines'|translate}}:</span>&nbsp;{{child.medicine||'–'}}</p>
   <p><span class="fw-bold">{{'Priority skills'|translate}}:</span>&nbsp;{{child.prioritySkills||'–'}}</p>
-  <p><span class="fw-bold">{{'Parent'|translate}}:</span>&nbsp;{{child.parent?.person?.name||'–'}}</p>
+  <p id="parent"><span class="fw-bold">
+      {{'Parent'|translate}}:</span>&nbsp;
+    <a *ngIf="child.parent && child.parent.person && pr.canUser('viewAccountPage')"
+      [routerLink]="'./parent/account/' + child.parent.id" [matTooltip]="'Parent information page'|translate">
+      {{child.parent.person.name}}
+    </a>
+    {{pr.canUser('viewAccountPage')?(child.parent?.person?.name?'':'–'):(child.parent?.person?.name??'–')}}
+  </p>
   <p><span class="fw-bold">{{'Teachers'|translate}}:</span>&nbsp;{{this.display.childTeachers(child)||'–'}}</p>
   <p><span class="fw-bold">{{'Program'|translate}}:</span>&nbsp;{{child.program?.name||'–'}}</p>
 
@@ -26,5 +33,5 @@
       {show:pr.canUser('childGoalsPage'),link:'children/child/'+child.id+'/goals',text:'Goals',icon:'sports_score'},
       {show:pr.canUser('childStrengthsPage'),link:'children/child/'+child.id+'/strengths',text:'Strengths',icon:'fitness_center'},
       {show:hideReport != true && this.pr.canUser('childReportPage'),link:'children/child/'+child.id+'/report',text:'Report',icon:'analytics'}]"
-    (click1)="ut.router.navigate(['children','child',child.id,'edit-child'], { state: { data: child } })"></app-control-buttons>
+    (click1)="ut.router.navigate(['edit-child'], { state: { data: child },relativeTo:this.route })"></app-control-buttons>
 </div>

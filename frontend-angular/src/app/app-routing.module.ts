@@ -123,7 +123,7 @@ function endsWithStrThenId(str: string, thenSegment?: string) {
 }
 export type ACTS_Segment = '' | 'login' | 'fields' | 'field' | 'programs'
   | 'program' | 'accounts' | 'account' | 'child' | 'teachers' | 'teaches'
-  | 'teacher' | 'add-account' | 'edit-account' | 'activities' | 'kids'
+  | 'teacher' | 'add-account' | 'edit-account' | 'activities' | 'kids' | 'parent'
   | 'add-child' | 'edit-child' | 'children' | 'goals' | 'evaluations' | 'goal'
   | 'strengths' | 'special-activities' | 'settings' | 'report' | 'about';
 
@@ -147,8 +147,9 @@ export const routes: Routes = [
   { path: 'fields/:programOrField/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.activitiesPage, animation: 'activitiesPage' } },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childrenPage, animation: 'childrenPage' } },
   { path: 'children/add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.addChildPage, animation: 'addChildPage' } },
-  { path: 'children/edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
-  { path: 'children/child/:id/edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
+  { matcher: endsWithStrThenId('child', 'edit-child'), component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
+  // { path: 'children/edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
+  // { path: 'children/child/:id/edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
   { path: 'children/child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childGoalsPage, animation: 'childGoalsPage' } },
   // { path: 'children/child/:childId/goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.goalEvaluationsPage, animation: 'goalEvaluationsPage' } },
   { path: 'children/child/:childId/goals/goal/:id/evaluations', component: EvaluationComponent, title: titlePrefix + 'Evaluations', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.goalEvaluationsPage, animation: 'goalEvaluationsPage' } },
@@ -171,7 +172,7 @@ export const routes: Routes = [
     scrollPositionRestoration: 'enabled',
     anchorScrolling: 'enabled',
     onSameUrlNavigation: 'reload',
-    scrollOffset: [0, 70]
+    scrollOffset: [0, 80]
   })],
   exports: [RouterModule]
 })

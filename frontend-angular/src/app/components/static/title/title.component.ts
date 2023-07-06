@@ -163,17 +163,21 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
           }));
         }
       }
-      else if (s == 'teachers') {//come as 'children/child/:id/teachers/...'
+      else if (s == 'teachers') {//child teachers
         let prevLink = this.links[this.links.length - 1];
-        this.links.push({ title: 'Child Teachers', link: prevLink?.link, fragment: 'teachers' });//same previous link page but different fragment
+        this.links.push({ title: 'Child Teachers', link: prevLink?.link, fragment: 'teachers', tooltip: 'Child Teachers', tooltipSuffix: prevLink.titleLink });//same previous link page but different fragment
       }
-      else if (s == 'teaches') {
+      else if (s == 'teaches') {//teacher teaches
         let prevLink = this.links[this.links.length - 1];
-        this.links.push({ title: 'Teaches Children', link: prevLink?.link, fragment: 'teaches' });//same previous link page but different fragment
+        this.links.push({ title: 'Teaches Children', link: prevLink?.link, fragment: 'teaches', tooltip: 'Teaches Children', tooltipSuffix: prevLink.titleLink });//same previous link page but different fragment
       }
-      else if (s == 'kids') {
+      else if (s == 'kids') {//parent kids
         let prevLink = this.links[this.links.length - 1];
-        this.links.push({ title: 'Parent Children', link: prevLink?.link, fragment: 'kids' });//same previous link page but different fragment
+        this.links.push({ title: 'Parent Children', link: prevLink?.link, fragment: 'kids', tooltip: 'Parent Children', tooltipSuffix: prevLink.titleLink });//same previous link page but different fragment
+      }
+      else if (s == 'parent') {//child parent
+        let prevLink = this.links[this.links.length - 1];
+        this.links.push({ title: 'Parent', link: prevLink.link, fragment: 'parent', tooltip: 'Parent of', tooltipSuffix: prevLink.titleLink })
       }
     }
 
@@ -183,11 +187,13 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
   /**Add "Page" prefix to the link's title. (e.g. 'Page title_name') */
   tooltipOf(link: TitleLink | undefined) {
-    if (link == this.links[0])
+    if (link == this.links[this.links.length - 1])
       return this.ut.translate('Current page');
-    return this.ut.getDirection() == 'rtl' ?
-      (this.ut.translate('page') + ' ' + this.ut.translate(link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : ''))
+    if (link?.tooltip)
+      return this.ut.translate(link.tooltip) + (link.tooltipSuffix ? ' ' + link.tooltipSuffix : '');
+    else return this.ut.currentLang == 'ar' ? (this.ut.translate('page') + ' ' + this.ut.translate(link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : ''))
       : ((link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : '') + ' ' + this.ut.translate('page'));
+
   }
 
   getLinkText(link: TitleLink | undefined): string {
@@ -215,6 +221,9 @@ export interface TitleLink {
   /**Default is `false` */
   hide?: boolean;
   class?: string;
+  /**Default is `true` */
+  tooltip?: string;
+  tooltipSuffix?: string;
 }
 /**
  * Provided:...
