@@ -24,6 +24,11 @@ export class DashboardComponent extends UnsubOnDestroy {
     }] as any;
     return ret;
   }));
+
+  public numberCardsData$: Observable<IDashboard['counts']> = this.dashboard$.pipe(filter(v => v != null), map(dashboard => {
+    return dashboard!.counts;
+  }));
+
   public timeframeFormGroup = new FormGroup({
     from: new FormControl<Date>(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate())),//Default Yearly
     to: new FormControl<Date>(new Date()),

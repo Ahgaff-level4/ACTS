@@ -84,4 +84,8 @@ export class DisplayService {
   accountTeaches(teacher: IAccountEntity): string {
     return teacher.teaches?.map(c => c.person?.name).join(this.ut.translate(', ')) ?? '';
   }
+
+  titleCase(n: string): string {
+    return n.split('').map((v, i) => (i == 0 ? v.toUpperCase() : v)).join('');
+  }
 }

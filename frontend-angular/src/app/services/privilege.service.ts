@@ -36,10 +36,7 @@ export class PrivilegeService {
     return false;
   }
 
-  /**Returns the pages that user has privilege to access */
-  public getUserPages(): Observable<IPage[]>
-  public getUserPages(without: 'Home'): Observable<IPage[]>
-  public getUserPages(without: 'Settings'): Observable<IPage[]>
+  /**@returns the pages that user has privilege to access */
   public getUserPages(without?: 'Home' | 'Settings') {
     return this.user.pipe(map(v=>{
       const pages = PAGES.filter(v => v.privilege ? this.canUser(v.privilege) : true);

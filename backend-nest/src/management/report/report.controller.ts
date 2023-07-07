@@ -1,12 +1,14 @@
 import { Controller, Get, Param, ParseIntPipe, Query } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { Between, DataSource, MoreThanOrEqual, Not } from 'typeorm';
-import { CustomTimeframe, IChildReport, IDashboard, TimeframeDuration } from '../../../../interfaces';
+import { Between, DataSource, Not } from 'typeorm';
+import { CustomTimeframe, IChildReport, IDashboard } from '../../../../interfaces';
 import { ChildEntity } from '../child/child.entity';
 import { PersonEntity } from '../person/person.entity';
 import { AccountEntity } from '../account/account.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { GoalEntity } from '../goal/Goal.entity';
+import { ProgramEntity } from '../program/program.entity';
+import { FieldEntity } from '../field/field.entity';
 
 
 @Controller('api/report')
@@ -22,12 +24,33 @@ export class ReportController {
 			query.to = new Date();//to now
 
 		const children = (await this.dataSource.getRepository(ChildEntity)
-			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: Between(new Date(query.from), new Date(query.to))} } })
+			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: Between(new Date(query.from), new Date(query.to)) } } })
 		);
-		
+
 		const childrenCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false }))
 
-		return { children, childrenCount }
+		//counts
+		const numOfChildren = (await this.dataSource.getRepository(ChildEntity).count({
+			relations: ['person'], where: { person: { createdDatetime: Between(new Date(query.from), new Date(query.to)) } }
+		}));
+		const numOfPrograms = (await this.dataSource.getRepository(ProgramEntity).countBy({ createdDatetime: Between(new Date(query.from), new Date(query.to)) }));
+		const numOfFields = (await this.dataSource.getRepository(FieldEntity).countBy({ createdDatetime: Between(new Date(query.from), new Date(query.to)) }));
+		const numOfAccounts = (await this.dataSource.getRepository(AccountEntity).count({
+			relations: ['person'], where: { person: { createdDatetime: Between(new Date(query.from), new Date(query.to)) } }
+		}));
+		const numOfCompletedGoals = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', assignDatetime: Between(new Date(query.from), new Date(query.to)) }));
+		const numOfContinualGoals = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', assignDatetime: Between(new Date(query.from), new Date(query.to)) }));
+
+		return {
+			children, childrenCount, counts: {
+				programs: numOfPrograms,
+				accounts: numOfAccounts,
+				children: numOfChildren,
+				fields: numOfFields,
+				completedGoals: numOfCompletedGoals,
+				continualGoals:numOfContinualGoals,
+			}
+		}
 	}
 
 	@Get('child/:id')

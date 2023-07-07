@@ -6,8 +6,6 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - Add visitors of the site in the ~Dashboard? Is NestJs provide such thing?
 
-- Child should has specific program, and it should be selected as default when selecting an activity.
-
 - Look for how to make a web page as Android App, Check out Capacitor.
 
 - Apache server...
@@ -15,7 +13,5 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 <!-- - Default load Goals page with filter of this month AND state=continues. -->
 
 - send email reset password. after adding email field in Account, dah...
-
-- add children of a teacher/parent in account-view page. Like in child-view for teachers
 
 - add `about ACTS Developers` in about-us.

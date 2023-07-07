@@ -21,13 +21,14 @@
   z-index: 0;
   overflow: hidden;
   border: 1px solid #f2f8f9;
+  transition: all 0.3s ease-in-out;
 
   &:hover {
-    transition: all 0.2s ease-out;
-    box-shadow: 0px 4px 8px rgba(38, 38, 38, 0.2);
-    top: -4px;
-    border: 1px solid #cccccc;
-    background-color: white;
+    box-shadow: 0 .125rem .25rem rgba(#000, .075) !important;
+    top: 6px;
+
+    // border: 0.5px solid #cccccc;
+    // background-color: white;
   }
 
   // &:before {
@@ -46,6 +47,6 @@
   // }
 
   &:hover:before {
-    transform: scale(2.15);
+    // transform: scale(2.15);
   }
 }

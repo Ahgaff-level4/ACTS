@@ -275,8 +275,17 @@ export interface IChildReport {
 }
 
 export interface IDashboard {
-	children: IChildEntity[],//depend on the timeframe.
+	children: IChildEntity[],//depends on the timeframe.
 	childrenCount: number;//the number of children in the system despite the timeframe
+	/**All counts depends on the timeframe */
+	counts: {
+		children:number;
+		fields: number;
+		programs: number;
+		accounts: number;
+		completedGoals:number;
+		continualGoals:number;
+	}
 }
 
 export interface NotificationMessage {

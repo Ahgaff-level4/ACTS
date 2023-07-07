@@ -80,6 +80,7 @@ import {
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
+import { NumberCardComponent } from './components/pages/dashboard/number-card/number-card.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -139,6 +140,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     PersonViewComponent,
     ActivityItemComponent,
     EntityItemComponent,
+    NumberCardComponent,
   ],
   imports: [
     BrowserModule,

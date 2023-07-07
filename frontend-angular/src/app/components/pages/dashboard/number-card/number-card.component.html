@@ -1,0 +1,9 @@
+<div
+  [matTooltip]="('Number of'|translate)+' '+(content|translate)+' '+('created between'|translate)+' '+display.toDate(timeframe.controls.from.value)+' - '+display.toDate(timeframe.controls.to.value)"
+  class="border-1 border rounded-4 m-3 d-flex">
+  <img class="m-3 me-0 ms-3" width="100px" [src]="src" [alt]="alt" />
+  <div class="m-3 d-flex flex-column align-items-center text-center justify-content-center">
+    <h1>{{number|number}}</h1>
+    <p class="mb-0 pb-0 my-primary-text">{{content|translate}}</p>
+  </div>
+</div>
