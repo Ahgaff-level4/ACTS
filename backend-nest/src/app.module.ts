@@ -16,6 +16,7 @@ import { OtherModule } from './management/other/other.module';
 import { ReportModule } from './management/report/report.module';
 import { AppController } from './app.controller';
 import { AngularMiddleware } from './angular.middleware';
+import { FileManagerModule } from './management/person/file-manager/file-manager.module';
 config();
 
 @Module({
@@ -34,7 +35,7 @@ config();
     AccountModule, ActivityModule, ChildModule,
     EvaluationModule, FieldModule, GoalModule,
     PersonModule, ProgramModule, AuthModule, OtherModule,
-    ReportModule,
+    ReportModule, FileManagerModule,
   ],
   controllers: [AppController],
   providers: [{

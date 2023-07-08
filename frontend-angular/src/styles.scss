@@ -144,7 +144,6 @@ mat-dialog-actions {
   direction: rtl !important;
 }
 
-
 [dir="rtl"] .ms-0 {
   margin-right: 0 !important;
 }
@@ -172,7 +171,6 @@ mat-dialog-actions {
 [dir="rtl"] .ms-auto {
   margin-right: auto !important;
 }
-
 
 [dir="rtl"] .me-0 {
   margin-left: 0 !important;
@@ -202,10 +200,6 @@ mat-dialog-actions {
   margin-left: auto !important;
 }
 
-
-
-
-
 [dir="rtl"] .ps-0 {
   padding-right: 0 !important;
 }
@@ -234,7 +228,6 @@ mat-dialog-actions {
   padding-right: auto !important;
 }
 
-
 [dir="rtl"] .pe-0 {
   padding-left: 0 !important;
 }
@@ -261,4 +254,13 @@ mat-dialog-actions {
 
 [dir="rtl"] .pe-auto {
   padding-left: auto !important;
+}
+
+ejs-filemanager,
+ejs-filemanager button {
+  border-radius: 2.5rem !important;
+}
+
+ejs-filemanager div.e-footer-content {
+  border-radius: 2.5rem 0 !important;
 }

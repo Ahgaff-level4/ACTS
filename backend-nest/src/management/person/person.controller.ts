@@ -22,9 +22,9 @@ export class PersonController {
     if (file) {
       //we insert the person first to get the id value
       const person = await this.repo.save(this.repo.create(createPerson));
-      const fileName = this.imageName(person.name, person.id, file.originalname);
+      const fileName = imageName(person.name, person.id, file.originalname);
       console.log('PersonController : create : fileName:', fileName);
-      await writeFile(this.imagePath(fileName), file.buffer);
+      await writeFile(imagePath(fileName), file.buffer);
       await this.repo.update(person.id, { image: fileName });//set the file name to the person entity
       person.image = fileName;
       return person;
@@ -42,13 +42,13 @@ export class PersonController {
     let res;
     if (originalPerson.image) {//update image name
       const oldImageName = originalPerson.image;
-      const newImageName = this.imageName(updatePerson.name ?? originalPerson.name, id, file?.originalname ?? originalPerson.image);
-      await rename(this.imagePath(oldImageName), this.imagePath(newImageName));//rename the image file name
+      const newImageName = imageName(updatePerson.name ?? originalPerson.name, id, file?.originalname ?? originalPerson.image);
+      await rename(imagePath(oldImageName), imagePath(newImageName));//rename the image file name
       res = await this.repo.update(id, { image: newImageName });
     }
     if (file) {//update image data
-      const fileName = this.imageName(updatePerson.name ?? originalPerson.name, originalPerson.id, file.originalname);
-      await writeFile(this.imagePath(fileName), file.buffer);
+      const fileName = imageName(updatePerson.name ?? originalPerson.name, originalPerson.id, file.originalname);
+      await writeFile(imagePath(fileName), file.buffer);
       if (fileName != originalPerson.image)
         res = await this.repo.update(id, { image: fileName });
     }
@@ -61,11 +61,13 @@ export class PersonController {
     const person: IPersonEntity = await this.repo.findOneBy({ id: +id });
     console.log('delete person', person)
     if (person.image) {//if it has image then delete it
-      await unlink(this.imagePath(person.image));
+      await unlink(imagePath(person.image));
       console.log('image deleted')
     }
     return this.repo.delete(id);
   }
+  
+}
 
   /**
    * @param fileOriginalName is used to know the file extension only. 
@@ -74,15 +76,13 @@ export class PersonController {
    * and if the first letter is dot `.` then the imageName won't have an extension!! 
    * @see {@link extname}
    * @returns image file name with its extension as `personName-personId.png` */
-  imageName(personName: string, personId: string | number, fileOriginalName: string): string {
+ export function imageName(personName: string, personId: string | number, fileOriginalName: string): string {
     //Windows file names has some constraints (*/\...etc) so we use `sanitize` to make the file name compatible
     return `${sanitize(personName)}-${personId}${extname(fileOriginalName)}`;
   }
 
   /**@returns the absolute path of images folder path and suffix the provided image name. 
    * Ex: `C:/.../person-images/imageName` */
-  imagePath(imageName: string): string {
+ export function imagePath(imageName: string): string {
     return resolve((process.env.PRODUCTION == "false" ? '../frontend-angular/src/' : 'dist-angular') + '/assets/person-images/', imageName);
   }
-
-}

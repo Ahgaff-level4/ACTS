@@ -1,4 +1,4 @@
-import { NgModule } from '@angular/core';
+import { NgModule, enableProdMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -75,12 +75,23 @@ import { TimeframeComponent } from './components/forms/timeframe/timeframe.compo
 import { PersonViewComponent } from './components/static/person-view/person-view.component';
 import { ActivityItemComponent } from './components/dialogs/select-activity/activity-item/activity-item.component';
 import { EntityItemComponent } from './components/static/entity-item/entity-item.component';
+import { NumberCardComponent } from './components/pages/dashboard/number-card/number-card.component';
+import { FileManagerModule } from '@syncfusion/ej2-angular-filemanager';
+import { FileManagerComponent } from './components/static/file-manager/file-manager.component';
+import { registerLicense } from '@syncfusion/ej2-base';
+import { environment } from 'src/environments/environment';
+
+// Registering Syncfusion license key
+registerLicense('ORg4AjUWIQA/Gnt2VVhhQlFaclhJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdkFhWX5Wc3xQRmBfVUc=');
+if (environment.production) {
+  enableProdMode();
+}
+
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
-import { NumberCardComponent } from './components/pages/dashboard/number-card/number-card.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -141,6 +152,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     ActivityItemComponent,
     EntityItemComponent,
     NumberCardComponent,
+    FileManagerComponent,
   ],
   imports: [
     BrowserModule,
@@ -154,6 +166,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     AgGridModule,
     YouTubePlayerModule,
     NgxChartsModule,
+    FileManagerModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
