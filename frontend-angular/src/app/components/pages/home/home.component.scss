@@ -21,7 +21,7 @@
   z-index: 0;
   overflow: hidden;
   border: 1px solid #f2f8f9;
-  transition: all 0.3s ease-in-out;
+  transition: all 250ms ease-out;
 
   &:hover {
     box-shadow: 0 .125rem .25rem rgba(#000, .075) !important;

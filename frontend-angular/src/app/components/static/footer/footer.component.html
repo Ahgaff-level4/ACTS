@@ -10,7 +10,7 @@
     </div>
 
     <div class="flex-fill">
-      <mat-divider class="d-md-none mb-3 mx-5"></mat-divider>
+      <mat-divider class="d-md-none mb-3 mx-5 bg-white opacity-25 px-5"></mat-divider>
       <ul class="navbar-nav text-center">
         <li *ngFor="let p of pr.getUserPages('Settings')|async" class="px-3 nav-item" routerLinkActive="active">
           <a class="nav-link" [routerLink]="p.link">{{p.title|translate}}</a>

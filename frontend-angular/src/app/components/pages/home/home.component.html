@@ -36,7 +36,7 @@
   <div class="d-flex flex-wrap justify-content-evenly">
     <mat-card *ngFor="let card of pr.getUserPages('Home')|async" [routerLink]="card.link"
       class="card m-3 shadow cursor-pointer mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
-      <img style="max-width:220px; max-height: 220px;" class="p-2" [src]="card.img"
+      <img loading="lazy" style="max-width:220px; max-height: 220px;" class="p-2" [src]="card.img"
         [alt]="card.alt??'image represent card\'s content'">
       <div class="text-center mt-2 p-2">
         <h4 class="card-title">{{card.title|translate}}</h4>
@@ -47,6 +47,6 @@
 
   <mat-divider class="mx-5 my-5"></mat-divider>
 
-  <app-dashboard *ngIf="pr.canUser('dashboard')"></app-dashboard>
+  <app-dashboard loading="lazy" *ngIf="pr.canUser('dashboard')"></app-dashboard>
 
 </div>
