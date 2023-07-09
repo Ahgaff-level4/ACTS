@@ -5,7 +5,6 @@ import { resolve } from 'path';
 import { IPersonEntity } from '../../../../../interfaces';
 import { Request, Response } from 'express';
 import * as fs from 'fs';
-// import * as fsPromise from 'fs/promises';
 import * as path from 'path';
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
 //todo change every function to arrow function
@@ -26,13 +25,7 @@ export class FileManagerService {
 
   constructor(private contentRootPath: string) {
     (async () => {
-      if (!fs.promises.access(contentRootPath))
-        fs.mkdirSync(contentRootPath);
-      // try {
-      //   await fsPromise.access(contentRootPath);
-      // } catch {
-      //   await fsPromise.mkdir(contentRootPath);
-      // }
+      await this.createFolderIfNotExist(contentRootPath);
     })()
   }
 
@@ -81,20 +74,20 @@ export class FileManagerService {
     }
     // Action to create a new folder
     if (req.body.action == "create") {
-      this.createFolder(req, res, this.contentRootPath + req.body.path, this.contentRootPath);
+      await this.createFolder(req, res, this.contentRootPath + req.body.path, this.contentRootPath);
     }
     // Action to remove a file
     if (req.body.action == "delete") {
-      this.deleteFolder(req, res, this.contentRootPath);
+      await this.deleteFolder(req, res, this.contentRootPath);
     }
     // Action to rename a file
     if (req.body.action === "rename") {
-      this.renameFolder(req, res,)//this.contentRootPath + req.body.path);
+      await this.renameFolder(req, res,)//this.contentRootPath + req.body.path);
     }
 
-    const addSearchList = (filename, contentRootPath, fileList, files, index) => {
+    const addSearchList = async (filename, contentRootPath, fileList, files, index) => {
       var cwd: any = {};
-      var stats = fs.statSync(filename);
+      var stats = await fs.promises.stat(filename);
       cwd.name = path.basename(filename);
       cwd.size = stats.size;
       cwd.isFile = stats.isFile();
@@ -103,20 +96,20 @@ export class FileManagerService {
       cwd.type = path.extname(filename);
       cwd.filterPath = filename.substr((this.contentRootPath.length), filename.length).replace(files[index], "");
       cwd.permission = this.getPermission(filename.replace(/\\/g, "/"), cwd.name, cwd.isFile, this.contentRootPath, cwd.filterPath);
-      var permission =  parentsHavePermission(filename, this.contentRootPath, cwd.isFile, cwd.name, cwd.filterPath);
+      var permission = parentsHavePermission(filename, this.contentRootPath, cwd.isFile, cwd.name, cwd.filterPath);
       if (permission) {
-        if (fs.lstatSync(filename).isFile()) {
+        if ((await fs.promises.lstat(filename)).isFile()) {
           cwd.hasChild = false;
         }
-        if (fs.lstatSync(filename).isDirectory()) {
-          var statsRead = fs.readdirSync(filename);
+        if ((await fs.promises.lstat(filename)).isDirectory()) {
+          var statsRead = await fs.promises.readdir(filename);
           cwd.hasChild = statsRead.length > 0;
         }
         fileList.push(cwd);
       }
     }
 
-    const parentsHavePermission =  (filepath, contentRootPath, isFile, name, filterPath) => {
+    const parentsHavePermission = (filepath, contentRootPath, isFile, name, filterPath) => {
       var parentPath = filepath.substr(this.contentRootPath.length, filepath.length - 1).replace(/\\/g, "/");
       parentPath = parentPath.substr(0, parentPath.indexOf(name)) + (isFile ? "" : "/");
       var parents = parentPath.split('/');
@@ -137,7 +130,7 @@ export class FileManagerService {
       return hasPermission;
     }
 
-    const checkForSearchResult =  (casesensitive, filter, isFile, fileName, searchString) => {
+    const checkForSearchResult = (casesensitive, filter, isFile, fileName, searchString) => {
       var isAddable = false;
       if (searchString.substr(0, 1) == "*" && searchString.substr(searchString.length - 1, 1) == "*") {
         if (casesensitive ? fileName.indexOf(filter) >= 0 : (fileName.indexOf(filter.toLowerCase()) >= 0 || fileName.indexOf(filter.toUpperCase()) >= 0)) {
@@ -155,22 +148,24 @@ export class FileManagerService {
       return isAddable;
     }
 
-    const fromDir = (startPath, filter, contentRootPath, casesensitive, searchString) => {
-      if (!fs.existsSync(startPath)) {
+    const fromDir = async (startPath, filter, contentRootPath, casesensitive, searchString) => {
+      try {
+        await fs.promises.access(startPath);
+      } catch {
         return;
       }
-      var files = fs.readdirSync(startPath);
+      var files = await fs.promises.readdir(startPath);
       for (var i = 0; i < files.length; i++) {
         var filename = path.join(startPath, files[i]);
-        var stat = fs.lstatSync(filename);
+        var stat = await fs.promises.lstat(filename);
         if (stat.isDirectory()) {
           if (checkForSearchResult(casesensitive, filter, false, files[i], searchString)) {
-            addSearchList(filename, this.contentRootPath, fileList, files, i);
+            await addSearchList(filename, this.contentRootPath, fileList, files, i);
           }
-          fromDir(filename, filter, this.contentRootPath, casesensitive, searchString); //recurse
+          await fromDir(filename, filter, this.contentRootPath, casesensitive, searchString); //recurse
         }
         else if (checkForSearchResult(casesensitive, filter, true, files[i], searchString)) {
-          addSearchList(filename, this.contentRootPath, fileList, files, i);
+          await addSearchList(filename, this.contentRootPath, fileList, files, i);
         }
       }
     }
@@ -178,7 +173,7 @@ export class FileManagerService {
     // Action to search a file
     if (req.body.action === 'search') {
       var fileList = [];
-      fromDir(this.contentRootPath + req.body.path, req.body.searchString.replace(/\*/g, ""), this.contentRootPath, req.body.caseSensitive, req.body.searchString);
+      await fromDir(this.contentRootPath + req.body.path, req.body.searchString.replace(/\*/g, ""), this.contentRootPath, req.body.caseSensitive, req.body.searchString);
       (async () => {
         const tes: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
         if (tes.permission != null && !tes.permission.read) {
@@ -203,38 +198,34 @@ export class FileManagerService {
       var myCwd: any = {};
       var directoryList = [];
       const stats = (file) => {
-        return new Promise((resolve, reject) => {
-          fs.stat(file, (err, cwd) => {
-            if (err) {
-              return reject(err);
-            }
-            myCwd.name = path.basename(this.contentRootPath + req.body.path + file);
-            myCwd.size = (cwd.size);
-            myCwd.isFile = cwd.isFile();
-            myCwd.dateModified = cwd.ctime;
-            myCwd.dateCreated = cwd.mtime;
-            myCwd.filterPath = this.getRelativePath(this.contentRootPath, this.contentRootPath + req.body.path,)//req);
-            myCwd.type = path.extname(this.contentRootPath + req.body.path + file);
-            myCwd.permission = this.getPermission(this.contentRootPath + req.body.path + myCwd.name, myCwd.name, cwd.isFile, this.contentRootPath, myCwd.filterPath);
-            if (fs.lstatSync(file).isDirectory()) {
-              fs.readdirSync(file).forEach((items) => {
-                if (fs.statSync(path.join(file, items)).isDirectory()) {
-                  directoryList.push(items[i]);
-                }
-                if (directoryList.length > 0) {
-                  myCwd.hasChild = true;
-                } else {
-                  myCwd.hasChild = false;
-                  directoryList = [];
-                }
-              });
-            } else {
-              myCwd.hasChild = false;
-              // dir = [];
-            }
-            directoryList = [];
-            resolve(cwd);
-          });
+        return new Promise(async (resolve, reject) => {
+          const cwd = await fs.promises.stat(file);
+          myCwd.name = path.basename(this.contentRootPath + req.body.path + file);
+          myCwd.size = (cwd.size);
+          myCwd.isFile = cwd.isFile();
+          myCwd.dateModified = cwd.ctime;
+          myCwd.dateCreated = cwd.mtime;
+          myCwd.filterPath = this.getRelativePath(this.contentRootPath, this.contentRootPath + req.body.path,)//req);
+          myCwd.type = path.extname(this.contentRootPath + req.body.path + file);
+          myCwd.permission = this.getPermission(this.contentRootPath + req.body.path + myCwd.name, myCwd.name, cwd.isFile, this.contentRootPath, myCwd.filterPath);
+          if ((await fs.promises.lstat(file)).isDirectory()) {
+            (await fs.promises.readdir(file)).forEach(async (items) => {
+              if ((await fs.promises.stat(path.join(file, items))).isDirectory()) {
+                directoryList.push(items[i]);
+              }
+              if (directoryList.length > 0) {
+                myCwd.hasChild = true;
+              } else {
+                myCwd.hasChild = false;
+                directoryList = [];
+              }
+            });
+          } else {
+            myCwd.hasChild = false;
+            // dir = [];
+          }
+          directoryList = [];
+          resolve(cwd);
         });
       }
       var promiseList = [];
@@ -307,11 +298,11 @@ export class FileManagerService {
     } else {
       var isMultipleLocations = false;
       isMultipleLocations = this.checkForMultipleLocations(req, this.contentRootPath);
-      req.body.names.forEach((item) => {
-        if (fs.lstatSync(this.contentRootPath + item).isDirectory()) {
-          this.getFolderSize(req, res, this.contentRootPath + item, this.size);
+      req.body.names.forEach(async (item) => {
+        if ((await fs.promises.lstat(this.contentRootPath + item)).isDirectory()) {
+          await this.getFolderSize(req, res, this.contentRootPath + item, this.size);
         } else {
-          const stats = fs.statSync(this.contentRootPath + item);
+          const stats = (await fs.promises.stat(this.contentRootPath + item));
           this.size = this.size + stats.size;
         }
       });
@@ -372,19 +363,17 @@ export class FileManagerService {
       }
     });
     if (!permissionDenied) {
-      req.body.data.forEach((item) => {
+      req.body.data.forEach(async (item) => {
         var fromPath = this.contentRootPath + item.filterPath + item.name;
         var toPath = this.contentRootPath + req.body.targetPath + item.name;
-        this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
+        await this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
         if (!this.isRenameChecking) {
           toPath = this.contentRootPath + req.body.targetPath + this.copyName;
           if (item.isFile) {
-            fs.copyFile(path.join(fromPath), path.join(toPath), (err) => {
-              if (err) throw err;
-            });
+            fs.promises.copyFile(path.join(fromPath), path.join(toPath)).catch(e => { throw e });
           }
           else {
-            this.copyFolder(fromPath, toPath)
+            await this.copyFolder(fromPath, toPath)
           }
           var list = item;
           list.filterPath = req.body.targetPath;
@@ -442,10 +431,10 @@ export class FileManagerService {
       }
     });
     if (!permissionDenied) {
-      req.body.data.forEach((item) => {
+      req.body.data.forEach(async (item) => {
         var fromPath = this.contentRootPath + item.filterPath + item.name;
         var toPath = this.contentRootPath + req.body.targetPath + item.name;
-        this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
+        await this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
         if (!this.isRenameChecking) {
           toPath = this.contentRootPath + req.body.targetPath + this.copyName;
           if (item.isFile) {
@@ -453,14 +442,12 @@ export class FileManagerService {
             var desti = fs.createWriteStream(path.join(toPath));
             source.pipe(desti);
             source.on('end', () => {
-              fs.unlink(path.join(fromPath), (err) => {
-                if (err) throw err;
-              });
+              fs.promises.unlink(path.join(fromPath)).catch(e => { throw e })
             });
           }
           else {
-            this.MoveFolder(fromPath, toPath);
-            fs.rmdirSync(fromPath);
+            await this.MoveFolder(fromPath, toPath);
+            await fs.promises.rmdir(fromPath);
           }
           var list = item;
           list.name = this.copyName;
@@ -494,7 +481,7 @@ export class FileManagerService {
   /**
  * function to create the folder
  */
-  private createFolder(req, res, filepath, contentRootPath) {
+  private async createFolder(req, res, filepath, contentRootPath) {
     var newDirectoryPath = path.join(this.contentRootPath + req.body.path, req.body.name);
     var pathPermission = this.getPathPermission(req.path, false, req.body.data[0].name, filepath, this.contentRootPath, req.body.data[0].filterPath);
     if (pathPermission != null && (!pathPermission.read || !pathPermission.writeContents)) {
@@ -507,7 +494,8 @@ export class FileManagerService {
       res.json(this.response);
     }
     else {
-      if (fs.existsSync(newDirectoryPath)) {
+      try {
+        await fs.promises.access(newDirectoryPath);
         var errorMsg: any = new Error();
         errorMsg.message = "A file or folder with the name " + req.body.name + " already exists.";
         errorMsg.code = "400";
@@ -516,16 +504,15 @@ export class FileManagerService {
         this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json(this.response);
-      } else {
-        fs.mkdirSync(newDirectoryPath);
-        (async () => {
-          await this.FileManagerDirectoryContent(req, res, newDirectoryPath).then(data => {
-            this.response = { files: data };
-            this.response = JSON.stringify(this.response);
-            res.setHeader('Content-Type', 'application/json');
-            res.json(this.response);
-          });
-        })();
+      } catch (e) {
+        await fs.promises.mkdir(newDirectoryPath);
+        await this.FileManagerDirectoryContent(req, res, newDirectoryPath).then(data => {
+          this.response = { files: data };
+          this.response = JSON.stringify(this.response);
+          res.setHeader('Content-Type', 'application/json');
+          res.json(this.response);
+        });
+
       }
     }
   }
@@ -533,21 +520,24 @@ export class FileManagerService {
   /**
    * function to delete the folder
    */
-  private deleteFolder(req, res, contentRootPath) {
-    var deleteFolderRecursive = (path) => {
-      if (fs.existsSync(path)) {
-        fs.readdirSync(path).forEach((file, index) => {
+  private async deleteFolder(req, res, contentRootPath) {
+    var deleteFolderRecursive = async (path) => {
+      try {
+        await fs.promises.access(path);
+        (await fs.promises.readdir(path)).forEach(async (file, index) => {
           var curPath = path + "/" + file;
           curPath = curPath.replace("../", "");
-          if (fs.lstatSync(curPath).isDirectory()) { // recurse
-            deleteFolderRecursive(curPath);
+          if ((await fs.promises.lstat(curPath)).isDirectory()) { // recurse
+            await deleteFolderRecursive(curPath);
           } else { // delete file
-            fs.unlinkSync(curPath);
+            await fs.promises.unlink(curPath);
           }
         });
-        fs.rmdirSync(path);
+        await fs.promises.rmdir(path);
+      } catch (e) {
+
       }
-    };
+    }
     var permission; var permissionDenied = false;
     req.body.data.forEach((item) => {
       var fromPath = this.contentRootPath + item.filterPath;
@@ -567,18 +557,18 @@ export class FileManagerService {
       var promiseList = [];
       for (var i = 0; i < req.body.data.length; i++) {
         var newDirectoryPath = path.join(this.contentRootPath + req.body.data[i].filterPath, req.body.data[i].name);
-        if (fs.lstatSync(newDirectoryPath).isFile()) {
+        if ((await fs.promises.lstat(newDirectoryPath)).isFile()) {
           promiseList.push(this.FileManagerDirectoryContent(req, res, newDirectoryPath, req.body.data[i].filterPath));
         } else {
           promiseList.push(this.FileManagerDirectoryContent(req, res, newDirectoryPath + "/", req.body.data[i].filterPath));
         }
       }
       Promise.all(promiseList).then(data => {
-        data.forEach((files) => {
-          if (fs.lstatSync(path.join(this.contentRootPath + files.filterPath, files.name)).isFile()) {
-            fs.unlinkSync(path.join(this.contentRootPath + files.filterPath, files.name));
+        data.forEach(async (files) => {
+          if ((await fs.promises.lstat(path.join(this.contentRootPath + files.filterPath, files.name))).isFile()) {
+            fs.promises.unlink(path.join(this.contentRootPath + files.filterPath, files.name));
           } else {
-            deleteFolderRecursive(path.join(this.contentRootPath + files.filterPath, files.name));
+            await deleteFolderRecursive(path.join(this.contentRootPath + files.filterPath, files.name));
           }
         });
         this.response = { files: data };
@@ -592,7 +582,7 @@ export class FileManagerService {
   /**
  * function to rename the folder
  */
-  private renameFolder(req, res) {
+  private async renameFolder(req, res) {
     var oldName = req.body.data[0].name.split("/")[req.body.data[0].name.split("/").length - 1];
     var newName = req.body.newName.split("/")[req.body.newName.split("/").length - 1];
     var permission = this.getPermission((this.contentRootPath + req.body.data[0].filterPath), oldName, req.body.data[0].isFile, this.contentRootPath, req.body.data[0].filterPath);
@@ -617,7 +607,7 @@ export class FileManagerService {
         res.setHeader('Content-Type', 'application/json');
         res.json(this.response);
       } else {
-        fs.renameSync(oldDirectoryPath, newDirectoryPath);
+        await fs.promises.rename(oldDirectoryPath, newDirectoryPath);
         (async () => {
           await this.FileManagerDirectoryContent(req, res, newDirectoryPath + "/").then(data => {
             this.response = { files: data };
@@ -697,39 +687,37 @@ export class FileManagerService {
  * returns the current working directories
  */
   private FileManagerDirectoryContent(req, res, filepath, searchFilterPath?) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       var cwd: any = {};
       this.replaceRequestParams(req, res);
-      fs.stat(filepath, (err, stats) => {
-        cwd.name = path.basename(filepath);
-        cwd.size = this.getSize(stats.size);
-        cwd.isFile = stats.isFile();
-        cwd.dateModified = stats.ctime;
-        cwd.dateCreated = stats.mtime;
-        cwd.type = path.extname(filepath);
-        if (searchFilterPath) {
-          cwd.filterPath = searchFilterPath;
-        } else {
-          cwd.filterPath = req.body.data.length > 0 ? this.getRelativePath(this.contentRootPath, this.contentRootPath + req.body.path.substring(0, req.body.path.indexOf(req.body.data[0].name))) : "";
-        }
-        cwd.permission = this.getPathPermission(req.path, cwd.isFile, (req.body.path == "/") ? "" : cwd.name, filepath, this.contentRootPath, cwd.filterPath);
-        if (fs.lstatSync(filepath).isFile()) {
-          cwd.hasChild = false;
-          resolve(cwd);
-        }
-      });
-      if (fs.lstatSync(filepath).isDirectory()) {
-        fs.readdir(filepath, (err, stats) => {
-          stats.forEach(stat => {
-            if (fs.lstatSync(filepath + stat).isDirectory()) {
-              cwd.hasChild = true
-            } else {
-              cwd.hasChild = false;
-            }
-            if (cwd.hasChild) return;
-          });
-          resolve(cwd);
+      const stats = await fs.promises.stat(filepath);
+      cwd.name = path.basename(filepath);
+      cwd.size = this.getSize(stats.size);
+      cwd.isFile = stats.isFile();
+      cwd.dateModified = stats.ctime;
+      cwd.dateCreated = stats.mtime;
+      cwd.type = path.extname(filepath);
+      if (searchFilterPath) {
+        cwd.filterPath = searchFilterPath;
+      } else {
+        cwd.filterPath = req.body.data.length > 0 ? this.getRelativePath(this.contentRootPath, this.contentRootPath + req.body.path.substring(0, req.body.path.indexOf(req.body.data[0].name))) : "";
+      }
+      cwd.permission = this.getPathPermission(req.path, cwd.isFile, (req.body.path == "/") ? "" : cwd.name, filepath, this.contentRootPath, cwd.filterPath);
+      if ((await fs.promises.lstat(filepath)).isFile()) {
+        cwd.hasChild = false;
+        resolve(cwd);
+      }
+      if ((await fs.promises.lstat(filepath)).isDirectory()) {
+        const stats = await fs.promises.readdir(filepath)
+        stats.forEach(async stat => {
+          if ((await fs.promises.lstat(filepath + stat)).isDirectory()) {
+            cwd.hasChild = true
+          } else {
+            cwd.hasChild = false;
+          }
+          if (cwd.hasChild) return;
         });
+        resolve(cwd);
       }
     });
   }
@@ -753,34 +741,27 @@ export class FileManagerService {
  * Reads text from the file asynchronously and returns a Promise.
  */
   private async GetFiles(req, res): Promise<string[]> {
-    return new Promise((resolve, reject) => {
-      fs.readdir(this.contentRootPath + req.body.path.replace(this.pattern, ""), function (err, files) {
-          //handling error
-          if (err) {
-              console.log(err);
-              reject(err);
-
-          } else
-              resolve(files);
-      });
-  });  }
+    return new Promise(async (resolve, reject) => {
+      const files = await fs.promises.readdir(this.contentRootPath + req.body.path.replace(this.pattern, ""));
+      resolve(files);
+    });
+  }
 
   /**
  * function to get the file details like path, name and size
  */
   private fileDetails(req, res, filepath) {
-    return new Promise((resolve, reject) => {
+    return new Promise(async (resolve, reject) => {
       var cwd: any = {};
-      fs.stat(filepath, (err, stats) => {
-        cwd.name = path.basename(filepath);
-        cwd.size = this.getSize(stats.size);
-        cwd.isFile = stats.isFile();
-        cwd.modified = stats.ctime;
-        cwd.created = stats.mtime;
-        cwd.type = path.extname(filepath);
-        cwd.location = req.body.data[0].filterPath
-        resolve(cwd);
-      });
+      const stats = await fs.promises.stat(filepath);
+      cwd.name = path.basename(filepath);
+      cwd.size = this.getSize(stats.size);
+      cwd.isFile = stats.isFile();
+      cwd.modified = stats.ctime;
+      cwd.created = stats.mtime;
+      cwd.type = path.extname(filepath);
+      cwd.location = req.body.data[0].filterPath
+      resolve(cwd);
     });
   }
 
@@ -788,14 +769,14 @@ export class FileManagerService {
   /** 
    * function to get the folder size
    */
-  private getFolderSize(req, res, directory, sizeValue) {
+  private async getFolderSize(req, res, directory, sizeValue) {
     this.size = sizeValue;
-    var filenames = fs.readdirSync(directory);
+    var filenames = await fs.promises.readdir(directory);
     for (var i = 0; i < filenames.length; i++) {
-      if (fs.lstatSync(directory + "/" + filenames[i]).isDirectory()) {
-        this.getFolderSize(req, res, directory + "/" + filenames[i], this.size);
+      if ((await fs.promises.lstat(directory + "/" + filenames[i])).isDirectory()) {
+        await this.getFolderSize(req, res, directory + "/" + filenames[i], this.size);
       } else {
-        const stats = fs.statSync(directory + "/" + filenames[i]);
+        const stats = await fs.promises.stat(directory + "/" + filenames[i]);
         this.size = this.size + stats.size;
       }
     }
@@ -835,73 +816,71 @@ export class FileManagerService {
   }
 
 
-  private copyFolder(source, dest) {
-    if (!fs.existsSync(dest)) {
-      fs.mkdirSync(dest);
-    }
-    var files = fs.readdirSync(source);
-    files.forEach((file) => {
+  private async copyFolder(source, dest: string) {
+    this.createFolderIfNotExist(dest);
+    var files = await fs.promises.readdir(source);
+    files.forEach(async (file) => {
       var curSource = path.join(source, file);
       curSource = curSource.replace("../", "");
-      if (fs.lstatSync(curSource).isDirectory()) {
-        this.copyFolder(curSource, path.join(dest, file)); source
+      if ((await fs.promises.lstat(curSource)).isDirectory()) {
+        await this.copyFolder(curSource, path.join(dest, file)); source
       } else {
-        fs.copyFile(path.join(source, file), path.join(dest, file), (err) => {
-          if (err) throw err;
-        });
+        fs.promises.copyFile(path.join(source, file), path.join(dest, file)).catch(e => { throw e; })
       }
     });
   }
 
-  private updateCopyName(path, name, count, isFile) {
+  private async updateCopyName(path, name, count, isFile) {
     var subName = "", extension = "";
     if (isFile) {
       extension = name.substr(name.lastIndexOf('.'), name.length - 1);
       subName = name.substr(0, name.lastIndexOf('.'));
     }
     this.copyName = !isFile ? name + "(" + count + ")" : (subName + "(" + count + ")" + extension);
-    if (this.checkForDuplicates(path, this.copyName, isFile)) {
+    if (await this.checkForDuplicates(path, this.copyName, isFile)) {
       count = count + 1;
-      this.updateCopyName(path, name, count, isFile);
+      await this.updateCopyName(path, name, count, isFile);
     }
   }
 
-  private checkForFileUpdate(fromPath, toPath, item, contentRootPath, req) {
+  private async checkForFileUpdate(fromPath, toPath, item, contentRootPath, req) {
     var count = 1;
     var name = this.copyName = item.name;
     if (fromPath == toPath) {
-      if (this.checkForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
-        this.updateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile);
+      if (await this.checkForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
+        await this.updateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile);
       }
     } else {
       if (req.body.renameFiles.length > 0 && req.body.renameFiles.indexOf(item.name) >= 0) {
-        this.updateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile);
+        await this.updateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile);
       } else {
-        if (this.checkForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
+        if (await this.checkForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
           this.isRenameChecking = true;
         }
       }
     }
   }
 
-  private MoveFolder(source, dest) {
-    if (!fs.existsSync(dest)) {
-      fs.mkdirSync(dest);
+  private async createFolderIfNotExist(path: string) {
+    try {
+      await fs.promises.access(path);
+    } catch {
+      await fs.promises.mkdir(path);
     }
-    var files = fs.readdirSync(source);
-    files.forEach((file) => {
+  }
+
+  private async MoveFolder(source, dest) {
+    await this.createFolderIfNotExist(dest);
+    var files = await fs.promises.readdir(source);
+    files.forEach(async (file) => {
       var curSource = path.join(source, file);
       curSource = curSource.replace("../", "");
-      if (fs.lstatSync(curSource).isDirectory()) {
-        this.MoveFolder(curSource, path.join(dest, file));
-        fs.rmdirSync(curSource);
+      if ((await fs.promises.lstat(curSource)).isDirectory()) {
+        await this.MoveFolder(curSource, path.join(dest, file));
+        await fs.promises.rmdir(curSource);
       } else {
-        fs.copyFile(path.join(source, file), path.join(dest, file), (err) => {
-          if (err) throw err;
-        });
-        fs.unlink(path.join(source, file), (err) => {
-          if (err) throw err;
-        });
+        await fs.promises.copyFile(path.join(source, file), path.join(dest, file)).catch(e => { throw e })
+        await fs.promises.unlink(path.join(source, file)).catch(e => { throw e });
       }
     });
   }
@@ -910,16 +889,16 @@ export class FileManagerService {
  * 
  * function to check for exising folder or file
  */
-  private checkForDuplicates(directory, name, isFile) {
-    var filenames = fs.readdirSync(directory);
+  private async checkForDuplicates(directory, name, isFile) {
+    var filenames = await fs.promises.readdir(directory);
     if (filenames.indexOf(name) == -1) {
       return false;
     } else {
       for (var i = 0; i < filenames.length; i++) {
         if (filenames[i] === name) {
-          if (!isFile && fs.lstatSync(directory + "/" + filenames[i]).isDirectory()) {
+          if (!isFile && (await fs.promises.lstat(directory + "/" + filenames[i])).isDirectory()) {
             return true;
-          } else if (isFile && !fs.lstatSync(directory + "/" + filenames[i]).isDirectory()) {
+          } else if (isFile && !(await fs.promises.lstat(directory + "/" + filenames[i])).isDirectory()) {
             return true;
           } else {
             return false;
