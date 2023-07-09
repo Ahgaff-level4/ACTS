@@ -24,7 +24,8 @@ export class RolesGuard implements CanActivate {
     const req: Request = context.switchToHttp().getRequest();
     if (req.path === '/api/auth/login'
       || req.path == '/api/auth/isLogin'
-      || req.path == '/api/auth/logout')//No authentication needed for these
+      || req.path == '/api/auth/logout'
+      || (req.path.startsWith('/api/person/')&&req.path.includes('file-manager')))//No authentication needed for these
       return true;
 
     const user: User | undefined = req.session['user'];

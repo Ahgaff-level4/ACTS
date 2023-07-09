@@ -6,8 +6,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { rename, unlink, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
-import sanitize = require('sanitize-filename');
 import { IPersonEntity } from '../../../../interfaces';
+import { personFolderName } from './file-manager/file-manager.controller';
+
 @Controller('api/person')
 export class PersonController {
   constructor(@InjectRepository(PersonEntity)
@@ -66,23 +67,30 @@ export class PersonController {
     }
     return this.repo.delete(id);
   }
-  
+
 }
 
-  /**
-   * @param fileOriginalName is used to know the file extension only. 
-   * You can provide the file extension here as `a.jpeg` where `a` can be any letter 
-   * but it should exist because the extraction process do not look for the first letter
-   * and if the first letter is dot `.` then the imageName won't have an extension!! 
-   * @see {@link extname}
-   * @returns image file name with its extension as `personName-personId.png` */
- export function imageName(personName: string, personId: string | number, fileOriginalName: string): string {
-    //Windows file names has some constraints (*/\...etc) so we use `sanitize` to make the file name compatible
-    return `${sanitize(personName)}-${personId}${extname(fileOriginalName)}`;
-  }
+/**
+ * @param fileOriginalName is used to know the file extension only. 
+ * You can provide the file extension here as `a.jpeg` where `a` can be any letter 
+ * but it should exist because the extraction process do not look for the first letter
+ * and if the first letter is dot `.` then the imageName won't have an extension!! 
+ * @see {@link extname}
+ * @returns image file name with its extension as `personName-personId.png` */
+function imageName(personName: string, personId: string | number, fileOriginalName: string): string {
+  //Windows file names has some constraints (*/\...etc) so we use `sanitize` to make the file name compatible
+  return personFolderName(personName, personId) + `${extname(fileOriginalName)}`;
+}
 
-  /**@returns the absolute path of images folder path and suffix the provided image name. 
-   * Ex: `C:/.../person-images/imageName` */
- export function imagePath(imageName: string): string {
-    return resolve((process.env.PRODUCTION == "false" ? '../frontend-angular/src/' : 'dist-angular') + '/assets/person-images/', imageName);
-  }
+
+
+
+/**@returns the absolute path of images folder path and suffix the provided image name. 
+ * Ex: `C:/.../person-images/imageName` */
+export function imagePath(imageName: string): string {
+  return resolve((process.env.PRODUCTION == "false" ? '../frontend-angular/src/' : 'dist-angular') + '/assets/person-images/', imageName);
+}
+
+/**
+ * 
+ */
