@@ -78,15 +78,6 @@ import { EntityItemComponent } from './components/static/entity-item/entity-item
 import { NumberCardComponent } from './components/pages/dashboard/number-card/number-card.component';
 import { FileManagerModule } from '@syncfusion/ej2-angular-filemanager';
 import { FileManagerComponent } from './components/static/file-manager/file-manager.component';
-import { registerLicense } from '@syncfusion/ej2-base';
-import { environment } from 'src/environments/environment';
-
-// Registering Syncfusion license key
-registerLicense('ORg4AjUWIQA/Gnt2VVhhQlFaclhJXGFWfVJpTGpQdk5xdV9DaVZUTWY/P1ZhSXxRdkFhWX5Wc3xQRmBfVUc=');
-if (environment.production) {
-  enableProdMode();
-}
-
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,

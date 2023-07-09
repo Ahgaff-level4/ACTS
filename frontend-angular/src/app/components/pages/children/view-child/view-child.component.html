@@ -17,6 +17,6 @@
   </mat-list>
 </app-card>
 
-<app-card cardTitle="Child Folder">
+<app-card cardTitle="Child Folder" [padding]="false">
   <app-file-manager *ngIf="child && child.person" [personId]="child.person.id"></app-file-manager>
 </app-card>

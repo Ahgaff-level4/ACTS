@@ -1,7 +1,7 @@
 <div class="container">
   <h3 *ngIf="title" class="mx-5 mb-3 p-4 pb-0 fw-normal">{{title|translate}}</h3>
   <mat-card class="mb-5 mx-lg-5 shadow rounded-5">
-    <mat-card-content>
+    <mat-card-content [ngClass]="padding?'':'m-0 p-0'">
       <ng-content></ng-content>
     </mat-card-content>
   </mat-card>

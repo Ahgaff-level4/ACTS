@@ -8,4 +8,5 @@ import { Component, Input } from '@angular/core';
 export class CardComponent {
   @Input('cardTitle') title: string | undefined;
   @Input() id: string | undefined;
+  @Input() padding: boolean = true;
 }
