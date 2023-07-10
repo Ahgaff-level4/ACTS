@@ -7,7 +7,7 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { rename, unlink, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
 import { IPersonEntity } from '../../../../interfaces';
-import { personFolderName } from './file-manager/file-manager.controller';
+import sanitize = require('sanitize-filename');
 
 @Controller('api/person')
 export class PersonController {
@@ -79,7 +79,7 @@ export class PersonController {
  * @returns image file name with its extension as `personName-personId.png` */
 function imageName(personName: string, personId: string | number, fileOriginalName: string): string {
   //Windows file names has some constraints (*/\...etc) so we use `sanitize` to make the file name compatible
-  return personFolderName(personName, personId) + `${extname(fileOriginalName)}`;
+  return `${sanitize(personName)}-${personId}${extname(fileOriginalName)}`;
 }
 
 

@@ -7,7 +7,7 @@ import { Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
-//todo change every function to arrow function
+//todo change every func to arrow func
 //todo change Sync to promise
 //todo fix conflict of local `location` and global nodejs location
 export class FileManagerService {
@@ -17,6 +17,8 @@ export class FileManagerService {
   private location = "";
   private isRenameChecking = false;
   private accessDetails: null | AccessDetails = null;
+  // //Multer to upload the files to the server
+  // private fileName = [];
 
   /**undefined vars */
   private response: any = {};
@@ -27,6 +29,99 @@ export class FileManagerService {
     (async () => {
       await this.createFolderIfNotExist(contentRootPath);
     })()
+  }
+
+  public async upload(req: Request, res: Response) {
+    if (!Array.isArray(req['fileName']))
+      req['fileName'] = [];
+    this.replaceRequestParams(req, res);
+    var pathPermission = req.body.data != null ? this.getPathPermission(req.path, true, JSON.parse(req.body.data).name, this.contentRootPath + req.body.path, this.contentRootPath, JSON.parse(req.body.data).filterPath) : null;
+    if (pathPermission != null && (!pathPermission.read || !pathPermission.upload)) {
+      var errorMsg: any = new Error();
+      errorMsg.message = (this.permission.message !== "") ? this.permission.message :
+        JSON.parse(req.body.data).name + " is not accessible. You need permission to perform the upload action.";
+      errorMsg.code = "401";
+      this.response = { error: errorMsg };
+      this.response = JSON.stringify(this.response);
+      res.setHeader('Content-Type', 'application/json');
+      res.json(this.response);
+    } else if (req.body != null && req.body.path != null) {
+      var errorValue: any = new Error();
+      if (req.body.action === 'save') {
+        var folders = (req.body.filename).split('/');
+        var filepath = req.body.path;
+        var uploadedFileName = folders[folders.length - 1];
+        // checking the folder upload
+        if (folders.length > 1) {
+          for (var i = 0; i < folders.length - 1; i++) {
+            var newDirectoryPath = path.join(this.contentRootPath + filepath, folders[i]);
+            if (!fs.existsSync(newDirectoryPath)) {
+              fs.mkdirSync(newDirectoryPath);
+              (async () => {
+                await this.FileManagerDirectoryContent(req, res, newDirectoryPath).then(data => {
+                  this.response = { files: data };
+                  this.response = JSON.stringify(this.response);
+                });
+              })();
+            }
+            filepath += folders[i] + "/";
+          }
+          fs.rename('./' + uploadedFileName, path.join(this.contentRootPath, filepath + uploadedFileName), function (err) {
+            if (err) {
+              if (err.code != 'EBUSY') {
+                errorValue.message = err.message;
+                errorValue.code = err.code;
+              }
+            }
+          });
+        } else {
+          for (var i = 0; i < req['fileName'].length; i++) {
+            fs.rename('./' + req['fileName'][i], path.join(this.contentRootPath, filepath + req['fileName'][i]), function (err) {
+              if (err) {
+                if (err.code != 'EBUSY') {
+                  errorValue.message = err.message;
+                  errorValue.code = err.code;
+                }
+              }
+            });
+          }
+        }
+      } else if (req.body.action === 'remove') {
+        if (fs.existsSync(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]))) {
+          fs.unlinkSync(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]));
+        }
+      }
+      if (errorValue != null) {
+        this.response = { error: errorValue };
+        this.response = JSON.stringify(this.response);
+        res.setHeader('Content-Type', 'application/json');
+      }
+      res.send('Success');
+      req['fileName'] = [];
+    }
+
+
+  }
+
+  public async getImage(req: Request, res: Response) {
+    this.replaceRequestParams(req, res);
+    var image = req.query.path.toString().split("/").length > 1 ? req.query.path.toString() : "/" + req.query.path.toString();
+    var pathPermission = this.getPermission(this.contentRootPath + image.substr(0, image.lastIndexOf("/")), image.substr(image.lastIndexOf("/") + 1, image.length - 1), true, this.contentRootPath, image.substr(0, image.lastIndexOf("/")));
+    if (pathPermission != null && !pathPermission.read) {
+      return null;
+    }
+    else {
+      fs.promises.readFile(this.contentRootPath + image)
+        .then(content => {
+          //specify the content type in the response will be an image
+          res.writeHead(200, { 'Content-type': 'image/jpg' });
+          res.end(content);
+        })
+        .catch(e => {
+          res.writeHead(400, { 'Content-type': 'text/html' });
+          res.end("No such image");
+        })
+    }
   }
 
   public async fileOperations(req: Request, res: Response) {
@@ -225,7 +320,7 @@ export class FileManagerService {
             // dir = [];
           }
           directoryList = [];
-          resolve(cwd);
+          resolve(myCwd);
         });
       }
       var promiseList = [];
@@ -336,7 +431,7 @@ export class FileManagerService {
   }
 
   /**
- * function copyfile and folder
+ * func copyfile and folder
  */
   private CopyFiles(req, res, contentRootPath) {
     var fileList = [];
@@ -404,7 +499,7 @@ export class FileManagerService {
   }
 
   /**
- * function move files and folder
+ * func move files and folder
  */
   private MoveFiles(req, res, contentRootPath) {
     var fileList = [];
@@ -479,7 +574,7 @@ export class FileManagerService {
   }
 
   /**
- * function to create the folder
+ * func to create the folder
  */
   private async createFolder(req, res, filepath, contentRootPath) {
     var newDirectoryPath = path.join(this.contentRootPath + req.body.path, req.body.name);
@@ -518,7 +613,7 @@ export class FileManagerService {
   }
 
   /**
-   * function to delete the folder
+   * func to delete the folder
    */
   private async deleteFolder(req, res, contentRootPath) {
     var deleteFolderRecursive = async (path) => {
@@ -580,7 +675,7 @@ export class FileManagerService {
   }
 
   /**
- * function to rename the folder
+ * func to rename the folder
  */
   private async renameFolder(req, res) {
     var oldName = req.body.data[0].name.split("/")[req.body.data[0].name.split("/").length - 1];
@@ -621,7 +716,7 @@ export class FileManagerService {
   }
 
 
-  private getPermission(filepath, name, isFile, contentRootPath, filterPath) {
+  private getPermission(filepath, name, isFile, contentRootPath, filterPath): null | AccessPermission {
     var filePermission = new AccessPermission(true, true, true, true, true, true, "");
     if (this.accessDetails == null) {
       return null;
@@ -748,7 +843,7 @@ export class FileManagerService {
   }
 
   /**
- * function to get the file details like path, name and size
+ * func to get the file details like path, name and size
  */
   private fileDetails(req, res, filepath) {
     return new Promise(async (resolve, reject) => {
@@ -767,7 +862,7 @@ export class FileManagerService {
 
 
   /** 
-   * function to get the folder size
+   * func to get the folder size
    */
   private async getFolderSize(req, res, directory, sizeValue) {
     this.size = sizeValue;
@@ -783,7 +878,7 @@ export class FileManagerService {
   }
 
   /**
-  * function to get the size in kb, MB
+  * func to get the size in kb, MB
   */
   private getSize(size) {
     var hz;
@@ -887,7 +982,7 @@ export class FileManagerService {
 
   /**
  * 
- * function to check for exising folder or file
+ * func to check for exising folder or file
  */
   private async checkForDuplicates(directory, name, isFile) {
     var filenames = await fs.promises.readdir(directory);

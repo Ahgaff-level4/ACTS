@@ -259,11 +259,13 @@ mat-dialog-actions {
 ejs-filemanager,
 ejs-filemanager button,
 ejs-filemanager div.e-dialog,
-ejs-filemanager div.e-dlg-container {
+ejs-filemanager div.e-dlg-content,
+ejs-filemanager div.e-dlg-container{
   border-radius: 2rem !important;
 }
 
-ejs-filemanager div.e-footer-content {
+ejs-filemanager div.e-footer-content,
+ejs-filemanager #default-filemanager_upload_dialog_dialog-content {
   border-bottom-right-radius: 2rem !important;
   border-bottom-left-radius: 2rem !important;
 }
@@ -272,7 +274,6 @@ ejs-filemanager div.e-dlg-header-content {
   border-top-right-radius: 2rem !important;
   border-top-left-radius: 2rem !important;
 }
-body > div[style*="background: #EEF2FF"],
-body > div.e-contextmenu-wrapper.e-fe-popup.e-lib.e-keyboard{
+body > div[style*="background: #EEF2FF"] {
   display: none !important;
 }
