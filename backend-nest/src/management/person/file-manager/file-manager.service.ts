@@ -5,13 +5,12 @@ import * as fs from 'fs';
 import * as path from 'path';
 import {
   AccessDetails, CWD2, FileDetails, GetFiles, GetPathPermission,
-  GetPermission, GetRelativePath, GetSize, MoveFolder, ReadDirectories,
+  GetPermission, GetRelativePath, GetSize, ReadDirectories,
   AddSearchList, createFolderIfNotExists, fileExists, GetRules,
-  pattern,
   CheckForDuplicates,
   UpdateCopyName,
-  CWD1,
-  ReplaceRequestParams
+  ReplaceRequestParams,
+  MoveFolder
 } from './fileOperations.utility';
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
 //todo change every func to arrow func
@@ -44,8 +43,6 @@ export class FileManagerService {
       errorMsg.message = (this.permission.message !== "") ? this.permission.message :
         JSON.parse(req.body.data).name + " is not accessible. You need permission to perform the upload action.";
       errorMsg.code = "401";
-      // this.response = { error: errorMsg };
-      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
       res.json({ error: errorMsg });
     } else if (req.body != null && req.body.path != null) {
@@ -61,11 +58,10 @@ export class FileManagerService {
             if (!(await createFolderIfNotExists(newDirectoryPath))) {
               const data = await this.FileManagerDirectoryContent(req, res, newDirectoryPath);
               this.response = { files: data };
-              // this.response = JSON.stringify(this.response);
             }
             filepath += folders[i] + "/";
           }
-          await fs.promises.rename('./' + uploadedFileName, path.join(this.contentRootPath, filepath + uploadedFileName)).catch(function (err) {
+          await fs.promises.rename('./' + uploadedFileName, path.join(this.contentRootPath, filepath + uploadedFileName)).catch((err) => {
             if (err && err.code != 'EBUSY') {
               errorValue.message = err.message;
               errorValue.code = err.code;
@@ -73,7 +69,7 @@ export class FileManagerService {
           });
         } else {
           for (var i = 0; i < req['fileName'].length; i++) {
-            await fs.promises.rename('./' + req['fileName'][i], path.join(this.contentRootPath, filepath + req['fileName'][i])).catch(function (err) {
+            await fs.promises.rename('./' + req['fileName'][i], path.join(this.contentRootPath, filepath + req['fileName'][i])).catch((err) => {
               if (err && err.code != 'EBUSY') {
                 errorValue.message = err.message;
                 errorValue.code = err.code;
@@ -89,7 +85,6 @@ export class FileManagerService {
       }
       if (errorValue != null) {
         this.response = { error: errorValue };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
       }
       res.send('Success');
@@ -203,13 +198,9 @@ export class FileManagerService {
         errorMsg.message = (this.permission.message !== "") ? this.permission.message :
           "'" + /*getFileName*/(this.contentRootPath + (req.body.path.substring(0, req.body.path.length - 1))) + "' is not accessible. You need permission to perform the read action.";
         errorMsg.code = "401";
-        // this.response = { error: errorMsg };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg });
       } else {
-        // this.response = { cwd: tes, files: fileList };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ cwd: tes, files: fileList });
       }
@@ -222,21 +213,16 @@ export class FileManagerService {
       const filesList = await GetFiles(req, this.contentRootPath);
       const cwdFiles: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
       cwdFiles.name = req.body.path == "/" ? this.rootName = (path.basename(this.contentRootPath + req.body.path)) : path.basename(this.contentRootPath + req.body.path)
-      // var response = {};
       if (cwdFiles.permission != null && !cwdFiles.permission.read) {
         var errorMsg: any = new Error();
         errorMsg.message = (cwdFiles.permission.message !== "") ? cwdFiles.permission.message :
           "'" + cwdFiles.name + "' is not accessible. You need permission to perform the read action.";
         errorMsg.code = "401";
-        // response = { cwd: cwdFiles, files: null, error: errorMsg };
-        // response = JSON.stringify(response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ cwd: cwdFiles, files: null, error: errorMsg });
       }
       else {
         const data = await ReadDirectories(filesList, this.contentRootPath, req, this.accessDetails);
-        // response = { cwd: cwdFiles, files: data };
-        // response = JSON.stringify(response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ cwd: cwdFiles, files: data });
       }
@@ -256,9 +242,9 @@ export class FileManagerService {
       req.body.names = nameValues;
     }
     if (req.body.names.length == 1) {
-      const data = await FileDetails(req, res, this.contentRootPath + (isNamesAvailable ? req.body.names[0] : ""));
+      const data = await FileDetails(req, res, contentRootPath + (isNamesAvailable ? req.body.names[0] : ""));
       if (!data.isFile) {
-        await this.getFolderSize(req, res, this.contentRootPath + (isNamesAvailable ? req.body.names[0] : ""), 0);
+        await this.getFolderSize(req, res, contentRootPath + (isNamesAvailable ? req.body.names[0] : ""), 0);
         data.size = GetSize(this.size);
         this.size = 0;
       }
@@ -267,22 +253,19 @@ export class FileManagerService {
       } else {
         data.location = path.join(this.rootName, filterPath, req.body.names[0]);
       }
-      // this.response = { details: data };
-      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
       res.json({ details: data });
     } else {
-      var isMultipleLocations = false;
-      isMultipleLocations = this.checkForMultipleLocations(req, this.contentRootPath);
-      await req.body.names.forEach(async (item) => {
-        if ((await fs.promises.lstat(this.contentRootPath + item)).isDirectory()) {
-          await this.getFolderSize(req, res, this.contentRootPath + item, this.size);
+      var isMultipleLocations = this.checkForMultipleLocations(req, contentRootPath);
+      for (let item of req.body.names as string[]) {
+        if ((await fs.promises.lstat(contentRootPath + item)).isDirectory()) {
+          await this.getFolderSize(req, res, contentRootPath + item, this.size);
         } else {
-          const stats = (await fs.promises.stat(this.contentRootPath + item));
+          const stats = (await fs.promises.stat(contentRootPath + item));
           this.size = this.size + stats.size;
         }
-      });
-      const data = await FileDetails(req, res, this.contentRootPath + req.body.names[0]);
+      }
+      const data = await FileDetails(req, res, contentRootPath + req.body.names[0]);
       var names = [];
       req.body.names.forEach((name) => {
         if (name.split("/").length > 0) {
@@ -301,8 +284,6 @@ export class FileManagerService {
       } else {
         data.location = path.join(this.rootName, filterPath).substr(0, path.join(this.rootName, filterPath).length - 1);
       }
-      // this.response = { details: data };
-      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
       isMultipleLocations = false;
       this.location = "";
@@ -331,28 +312,21 @@ export class FileManagerService {
           ((pathPermission.message !== "") ? pathPermission.message :
             req.body.targetData.name + " is not accessible. You need permission to perform the writeContents action.");
         errorMsg.code = "401";
-        // this.response = { error: errorMsg };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg });
       }
     });
     if (!permissionDenied) {
-      await req.body.data.forEach(async (item: CWD2) => {
+      for (let item of (req.body.data as CWD2[])) {
         var fromPath = contentRootPath + item.filterPath + item.name;
         var toPath = contentRootPath + req.body.targetPath + item.name;
         await this.checkForFileUpdate(fromPath, toPath, item, contentRootPath, req);
         if (!this.isRenameChecking) {
-          console.log('FileManagerService : await req.body.data.forEach : isRenameChecking:', this.isRenameChecking);
-          console.log('before assign toPath. fromPath=', fromPath, ', toPath=', toPath);
           // toPath = contentRootPath + req.body.targetPath + this.copyName;
-          console.log('If toPath assigned will be =', contentRootPath + req.body.targetPath + this.copyName);
           if (item.isFile) {
-            console.log('item.isFile. item=', item);
             await fs.promises.copyFile(fromPath, toPath);
           }
           else {
-            console.log('FileManagerService : copyFolder(fromPath=', fromPath, ', toPath=', toPath, ')')
             await this.copyFolder(fromPath, toPath)
           }
           var list = item;
@@ -362,11 +336,9 @@ export class FileManagerService {
         } else {
           replaceFileList.push(item.name);
         }
-      });
+      }
       if (replaceFileList.length == 0) {
         this.copyName = "";
-        // this.response = { files: fileList };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ files: fileList });
       } else {
@@ -375,8 +347,6 @@ export class FileManagerService {
         errorMsg.message = "File Already Exists.";
         errorMsg.code = "400";
         errorMsg.fileExists = replaceFileList;
-        // this.response = { error: errorMsg, files: [] };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg, files: [] });
       }
@@ -391,10 +361,10 @@ export class FileManagerService {
     var fileList = [];
     var replaceFileList = [];
     var permission; var pathPermission; var permissionDenied = false;
-    pathPermission = GetPathPermission(req.path, false, req.body.targetData.name, this.contentRootPath + req.body.targetPath, this.contentRootPath, req.body.targetData.filterPath, this.accessDetails);
+    pathPermission = GetPathPermission(req.path, false, req.body.targetData.name, contentRootPath + req.body.targetPath, this.contentRootPath, req.body.targetData.filterPath, this.accessDetails);
     req.body.data.forEach((item) => {
-      var fromPath = this.contentRootPath + item.filterPath;
-      permission = GetPermission(fromPath, item.name, item.isFile, this.contentRootPath, item.filterPath, this.accessDetails);
+      var fromPath = contentRootPath + item.filterPath;
+      permission = GetPermission(fromPath, item.name, item.isFile, contentRootPath, item.filterPath, this.accessDetails);
       var fileAccessDenied = (permission != null && (!permission.read || !permission.write));
       var pathAccessDenied = (pathPermission != null && (!pathPermission.read || !pathPermission.writeContents));
       if (fileAccessDenied || pathAccessDenied) {
@@ -405,31 +375,31 @@ export class FileManagerService {
           ((pathPermission.message !== "") ? pathPermission.message :
             req.body.targetData.name + " is not accessible. You need permission to perform the writeContents action.");
         errorMsg.code = "401";
-        // this.response = { error: errorMsg };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg });
       }
     });
     if (!permissionDenied) {
-      await req.body.data.forEach(async (item) => {
-        var fromPath = this.contentRootPath + item.filterPath + item.name;
-        var toPath = this.contentRootPath + req.body.targetPath + item.name;
-        await this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
+      for (let item of req.body.data) {
+        var fromPath = contentRootPath + item.filterPath + item.name;
+        var toPath = contentRootPath + req.body.targetPath + item.name;
+        await this.checkForFileUpdate(fromPath, toPath, item, contentRootPath, req);
         if (!this.isRenameChecking) {
           // toPath = this.contentRootPath + req.body.targetPath + this.copyName;
           if (item.isFile) {
-            var source = fs.createReadStream(path.join(fromPath));
-            var desti = fs.createWriteStream(path.join(toPath));
-            source.pipe(desti);
-            source.on('end', () => {
-              fs.promises.unlink(path.join(fromPath)).catch(e => { throw e })
-            });
-          }
-          else {
+            // var source = fs.createReadStream(path.join(fromPath));
+            // var desti = fs.createWriteStream(path.join(toPath));
+            // source.pipe(desti);
+            // source.on('end', () => {
+            //   fs.promises.unlink(path.join(fromPath)).catch(e => { throw e })
+            // });
+            await fs.promises.rename(fromPath, toPath);
+          } else {
             await MoveFolder(fromPath, toPath);
             await fs.promises.rmdir(fromPath);
           }
+          // await createFolderIfNotExists(toPath);
+          // await fs.promises.rename(fromPath, toPath);
           var list = item;
           list.name = this.copyName;
           list.filterPath = req.body.targetPath;
@@ -437,11 +407,9 @@ export class FileManagerService {
         } else {
           replaceFileList.push(item.name);
         }
-      });
+      }
       if (replaceFileList.length == 0) {
         this.copyName = "";
-        // this.response = { files: fileList };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ files: fileList });
       }
@@ -451,8 +419,6 @@ export class FileManagerService {
         errorMsg.message = "File Already Exists.";
         errorMsg.code = "400";
         errorMsg.fileExists = replaceFileList;
-        // this.response = { error: errorMsg, files: [] };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg, files: [] });
       }
@@ -470,8 +436,6 @@ export class FileManagerService {
       var errorMsg: any = new Error();
       errorMsg.message = (this.permission.message !== "") ? this.permission.message : req.body.data[0].name + " is not accessible. You need permission to perform the writeContents action.";
       errorMsg.code = "401";
-      // this.response = { error: errorMsg };
-      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
       res.json({ error: errorMsg });
     }
@@ -481,15 +445,11 @@ export class FileManagerService {
         var errorMsg: any = new Error();
         errorMsg.message = "A file or folder with the name " + req.body.name + " already exists.";
         errorMsg.code = "400";
-        // this.response = { error: errorMsg };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg });
       } catch (e) {
         await fs.promises.mkdir(newDirectoryPath);
         await this.FileManagerDirectoryContent(req, res, newDirectoryPath).then(data => {
-          // this.response = { files: data };
-          // this.response = JSON.stringify(this.response);
           res.setHeader('Content-Type', 'application/json');
           res.json({ files: data });
         });
@@ -506,7 +466,8 @@ export class FileManagerService {
     var deleteFolderRecursive = async (path) => {
       try {
         await fs.promises.access(path);
-        await (await fs.promises.readdir(path)).forEach(async (file, index) => {
+        const files = await fs.promises.readdir(path);
+        for (let file of files) {
           var curPath = path + "/" + file;
           curPath = curPath.replace("../", "");
           if ((await fs.promises.lstat(curPath)).isDirectory()) { // recurse
@@ -514,7 +475,7 @@ export class FileManagerService {
           } else { // delete file
             await fs.promises.unlink(curPath);
           }
-        });
+        }
         await fs.promises.rmdir(path);
       } catch (e) {
 
@@ -529,8 +490,6 @@ export class FileManagerService {
         var errorMsg: any = new Error();
         errorMsg.message = (permission.message !== "") ? permission.message : item.name + " is not accessible. You need permission to perform the write action.";
         errorMsg.code = "401";
-        // this.response = { error: errorMsg };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg });
       }
@@ -538,7 +497,7 @@ export class FileManagerService {
     if (!permissionDenied) {
       var promiseList = [];
       for (var i = 0; i < req.body.data.length; i++) {
-        var newDirectoryPath = path.join(this.contentRootPath + req.body.data[i].filterPath, req.body.data[i].name);
+        var newDirectoryPath = path.join(contentRootPath + req.body.data[i].filterPath, req.body.data[i].name);
         if ((await fs.promises.lstat(newDirectoryPath)).isFile()) {
           promiseList.push(this.FileManagerDirectoryContent(req, res, newDirectoryPath, req.body.data[i].filterPath));
         } else {
@@ -546,15 +505,13 @@ export class FileManagerService {
         }
       }
       const data = await Promise.all(promiseList);
-      await data.forEach(async (files) => {
-        if ((await fs.promises.lstat(path.join(this.contentRootPath + files.filterPath, files.name))).isFile()) {
-          await fs.promises.unlink(path.join(this.contentRootPath + files.filterPath, files.name));
+      for (let files of data) {
+        if ((await fs.promises.lstat(path.join(contentRootPath + files.filterPath, files.name))).isFile()) {
+          await fs.promises.unlink(path.join(contentRootPath + files.filterPath, files.name));
         } else {
-          await deleteFolderRecursive(path.join(this.contentRootPath + files.filterPath, files.name));
+          await deleteFolderRecursive(path.join(contentRootPath + files.filterPath, files.name));
         }
-      });
-      // this.response = { files: data };
-      // this.response = JSON.stringify(this.response);
+      }
       res.setHeader('Content-Type', 'application/json');
       res.json({ files: data });
     }
@@ -571,8 +528,6 @@ export class FileManagerService {
       var errorMsg: any = new Error();
       errorMsg.message = (permission.message !== "") ? permission.message : /*getFileName*/(this.contentRootPath + req.body.data[0].filterPath + oldName) + " is not accessible.  is not accessible. You need permission to perform the write action.";
       errorMsg.code = "401";
-      // this.response = { error: errorMsg };
-      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
       res.json({ error: errorMsg });
     } else {
@@ -582,15 +537,11 @@ export class FileManagerService {
         var errorMsg: any = new Error();
         errorMsg.message = "A file or folder with the name " + req.body.name + " already exists.";
         errorMsg.code = "400";
-        // this.response = { error: errorMsg };
-        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
         res.json({ error: errorMsg });
       } else {
         await fs.promises.rename(oldDirectoryPath, newDirectoryPath);
         await this.FileManagerDirectoryContent(req, res, newDirectoryPath + "/").then(data => {
-          // this.response = { files: data };
-          // this.response = JSON.stringify(this.response);
           res.setHeader('Content-Type', 'application/json');
           res.json({ files: data });
         });
@@ -625,14 +576,15 @@ export class FileManagerService {
     }
     if ((await fs.promises.lstat(filepath)).isDirectory()) {
       const stats = await fs.promises.readdir(filepath)
-      await stats.forEach(async stat => {
+      for (let stat of stats) {
         if ((await fs.promises.lstat(filepath + stat)).isDirectory()) {
           cwd.hasChild = true
         } else {
           cwd.hasChild = false;
         }
-        if (cwd.hasChild) return;
-      });
+        //if (cwd.hasChild) return; called in forEach function so it is used to continue..
+        if (cwd.hasChild) continue;
+      }
       return cwd;
     }
   }
@@ -679,7 +631,7 @@ export class FileManagerService {
   private async copyFolder(source: string, dest: string) {
     await createFolderIfNotExists(dest);
     var files = await fs.promises.readdir(source);
-    await files.forEach(async (file) => {
+    for (let file of files) {
       var curSource = path.join(source, file);
       curSource = curSource.replace("../", "");
       if ((await fs.promises.lstat(curSource)).isDirectory()) {
@@ -687,7 +639,7 @@ export class FileManagerService {
       } else {
         fs.promises.copyFile(path.join(source, file), path.join(dest, file)).catch(e => { throw e; })
       }
-    });
+    }
   }
 
   private async checkForFileUpdate(fromPath: string, toPath: string, item: CWD2, contentRootPath: string, req: Request) {

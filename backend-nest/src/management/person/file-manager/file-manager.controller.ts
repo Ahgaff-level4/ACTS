@@ -25,7 +25,7 @@ export class FileManagerController {
     try {
       await new FileManagerService(personFolderPath(id)).fileOperations(req, res);
     } catch (e) {
-      console.trace('FileOperations : Caught an error', e);
+      console.trace('FileOperations : body=',req.body,' : Error=', e);
     }
   }
 
@@ -34,7 +34,7 @@ export class FileManagerController {
     try {
       await new FileManagerService(personFolderPath(id)).getImage(req, res);
     } catch (e) {
-      console.trace('GetImage : Caught an error', e);
+      console.trace('GetImage : body=',req.body,' : Error=', e);
     }
   }
 
@@ -70,7 +70,7 @@ export class FileManagerController {
 
       await new FileManagerService(personFolderPath(id) + '/').upload(req, res);
     } catch (e) {
-      console.trace('Upload : Caught an error', e);
+      console.trace('Upload : body=',req.body,' : Error=', e);
     }
   }
 }

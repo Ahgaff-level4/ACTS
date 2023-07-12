@@ -5,7 +5,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 /**Titlecase functions are built-in by syncfusion nodejs example. 
  * Although they've been changed to promises to increase performance for parallel users requests*/
-export const pattern = /(\.\.\/)/g;
+const pattern = /(\.\.\/)/g;
 
 export const GetRules: () => Promise<null | AccessDetails> = async () => {
 	const details = new AccessDetails();
@@ -233,21 +233,21 @@ export const GetSize = (size: number): string => {
 }
 
 
-export const MoveFolder = async (source, dest) => {
+export const MoveFolder = async (source: string, dest: string) => {
 	await createFolderIfNotExists(dest);
-
+	// await fs.promises.rename(source, dest);
 	var files = await fs.promises.readdir(source);
-	await files.forEach(async (file) => {
+	for (let file of files) {
 		var curSource = path.join(source, file);
 		curSource = curSource.replace("../", "");
 		if ((await fs.promises.lstat(curSource)).isDirectory()) {
 			await MoveFolder(curSource, path.join(dest, file));
 			await fs.promises.rmdir(curSource);
 		} else {
-			await fs.promises.copyFile(path.join(source, file), path.join(dest, file)).catch(e => { throw e })
-			await fs.promises.unlink(path.join(source, file)).catch(e => { throw e });
+			await fs.promises.copyFile(path.join(source, file), path.join(dest, file));
+			await fs.promises.unlink(path.join(source, file));
 		}
-	});
+	}
 }
 
 export const GetPathPermission = (path: string, isFile: boolean, name: string, filepath: string, contentRootPath: string, filterPath: string, accessDetails: null | AccessDetails) => {
@@ -358,7 +358,7 @@ export class AccessRules {
 	}
 }
 
-export interface CWD1 {
+interface CWD1 {
 	name: string;
 	size: string;
 	isFile: boolean;
