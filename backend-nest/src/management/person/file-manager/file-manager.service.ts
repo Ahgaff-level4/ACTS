@@ -3,6 +3,7 @@
 import { Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import * as archiver from 'archiver';
 import {
   AccessDetails, CWD2, FileDetails, GetFiles, GetPathPermission,
   GetPermission, GetRelativePath, GetSize, ReadDirectories,
@@ -62,7 +63,7 @@ export class FileManagerService {
             }
             filepath += folders[i] + "/";
           }
-          transferFile(path.join(path.resolve('cache'), uploadedFileName),  path.join(this.contentRootPath, filepath + uploadedFileName)).catch(err => {
+          transferFile(path.join(path.resolve('cache'), uploadedFileName), path.join(this.contentRootPath, filepath + uploadedFileName)).catch(err => {
             if (err && err.code != 'EBUSY') {
               errorValue.message = err.message;
               errorValue.code = err.code;
@@ -82,9 +83,8 @@ export class FileManagerService {
           }
         }
       } else if (req.body.action === 'remove') {
-
         if (await fileExists(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]))) {
-          fs.unlinkSync(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]));
+          await fs.promises.unlink(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]));
         }
       }
       if (errorValue != null) {
@@ -114,6 +114,60 @@ export class FileManagerService {
           res.writeHead(400, { 'Content-type': 'text/html' });
           res.end("No such image");
         })
+    }
+  }
+
+  public async download(req: Request, res: Response) {
+    ReplaceRequestParams(req);
+    var downloadObj = JSON.parse(req.body.downloadInput);
+    var permission; var permissionDenied = false;
+    downloadObj.data.forEach((item) => {
+      var filepath = (this.contentRootPath + item.filterPath).replace(/\\/g, "/");
+      permission = GetPermission(filepath + item.name, item.name, item.isFile, this.contentRootPath, item.filterPath, this.accessDetails);
+      if (permission != null && (!permission.read || !permission.download)) {
+        permissionDenied = true;
+        var errorMsg: any = new Error();
+        errorMsg.message = (permission.message !== "") ? permission.message : (this.contentRootPath + item.filterPath + item.name) + " is not accessible. You need permission to perform the download action.";
+        errorMsg.code = "401";
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ error: errorMsg });
+      }
+    });
+    if (!permissionDenied) {
+      if (downloadObj.names.length === 1 && downloadObj.data[0].isFile) {
+        var file = this.contentRootPath + downloadObj.path + downloadObj.names[0];
+        res.download(file);
+      } else {
+        var archive = archiver('zip', {
+          gzip: true,
+          zlib: { level: 9 } // Sets the compression level.
+        });
+        var output = fs.createWriteStream('./Files.zip');
+        downloadObj.data.forEach((item) => {
+          archive.on('error', (err) => {
+            throw err;
+          });
+          if (item.isFile) {
+            archive.file(this.contentRootPath + item.filterPath + item.name, { name: item.name });
+          }
+          else {
+            archive.directory(this.contentRootPath + item.filterPath + item.name + "/", item.name);
+          }
+        });
+        archive.pipe(output);
+        archive.finalize();
+        output.on('close', async () => {
+          var stat = await fs.promises.stat(output.path);
+          res.writeHead(200, {
+            'Content-disposition': 'attachment; filename=Files.zip; filename*=UTF-8',
+            'Content-Type': 'APPLICATION/octet-stream',
+            'Content-Length': stat.size
+          });
+          var filestream = fs.createReadStream(output.path);
+          filestream.pipe(res);
+          res.on('close', () => fs.promises.unlink('./Files.zip'));
+        });
+      }
     }
   }
 

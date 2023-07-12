@@ -68,10 +68,18 @@ export class FileManagerController {
   }))
   async upload(@Param('id', ParseIntPipe) id: string, @Req() req: Request, @Res() res: Response) {
     try {
-
       await new FileManagerService(personFolderPath(id) + '/').upload(req, res);
     } catch (e) {
       console.trace('Upload : body=', req.body, ' : Error=', e);
+    }
+  }
+  
+  @Post('Download')
+  async download(@Param('id', ParseIntPipe) id: string, @Req() req: Request, @Res() res: Response) {
+    try {
+      await new FileManagerService(personFolderPath(id) + '/').download(req, res);
+    } catch (e) {
+      console.trace('Download : body=', req.body, ' : Error=', e);
     }
   }
 }
