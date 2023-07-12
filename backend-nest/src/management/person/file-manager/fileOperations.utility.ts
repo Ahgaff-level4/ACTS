@@ -338,6 +338,20 @@ export const UpdateCopyName = async (path: string, name: string, count: number, 
 export const ReplaceRequestParams = (req: Request) => {
 	req.body.path = (req.body.path && req.body.path.replace(pattern, ""));
 }
+/**copy the file from `fromPath` to `toPath` then remove `fromPath`. 
+ * This behavior can move files between different disks and partitions unlike `rename`*/
+export const transferFile = async (fromPath: string, toPath: string): Promise<void> => {
+	return new Promise((res, rej) => {
+		var source = fs.createReadStream(fromPath);
+		var dest = fs.createWriteStream(toPath);
+		source.pipe(dest);
+		source.on('end', () => {
+			fs.promises.unlink(path.join(fromPath)).catch(e => { throw e })
+			res();
+		});
+		source.on('error', e => rej(e));
+	})
+}
 export const Permission = {
 	Allow: "allow",
 	Deny: "deny"

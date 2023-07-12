@@ -10,7 +10,8 @@ import {
   CheckForDuplicates,
   UpdateCopyName,
   ReplaceRequestParams,
-  MoveFolder
+  MoveFolder,
+  transferFile
 } from './fileOperations.utility';
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
 //todo change every func to arrow func
@@ -61,15 +62,18 @@ export class FileManagerService {
             }
             filepath += folders[i] + "/";
           }
-          await fs.promises.rename('./' + uploadedFileName, path.join(this.contentRootPath, filepath + uploadedFileName)).catch((err) => {
+          transferFile(path.join(path.resolve('cache'), uploadedFileName),  path.join(this.contentRootPath, filepath + uploadedFileName)).catch(err => {
             if (err && err.code != 'EBUSY') {
               errorValue.message = err.message;
               errorValue.code = err.code;
             }
-          });
+          })
         } else {
           for (var i = 0; i < req['fileName'].length; i++) {
-            await fs.promises.rename('./' + req['fileName'][i], path.join(this.contentRootPath, filepath + req['fileName'][i])).catch((err) => {
+            const fromPath = path.join(path.resolve('cache'), req['fileName'][i]);
+            const toPath = path.join(this.contentRootPath, filepath + req['fileName'][i]);
+            //without await to increase the performance
+            transferFile(fromPath, toPath).catch(err => {
               if (err && err.code != 'EBUSY') {
                 errorValue.message = err.message;
                 errorValue.code = err.code;
@@ -387,12 +391,7 @@ export class FileManagerService {
         if (!this.isRenameChecking) {
           // toPath = this.contentRootPath + req.body.targetPath + this.copyName;
           if (item.isFile) {
-            // var source = fs.createReadStream(path.join(fromPath));
-            // var desti = fs.createWriteStream(path.join(toPath));
-            // source.pipe(desti);
-            // source.on('end', () => {
-            //   fs.promises.unlink(path.join(fromPath)).catch(e => { throw e })
-            // });
+            //user won't be able to move files from different disk partition so we can confidently just rename the file path
             await fs.promises.rename(fromPath, toPath);
           } else {
             await MoveFolder(fromPath, toPath);
