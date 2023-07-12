@@ -22,12 +22,20 @@ export class FileManagerController {
   //looks like not Angular sending the request so  @UserMust() user: User, will always throw unauthorized exception; angular append user's session-cookies for any request
   // @Roles('Admin', 'HeadOfDepartment')
   async fileOperations(@Param('id', ParseIntPipe) id: number, @Req() req: Request, @Res() res: Response) {
-    new FileManagerService(personFolderPath(id)).fileOperations(req, res);
+    try {
+      await new FileManagerService(personFolderPath(id)).fileOperations(req, res);
+    } catch (e) {
+      console.trace('FileOperations : Caught an error', e);
+    }
   }
 
   @Get('GetImage')
-  getImage(@Param('id', ParseIntPipe) id: string, @Req() req: Request, @Res() res: Response) {
-    new FileManagerService(personFolderPath(id)).getImage(req, res);
+  async getImage(@Param('id', ParseIntPipe) id: string, @Req() req: Request, @Res() res: Response) {
+    try {
+      await new FileManagerService(personFolderPath(id)).getImage(req, res);
+    } catch (e) {
+      console.trace('GetImage : Caught an error', e);
+    }
   }
 
 
@@ -60,15 +68,15 @@ export class FileManagerController {
   async upload(@Param('id', ParseIntPipe) id: string, @Req() req: Request, @Res() res: Response) {
     try {
 
-      new FileManagerService(personFolderPath(id) + '/').upload(req, res);
+      await new FileManagerService(personFolderPath(id) + '/').upload(req, res);
     } catch (e) {
-      console.error('Caught an error', e);
+      console.trace('Upload : Caught an error', e);
     }
   }
 }
 
 
 
-export function personFolderPath(personId: string | number):string {
+export function personFolderPath(personId: string | number): string {
   return resolve(process.env.PERSONS_FOLDER_PATH ?? 'persons_folders', personId + '');
 }

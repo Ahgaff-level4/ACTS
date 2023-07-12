@@ -1,17 +1,23 @@
 /* eslint-disable prefer-const */
 /* eslint-disable no-var */
-import { Injectable } from '@nestjs/common';
-import { resolve } from 'path';
-import { IPersonEntity } from '../../../../../interfaces';
 import { Request, Response } from 'express';
 import * as fs from 'fs';
 import * as path from 'path';
+import {
+  AccessDetails, CWD2, FileDetails, GetFiles, GetPathPermission,
+  GetPermission, GetRelativePath, GetSize, MoveFolder, ReadDirectories,
+  AddSearchList, createFolderIfNotExists, fileExists, GetRules,
+  pattern,
+  CheckForDuplicates,
+  UpdateCopyName,
+  CWD1,
+  ReplaceRequestParams
+} from './fileOperations.utility';
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
 //todo change every func to arrow func
 //todo change Sync to promise
 //todo fix conflict of local `location` and global nodejs location
 export class FileManagerService {
-  private readonly pattern = /(\.\.\/)/g;
   private size = 0;
   private copyName = "";
   private location = "";
@@ -26,25 +32,22 @@ export class FileManagerService {
   private rootName = '';
 
   constructor(private contentRootPath: string) {
-    (async () => {
-      await this.createFolderIfNotExist(contentRootPath);
-    })()
   }
 
   public async upload(req: Request, res: Response) {
     if (!Array.isArray(req['fileName']))
       req['fileName'] = [];
-    this.replaceRequestParams(req, res);
-    var pathPermission = req.body.data != null ? this.getPathPermission(req.path, true, JSON.parse(req.body.data).name, this.contentRootPath + req.body.path, this.contentRootPath, JSON.parse(req.body.data).filterPath) : null;
+    ReplaceRequestParams(req,);
+    var pathPermission = req.body.data != null ? GetPathPermission(req.path, true, JSON.parse(req.body.data).name, this.contentRootPath + req.body.path, this.contentRootPath, JSON.parse(req.body.data).filterPath, this.accessDetails) : null;
     if (pathPermission != null && (!pathPermission.read || !pathPermission.upload)) {
       var errorMsg: any = new Error();
       errorMsg.message = (this.permission.message !== "") ? this.permission.message :
         JSON.parse(req.body.data).name + " is not accessible. You need permission to perform the upload action.";
       errorMsg.code = "401";
-      this.response = { error: errorMsg };
-      this.response = JSON.stringify(this.response);
+      // this.response = { error: errorMsg };
+      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
-      res.json(this.response);
+      res.json({ error: errorMsg });
     } else if (req.body != null && req.body.path != null) {
       var errorValue: any = new Error();
       if (req.body.action === 'save') {
@@ -55,58 +58,49 @@ export class FileManagerService {
         if (folders.length > 1) {
           for (var i = 0; i < folders.length - 1; i++) {
             var newDirectoryPath = path.join(this.contentRootPath + filepath, folders[i]);
-            if (!fs.existsSync(newDirectoryPath)) {
-              fs.mkdirSync(newDirectoryPath);
-              (async () => {
-                await this.FileManagerDirectoryContent(req, res, newDirectoryPath).then(data => {
-                  this.response = { files: data };
-                  this.response = JSON.stringify(this.response);
-                });
-              })();
+            if (!(await createFolderIfNotExists(newDirectoryPath))) {
+              const data = await this.FileManagerDirectoryContent(req, res, newDirectoryPath);
+              this.response = { files: data };
+              // this.response = JSON.stringify(this.response);
             }
             filepath += folders[i] + "/";
           }
-          fs.rename('./' + uploadedFileName, path.join(this.contentRootPath, filepath + uploadedFileName), function (err) {
-            if (err) {
-              if (err.code != 'EBUSY') {
-                errorValue.message = err.message;
-                errorValue.code = err.code;
-              }
+          await fs.promises.rename('./' + uploadedFileName, path.join(this.contentRootPath, filepath + uploadedFileName)).catch(function (err) {
+            if (err && err.code != 'EBUSY') {
+              errorValue.message = err.message;
+              errorValue.code = err.code;
             }
           });
         } else {
           for (var i = 0; i < req['fileName'].length; i++) {
-            fs.rename('./' + req['fileName'][i], path.join(this.contentRootPath, filepath + req['fileName'][i]), function (err) {
-              if (err) {
-                if (err.code != 'EBUSY') {
-                  errorValue.message = err.message;
-                  errorValue.code = err.code;
-                }
+            await fs.promises.rename('./' + req['fileName'][i], path.join(this.contentRootPath, filepath + req['fileName'][i])).catch(function (err) {
+              if (err && err.code != 'EBUSY') {
+                errorValue.message = err.message;
+                errorValue.code = err.code;
               }
             });
           }
         }
       } else if (req.body.action === 'remove') {
-        if (fs.existsSync(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]))) {
+
+        if (await fileExists(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]))) {
           fs.unlinkSync(path.join(this.contentRootPath, req.body.path + req.body["cancel-uploading"]));
         }
       }
       if (errorValue != null) {
         this.response = { error: errorValue };
-        this.response = JSON.stringify(this.response);
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
       }
       res.send('Success');
       req['fileName'] = [];
     }
-
-
   }
 
   public async getImage(req: Request, res: Response) {
-    this.replaceRequestParams(req, res);
+    ReplaceRequestParams(req);
     var image = req.query.path.toString().split("/").length > 1 ? req.query.path.toString() : "/" + req.query.path.toString();
-    var pathPermission = this.getPermission(this.contentRootPath + image.substr(0, image.lastIndexOf("/")), image.substr(image.lastIndexOf("/") + 1, image.length - 1), true, this.contentRootPath, image.substr(0, image.lastIndexOf("/")));
+    var pathPermission = GetPermission(this.contentRootPath + image.substr(0, image.lastIndexOf("/")), image.substr(image.lastIndexOf("/") + 1, image.length - 1), true, this.contentRootPath, image.substr(0, image.lastIndexOf("/")), this.accessDetails);
     if (pathPermission != null && !pathPermission.read) {
       return null;
     }
@@ -125,47 +119,22 @@ export class FileManagerService {
   }
 
   public async fileOperations(req: Request, res: Response) {
-    this.replaceRequestParams(req, res);
-    req.setTimeout(0);
-    const getRules = async () => {
-      var details = new AccessDetails();
-      var accessRuleFile = "accessRules.json";
-      try {
-        await fs.promises.access(accessRuleFile);
-        var rawData = await fs.promises.readFile(accessRuleFile);
-        if (rawData.length === 0) { return null; }
-        var parsedData = JSON.parse(rawData.toString());
-        var data = parsedData.rules;
-        var accessRules = [];
-        for (var i = 0; i < data.length; i++) {
-          var rule = new AccessRules(data[i].path, data[i].role, data[i].read, data[i].write, data[i].writeContents, data[i].copy, data[i].download, data[i].upload, data[i].isFile, data[i].message);
-          accessRules.push(rule);
-        }
-        if (accessRules.length == 1 && accessRules[0].path == undefined) {
-          return null;
-        } else {
-          details.rules = accessRules;
-          details.role = parsedData.role;
-          return details;
-        }
-      } catch {
-        return null;
-      }
-    }
+    ReplaceRequestParams(req);
+    req.setTimeout(10 * 60 * 1000);
 
-    this.accessDetails = await getRules();
+    this.accessDetails = await GetRules();
 
     // Action for getDetails
     if (req.body.action == "details") {
-      this.getFileDetails(req, res, this.contentRootPath + req.body.path, req.body.data[0].filterPath);
+      await this.getFileDetails(req, res, this.contentRootPath + req.body.path, req.body.data[0].filterPath);
     }
     // Action for copying files
     if (req.body.action == "copy") {
-      this.CopyFiles(req, res, this.contentRootPath);
+      await this.CopyFiles(req, res, this.contentRootPath);
     }
     // Action for movinh files
     if (req.body.action == "move") {
-      this.MoveFiles(req, res, this.contentRootPath);
+      await this.MoveFiles(req, res, this.contentRootPath);
     }
     // Action to create a new folder
     if (req.body.action == "create") {
@@ -180,50 +149,9 @@ export class FileManagerService {
       await this.renameFolder(req, res,)//this.contentRootPath + req.body.path);
     }
 
-    const addSearchList = async (filename, contentRootPath, fileList, files, index) => {
-      var cwd: any = {};
-      var stats = await fs.promises.stat(filename);
-      cwd.name = path.basename(filename);
-      cwd.size = stats.size;
-      cwd.isFile = stats.isFile();
-      cwd.dateModified = stats.mtime;
-      cwd.dateCreated = stats.ctime;
-      cwd.type = path.extname(filename);
-      cwd.filterPath = filename.substr((this.contentRootPath.length), filename.length).replace(files[index], "");
-      cwd.permission = this.getPermission(filename.replace(/\\/g, "/"), cwd.name, cwd.isFile, this.contentRootPath, cwd.filterPath);
-      var permission = parentsHavePermission(filename, this.contentRootPath, cwd.isFile, cwd.name, cwd.filterPath);
-      if (permission) {
-        if ((await fs.promises.lstat(filename)).isFile()) {
-          cwd.hasChild = false;
-        }
-        if ((await fs.promises.lstat(filename)).isDirectory()) {
-          var statsRead = await fs.promises.readdir(filename);
-          cwd.hasChild = statsRead.length > 0;
-        }
-        fileList.push(cwd);
-      }
-    }
 
-    const parentsHavePermission = (filepath, contentRootPath, isFile, name, filterPath) => {
-      var parentPath = filepath.substr(this.contentRootPath.length, filepath.length - 1).replace(/\\/g, "/");
-      parentPath = parentPath.substr(0, parentPath.indexOf(name)) + (isFile ? "" : "/");
-      var parents = parentPath.split('/');
-      var currPath = "/";
-      var hasPermission = true;
-      var pathPermission;
-      for (var i = 0; i <= parents.length - 2; i++) {
-        currPath = (parents[i] == "") ? currPath : (currPath + parents[i] + "/");
-        pathPermission = this.getPathPermission(parentPath, false, parents[i], this.contentRootPath + (currPath == "/" ? "" : "/"), this.contentRootPath, filterPath);
-        if (pathPermission == null) {
-          break;
-        }
-        else if (pathPermission != null && !pathPermission.read) {
-          hasPermission = false;
-          break;
-        }
-      }
-      return hasPermission;
-    }
+
+
 
     const checkForSearchResult = (casesensitive, filter, isFile, fileName, searchString) => {
       var isAddable = false;
@@ -255,12 +183,12 @@ export class FileManagerService {
         var stat = await fs.promises.lstat(filename);
         if (stat.isDirectory()) {
           if (checkForSearchResult(casesensitive, filter, false, files[i], searchString)) {
-            await addSearchList(filename, this.contentRootPath, fileList, files, i);
+            await AddSearchList(filename, contentRootPath, fileList, files, i, this.accessDetails);
           }
-          await fromDir(filename, filter, this.contentRootPath, casesensitive, searchString); //recurse
+          await fromDir(filename, filter, contentRootPath, casesensitive, searchString); //recurse
         }
         else if (checkForSearchResult(casesensitive, filter, true, files[i], searchString)) {
-          await addSearchList(filename, this.contentRootPath, fileList, files, i);
+          await AddSearchList(filename, contentRootPath, fileList, files, i, this.accessDetails);
         }
       }
     }
@@ -269,102 +197,56 @@ export class FileManagerService {
     if (req.body.action === 'search') {
       var fileList = [];
       await fromDir(this.contentRootPath + req.body.path, req.body.searchString.replace(/\*/g, ""), this.contentRootPath, req.body.caseSensitive, req.body.searchString);
-      (async () => {
-        const tes: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
-        if (tes.permission != null && !tes.permission.read) {
-          var errorMsg: any = new Error();
-          errorMsg.message = (this.permission.message !== "") ? this.permission.message :
-            "'" + /*getFileName*/(this.contentRootPath + (req.body.path.substring(0, req.body.path.length - 1))) + "' is not accessible. You need permission to perform the read action.";
-          errorMsg.code = "401";
-          this.response = { error: errorMsg };
-          this.response = JSON.stringify(this.response);
-          res.setHeader('Content-Type', 'application/json');
-          res.json(this.response);
-        } else {
-          this.response = { cwd: tes, files: fileList };
-          this.response = JSON.stringify(this.response);
-          res.setHeader('Content-Type', 'application/json');
-          res.json(this.response);
-        }
-      })();
+      const tes: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
+      if (tes.permission != null && !tes.permission.read) {
+        var errorMsg: any = new Error();
+        errorMsg.message = (this.permission.message !== "") ? this.permission.message :
+          "'" + /*getFileName*/(this.contentRootPath + (req.body.path.substring(0, req.body.path.length - 1))) + "' is not accessible. You need permission to perform the read action.";
+        errorMsg.code = "401";
+        // this.response = { error: errorMsg };
+        // this.response = JSON.stringify(this.response);
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ error: errorMsg });
+      } else {
+        // this.response = { cwd: tes, files: fileList };
+        // this.response = JSON.stringify(this.response);
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ cwd: tes, files: fileList });
+      }
     }
 
-    const ReadDirectories = (file) => {
-      var myCwd: any = {};
-      var directoryList = [];
-      const stats = (file) => {
-        return new Promise(async (resolve, reject) => {
-          const cwd = await fs.promises.stat(file);
-          myCwd.name = path.basename(this.contentRootPath + req.body.path + file);
-          myCwd.size = (cwd.size);
-          myCwd.isFile = cwd.isFile();
-          myCwd.dateModified = cwd.ctime;
-          myCwd.dateCreated = cwd.mtime;
-          myCwd.filterPath = this.getRelativePath(this.contentRootPath, this.contentRootPath + req.body.path,)//req);
-          myCwd.type = path.extname(this.contentRootPath + req.body.path + file);
-          myCwd.permission = this.getPermission(this.contentRootPath + req.body.path + myCwd.name, myCwd.name, cwd.isFile, this.contentRootPath, myCwd.filterPath);
-          if ((await fs.promises.lstat(file)).isDirectory()) {
-            (await fs.promises.readdir(file)).forEach(async (items) => {
-              if ((await fs.promises.stat(path.join(file, items))).isDirectory()) {
-                directoryList.push(items[i]);
-              }
-              if (directoryList.length > 0) {
-                myCwd.hasChild = true;
-              } else {
-                myCwd.hasChild = false;
-                directoryList = [];
-              }
-            });
-          } else {
-            myCwd.hasChild = false;
-            // dir = [];
-          }
-          directoryList = [];
-          resolve(myCwd);
-        });
-      }
-      var promiseList = [];
-      for (var i = 0; i < file.length; i++) {
-        promiseList.push(stats(path.join(this.contentRootPath + req.body.path.replace(this.pattern, ""), file[i])));
-      }
-      return Promise.all(promiseList);
-    }
+
 
     // Action to read a file
     if (req.body.action == "read") {
-      (async () => {
-        const filesList = await this.GetFiles(req, res);
-        const cwdFiles: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
-        cwdFiles.name = req.body.path == "/" ? this.rootName = (path.basename(this.contentRootPath + req.body.path)) : path.basename(this.contentRootPath + req.body.path)
-        var response = {};
-        if (cwdFiles.permission != null && !cwdFiles.permission.read) {
-          var errorMsg: any = new Error();
-          errorMsg.message = (cwdFiles.permission.message !== "") ? cwdFiles.permission.message :
-            "'" + cwdFiles.name + "' is not accessible. You need permission to perform the read action.";
-          errorMsg.code = "401";
-          response = { cwd: cwdFiles, files: null, error: errorMsg };
-          response = JSON.stringify(response);
-          res.setHeader('Content-Type', 'application/json');
-          res.json(response);
-        }
-        else {
-          ReadDirectories(filesList).then(data => {
-            response = { cwd: cwdFiles, files: data };
-            response = JSON.stringify(response);
-            res.setHeader('Content-Type', 'application/json');
-            res.json(response);
-          });
-        }
-      })();
+      const filesList = await GetFiles(req, this.contentRootPath);
+      const cwdFiles: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
+      cwdFiles.name = req.body.path == "/" ? this.rootName = (path.basename(this.contentRootPath + req.body.path)) : path.basename(this.contentRootPath + req.body.path)
+      // var response = {};
+      if (cwdFiles.permission != null && !cwdFiles.permission.read) {
+        var errorMsg: any = new Error();
+        errorMsg.message = (cwdFiles.permission.message !== "") ? cwdFiles.permission.message :
+          "'" + cwdFiles.name + "' is not accessible. You need permission to perform the read action.";
+        errorMsg.code = "401";
+        // response = { cwd: cwdFiles, files: null, error: errorMsg };
+        // response = JSON.stringify(response);
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ cwd: cwdFiles, files: null, error: errorMsg });
+      }
+      else {
+        const data = await ReadDirectories(filesList, this.contentRootPath, req, this.accessDetails);
+        // response = { cwd: cwdFiles, files: data };
+        // response = JSON.stringify(response);
+        res.setHeader('Content-Type', 'application/json');
+        res.json({ cwd: cwdFiles, files: data });
+      }
     }
 
   }
 
-  private replaceRequestParams(req, res) {
-    req.body.path = (req.body.path && req.body.path.replace(this.pattern, ""));
-  }
 
-  private getFileDetails(req, res, contentRootPath, filterPath) {
+
+  private async getFileDetails(req, res, contentRootPath, filterPath) {
     var isNamesAvailable = req.body.names.length > 0 ? true : false;
     if (req.body.names.length == 0 && req.body.data != 0) {
       var nameValues = [];
@@ -374,26 +256,25 @@ export class FileManagerService {
       req.body.names = nameValues;
     }
     if (req.body.names.length == 1) {
-      this.fileDetails(req, res, this.contentRootPath + (isNamesAvailable ? req.body.names[0] : "")).then((data: any) => {
-        if (!data.isFile) {
-          this.getFolderSize(req, res, this.contentRootPath + (isNamesAvailable ? req.body.names[0] : ""), 0);
-          data.size = this.getSize(this.size);
-          this.size = 0;
-        }
-        if (filterPath == "") {
-          data.location = path.join(filterPath, req.body.names[0]).substr(0, path.join(filterPath, req.body.names[0]).length);
-        } else {
-          data.location = path.join(this.rootName, filterPath, req.body.names[0]);
-        }
-        this.response = { details: data };
-        this.response = JSON.stringify(this.response);
-        res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
-      });
+      const data = await FileDetails(req, res, this.contentRootPath + (isNamesAvailable ? req.body.names[0] : ""));
+      if (!data.isFile) {
+        await this.getFolderSize(req, res, this.contentRootPath + (isNamesAvailable ? req.body.names[0] : ""), 0);
+        data.size = GetSize(this.size);
+        this.size = 0;
+      }
+      if (filterPath == "") {
+        data.location = path.join(filterPath, req.body.names[0]).substr(0, path.join(filterPath, req.body.names[0]).length);
+      } else {
+        data.location = path.join(this.rootName, filterPath, req.body.names[0]);
+      }
+      // this.response = { details: data };
+      // this.response = JSON.stringify(this.response);
+      res.setHeader('Content-Type', 'application/json');
+      res.json({ details: data });
     } else {
       var isMultipleLocations = false;
       isMultipleLocations = this.checkForMultipleLocations(req, this.contentRootPath);
-      req.body.names.forEach(async (item) => {
+      await req.body.names.forEach(async (item) => {
         if ((await fs.promises.lstat(this.contentRootPath + item)).isDirectory()) {
           await this.getFolderSize(req, res, this.contentRootPath + item, this.size);
         } else {
@@ -401,46 +282,45 @@ export class FileManagerService {
           this.size = this.size + stats.size;
         }
       });
-      this.fileDetails(req, res, this.contentRootPath + req.body.names[0]).then((data: any) => {
-        var names = [];
-        req.body.names.forEach((name) => {
-          if (name.split("/").length > 0) {
-            names.push(name.split("/")[name.split("/").length - 1]);
-          }
-          else {
-            names.push(name);
-          }
-        });
-        data.name = names.join(", ");
-        data.multipleFiles = true;
-        data.size = this.getSize(this.size);
-        this.size = 0;
-        if (filterPath == "") {
-          data.location = path.join(this.rootName, filterPath).substr(0, path.join(this.rootName, filterPath).length - 1);
-        } else {
-          data.location = path.join(this.rootName, filterPath).substr(0, path.join(this.rootName, filterPath).length - 1);
+      const data = await FileDetails(req, res, this.contentRootPath + req.body.names[0]);
+      var names = [];
+      req.body.names.forEach((name) => {
+        if (name.split("/").length > 0) {
+          names.push(name.split("/")[name.split("/").length - 1]);
         }
-        this.response = { details: data };
-        this.response = JSON.stringify(this.response);
-        res.setHeader('Content-Type', 'application/json');
-        isMultipleLocations = false;
-        this.location = "";
-        res.json(this.response);
+        else {
+          names.push(name);
+        }
       });
+      data.name = names.join(", ");
+      data.multipleFiles = true;
+      data.size = GetSize(this.size);
+      this.size = 0;
+      if (filterPath == "") {
+        data.location = path.join(this.rootName, filterPath).substr(0, path.join(this.rootName, filterPath).length - 1);
+      } else {
+        data.location = path.join(this.rootName, filterPath).substr(0, path.join(this.rootName, filterPath).length - 1);
+      }
+      // this.response = { details: data };
+      // this.response = JSON.stringify(this.response);
+      res.setHeader('Content-Type', 'application/json');
+      isMultipleLocations = false;
+      this.location = "";
+      res.json({ details: data });
     }
   }
 
   /**
  * func copyfile and folder
  */
-  private CopyFiles(req, res, contentRootPath) {
+  private async CopyFiles(req, res, contentRootPath) {
     var fileList = [];
     var replaceFileList = [];
     var permission; var pathPermission; var permissionDenied = false;
-    pathPermission = this.getPathPermission(req.path, false, req.body.targetData.name, this.contentRootPath + req.body.targetPath, this.contentRootPath, req.body.targetData.filterPath);
-    req.body.data.forEach((item) => {
-      var fromPath = this.contentRootPath + item.filterPath;
-      permission = this.getPermission(fromPath, item.name, item.isFile, this.contentRootPath, item.filterPath);
+    pathPermission = GetPathPermission(req.path, false, req.body.targetData.name, contentRootPath + req.body.targetPath, this.contentRootPath, req.body.targetData.filterPath, this.accessDetails);
+    req.body.data.forEach((item: CWD2) => {
+      var fromPath = contentRootPath + item.filterPath;
+      permission = GetPermission(fromPath, item.name, item.isFile, contentRootPath, item.filterPath, this.accessDetails);
       var fileAccessDenied = (permission != null && (!permission.read || !permission.copy));
       var pathAccessDenied = (pathPermission != null && (!pathPermission.read || !pathPermission.writeContents));
       if (fileAccessDenied || pathAccessDenied) {
@@ -451,23 +331,28 @@ export class FileManagerService {
           ((pathPermission.message !== "") ? pathPermission.message :
             req.body.targetData.name + " is not accessible. You need permission to perform the writeContents action.");
         errorMsg.code = "401";
-        this.response = { error: errorMsg };
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg });
       }
     });
     if (!permissionDenied) {
-      req.body.data.forEach(async (item) => {
-        var fromPath = this.contentRootPath + item.filterPath + item.name;
-        var toPath = this.contentRootPath + req.body.targetPath + item.name;
-        await this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
+      await req.body.data.forEach(async (item: CWD2) => {
+        var fromPath = contentRootPath + item.filterPath + item.name;
+        var toPath = contentRootPath + req.body.targetPath + item.name;
+        await this.checkForFileUpdate(fromPath, toPath, item, contentRootPath, req);
         if (!this.isRenameChecking) {
-          toPath = this.contentRootPath + req.body.targetPath + this.copyName;
+          console.log('FileManagerService : await req.body.data.forEach : isRenameChecking:', this.isRenameChecking);
+          console.log('before assign toPath. fromPath=', fromPath, ', toPath=', toPath);
+          // toPath = contentRootPath + req.body.targetPath + this.copyName;
+          console.log('If toPath assigned will be =', contentRootPath + req.body.targetPath + this.copyName);
           if (item.isFile) {
-            fs.promises.copyFile(path.join(fromPath), path.join(toPath)).catch(e => { throw e });
+            console.log('item.isFile. item=', item);
+            await fs.promises.copyFile(fromPath, toPath);
           }
           else {
+            console.log('FileManagerService : copyFolder(fromPath=', fromPath, ', toPath=', toPath, ')')
             await this.copyFolder(fromPath, toPath)
           }
           var list = item;
@@ -480,35 +365,36 @@ export class FileManagerService {
       });
       if (replaceFileList.length == 0) {
         this.copyName = "";
-        this.response = { files: fileList };
-        this.response = JSON.stringify(this.response);
+        // this.response = { files: fileList };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ files: fileList });
       } else {
         this.isRenameChecking = false;
         var errorMsg: any = new Error();
         errorMsg.message = "File Already Exists.";
         errorMsg.code = "400";
         errorMsg.fileExists = replaceFileList;
-        this.response = { error: errorMsg, files: [] };
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg, files: [] };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg, files: [] });
       }
     }
   }
 
+
   /**
  * func move files and folder
  */
-  private MoveFiles(req, res, contentRootPath) {
+  private async MoveFiles(req, res, contentRootPath) {
     var fileList = [];
     var replaceFileList = [];
     var permission; var pathPermission; var permissionDenied = false;
-    pathPermission = this.getPathPermission(req.path, false, req.body.targetData.name, this.contentRootPath + req.body.targetPath, this.contentRootPath, req.body.targetData.filterPath);
+    pathPermission = GetPathPermission(req.path, false, req.body.targetData.name, this.contentRootPath + req.body.targetPath, this.contentRootPath, req.body.targetData.filterPath, this.accessDetails);
     req.body.data.forEach((item) => {
       var fromPath = this.contentRootPath + item.filterPath;
-      permission = this.getPermission(fromPath, item.name, item.isFile, this.contentRootPath, item.filterPath);
+      permission = GetPermission(fromPath, item.name, item.isFile, this.contentRootPath, item.filterPath, this.accessDetails);
       var fileAccessDenied = (permission != null && (!permission.read || !permission.write));
       var pathAccessDenied = (pathPermission != null && (!pathPermission.read || !pathPermission.writeContents));
       if (fileAccessDenied || pathAccessDenied) {
@@ -519,19 +405,19 @@ export class FileManagerService {
           ((pathPermission.message !== "") ? pathPermission.message :
             req.body.targetData.name + " is not accessible. You need permission to perform the writeContents action.");
         errorMsg.code = "401";
-        this.response = { error: errorMsg };
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg });
       }
     });
     if (!permissionDenied) {
-      req.body.data.forEach(async (item) => {
+      await req.body.data.forEach(async (item) => {
         var fromPath = this.contentRootPath + item.filterPath + item.name;
         var toPath = this.contentRootPath + req.body.targetPath + item.name;
         await this.checkForFileUpdate(fromPath, toPath, item, this.contentRootPath, req);
         if (!this.isRenameChecking) {
-          toPath = this.contentRootPath + req.body.targetPath + this.copyName;
+          // toPath = this.contentRootPath + req.body.targetPath + this.copyName;
           if (item.isFile) {
             var source = fs.createReadStream(path.join(fromPath));
             var desti = fs.createWriteStream(path.join(toPath));
@@ -541,7 +427,7 @@ export class FileManagerService {
             });
           }
           else {
-            await this.MoveFolder(fromPath, toPath);
+            await MoveFolder(fromPath, toPath);
             await fs.promises.rmdir(fromPath);
           }
           var list = item;
@@ -554,10 +440,10 @@ export class FileManagerService {
       });
       if (replaceFileList.length == 0) {
         this.copyName = "";
-        this.response = { files: fileList };
-        this.response = JSON.stringify(this.response);
+        // this.response = { files: fileList };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ files: fileList });
       }
       else {
         this.isRenameChecking = false;
@@ -565,28 +451,29 @@ export class FileManagerService {
         errorMsg.message = "File Already Exists.";
         errorMsg.code = "400";
         errorMsg.fileExists = replaceFileList;
-        this.response = { error: errorMsg, files: [] };
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg, files: [] };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg, files: [] });
       }
     }
   }
+
 
   /**
  * func to create the folder
  */
   private async createFolder(req, res, filepath, contentRootPath) {
     var newDirectoryPath = path.join(this.contentRootPath + req.body.path, req.body.name);
-    var pathPermission = this.getPathPermission(req.path, false, req.body.data[0].name, filepath, this.contentRootPath, req.body.data[0].filterPath);
+    var pathPermission = GetPathPermission(req.path, false, req.body.data[0].name, filepath, this.contentRootPath, req.body.data[0].filterPath, this.accessDetails);
     if (pathPermission != null && (!pathPermission.read || !pathPermission.writeContents)) {
       var errorMsg: any = new Error();
       errorMsg.message = (this.permission.message !== "") ? this.permission.message : req.body.data[0].name + " is not accessible. You need permission to perform the writeContents action.";
       errorMsg.code = "401";
-      this.response = { error: errorMsg };
-      this.response = JSON.stringify(this.response);
+      // this.response = { error: errorMsg };
+      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
-      res.json(this.response);
+      res.json({ error: errorMsg });
     }
     else {
       try {
@@ -594,23 +481,23 @@ export class FileManagerService {
         var errorMsg: any = new Error();
         errorMsg.message = "A file or folder with the name " + req.body.name + " already exists.";
         errorMsg.code = "400";
-        this.response = { error: errorMsg };
-
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg });
       } catch (e) {
         await fs.promises.mkdir(newDirectoryPath);
         await this.FileManagerDirectoryContent(req, res, newDirectoryPath).then(data => {
-          this.response = { files: data };
-          this.response = JSON.stringify(this.response);
+          // this.response = { files: data };
+          // this.response = JSON.stringify(this.response);
           res.setHeader('Content-Type', 'application/json');
-          res.json(this.response);
+          res.json({ files: data });
         });
 
       }
     }
   }
+
 
   /**
    * func to delete the folder
@@ -619,7 +506,7 @@ export class FileManagerService {
     var deleteFolderRecursive = async (path) => {
       try {
         await fs.promises.access(path);
-        (await fs.promises.readdir(path)).forEach(async (file, index) => {
+        await (await fs.promises.readdir(path)).forEach(async (file, index) => {
           var curPath = path + "/" + file;
           curPath = curPath.replace("../", "");
           if ((await fs.promises.lstat(curPath)).isDirectory()) { // recurse
@@ -636,16 +523,16 @@ export class FileManagerService {
     var permission; var permissionDenied = false;
     req.body.data.forEach((item) => {
       var fromPath = this.contentRootPath + item.filterPath;
-      permission = this.getPermission(fromPath, item.name, item.isFile, this.contentRootPath, item.filterPath);
+      permission = GetPermission(fromPath, item.name, item.isFile, this.contentRootPath, item.filterPath, this.accessDetails);
       if (permission != null && (!permission.read || !permission.write)) {
         permissionDenied = true;
         var errorMsg: any = new Error();
         errorMsg.message = (permission.message !== "") ? permission.message : item.name + " is not accessible. You need permission to perform the write action.";
         errorMsg.code = "401";
-        this.response = { error: errorMsg };
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg });
       }
     });
     if (!permissionDenied) {
@@ -658,19 +545,18 @@ export class FileManagerService {
           promiseList.push(this.FileManagerDirectoryContent(req, res, newDirectoryPath + "/", req.body.data[i].filterPath));
         }
       }
-      Promise.all(promiseList).then(data => {
-        data.forEach(async (files) => {
-          if ((await fs.promises.lstat(path.join(this.contentRootPath + files.filterPath, files.name))).isFile()) {
-            fs.promises.unlink(path.join(this.contentRootPath + files.filterPath, files.name));
-          } else {
-            await deleteFolderRecursive(path.join(this.contentRootPath + files.filterPath, files.name));
-          }
-        });
-        this.response = { files: data };
-        this.response = JSON.stringify(this.response);
-        res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+      const data = await Promise.all(promiseList);
+      await data.forEach(async (files) => {
+        if ((await fs.promises.lstat(path.join(this.contentRootPath + files.filterPath, files.name))).isFile()) {
+          await fs.promises.unlink(path.join(this.contentRootPath + files.filterPath, files.name));
+        } else {
+          await deleteFolderRecursive(path.join(this.contentRootPath + files.filterPath, files.name));
+        }
       });
+      // this.response = { files: data };
+      // this.response = JSON.stringify(this.response);
+      res.setHeader('Content-Type', 'application/json');
+      res.json({ files: data });
     }
   }
 
@@ -680,184 +566,75 @@ export class FileManagerService {
   private async renameFolder(req, res) {
     var oldName = req.body.data[0].name.split("/")[req.body.data[0].name.split("/").length - 1];
     var newName = req.body.newName.split("/")[req.body.newName.split("/").length - 1];
-    var permission = this.getPermission((this.contentRootPath + req.body.data[0].filterPath), oldName, req.body.data[0].isFile, this.contentRootPath, req.body.data[0].filterPath);
+    var permission = GetPermission((this.contentRootPath + req.body.data[0].filterPath), oldName, req.body.data[0].isFile, this.contentRootPath, req.body.data[0].filterPath, this.accessDetails);
     if (permission != null && (!permission.read || !permission.write)) {
       var errorMsg: any = new Error();
       errorMsg.message = (permission.message !== "") ? permission.message : /*getFileName*/(this.contentRootPath + req.body.data[0].filterPath + oldName) + " is not accessible.  is not accessible. You need permission to perform the write action.";
       errorMsg.code = "401";
-      this.response = { error: errorMsg };
-      this.response = JSON.stringify(this.response);
+      // this.response = { error: errorMsg };
+      // this.response = JSON.stringify(this.response);
       res.setHeader('Content-Type', 'application/json');
-      res.json(this.response);
+      res.json({ error: errorMsg });
     } else {
       var oldDirectoryPath = path.join(this.contentRootPath + req.body.data[0].filterPath, oldName);
       var newDirectoryPath = path.join(this.contentRootPath + req.body.data[0].filterPath, newName);
-      if (this.checkForDuplicates(this.contentRootPath + req.body.data[0].filterPath, newName, req.body.data[0].isFile)) {
+      if (await CheckForDuplicates(this.contentRootPath + req.body.data[0].filterPath, newName, req.body.data[0].isFile)) {
         var errorMsg: any = new Error();
         errorMsg.message = "A file or folder with the name " + req.body.name + " already exists.";
         errorMsg.code = "400";
-        this.response = { error: errorMsg };
-
-        this.response = JSON.stringify(this.response);
+        // this.response = { error: errorMsg };
+        // this.response = JSON.stringify(this.response);
         res.setHeader('Content-Type', 'application/json');
-        res.json(this.response);
+        res.json({ error: errorMsg });
       } else {
         await fs.promises.rename(oldDirectoryPath, newDirectoryPath);
-        (async () => {
-          await this.FileManagerDirectoryContent(req, res, newDirectoryPath + "/").then(data => {
-            this.response = { files: data };
-            this.response = JSON.stringify(this.response);
-            res.setHeader('Content-Type', 'application/json');
-            res.json(this.response);
-          });
-        })();
+        await this.FileManagerDirectoryContent(req, res, newDirectoryPath + "/").then(data => {
+          // this.response = { files: data };
+          // this.response = JSON.stringify(this.response);
+          res.setHeader('Content-Type', 'application/json');
+          res.json({ files: data });
+        });
       }
     }
   }
 
-
-  private getPermission(filepath, name, isFile, contentRootPath, filterPath): null | AccessPermission {
-    var filePermission = new AccessPermission(true, true, true, true, true, true, "");
-    if (this.accessDetails == null) {
-      return null;
-    } else {
-      this.accessDetails.rules.forEach((accessRule) => {
-        if (isFile && accessRule.isFile) {
-          var nameExtension = name.substr(name.lastIndexOf("."), name.length - 1).toLowerCase();
-          var fileName = name.substr(0, name.lastIndexOf("."));
-          var currentPath = contentRootPath + filterPath;
-          if (accessRule.isFile && isFile && accessRule.path != "" && accessRule.path != null && (accessRule.role == null || accessRule.role == this.accessDetails.role)) {
-            if (accessRule.path.indexOf("*.*") > -1) {
-              var parentPath = accessRule.path.substr(0, accessRule.path.indexOf("*.*"));
-              if (currentPath.indexOf(contentRootPath + parentPath) == 0 || parentPath == "") {
-                filePermission = this.updateRules(filePermission, accessRule);
-              }
-            }
-            else if (accessRule.path.indexOf("*.") > -1) {
-              var pathExtension = accessRule.path.substr(accessRule.path.lastIndexOf("."), accessRule.path.length - 1).toLowerCase();
-              var parentPath = accessRule.path.substr(0, accessRule.path.indexOf("*."));
-              if (((contentRootPath + parentPath) == currentPath || parentPath == "") && nameExtension == pathExtension) {
-                filePermission = this.updateRules(filePermission, accessRule);
-              }
-            }
-            else if (accessRule.path.indexOf(".*") > -1) {
-              var pathName = accessRule.path.substr(0, accessRule.path.lastIndexOf(".")).substr(accessRule.path.lastIndexOf("/") + 1, accessRule.path.length - 1);
-              var parentPath = accessRule.path.substr(0, accessRule.path.indexOf(pathName + ".*"));
-              if (((contentRootPath + parentPath) == currentPath || parentPath == "") && fileName == pathName) {
-                filePermission = this.updateRules(filePermission, accessRule);
-              }
-            }
-            else if (contentRootPath + accessRule.path == filepath) {
-              filePermission = this.updateRules(filePermission, accessRule);
-            }
-          }
-        } else {
-          if (!accessRule.isFile && !isFile && accessRule.path != null && (accessRule.role == null || accessRule.role == this.accessDetails.role)) {
-            var parentFolderpath = contentRootPath + filterPath;
-            if (accessRule.path.indexOf("*") > -1) {
-              var parentPath = accessRule.path.substr(0, accessRule.path.indexOf("*"));
-              if (((parentFolderpath + (parentFolderpath[parentFolderpath.length - 1] == "/" ? "" : "/") + name).lastIndexOf(contentRootPath + parentPath) == 0) || parentPath == "") {
-                filePermission = this.updateRules(filePermission, accessRule);
-              }
-            } else if (path.join(contentRootPath, accessRule.path) == path.join(parentFolderpath, name) || path.join(contentRootPath, accessRule.path) == path.join(parentFolderpath, name + "/")) {
-              filePermission = this.updateRules(filePermission, accessRule);
-            }
-            else if (path.join(parentFolderpath, name).lastIndexOf(path.join(contentRootPath, accessRule.path)) == 0) {
-              filePermission.write = this.hasPermission(accessRule.writeContents);
-              filePermission.writeContents = this.hasPermission(accessRule.writeContents);
-              filePermission.message = this.getMessage(accessRule);
-            }
-          }
-        }
-      });
-      return filePermission;
-    }
-  }
-
-  private getPathPermission(path, isFile, name, filepath, contentRootPath, filterPath) {
-    return this.getPermission(filepath, name, isFile, contentRootPath, filterPath);
-  }
 
   /**
  * returns the current working directories
  */
-  private FileManagerDirectoryContent(req, res, filepath, searchFilterPath?) {
-    return new Promise(async (resolve, reject) => {
-      var cwd: any = {};
-      this.replaceRequestParams(req, res);
-      const stats = await fs.promises.stat(filepath);
-      cwd.name = path.basename(filepath);
-      cwd.size = this.getSize(stats.size);
-      cwd.isFile = stats.isFile();
-      cwd.dateModified = stats.ctime;
-      cwd.dateCreated = stats.mtime;
-      cwd.type = path.extname(filepath);
-      if (searchFilterPath) {
-        cwd.filterPath = searchFilterPath;
-      } else {
-        cwd.filterPath = req.body.data.length > 0 ? this.getRelativePath(this.contentRootPath, this.contentRootPath + req.body.path.substring(0, req.body.path.indexOf(req.body.data[0].name))) : "";
-      }
-      cwd.permission = this.getPathPermission(req.path, cwd.isFile, (req.body.path == "/") ? "" : cwd.name, filepath, this.contentRootPath, cwd.filterPath);
-      if ((await fs.promises.lstat(filepath)).isFile()) {
-        cwd.hasChild = false;
-        resolve(cwd);
-      }
-      if ((await fs.promises.lstat(filepath)).isDirectory()) {
-        const stats = await fs.promises.readdir(filepath)
-        stats.forEach(async stat => {
-          if ((await fs.promises.lstat(filepath + stat)).isDirectory()) {
-            cwd.hasChild = true
-          } else {
-            cwd.hasChild = false;
-          }
-          if (cwd.hasChild) return;
-        });
-        resolve(cwd);
-      }
-    });
-  }
-
-
-  private getRelativePath(rootDirectory, fullPath) {
-    if (rootDirectory.substring(rootDirectory.length - 1) == "/") {
-      if (fullPath.indexOf(rootDirectory) >= 0) {
-        return fullPath.substring(rootDirectory.length - 1);
-      }
+  private async FileManagerDirectoryContent(req, res, filepath, searchFilterPath?): Promise<CWD2> {
+    ReplaceRequestParams(req);
+    const stats = await fs.promises.stat(filepath);
+    var cwd: any = {
+      name: path.basename(filepath),
+      size: GetSize(stats.size),
+      isFile: stats.isFile(),
+      dateModified: stats.ctime,
+      dateCreated: stats.mtime,
+      type: path.extname(filepath),
+    };
+    if (searchFilterPath) {
+      cwd.filterPath = searchFilterPath;
+    } else {
+      cwd.filterPath = req.body.data.length > 0 ? GetRelativePath(this.contentRootPath, this.contentRootPath + req.body.path.substring(0, req.body.path.indexOf(req.body.data[0].name))) : "";
     }
-    else if (fullPath.indexOf(rootDirectory + "/") >= 0) {
-      return "/" + fullPath.substring(rootDirectory.length + 1);
+    cwd.permission = GetPathPermission(req.path, cwd.isFile, (req.body.path == "/") ? "" : cwd.name, filepath, this.contentRootPath, cwd.filterPath, this.accessDetails);
+    if ((await fs.promises.lstat(filepath)).isFile()) {
+      cwd.hasChild = false;
+      return cwd;
     }
-    else {
-      return "";
+    if ((await fs.promises.lstat(filepath)).isDirectory()) {
+      const stats = await fs.promises.readdir(filepath)
+      await stats.forEach(async stat => {
+        if ((await fs.promises.lstat(filepath + stat)).isDirectory()) {
+          cwd.hasChild = true
+        } else {
+          cwd.hasChild = false;
+        }
+        if (cwd.hasChild) return;
+      });
+      return cwd;
     }
-  }
-
-  /**
- * Reads text from the file asynchronously and returns a Promise.
- */
-  private async GetFiles(req, res): Promise<string[]> {
-    return new Promise(async (resolve, reject) => {
-      const files = await fs.promises.readdir(this.contentRootPath + req.body.path.replace(this.pattern, ""));
-      resolve(files);
-    });
-  }
-
-  /**
- * func to get the file details like path, name and size
- */
-  private fileDetails(req, res, filepath) {
-    return new Promise(async (resolve, reject) => {
-      var cwd: any = {};
-      const stats = await fs.promises.stat(filepath);
-      cwd.name = path.basename(filepath);
-      cwd.size = this.getSize(stats.size);
-      cwd.isFile = stats.isFile();
-      cwd.modified = stats.ctime;
-      cwd.created = stats.mtime;
-      cwd.type = path.extname(filepath);
-      cwd.location = req.body.data[0].filterPath
-      resolve(cwd);
-    });
   }
 
 
@@ -877,19 +654,8 @@ export class FileManagerService {
     }
   }
 
-  /**
-  * func to get the size in kb, MB
-  */
-  private getSize(size) {
-    var hz;
-    if (size < 1024) hz = size + ' B';
-    else if (size < 1024 * 1024) hz = (size / 1024).toFixed(2) + ' KB';
-    else if (size < 1024 * 1024 * 1024) hz = (size / 1024 / 1024).toFixed(2) + ' MB';
-    else hz = (size / 1024 / 1024 / 1024).toFixed(2) + ' GB';
-    return hz;
-  }
 
-  private checkForMultipleLocations(req, contentRootPath) {
+  private checkForMultipleLocations(req, contentRootPath): boolean {
     var previousLocation = "";
     var isMultipleLocation = false;
     req.body.data.forEach((item) => {
@@ -910,11 +676,10 @@ export class FileManagerService {
     return isMultipleLocation;
   }
 
-
-  private async copyFolder(source, dest: string) {
-    this.createFolderIfNotExist(dest);
+  private async copyFolder(source: string, dest: string) {
+    await createFolderIfNotExists(dest);
     var files = await fs.promises.readdir(source);
-    files.forEach(async (file) => {
+    await files.forEach(async (file) => {
       var curSource = path.join(source, file);
       curSource = curSource.replace("../", "");
       if ((await fs.promises.lstat(curSource)).isDirectory()) {
@@ -925,121 +690,22 @@ export class FileManagerService {
     });
   }
 
-  private async updateCopyName(path, name, count, isFile) {
-    var subName = "", extension = "";
-    if (isFile) {
-      extension = name.substr(name.lastIndexOf('.'), name.length - 1);
-      subName = name.substr(0, name.lastIndexOf('.'));
-    }
-    this.copyName = !isFile ? name + "(" + count + ")" : (subName + "(" + count + ")" + extension);
-    if (await this.checkForDuplicates(path, this.copyName, isFile)) {
-      count = count + 1;
-      await this.updateCopyName(path, name, count, isFile);
-    }
-  }
-
-  private async checkForFileUpdate(fromPath, toPath, item, contentRootPath, req) {
+  private async checkForFileUpdate(fromPath: string, toPath: string, item: CWD2, contentRootPath: string, req: Request) {
     var count = 1;
     var name = this.copyName = item.name;
     if (fromPath == toPath) {
-      if (await this.checkForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
-        await this.updateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile);
+      if (await CheckForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
+        this.copyName = await UpdateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile, this.copyName);
       }
     } else {
       if (req.body.renameFiles.length > 0 && req.body.renameFiles.indexOf(item.name) >= 0) {
-        await this.updateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile);
+        this.copyName = await UpdateCopyName(contentRootPath + req.body.targetPath, name, count, item.isFile, this.copyName);
       } else {
-        if (await this.checkForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
+        if (await CheckForDuplicates(contentRootPath + req.body.targetPath, name, item.isFile)) {
           this.isRenameChecking = true;
         }
       }
     }
   }
 
-  private async createFolderIfNotExist(path: string) {
-    try {
-      await fs.promises.access(path);
-    } catch {
-      await fs.promises.mkdir(path);
-    }
-  }
-
-  private async MoveFolder(source, dest) {
-    await this.createFolderIfNotExist(dest);
-    var files = await fs.promises.readdir(source);
-    files.forEach(async (file) => {
-      var curSource = path.join(source, file);
-      curSource = curSource.replace("../", "");
-      if ((await fs.promises.lstat(curSource)).isDirectory()) {
-        await this.MoveFolder(curSource, path.join(dest, file));
-        await fs.promises.rmdir(curSource);
-      } else {
-        await fs.promises.copyFile(path.join(source, file), path.join(dest, file)).catch(e => { throw e })
-        await fs.promises.unlink(path.join(source, file)).catch(e => { throw e });
-      }
-    });
-  }
-
-  /**
- * 
- * func to check for exising folder or file
- */
-  private async checkForDuplicates(directory, name, isFile) {
-    var filenames = await fs.promises.readdir(directory);
-    if (filenames.indexOf(name) == -1) {
-      return false;
-    } else {
-      for (var i = 0; i < filenames.length; i++) {
-        if (filenames[i] === name) {
-          if (!isFile && (await fs.promises.lstat(directory + "/" + filenames[i])).isDirectory()) {
-            return true;
-          } else if (isFile && !(await fs.promises.lstat(directory + "/" + filenames[i])).isDirectory()) {
-            return true;
-          } else {
-            return false;
-          }
-        }
-      }
-    }
-  }
-
-  private updateRules(filePermission, accessRule) {
-    filePermission.download = this.hasPermission(accessRule.read) && this.hasPermission(accessRule.download);
-    filePermission.write = this.hasPermission(accessRule.read) && this.hasPermission(accessRule.write);
-    filePermission.writeContents = this.hasPermission(accessRule.read) && this.hasPermission(accessRule.writeContents);
-    filePermission.copy = this.hasPermission(accessRule.read) && this.hasPermission(accessRule.copy);
-    filePermission.read = this.hasPermission(accessRule.read);
-    filePermission.upload = this.hasPermission(accessRule.read) && this.hasPermission(accessRule.upload);
-    filePermission.message = this.getMessage(accessRule);
-    return filePermission;
-  }
-
-  private hasPermission(rule) {
-    return ((rule == undefined) || (rule == null) || (rule == Permission.Allow)) ? true : false;
-  }
-
-  private getMessage(rule) {
-    return ((rule.message == undefined) || (rule.message == null)) ? "" : rule.message;
-  }
 }
-//====================================================================================
-const Permission = {
-  Allow: "allow",
-  Deny: "deny"
-};
-
-class AccessDetails {
-  constructor(public role?: any, public rules?: any) {
-  }
-}
-
-class AccessPermission {
-  constructor(public read?: any, public write?: any, public writeContents?: any, public copy?: any, public download?: any, public upload?: any, public message?: any) {
-  }
-}
-
-class AccessRules {
-  constructor(public path?: any, public role?: any, public read?: any, public write?: any, public writeContents?: any, public copy?: any, public download?: any, public upload?: any, public isFile?: any, public message?: any) {
-  }
-}
-
