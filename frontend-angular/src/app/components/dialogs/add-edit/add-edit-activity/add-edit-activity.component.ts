@@ -1,5 +1,5 @@
 import { Component, Inject } from '@angular/core';
-import {  FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { IActivityEntity } from '../../../../../../../interfaces';
@@ -19,9 +19,9 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
   protected nowDate = new Date();
   public isSpecialActivity!: boolean;
   // public fields: IFieldEntity[] | undefined;
-  constructor(private fb:FormBuilder, public service: ActivityService, public fieldService: FieldService,
+  constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService,
     public dialogRef: MatDialogRef<any>, private formService: FormService,
-    private nt:NotificationService,
+    private nt: NotificationService,
     /**passed data could be:
      * 1- `activity` to be edit. If activity.programId == null THEN it is special activity
      * 2- `programId` to add the new activity into it.
@@ -31,13 +31,14 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
   }
 
   ngOnInit(): void {
+    console.log('activityProgramId', this.activityProgramId);
     this.isSpecialActivity = this.activityProgramId == undefined || (typeof this.activityProgramId == 'object' && this.activityProgramId.programId == null)
     let ages = this.isSpecialActivity ? {} : {//special activity don't need age stuff
       minAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
       maxAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
     };
     this.formGroup = this.fb.group({
-      name: [null, [Validators.required, Validators.maxLength(512), Validators.minLength(3)]],
+      name: [null, [Validators.required, Validators.maxLength(512), Validators.minLength(3),]],
       ...ages,
       fieldId: [null, [Validators.required, Validators.min(0)]],
       createdDatetime: [new Date(), [Validators.required]],

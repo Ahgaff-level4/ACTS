@@ -28,9 +28,8 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   public selectedItem?: IActivityEntity;
   public quickFilter: string = '';
   public isPrinting: boolean = false;
-  /**don't use `rowData` 'cause Program has activities of `rowData`*/
-  // public program: IProgramEntity | undefined;
-  public rowData: IActivityEntity[] | undefined;
+  /** both program/field contain property `activities` */
+  public programOrField: { activities: IActivityEntity[], id: number } | undefined;
   /**Activities of either a program or field */
   public activitiesOf: 'field' | 'program' | undefined;
 
@@ -131,13 +130,13 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
           if (this.activitiesOf == 'program')
             this.sub.add(this.service.programItsActivities$.subscribe(async v => {
               if (v && v.id == +(id as string)) {
-                this.rowData = this.ut.deepClone(v.activities);
+                this.programOrField = this.ut.deepClone(v);
               }
               else await this.service.fetchProgramItsActivities(+(id as string), true).catch(() => { });
             }));
           else this.sub.add(this.service.fieldItsActivities$.subscribe(async v => {
             if (v && v.id == +(id as string))
-              this.rowData = this.ut.deepClone(v.activities);
+              this.programOrField = this.ut.deepClone(v);
             else await this.service.fetchFieldItsActivities(+(id as string), true).catch(() => { })
           }));
         } else {
