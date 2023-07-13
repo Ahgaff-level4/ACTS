@@ -17,7 +17,6 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 })
 export class AddEditStrengthComponent extends UnsubOnDestroy {
   public formGroup!: FormGroup;
-  protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new strength */

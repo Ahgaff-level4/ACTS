@@ -14,7 +14,6 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   @Input() public person?: IPersonEntity | ICreatePerson;//optional for edit
   @Output() public personChange = new EventEmitter<IPersonEntity | ICreatePerson>();
   public formGroup!: FormGroup;
-  protected minlength = { minlength: 4 };
   protected nowDate = new Date();
   /**image is the image file chosen by the user. If user dose not choose an image OR edit a person that has image, then it is `undefined`.
    * It will be defined only when user select an image as placeholder to submit the file

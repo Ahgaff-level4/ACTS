@@ -1,12 +1,15 @@
 import { Injectable } from '@angular/core';
-import { AbstractControl, FormBuilder, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import * as moment from 'moment';
+import { UtilityService } from './utility.service';
+import { takeWhile } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class FormService {
-  
+
+  constructor(private ut: UtilityService) { }
   /**
    * Used in formGroup to setValue of formGroup.controls with the correspond object properties.
    * Ex: `keys={'name':FormControl...}` and `properties={'name':'Ahmad','age':20,...}`
@@ -65,16 +68,34 @@ export class FormService {
       const isValid = !(control.value || '').trim().includes(' ');
       return isValid ? null : { whitespace: true };
     },
+    unique(control: FormControl): ValidationErrors | null {
+      if (control.getError('notUnique')) {
+        const oldValue = control.getRawValue();
+        control.valueChanges.pipe(takeWhile(v => {
+          if (control.getRawValue() == oldValue)
+            return true;
+          control.setErrors(null);
+          return false;
+        })).subscribe(() => { });
+        return { notUnique: true };
+      }
+
+      return null;
+    }
+
+  }
+
+  public errMessage = {
     /**if control use maxlength or minlength validators then component should have {min/maxlength:number} obj. And this function should be called with translate pipe using param min/max obj. Ex: {{getRequireMaxMinErrMsg()|translate:minMaxLength}} */
-    getRequireMaxMinLengthErrMsg(control: AbstractControl | null): string | '' {
+    requiredMinLengthMaxLength: (control: AbstractControl | null): string => {
       if (control?.hasError('required'))
         return 'You must enter a value';
 
       if (control?.hasError('maxlength'))
-        return 'Maximum length is ';
+        return this.ut.translate('Maximum length is ') + control.getError('maxlength').requiredLength;
 
       if (control?.hasError('minlength'))
-        return 'Minimum length is ';
+        return this.ut.translate('Minimum length is ') + control.getError('minlength').requiredLength;
 
       return '';
     },

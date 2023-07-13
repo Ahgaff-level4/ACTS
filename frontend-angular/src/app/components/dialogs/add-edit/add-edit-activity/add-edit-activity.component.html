@@ -12,9 +12,10 @@
             <mat-error *ngIf="formGroup.get('name')?.errors?.['required']">
               {{'You must enter a value'|translate}}
             </mat-error>
-            <mat-error *ngIf="formGroup.get('name')?.errors?.['minlength']">
-              {{'Minimum length is '|translate:minlength}}
+            <mat-error *ngIf="formGroup.getError('minlength','name') as err">
+              {{'Minimum length is '|translate}}{{err.requiredLength}}
             </mat-error>
+            <mat-error *ngIf="formGroup.getError('notUnique','name')">{{'The value entered is not unique'|translate}}</mat-error>
             <mat-hint>{{'Activity text should be unique.'|translate}}</mat-hint>
             <mat-hint align="end">{{formGroup.get('name')?.value?.length??0}}/500</mat-hint>
           </mat-form-field>

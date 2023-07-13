@@ -13,13 +13,12 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class AddEditProgramComponent {
   public formGroup: FormGroup;
-  protected minlength = { minlength: 3 };
   protected nowDate = new Date();
-  constructor(private fb:FormBuilder, public service: ProgramService,
-    private formService: FormService, public dialogRef: MatDialogRef<any>,private nt:NotificationService,
+  constructor(private fb: FormBuilder, public service: ProgramService,
+    private formService: FormService, public dialogRef: MatDialogRef<any>, private nt: NotificationService,
     @Inject(MAT_DIALOG_DATA) public program?: IProgramEntity) {
     this.formGroup = this.fb.group({
-      name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3)]],
+      name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3), formService.validation.unique]],
       createdDatetime: [new Date(), [Validators.required]],
     });
   }
@@ -41,7 +40,10 @@ export class AddEditProgramComponent {
           await this.service.post(this.formGroup.value);
           this.nt.notify("Added successfully", 'The program has been added successfully', 'success');
           this.dialogRef.close();
-        } catch (e) { }
+        } catch (e: any) {
+          if (e?.error?.code === "ER_DUP_ENTRY")
+            this.formGroup.get('name')?.setErrors({ notUnique: true });
+        }
       } else {//edit
         let dirtyProgram = this.formService.extractDirty(this.formGroup.controls);
         try {

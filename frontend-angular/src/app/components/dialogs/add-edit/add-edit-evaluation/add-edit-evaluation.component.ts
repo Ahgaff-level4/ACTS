@@ -14,7 +14,6 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 })
 export class AddEditEvaluationComponent {
   public formGroup!: FormGroup;
-  protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   constructor(private fb:FormBuilder, public service: EvaluationService, private pr:PrivilegeService,
     public dialogRef: MatDialogRef<any>, private formService: FormService,private nt:NotificationService,

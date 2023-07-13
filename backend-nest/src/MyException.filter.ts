@@ -15,6 +15,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       msg:exception?.getResponse()['msg']||undefined,
       action: exception?.getResponse()['action'] || undefined,
       sqlMessage:exception?.getResponse()['sqlMessage']||undefined,
+      code:exception?.getResponse()['error']?.code||undefined,
       error: {
         statusCode: status,
         exception,

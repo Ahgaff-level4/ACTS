@@ -9,7 +9,8 @@
           <mat-icon matPrefix class="material-symbols-rounded">bookmark</mat-icon>
           <input type="text" matInput placeholder="..." formControlName="name" required minlength="3" maxlength="50">
           <mat-error *ngIf="formGroup.get('name')?.errors?.['required']">{{'You must enter a value'|translate}}</mat-error>
-          <mat-error *ngIf="formGroup.get('name')?.errors?.['minlength']">{{'Minimum length is '|translate:minlength}}</mat-error>
+          <mat-error *ngIf="formGroup.getError('minlength','name') as err">{{'Minimum length is '|translate}}{{err.requiredLength}}</mat-error>
+          <mat-error *ngIf="formGroup.getError('notUnique','name')">{{'The value entered is not unique'|translate}}</mat-error>
           <mat-hint>{{'Field name should be unique.'|translate}}</mat-hint>
         </mat-form-field>
       </div>

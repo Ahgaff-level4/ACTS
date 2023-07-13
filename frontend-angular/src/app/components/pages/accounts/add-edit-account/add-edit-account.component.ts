@@ -22,8 +22,6 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
   @ViewChild('submitButton') submitButton!: HTMLButtonElement;
-  minMaxLength = { minlength: 4, maxlength: 32 };
-  phoneMinMaxLength = { maxlength: 15, minlength: 9 }
   isLoading = false;
   hide = true;
   phoneFields: string[] = [];
@@ -36,7 +34,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
   }
 
   ngOnInit(): void {
-      this.account = history.state.data;
+    this.account = history.state.data;
 
     let maxPhone = -1;
     for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
@@ -58,11 +56,11 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
         this.account['phone' + i] = this.account['phone' + i] ?? undefined;
     }
 
-    const phoneValidators = [Validators.maxLength(this.phoneMinMaxLength.maxlength),
-    Validators.minLength(this.phoneMinMaxLength.minlength),
+    const phoneValidators = [Validators.maxLength(15),
+    Validators.minLength(9),
     Validators.pattern(/(^\+?)([0-9]+$)/)];
     this.accountForm = this.fb.group({
-      username: [this.account?.username ?? null, [Validators.required, this.formService.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4)]],
+      username: [this.account?.username ?? null, [Validators.required, this.formService.validation.noWhitespaceValidator, Validators.maxLength(32), Validators.minLength(4), this.formService.validation.unique]],
       ...pass,
       roles: [this.account?.roles ?? [], [this.rolesValidator]],
       address: [this.account?.address ?? null, [Validators.maxLength(64)]],
@@ -94,7 +92,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
       this.personForm?.formGroup?.disable();
       if (this.account?.id == null) {//Register new account
         this.ut.isLoading.next(true);
-        let person = await this.accountService.sensitiveWrapper(()=>this.personForm?.submit()).catch(() => { this.ut.isLoading.next(false) });
+        let person = await this.accountService.sensitiveWrapper(() => this.personForm?.submit()).catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
         if (typeof person != 'object')
           return;
@@ -103,12 +101,14 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
           await this.accountService.post({ ...accountFields, personId: person.id }, true);//include personId property
           this.nt.notify("Added successfully", 'The new account has been registered successfully', 'success');
           this.ut.router.navigate(['/accounts']);
-        } catch (e) {
+        } catch (e: any) {
+          if (e?.error?.code === "ER_DUP_ENTRY")
+            this.accountForm.get('username')?.setErrors({ notUnique: true });
           this.personForm.personService.deletePerson(person.id, true);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
         this.ut.isLoading.next(true);
-        await this.accountService.sensitiveWrapper(()=>this.personForm?.submitEdit()).catch(() => { this.ut.isLoading.next(false) });
+        await this.accountService.sensitiveWrapper(() => this.personForm?.submitEdit()).catch(() => { this.ut.isLoading.next(false) });
         this.ut.isLoading.next(false);
         let dirtyFields = this.formService.extractDirty(this.accountForm.controls);
         try {
@@ -142,39 +142,40 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
 
 
   getUsernameErrorMessage() {
-    if (this.accountForm.get('username')?.hasError('whitespace'))
+    if (this.accountForm.getError('whitespace', 'username'))
       return 'Must not contain spaces';
-
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('username')) || '';
+    if (this.accountForm.getError('notUnique', 'username'))
+      return 'The value entered is not unique';
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.accountForm.get('username')) || '';
   }
 
 
   getPasswordErrorMessage() {
-    if (this.accountForm.get('password')?.hasError('strongPassword'))
+    if (this.accountForm.getError('strongPassword', 'password'))
       return 'Password is not strong enough';
 
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('password')) || '';
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.accountForm.get('password')) || '';
   }
 
 
   getRepeatPasswordErrorMessage() {
-    if (this.accountForm.get('repeatPassword')?.hasError('passwordMatch'))
+    if (this.accountForm.getError('passwordMatch', 'repeatPassword'))
       return 'Passwords do not match';
 
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get('repeatPassword')) || '';
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.accountForm.get('repeatPassword')) || '';
   }
 
 
   getRolesErrorMessage() {
-    if (this.accountForm.get('roles')?.hasError('require') && this.accountForm.get('roles')?.touched)
+    if (this.accountForm.getError('require', 'roles') && this.accountForm.get('roles')?.touched)
       return 'You must choose a value';
     return '';
   }
 
   getPhoneErrorMessage(controlName: string) {
-    if (this.accountForm.get(controlName)?.hasError('pattern'))
+    if (this.accountForm.getError('pattern', controlName))
       return "Phone number must contain only digits and '+' symbol";
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.accountForm.get(controlName)) || '';
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.accountForm.get(controlName));
   }
 
 

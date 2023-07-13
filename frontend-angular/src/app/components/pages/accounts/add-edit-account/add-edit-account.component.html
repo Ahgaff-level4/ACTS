@@ -8,7 +8,7 @@
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Username'|translate}}</mat-label>
           <input matInput formControlName="username" minlength="4" maxlength="32">
-          <mat-error>{{getUsernameErrorMessage()|translate:minMaxLength}}</mat-error>
+          <mat-error>{{getUsernameErrorMessage()|translate}}</mat-error>
           <mat-hint>{{'Username should be unique.'|translate}}</mat-hint>
         </mat-form-field>
       </div>
@@ -21,7 +21,7 @@
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
-          <mat-error>{{getPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
+          <mat-error>{{getPasswordErrorMessage()|translate}}</mat-error>
         </mat-form-field>
       </div>
       <div *ngIf="!account?.id" class="col-md-4 p-2"><!--Add new-->
@@ -32,7 +32,7 @@
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
-          <mat-error>{{getRepeatPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
+          <mat-error>{{getRepeatPasswordErrorMessage()|translate}}</mat-error>
         </mat-form-field>
       </div>
 
@@ -44,7 +44,7 @@
           <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
             [attr.aria-pressed]="hide">
             <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
-          <mat-error>{{getPasswordErrorMessage()|translate:minMaxLength}}</mat-error>
+          <mat-error>{{getPasswordErrorMessage()|translate}}</mat-error>
         </mat-form-field>
       </div>
       <div *ngIf="account?.id" class="col-md-4 p-3"><!--Edit-->
@@ -88,7 +88,7 @@
           <mat-label>{{'Phone'|translate}}&nbsp;{{i+1}}</mat-label>
           <input dir="ltr" matInput type="tel" formControlName="{{ phoneField }}" (input)="onPhoneChange(i)"
             placeholder="..." maxlength="15" minlength="9" />
-          <mat-error>{{getPhoneErrorMessage(phoneField)|translate:phoneMinMaxLength}}</mat-error>
+          <mat-error>{{getPhoneErrorMessage(phoneField)|translate}}</mat-error>
         </mat-form-field>
       </div>
     </div>

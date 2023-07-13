@@ -17,7 +17,6 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 })
 export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   public formGroup!: FormGroup;
-  protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new goal */

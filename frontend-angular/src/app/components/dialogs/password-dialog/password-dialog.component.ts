@@ -12,11 +12,9 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./password-dialog.component.scss']
 })
 export class PasswordDialogComponent {
-  protected minlength = { minlength: 4 };
   public formGroup!: FormGroup;
   public hide = true;
   public hide1 = true;
-  minMaxLength = { minlength: 4, maxlength: 32 };
   isReset!: boolean;
   /**
    * This component used to reset password, change password, and re-enter password.
@@ -95,18 +93,18 @@ export class PasswordDialogComponent {
     if (this.getState() != 'reenter' && this.formGroup.get('password')?.hasError('strongPassword'))
       return 'Password is not strong enough';
 
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('password')) || '';
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.formGroup.get('password')) || '';
   }
 
   getRepeatPasswordErrorMessage() {
     if (this.formGroup.get('repeatPassword')?.hasError('passwordMatch'))
       return 'Passwords do not match';
 
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('repeatPassword')) || '';
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.formGroup.get('repeatPassword')) || '';
   }
 
   getOldPasswordErrorMessage() {
-    return this.formService.validation.getRequireMaxMinLengthErrMsg(this.formGroup.get('oldPassword'));
+    return this.formService.errMessage.requiredMinLengthMaxLength(this.formGroup.get('oldPassword'));
   }
 
   /** dialog state which is what the dialog purpose */

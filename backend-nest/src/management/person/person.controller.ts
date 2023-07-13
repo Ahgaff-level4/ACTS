@@ -1,25 +1,44 @@
 import { Controller, Post, Body, Param, ParseIntPipe, Patch, Delete, UseInterceptors, UploadedFile, Injectable } from '@nestjs/common';
 import { CreatePerson, PersonEntity, UpdatePerson } from './person.entity';
 import { Roles } from 'src/auth/Role.guard';
-import { Repository } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
+import { DataSource, Repository } from 'typeorm';
+import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { rename, unlink, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
 import { IPersonEntity } from '../../../../interfaces';
 import sanitize = require('sanitize-filename');
+import { NotContains, NotEquals } from 'class-validator';
+import { ChildEntity } from '../child/child.entity';
+import { AccountEntity } from '../account/account.entity';
 
 @Controller('api/person')
 export class PersonController {
   constructor(@InjectRepository(PersonEntity)
-  private repo: Repository<PersonEntity>) { }
+  private repo: Repository<PersonEntity>, @InjectDataSource() dataSource: DataSource) {
+
+    //Delete unused person entities. Person is used as child or account. It can be generated without any relations if something went wrong like deadlock error. Happened to me :)
+    Promise.all([
+      this.repo.find({ select: { id: true } }),
+      dataSource.getRepository(ChildEntity).find({ relations: ['person'], select: { person: { id: true } } }),
+      dataSource.getRepository(AccountEntity).find({ relations: ['person'], select: { person: { id: true } } })
+    ])
+      .then(v => {
+        const allPersons = v[0];
+        const childPersons = v[1];
+        const accountPersons = v[2];
+        const alonePersons = allPersons
+          .filter(p => !childPersons.map(c => c.person.id).includes(p.id))
+          .filter(p => !accountPersons.map(a => a.person.id).includes(p.id));
+        if (alonePersons.length > 0)
+          this.repo.delete(alonePersons.map(v => v.id));
+      });
+  }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
   @UseInterceptors(FileInterceptor('image'))
   async create(@Body() createPerson: CreatePerson, @UploadedFile() file: Express.Multer.File) {
-    console.log('file', file)
-    console.log('createPerson', createPerson);
     if (file) {
       //we insert the person first to get the id value
       const person = await this.repo.save(this.repo.create(createPerson));
@@ -37,7 +56,6 @@ export class PersonController {
   @Roles('Admin', 'HeadOfDepartment')
   @UseInterceptors(FileInterceptor('image'))
   async update(@Param('id', ParseIntPipe) id: string, @Body() updatePerson: UpdatePerson, @UploadedFile() file: Express.Multer.File) {
-    console.log('id', id, 'updatePerson', updatePerson, 'file', file);
     //THIS IS OVER ENGINEERING :)
     const originalPerson: IPersonEntity = await this.repo.findOneBy({ id: +id });
     let res;
@@ -60,10 +78,8 @@ export class PersonController {
   @Roles('Admin', 'HeadOfDepartment')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const person: IPersonEntity = await this.repo.findOneBy({ id: +id });
-    console.log('delete person', person)
     if (person.image) {//if it has image then delete it
       await unlink(imagePath(person.image));
-      console.log('image deleted')
     }
     return this.repo.delete(id);
   }

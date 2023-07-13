@@ -12,8 +12,8 @@
             <mat-error *ngIf="formGroup.get('description')?.errors?.['required']">
               {{'You must enter a value'|translate}}
             </mat-error>
-            <mat-error *ngIf="formGroup.get('description')?.errors?.['minlength']">
-              {{'Minimum length is '|translate:minlength}}
+            <mat-error *ngIf="formGroup.getError('minlength','description') as err">
+              {{'Minimum length is '|translate}}{{err.requiredLength}}
             </mat-error>
           </mat-form-field>
         </div>

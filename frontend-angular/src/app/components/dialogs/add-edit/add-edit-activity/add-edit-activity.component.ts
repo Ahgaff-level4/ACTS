@@ -15,7 +15,6 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class AddEditActivityComponent extends UnsubOnDestroy {
   public formGroup!: FormGroup;
-  protected minlength = { minlength: 3 };
   protected nowDate = new Date();
   public isSpecialActivity!: boolean;
   // public fields: IFieldEntity[] | undefined;
@@ -31,14 +30,14 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
   }
 
   ngOnInit(): void {
-    console.log('activityProgramId', this.activityProgramId);
+
     this.isSpecialActivity = this.activityProgramId == undefined || (typeof this.activityProgramId == 'object' && this.activityProgramId.programId == null)
     let ages = this.isSpecialActivity ? {} : {//special activity don't need age stuff
       minAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
       maxAge: [null, [Validators.required, Validators.min(0), Validators.max(99)]],
     };
     this.formGroup = this.fb.group({
-      name: [null, [Validators.required, Validators.maxLength(512), Validators.minLength(3),]],
+      name: [null, [Validators.required, Validators.maxLength(512), Validators.minLength(3), this.formService.validation.unique]],
       ...ages,
       fieldId: [null, [Validators.required, Validators.min(0)]],
       createdDatetime: [new Date(), [Validators.required]],
@@ -64,7 +63,10 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
             newActivity = await this.service.postSpecialActivities({ ...this.formGroup.value, });
           this.nt.notify('Added successfully', 'The activity has been added successfully', 'success');
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
-        } catch (e) { }
+        } catch (e: any) {
+          if (e?.error?.code === "ER_DUP_ENTRY")
+            this.formGroup.get('name')?.setErrors({ notUnique: true });
+        }
       } else if (typeof this.activityProgramId == 'object') {//edit. activityProgramId type in this scope `IActivityEntity` and its programId type `number|undefined`
         let dirtyControls = this.formService.extractDirty(this.formGroup.controls);
         try {

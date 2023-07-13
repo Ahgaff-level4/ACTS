@@ -12,7 +12,6 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class LoginFormComponent implements OnInit {
   public hide: boolean = true;//used to hide password
-  public minlength = { minlength: 4 }
   public formGroup = new FormGroup({
     username: new FormControl('', { validators: [Validators.required, Validators.maxLength(30), Validators.minLength(4),], nonNullable: true }),
     password: new FormControl('', { validators: [Validators.required, Validators.maxLength(1024), Validators.minLength(4)], nonNullable: true }),
