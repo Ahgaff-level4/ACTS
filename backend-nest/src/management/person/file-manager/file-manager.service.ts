@@ -7,12 +7,13 @@ import * as archiver from 'archiver';
 import {
   AccessDetails, CWD2, FileDetails, GetFiles, GetPathPermission,
   GetPermission, GetRelativePath, GetSize, ReadDirectories,
-  AddSearchList, createFolderIfNotExists, fileExists, GetRules,
+  createFolderIfNotExists, fileExists, GetRules,
   CheckForDuplicates,
   UpdateCopyName,
   ReplaceRequestParams,
   MoveFolder,
-  transferFile
+  transferFile,
+  fromDir
 } from './fileOperations.utility';
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
 //todo change every func to arrow func
@@ -202,54 +203,9 @@ export class FileManagerService {
       await this.renameFolder(req, res,)//this.contentRootPath + req.body.path);
     }
 
-
-
-
-
-    const checkForSearchResult = (casesensitive, filter, isFile, fileName, searchString) => {
-      var isAddable = false;
-      if (searchString.substr(0, 1) == "*" && searchString.substr(searchString.length - 1, 1) == "*") {
-        if (casesensitive ? fileName.indexOf(filter) >= 0 : (fileName.indexOf(filter.toLowerCase()) >= 0 || fileName.indexOf(filter.toUpperCase()) >= 0)) {
-          isAddable = true
-        }
-      } else if (searchString.substr(searchString.length - 1, 1) == "*") {
-        if (casesensitive ? fileName.startsWith(filter) : (fileName.startsWith(filter.toLowerCase()) || fileName.startsWith(filter.toUpperCase()))) {
-          isAddable = true
-        }
-      } else {
-        if (casesensitive ? fileName.endsWith(filter) : (fileName.endsWith(filter.toLowerCase()) || fileName.endsWith(filter.toUpperCase()))) {
-          isAddable = true
-        }
-      }
-      return isAddable;
-    }
-
-    const fromDir = async (startPath, filter, contentRootPath, casesensitive, searchString) => {
-      try {
-        await fs.promises.access(startPath);
-      } catch {
-        return;
-      }
-      var files = await fs.promises.readdir(startPath);
-      for (var i = 0; i < files.length; i++) {
-        var filename = path.join(startPath, files[i]);
-        var stat = await fs.promises.lstat(filename);
-        if (stat.isDirectory()) {
-          if (checkForSearchResult(casesensitive, filter, false, files[i], searchString)) {
-            await AddSearchList(filename, contentRootPath, fileList, files, i, this.accessDetails);
-          }
-          await fromDir(filename, filter, contentRootPath, casesensitive, searchString); //recurse
-        }
-        else if (checkForSearchResult(casesensitive, filter, true, files[i], searchString)) {
-          await AddSearchList(filename, contentRootPath, fileList, files, i, this.accessDetails);
-        }
-      }
-    }
-
     // Action to search a file
     if (req.body.action === 'search') {
-      var fileList = [];
-      await fromDir(this.contentRootPath + req.body.path, req.body.searchString.replace(/\*/g, ""), this.contentRootPath, req.body.caseSensitive, req.body.searchString);
+      var fileList = await fromDir(path.join(this.contentRootPath, req.body.path), req.body.searchString.replace(/\*/g, ""), this.contentRootPath, req.body.caseSensitive, req.body.searchString, this.accessDetails);
       const tes: any = await this.FileManagerDirectoryContent(req, res, this.contentRootPath + req.body.path);
       if (tes.permission != null && !tes.permission.read) {
         var errorMsg: any = new Error();
@@ -263,9 +219,7 @@ export class FileManagerService {
         res.json({ cwd: tes, files: fileList });
       }
     }
-
-
-
+    
     // Action to read a file
     if (req.body.action == "read") {
       const filesList = await GetFiles(req, this.contentRootPath);
@@ -285,9 +239,7 @@ export class FileManagerService {
         res.json({ cwd: cwdFiles, files: data });
       }
     }
-
   }
-
 
 
   private async getFileDetails(req, res, contentRootPath, filterPath) {

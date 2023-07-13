@@ -254,7 +254,7 @@ export const GetPathPermission = (path: string, isFile: boolean, name: string, f
 	return GetPermission(filepath, name, isFile, contentRootPath, filterPath, accessDetails);
 }
 
-export const ParentsHavePermission = (filepath: string, contentRootPath: string, isFile: boolean, name: string, filterPath: string, accessDetails: AccessDetails | null): boolean => {
+const ParentsHavePermission = (filepath: string, contentRootPath: string, isFile: boolean, name: string, filterPath: string, accessDetails: AccessDetails | null): boolean => {
 	var parentPath = filepath.substr(contentRootPath.length, filepath.length - 1).replace(/\\/g, "/");
 	parentPath = parentPath.substr(0, parentPath.indexOf(name)) + (isFile ? "" : "/");
 	var parents = parentPath.split('/');
@@ -275,7 +275,7 @@ export const ParentsHavePermission = (filepath: string, contentRootPath: string,
 	return hasPermission;
 }
 
-export const AddSearchList = async (filename: string, contentRootPath: string, fileList: string[], files: string[], index: number, accessDetails: null | AccessDetails) => {
+const AddSearchList = async (filename: string, contentRootPath: string, files: string[], index: number, accessDetails: null | AccessDetails): Promise<CWD2> => {
 	var cwd: any = {};
 	var stats = await fs.promises.stat(filename);
 	cwd.name = path.basename(filename);
@@ -284,7 +284,9 @@ export const AddSearchList = async (filename: string, contentRootPath: string, f
 	cwd.dateModified = stats.mtime;
 	cwd.dateCreated = stats.ctime;
 	cwd.type = path.extname(filename);
-	cwd.filterPath = filename.substr((contentRootPath.length), filename.length).replace(files[index], "");
+	//filename is the file whole path
+	const withoutRootPath = filename.substring(contentRootPath.length, filename.length);
+	cwd.filterPath = withoutRootPath.substring(0, withoutRootPath.lastIndexOf(files[index]));//without file name
 	cwd.permission = GetPermission(filename.replace(/\\/g, "/"), cwd.name, cwd.isFile, contentRootPath, cwd.filterPath, accessDetails);
 	var permission = ParentsHavePermission(filename, contentRootPath, cwd.isFile, cwd.name, cwd.filterPath, accessDetails);
 	if (permission) {
@@ -295,8 +297,32 @@ export const AddSearchList = async (filename: string, contentRootPath: string, f
 			var statsRead = await fs.promises.readdir(filename);
 			cwd.hasChild = statsRead.length > 0;
 		}
-		fileList.push(cwd);
+		return cwd;
 	}
+}
+
+export const fromDir = async (startPath: string, filter: string, contentRootPath: string, casesensitive: boolean, searchString: string, accessDetails: null | AccessDetails): Promise<CWD2[]> => {
+	try {
+		await fs.promises.access(startPath);
+	} catch {
+		return [];
+	}
+	let fileList: CWD2[] = [];
+	var files = await fs.promises.readdir(startPath);
+	for (var i = 0; i < files.length; i++) {
+		var filename = path.join(startPath, files[i]);
+		var stat = await fs.promises.lstat(filename);
+		if (stat.isDirectory()) {
+			if (checkForSearchResult(casesensitive, filter, files[i], searchString)) {
+				fileList.push(await AddSearchList(filename, contentRootPath, files, i, accessDetails));
+			}
+			fileList.push(...(await fromDir(filename, filter, contentRootPath, casesensitive, searchString, accessDetails))); //recurse
+		}
+		else if (checkForSearchResult(casesensitive, filter, files[i], searchString)) {
+			fileList.push(await AddSearchList(filename, contentRootPath, files, i, accessDetails));
+		}
+	}
+	return fileList;
 }
 
 /**
@@ -335,9 +361,11 @@ export const UpdateCopyName = async (path: string, name: string, count: number, 
 		return await UpdateCopyName(path, name, count, isFile, copyName);
 	} return copyName;
 }
+
 export const ReplaceRequestParams = (req: Request) => {
 	req.body.path = (req.body.path && req.body.path.replace(pattern, ""));
 }
+
 /**copy the file from `fromPath` to `toPath` then remove `fromPath`. 
  * This behavior can move files between different disks and partitions unlike `rename`*/
 export const transferFile = async (fromPath: string, toPath: string): Promise<void> => {
@@ -352,7 +380,26 @@ export const transferFile = async (fromPath: string, toPath: string): Promise<vo
 		source.on('error', e => rej(e));
 	})
 }
-export const Permission = {
+
+const checkForSearchResult = (casesensitive: boolean, filter: string, fileName: string, searchString: string): boolean => {
+	var isAddable = false;
+	if (searchString.substr(0, 1) == "*" && searchString.substr(searchString.length - 1, 1) == "*") {
+		if (casesensitive ? fileName.includes(filter) : (fileName.toLowerCase().includes(filter.toLowerCase()))) {
+			isAddable = true
+		}
+	} else if (searchString.substr(searchString.length - 1, 1) == "*") {
+		if (casesensitive ? fileName.startsWith(filter) : (fileName.toLowerCase().startsWith(filter.toLowerCase()))) {
+			isAddable = true
+		}
+	} else {
+		if (casesensitive ? fileName.endsWith(filter) : (fileName.toLowerCase().endsWith(filter.toLowerCase()))) {
+			isAddable = true
+		}
+	}
+	return isAddable;
+}
+
+const Permission = {
 	Allow: "allow",
 	Deny: "deny"
 };
@@ -362,12 +409,12 @@ export class AccessDetails {
 	}
 }
 
-export class AccessPermission {
+class AccessPermission {
 	constructor(public read?: any, public write?: any, public writeContents?: any, public copy?: any, public download?: any, public upload?: any, public message?: any) {
 	}
 }
 
-export class AccessRules {
+class AccessRules {
 	constructor(public path?: any, public role?: any, public read?: any, public write?: any, public writeContents?: any, public copy?: any, public download?: any, public upload?: any, public isFile?: any, public message?: any) {
 	}
 }
