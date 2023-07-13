@@ -105,10 +105,10 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
 /**Matches any url that ends with 'str/:id' where id is number such as 'blah/blah/str/3'
  * @param thenSegment same behavior but concatenated with `thenSegment` value. (i.e.'str/:id/thenSegment') such as 'blah/str/3/thenSegment'
  */
-function endsWithStrThenId(str: string, thenSegment?: string) {
+function endsWithStrThenId(str: string) {
   return (url: UrlSegment[], group: UrlSegmentGroup, route: Route): UrlMatchResult | null => {
-    if (url.join('/').match(new RegExp(`([\\s\\S]*${str}\\/\\d+${thenSegment ? '\\/' + thenSegment : ''}(\\b|\\W|[#\\?]([\\s\\S]*)))$`, 'g'))) {
-      //last segment is id if last segment is integer otherwise previous last segment.
+    if (url.join('/').match(new RegExp(`([\\s\\S]*${str}\\/\\d+(\\b|\\W|[#\\?]([\\s\\S]*)))$`, 'g'))) {
+      //last segment is id
       const posParams: { [name: string]: UrlSegment } = { id: url[url.length - (Number.isInteger(+url[url.length - 1].path) ? 1 : 2)] };
       for (let i = 0; i < url.length; i++)
         if (url[i].path == 'child' || url[i].path == 'account')
@@ -117,6 +117,14 @@ function endsWithStrThenId(str: string, thenSegment?: string) {
         consumed: url,
         posParams
       };
+    }
+    return null;
+  }
+}
+function endsWithStr(str: string) {
+  return (url: UrlSegment[], group: UrlSegmentGroup, route: Route): UrlMatchResult | null => {
+    if (url.join('/').match(new RegExp(`([\\s\\S]*\\/${str}(\\b|\\W|[#\\?]([\\s\\S]*)))$`, 'g'))) {
+      return { consumed: url };
     }
     return null;
   }
@@ -142,12 +150,12 @@ export const routes: Routes = [
   { path: 'accounts/add-account', component: AddEditAccountComponent, title: titlePrefix + 'Add Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.addAccountPage, animation: 'addAccountPage' } },
   // { path: 'accounts/edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editAccountPage, animation: 'editAccountPage' } },
   // { path: 'accounts/account/:id/edit-account', component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editAccountPage, animation: 'editAccountPage' } },
-  { matcher: endsWithStrThenId('account', 'edit-account'), component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editAccountPage, animation: 'editAccountPage' } },
+  { matcher: endsWithStr('edit-account'), component: AddEditAccountComponent, title: titlePrefix + 'Edit Account', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editAccountPage, animation: 'editAccountPage' } },
   { path: 'programs/:programOrField/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.activitiesPage, animation: 'activitiesPage' } },
   { path: 'fields/:programOrField/:id/activities', component: ActivityComponent, title: titlePrefix + 'Activities', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.activitiesPage, animation: 'activitiesPage' } },
   { path: 'children', component: ChildrenComponent, title: titlePrefix + 'Children', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childrenPage, animation: 'childrenPage' } },
   { path: 'children/add-child', component: AddEditChildComponent, title: titlePrefix + 'Add Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.addChildPage, animation: 'addChildPage' } },
-  { matcher: endsWithStrThenId('child', 'edit-child'), component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
+  { matcher: endsWithStr('edit-child'), component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
   // { path: 'children/edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
   // { path: 'children/child/:id/edit-child', component: AddEditChildComponent, title: titlePrefix + 'Edit Child', canDeactivate: [PendingChangesGuard], canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.editChildPage, animation: 'editChildPage' } },
   { path: 'children/child/:id/goals', component: GoalComponent, title: titlePrefix + 'Goals', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES.childGoalsPage, animation: 'childGoalsPage' } },
