@@ -7,12 +7,13 @@ import { resolve } from 'path';
 import multer = require('multer');
 import { FileInterceptor } from '@nestjs/platform-express';
 import { createFolderIfNotExists } from './fileOperations.utility';
+import { PersonEntity } from '../person.entity';
 
 @Controller('api/person/:id/file-manager')
 /**Each person entity has its own folder with the person's id for performance reasons */
 export class FileManagerController {
 
-  constructor() {
+  constructor(@InjectDataSource() private dataSource: DataSource) {
     //make sure the cache folder exists to handle user's files instead of RAM
     createFolderIfNotExists(resolve('cache'))
   }
@@ -73,11 +74,12 @@ export class FileManagerController {
       console.trace('Upload : body=', req.body, ' : Error=', e);
     }
   }
-  
+
   @Post('Download')
   async download(@Param('id', ParseIntPipe) id: string, @Req() req: Request, @Res() res: Response) {
     try {
-      await new FileManagerService(personFolderPath(id) + '/').download(req, res);
+      const person = await this.dataSource.getRepository(PersonEntity).findOneByOrFail({ id: +id });
+      await new FileManagerService(personFolderPath(id) + '/').download(req, res, person);
     } catch (e) {
       console.trace('Download : body=', req.body, ' : Error=', e);
     }

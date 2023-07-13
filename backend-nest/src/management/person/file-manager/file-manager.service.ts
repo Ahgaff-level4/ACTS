@@ -15,6 +15,8 @@ import {
   transferFile,
   fromDir
 } from './fileOperations.utility';
+import { IPersonEntity } from '../../../../../interfaces';
+import sanitize = require('sanitize-filename');
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
 //todo change every func to arrow func
 //todo change Sync to promise
@@ -118,7 +120,7 @@ export class FileManagerService {
     }
   }
 
-  public async download(req: Request, res: Response) {
+  public async download(req: Request, res: Response, person: IPersonEntity) {
     ReplaceRequestParams(req);
     var downloadObj = JSON.parse(req.body.downloadInput);
     var permission; var permissionDenied = false;
@@ -136,14 +138,15 @@ export class FileManagerService {
     });
     if (!permissionDenied) {
       if (downloadObj.names.length === 1 && downloadObj.data[0].isFile) {
-        var file = this.contentRootPath + downloadObj.path + downloadObj.names[0];
+        const file = this.contentRootPath + downloadObj.path + downloadObj.names[0];
         res.download(file);
       } else {
-        var archive = archiver('zip', {
+        const archive = archiver('zip', {
           gzip: true,
           zlib: { level: 9 } // Sets the compression level.
         });
-        var output = fs.createWriteStream('./Files.zip');
+        const downloadFilePath = path.join(path.resolve('cache'), `Files-${Date.now().toString().slice(-5)}.zip`);
+        const output = fs.createWriteStream(downloadFilePath);
         downloadObj.data.forEach((item) => {
           archive.on('error', (err) => {
             throw err;
@@ -160,13 +163,17 @@ export class FileManagerService {
         output.on('close', async () => {
           var stat = await fs.promises.stat(output.path);
           res.writeHead(200, {
-            'Content-disposition': 'attachment; filename=Files.zip; filename*=UTF-8',
+            'Content-disposition': `attachment; filename=${encodeURI(sanitize(person.name))}.zip; filename*=UTF-8;`,
             'Content-Type': 'APPLICATION/octet-stream',
             'Content-Length': stat.size
           });
           var filestream = fs.createReadStream(output.path);
           filestream.pipe(res);
-          res.on('close', () => fs.promises.unlink('./Files.zip'));
+          res.on('close', () => fs.promises.unlink(downloadFilePath));
+          res.on('error', () => {
+            if (fileExists(downloadFilePath))
+              fs.promises.unlink(downloadFilePath);
+          })
         });
       }
     }
@@ -219,7 +226,7 @@ export class FileManagerService {
         res.json({ cwd: tes, files: fileList });
       }
     }
-    
+
     // Action to read a file
     if (req.body.action == "read") {
       const filesList = await GetFiles(req, this.contentRootPath);
