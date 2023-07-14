@@ -270,9 +270,17 @@ ejs-filemanager #default-filemanager_upload_dialog_dialog-content {
   border-bottom-left-radius: 2rem !important;
 }
 
-ejs-filemanager div.e-dlg-header-content {
+ejs-filemanager div.e-dlg-header-content,
+ejs-filemanager div.e-control.e-toolbar.e-lib.e-keyboard.e-toolpop {
   border-top-right-radius: 2rem !important;
   border-top-left-radius: 2rem !important;
+}
+
+[dir="rtl"] ejs-filemanager div.e-hor-nav{
+  border-top-left-radius: 2rem !important;
+}
+[dir="ltr"] ejs-filemanager div.e-hor-nav{
+  border-top-right-radius: 2rem !important;
 }
 
 ejs-filemanager *[style*="z-index: 999999999"] {

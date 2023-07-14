@@ -1,3 +1,7 @@
-<ejs-filemanager dir="ltr" id='default-filemanager' #filemanagerObj [ajaxSettings]='ajaxSettings'
-[toolbarSettings]="toolbarSettings" [contextMenuSettings]="contextMenuSettings" [rootAliasName]="rootAliasName">
+<ejs-filemanager 
+[ajaxSettings]='ajaxSettings' [allowMultiSelection]="true"
+[navigationPaneSettings]="{ visible: false}" [locale]="ut.currentLang"
+[showThumbnail]="true" [showHiddenItems]="false" [showFileExtension]="true"
+  [toolbarSettings]="toolbarSettings" [contextMenuSettings]="contextMenuSettings"
+  [rootAliasName]="rootAliasName" [allowDragAndDrop]="true">
 </ejs-filemanager>

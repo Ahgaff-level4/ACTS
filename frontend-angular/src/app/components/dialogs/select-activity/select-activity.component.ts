@@ -69,7 +69,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
       var age = this.ut.calcAge(this.data.child.person?.birthDate);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
-          if (v.maxAge == null || v.minAge == null || (age < v.maxAge && age > v.minAge))
+          if (v.maxAge == null || v.minAge == null || (age <= v.maxAge && age >= v.minAge))
             return true;
           return false;
         });

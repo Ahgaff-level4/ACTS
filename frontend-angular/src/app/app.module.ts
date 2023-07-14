@@ -9,6 +9,11 @@ import { FormsModule } from '@angular/forms';
 import { AppMaterialModule } from './app-material.module';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
+import { AgGridModule } from 'ag-grid-angular';
+import { YouTubePlayerModule } from '@angular/youtube-player';
+import { NgxChartsModule } from '@swimlane/ngx-charts';
+import { NzIconModule } from 'ng-zorro-antd/icon';
+import { DetailsViewService, FileManagerModule, NavigationPaneService, ToolbarService } from '@syncfusion/ej2-angular-filemanager';
 
 import { AppComponent } from './components/static/app/app.component';
 import { HomeComponent } from './components/pages/home/home.component';
@@ -48,17 +53,14 @@ import { AddEditStrengthComponent } from './components/dialogs/add-edit/add-edit
 import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
 import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
-import { AgGridModule } from 'ag-grid-angular';
 import { CalcAgePipe } from './pipes/calc-age.pipe';
 import 'ag-grid-enterprise';
 import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
-import { YouTubePlayerModule } from '@angular/youtube-player';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
 import { ViewChildComponent } from './components/pages/children/view-child/view-child.component';
 import { ChildInfoComponent } from './components/pages/children/view-child/child-info/child-info.component';
 import { TitleComponent } from './components/static/title/title.component';
 import { ViewAccountComponent } from './components/pages/accounts/view-account/view-account.component';
-import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 import { SearchExportComponent } from './components/forms/search-export/search-export.component';
 import { ControlButtonsComponent } from './components/forms/control-buttons/control-buttons.component';
@@ -66,7 +68,6 @@ import { HeaderActionsComponent } from './components/static/header/header-action
 import { NotificationDrawerComponent } from './components/dialogs/notification-drawer/notification-drawer.component';
 import { MAT_DIALOG_DEFAULT_OPTIONS, MatDialogConfig } from '@angular/material/dialog';
 import { NotificationItemComponent } from './components/dialogs/notification-drawer/notification-item/notification-item.component';
-import { NzIconModule } from 'ng-zorro-antd/icon';
 import { IconDefinition } from '@ant-design/icons-angular';
 import { SendMessageComponent } from './components/dialogs/notification-drawer/send-message/send-message.component';
 import { AboutUsComponent } from './components/pages/about-us/about.component';
@@ -76,7 +77,6 @@ import { PersonViewComponent } from './components/static/person-view/person-view
 import { ActivityItemComponent } from './components/dialogs/select-activity/activity-item/activity-item.component';
 import { EntityItemComponent } from './components/static/entity-item/entity-item.component';
 import { NumberCardComponent } from './components/pages/dashboard/number-card/number-card.component';
-import { FileManagerModule } from '@syncfusion/ej2-angular-filemanager';
 import { FileManagerComponent } from './components/static/file-manager/file-manager.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
@@ -158,6 +158,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     YouTubePlayerModule,
     NgxChartsModule,
     FileManagerModule,
+
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
@@ -174,6 +175,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     CalcAgePipe,
     DatePipe,
     DateTimeWeekPipe,
+    ToolbarService, DetailsViewService,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
     {
       provide: HTTP_INTERCEPTORS,

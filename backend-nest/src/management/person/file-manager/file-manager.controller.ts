@@ -1,4 +1,4 @@
-import { BadRequestException, Controller, Get, Param, ParseIntPipe, Post, Req, Res, UnauthorizedException, UseInterceptors } from '@nestjs/common';
+import { BadRequestException, Controller, Get, Param, ParseIntPipe, Post, Req, Res, UseInterceptors } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { FileManagerService } from './file-manager.service';
@@ -51,10 +51,7 @@ export class FileManagerController {
         } else throw new BadRequestException();
       },
 
-      //specify the filename to be unique
       filename: function (req, file, next) {
-        // fileName.push(file.originalname);
-        // console.log('file in filename', file);
         if (Array.isArray(req['fileName']))
           req['fileName'].push(file.originalname);
         else req['fileName'] = [file.originalname];
@@ -62,8 +59,11 @@ export class FileManagerController {
       }
     }),
 
-    // filter out and prevent non-image files.
     fileFilter: function (req, file, next) {
+      // Update file name for UTF support
+      file.originalname = Buffer.from(file.originalname, 'latin1').toString(
+        'utf8',
+      );
       next(null, true);
     }
   }))
