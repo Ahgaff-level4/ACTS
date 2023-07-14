@@ -94,15 +94,22 @@ mat-checkbox.text-white div label {
   }
 }
 li > .nav-link {
-  opacity: 0.8 !important;
-  color: white !important;
+  color: rgba(255, 255, 255, 0.8) !important;
   transition: all 250ms ease-out !important;
+  text-decoration-color: rgba(255, 255, 255, 0);
 }
 li > .nav-link:active,
 li > .nav-link:hover,
 li > .nav-link:focus,
-li > .nav-link:checked {
-  opacity: 1 !important ;
+li > .nav-link:checked,
+li > .activeLink {
+  color: rgba(255, 255, 255, 1) !important;
+}
+li > .activeLink {
+  text-decoration-color: rgba(255, 255, 255, 0.9) !important;
+  text-decoration-thickness: 0.11rem !important;
+  text-underline-offset: 9px !important;
+  text-decoration-line: underline !important;
 }
 
 mat-dialog-container {
@@ -276,10 +283,10 @@ ejs-filemanager div.e-control.e-toolbar.e-lib.e-keyboard.e-toolpop {
   border-top-left-radius: 2rem !important;
 }
 
-[dir="rtl"] ejs-filemanager div.e-hor-nav{
+[dir="rtl"] ejs-filemanager div.e-hor-nav {
   border-top-left-radius: 2rem !important;
 }
-[dir="ltr"] ejs-filemanager div.e-hor-nav{
+[dir="ltr"] ejs-filemanager div.e-hor-nav {
   border-top-right-radius: 2rem !important;
 }
 

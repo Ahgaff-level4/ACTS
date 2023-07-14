@@ -40,11 +40,9 @@
       <span>{{'English'|translate}}</span></button>
   </mat-menu>
 
-  <button *ngIf="loginService.pr.user.value" (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button" mat-icon-button
-    [matTooltip]="'Notifications'|translate">
+  <button *ngIf="loginService.pr.user.value" (click)="nt.openNotificationsDrawer();hideHeader.emit()" type="button"
+    mat-icon-button [matTooltip]="'Notifications'|translate">
     <div style="margin-top:-4px;">
-      <!-- <span nz-icon nzType="bell"
-        nzTheme="fill" class="my-accent-text fw-bold"></span> -->
       <mat-icon matBadgeColor="warn" matBadgePosition="before" matBadgeSize="small"
         [matBadge]="nt.unreadNotificationsCount()||null" color="accent">notifications</mat-icon>
     </div>

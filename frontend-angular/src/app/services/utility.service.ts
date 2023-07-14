@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Location as NgLocation } from '@angular/common';
 import { BehaviorSubject, first } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
@@ -14,7 +15,7 @@ export class UtilityService {
   public isLoading = new BehaviorSubject<boolean>(false);
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
   constructor(private http: HttpClient, private translatePipe: TranslatePipe,
-    private calcAgePipe: CalcAgePipe,
+    private calcAgePipe: CalcAgePipe, private ngLocation: NgLocation,
     public router: Router, private translateService: TranslateService,) {
   }
 
@@ -64,6 +65,13 @@ export class UtilityService {
       })
     })
   }
+
+  getActivePage(): IPage | undefined {
+    const path = this.ngLocation.path(false);
+    let lastSegment = path.split('/')[path.split('/').length - 1];
+    lastSegment = lastSegment.trim() == '' ? '/' : lastSegment;
+    return PAGES.find(v => v.link.includes(lastSegment))
+  }
 }
 
 /**First page should be Home; used in home's cards.
@@ -72,9 +80,9 @@ export class UtilityService {
 export const PAGES: IPage[] = [
   {
     title: 'Home',
-    link:'/',
-    img:'assets/img/logo.png',
-    desc:'Home page',
+    link: '/',
+    img: 'assets/img/logo.png',
+    desc: 'Home page',
   },
   {
     title: 'Children',
