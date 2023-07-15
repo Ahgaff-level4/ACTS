@@ -4,7 +4,7 @@
       <img #imageRef class="mx-auto rounded-3 d-block" style="height: 9.5rem;max-width: 100%;"
         [src]="image?undefined:('assets/person-images/'+(formGroup.controls['image'].value??'default.svg'))" />
       <input #imageInput type="file" name="image" (change)="onFileChange($event)" accept="image/*" hidden>
-      <button type="button" class="w-75 nbsp mt-2 mx-auto rounded-5 mb-3 mb-md-0" mat-stroked-button (click)="imageInput.click()"
+      <button type="button" class="w-75 mt-2 mx-auto mb-3 mb-md-0" mat-stroked-button (click)="imageInput.click()"
         color="primary">{{(formGroup.get('image')?.value != null||image?'Change image':'Choose image')|translate}}<mat-icon>edit</mat-icon></button>
     </div>
     <div class="col-md-9 p-2 align-self-start">

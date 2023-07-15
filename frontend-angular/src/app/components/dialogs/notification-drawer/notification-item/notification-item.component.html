@@ -15,7 +15,7 @@
         {{data.content}}
       </div>
       <span class="d-inline" *ngIf="data.link" (click)="notification?.close?.()||data.close?.()">
-        <a mat-stroked-button color="primary" class="rounded-5 mx-3" [routerLink]="data.link.href">
+        <a mat-stroked-button color="primary" class="mx-3" [routerLink]="data.link.href">
           <span>{{(data.link.btnText??'View')|translate}}</span>
         </a>
       </span>

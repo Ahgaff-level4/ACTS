@@ -36,9 +36,9 @@
 
 
     <div mat-dialog-actions>
-      <button type="button" mat-button (click)="dialogRef.close()" class=" rounded-5" color="accent"
+      <button type="button" mat-button (click)="dialogRef.close()" color="accent"
         cdkFocusInitial>{{'Cancel'|translate}}</button>
-      <button type="submit" mat-button class=" rounded-5" color="primary">{{(program?.id ==
+      <button type="submit" mat-button color="primary">{{(program?.id ==
         null?'Add':'Edit')|translate}}</button>
     </div>
   </form>

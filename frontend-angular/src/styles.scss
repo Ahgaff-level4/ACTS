@@ -118,7 +118,7 @@ mat-dialog-container {
 }
 
 .mat-mdc-dialog-surface {
-  border-radius: 2.5rem !important;
+  border-radius: 2rem !important;
 }
 
 .min-width-120 {
@@ -301,4 +301,10 @@ ejs-filemanager *[style*="z-index: 1000000000"] {
 body > div[style*="background: #EEF2FF"],
 body > div > div[style*="background-color: rgba(0, 0, 0, 0.5)"] {
   display: none !important;
+}
+
+button,
+a {
+  border-radius: 2rem !important;
+  white-space: nowrap;
 }

@@ -28,10 +28,10 @@
           </button>
         </mat-menu>
 
-        <button mat-button matDateRangePickerCancel color="accent" class="rounded-5">
+        <button mat-button matDateRangePickerCancel color="accent">
           {{ "Cancel" | translate }}
         </button>
-        <button mat-flat-button color="primary" matDateRangePickerApply class="rounded-5">
+        <button mat-flat-button color="primary" matDateRangePickerApply>
           {{ "Apply" | translate }}
         </button>
       </mat-date-range-picker-actions>
@@ -40,5 +40,6 @@
       "Invalid start date" | translate }}</mat-error>
     <mat-error *ngIf="timeframeFormGroup.controls.to.hasError('matEndDateInvalid')">{{
       "Invalid end date" | translate }}</mat-error>
+      <mat-hint>{{chosenTimeframe()}}</mat-hint>
   </mat-form-field>
 </div>

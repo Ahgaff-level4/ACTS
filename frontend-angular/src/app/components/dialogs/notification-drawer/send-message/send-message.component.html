@@ -16,7 +16,7 @@
 </mat-dialog-content>
 
 <mat-dialog-actions>
-  <button type="button" class="rounded-5" mat-button color="accent" matDialogClose>{{'Cancel'|translate}}</button>
-  <button type="submit" class="rounded-5" (click)="send()" [disabled]="!formGroup.valid" mat-button
+  <button type="button" mat-button color="accent" matDialogClose>{{'Cancel'|translate}}</button>
+  <button type="submit" (click)="send()" [disabled]="!formGroup.valid" mat-button
     color="primary">{{'Submit'|translate}}</button>
 </mat-dialog-actions>

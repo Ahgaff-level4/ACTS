@@ -2,7 +2,7 @@
   <ng-container *ngIf="childReport$ | async as childReport">
     <div class="d-flex justify-content-between align-items-end">
       <app-title [isPrinting]="isPrinting"></app-title>
-      <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5 rounded-5" mat-stroked-button
+      <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5" mat-stroked-button
         color="primary">
         <mat-icon>print</mat-icon>{{ "Print" | translate }}
       </button>

@@ -19,7 +19,7 @@
     {{'Birthdate'|translate}}:&nbsp;{{pr.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{pr.user.value.birthdate|fromNow:true}}
   </p>
   <p>{{'Roles'|translate}}:&nbsp;{{display.accountRoles(pr.user.value.roles)}}</p>
-  <button mat-stroked-button class=" rounded-5" color="primary" (click)="changePassword()">
+  <button mat-stroked-button color="primary" (click)="changePassword()">
     {{'Change my password'|translate}}
   </button>
 </app-card>
@@ -50,11 +50,11 @@
     use. Your database will be overwritten with the data from the backup file. The restore process will replace your
     current database with the backup version. You will be able to access your data as it was before the
     failure.'|translate}}</p>
-  <a [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button [href]="this.API+'backup'" download
+  <a [disabled]="uploadProgress!=null" class="mx-2" mat-stroked-button [href]="this.API+'backup'" download
     color="primary">{{'Create Backup File'|translate}}</a>
 
   <input #fileInput type="file" name="backup" (change)="onFileSelected($event)" accept=".sql.gz" hidden>
-  <button [disabled]="uploadProgress!=null" class="mx-2 rounded-5" mat-stroked-button (click)="restore()"
+  <button [disabled]="uploadProgress!=null" class="mx-2" mat-stroked-button (click)="restore()"
     color="warn">{{'Restore Database'|translate}}</button>
 
   <mat-progress-bar *ngIf="uploadProgress != null" class="mt-2" mode="determinate"

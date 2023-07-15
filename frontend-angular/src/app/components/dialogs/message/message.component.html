@@ -14,7 +14,7 @@
   </div>
 
   <mat-dialog-actions>
-    <button mat-button class=" rounded-5" *ngFor="let b of buttons" (click)="dialogRef.close(b.type)"
+    <button mat-button *ngFor="let b of buttons" (click)="dialogRef.close(b.type)"
       [color]="b.color">{{b.type|translate}}</button>
   </mat-dialog-actions>
 </div>
