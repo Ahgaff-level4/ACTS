@@ -38,7 +38,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: "Montserrat", "Helvetica Neue", sans-serif;
 }
 
 mat-checkbox.text-white div label {
@@ -261,6 +261,14 @@ mat-dialog-actions {
 
 [dir="rtl"] .pe-auto {
   padding-left: auto !important;
+}
+
+[dir="rtl"] img.float-start {
+  float: right !important;
+}
+
+[dir="rtl"] img.float-end {
+  float: left !important;
 }
 
 ejs-filemanager,

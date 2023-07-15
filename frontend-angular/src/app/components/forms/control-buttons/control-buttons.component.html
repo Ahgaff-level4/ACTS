@@ -1,11 +1,11 @@
 <div class="d-flex flex-column flex-md-row justify-content-md-evenly">
-  <button *ngIf="buttons[0]" class="w-100 mx-0 mb-2 mx-md-2"
+  <button *ngIf="buttons[0]" class="col-lg mx-lg-2 mb-2"
     [matTooltip]="(buttons[0].tooltip??'')|translate" (click)="clicked(0)" mat-raised-button
     [disabled]="buttons[0].disabled==true" [color]="buttons[0].color??'primary'">
     {{buttons[0].text|translate}}<mat-icon>{{buttons[0].icon}}</mat-icon>
   </button>
 
-  <button *ngFor="let stk of getStrokedButtons(); let i = index;" class="w-100 mx-0 mb-2 mx-md-2"
+  <button *ngFor="let stk of getStrokedButtons(); let i = index;" class="col-lg mx-lg-2 mb-2"
   [matTooltip]="(stk.tooltip??'')|translate" (click)="clicked(i+1)" mat-stroked-button
   [disabled]="stk.disabled==true" [color]="stk.color??'primary'">
   {{stk.text|translate}}<mat-icon>{{stk.icon}}</mat-icon>

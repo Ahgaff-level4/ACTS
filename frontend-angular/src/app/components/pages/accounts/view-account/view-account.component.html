@@ -22,7 +22,8 @@
       <div *ngFor="let child of account.teaches;let i=index;">
         <app-entity-item [titleText]="child.person.name"
           [link]="pr.canUser('viewChildPage')?('./teaches/child/' + child.id):undefined"
-          [linkTooltip]="'View all information'"></app-entity-item>
+          [linkTooltip]="'View all information'"
+          [content]="('Age'|translate)+': '+(display.fromNow(child.person.birthDate,true)||'–')+' \u2060   \u2060 '+('Gender'|translate)+': '+(child.person.gender|translate)"></app-entity-item>
         <mat-divider *ngIf="account.teaches.length -1 != i" class="mx-3"></mat-divider>
       </div>
       <p *ngIf="account.teaches && account.teaches.length == 0" class="text-center fst-italic opacity-50 my-2">
@@ -37,7 +38,7 @@
         <app-entity-item [titleText]="child.person.name"
           [link]="pr.canUser('viewChildPage')?('./kids/child/' + child.id):undefined"
           [linkTooltip]="'View all information'"
-          [content]="('Gender'|translate)+': '+(child.person.gender|translate)+' \u2060   \u2060 '+(display.fromNow(child.person.birthDate,true)?('Age'|translate)+': '+display.fromNow(child.person.birthDate,true):'')"></app-entity-item>
+          [content]="('Age'|translate)+': '+(display.fromNow(child.person.birthDate,true)||'–')+' \u2060   \u2060 '+('Gender'|translate)+': '+(child.person.gender|translate)"></app-entity-item>
         <mat-divider *ngIf="account.children.length -1 != i" class="mx-3"></mat-divider>
       </div>
       <p *ngIf="account.children && account.children.length == 0" class="text-center fst-italic opacity-50 my-2">
