@@ -1,69 +1,69 @@
 # Autism Children Technical System (ACTS)
 
-## Setup
+# Setup
 
-- ### NodeJs
+### NodeJs
 
-  1. Install NodeJs. Preferred version 18.13.0
-  2. Check installation by typing in the CMD:
+1. Install NodeJs. Preferred version 18.13.0
+2. Check installation by typing in the CMD:
 
-      ```cmd
-      node -v
-      ```
+ ```cmd
+ node -v
+ ```
 
-      Also
+Also
 
-      ```cmd
-      npm -v
-      ```
+```cmd
+npm -v
+```
 
-      You should get the version number
+You should get the version number
 
-- ### MySQL
+### MySQL
 
-  1. Install MySQL.
-  2. Open MySQL Workbench.
-  3. Create New Connection.
-  4. Test the connection.
-  5. Change the host and port in the file `.env` in the `backend-nest` folder to the same port and hostname used by MySQL.
+1. Install MySQL.
+2. Open MySQL Workbench.
+3. Create New Connection.
+4. Test the connection.
+5. Change the host and port in the file `.env` in the `backend-nest` folder to the same port and hostname used by MySQL.
+   
+### Angular
 
-- ### Angular
+1. Pre-condition: installing NodeJs.
+2. Open this project by the CMD. Preferred using VisualCode open the Terminal.
+3. Navigate to `frontend-angular` folder. So, the terminal will look like:
 
-  1. Pre-condition: installing NodeJs.
-  2. Open this project by the CMD. Preferred using VisualCode open the Terminal.
-  3. Navigate to `frontend-angular` folder. So, the terminal will look like:
+```cmd
+.../ACTS/frontend-angular>
+```
 
-      ```cmd
-      .../ACTS/frontend-angular>
-      ```
+4. Then type:
 
-  4. Then type:
+```cmd
+.../ACTS/frontend-angular> npm install
+```
 
-      ```cmd
-      .../ACTS/frontend-angular> npm install
-      ```
+So that all dependencies in `package.json` will be downloaded and installed.
+>See `README.md` file in `frontend-angular` folder for more information of how to run the application.
 
-      So that all dependencies in `package.json` will be downloaded and installed.
-      >See `README.md` file in `frontend-angular` folder for more information of how to run the application.
+### NestJs
 
-- ### NestJs
+1. Pre-condition: installing NodeJs.
+2. Open this project by the CMD. Preferred using VisualCode open the Terminal.
+3. Navigate to `backend-nest` folder. So, the terminal will look like:
 
-  1. Pre-condition: installing NodeJs.
-  2. Open this project by the CMD. Preferred using VisualCode open the Terminal.
-  3. Navigate to `backend-nest` folder. So, the terminal will look like:
+```cmd
+.../ACTS/backend-nest>
+```
 
-      ```cmd
-      .../ACTS/backend-nest>
-      ```
+4. Then type:
 
-  4. Then type:
+```cmd
+.../ACTS/backend-nest> npm install
+```
 
-      ```cmd
-      .../ACTS/backend-nest> npm install
-      ```
-
-      So that all dependencies in `package.json` will be downloaded and installed.
-      >See `README.md` file in `backend-nest` folder for more information of how to run the application.
+So that all dependencies in `package.json` will be downloaded and installed.
+>See `README.md` file in `backend-nest` folder for more information of how to run the application.
 
 ## Debug process
 
@@ -75,79 +75,81 @@
 
 ## Convention
 
-- ### **Naming**
+### **Naming**
 
-  #### **1. No hard coded text string.**
+#### **1. No hard coded text string.**
 
-  There should be a way to convert all static text string to Arabic.
-  >`var title = this.ut.translate('Hello World!')`
-  >`<h1>{{'Hello World!'|translate}}</h1>`
+There should be a way to convert all static text string to Arabic.
+>`var title = this.ut.translate('Hello World!')`
+>`<h1>{{'Hello World!'|translate}}</h1>`
 
-  #### **2. Address path of HTML page should be identical to its most used table name.**
+#### **2. Address path of HTML page should be identical to its most used table name.**
 
-  > field page will have address path as: `domain.com/field`
+> field page will have address path as: `domain.com/field`
 
-  #### **3. Address path of JSON API will have prefix of `api` .**
+#### **3. Address path of JSON API will have prefix of `api` .**
 
-  >`domain.com/api/...`
+>`domain.com/api/...`
 
-  #### **4. Address path of JSON API should be identical to its most used table name.**
+#### **4. Address path of JSON API should be identical to its most used table name.**
 
-  >`domain.com/api/field` for all operations: GET, POST, PATCH, DELETE.
+>`domain.com/api/field` for all operations: GET, POST, PATCH, DELETE.
 
-  #### **5. All table names and their columns should be identical in coding BUT in camelCase.**
+#### **5. All table names and their columns should be identical in coding BUT in camelCase.**
 
-  > Table `Activity(ID, Name, FieldId)` will be `activity(id, name, fieldId)`
+> Table `Activity(ID, Name, FieldId)` will be `activity(id, name, fieldId)`
 
-  #### **6. Foreign key name is the refereed table name with suffix of `id`.**
+#### **6. Foreign key name is the refereed table name with suffix of `id`.**
 
-  > `activity(..., fieldId)`
+> `activity(..., fieldId)`
 
-  #### **7. Foreign key attribute have its object with same attribute name subtract `Id`.**
+#### **7. Foreign key attribute have its object with same attribute name subtract `Id`.**
 
-  > `goal(..., activityId)` Will has `goal(..., activityId, activity)` where `activity` is object of type Activity, correspond of activityId. This is true only by retrieving data from the server. And the child attribute `activity` in our example has nothing to do in deleting or updating. Its job only to show the `activityId` information. We will let the frontend developer solve this issue as a homework 🙂
+> `goal(..., activityId)` Will has `goal(..., activityId, activity)` where `activity` is object of type Activity, correspond of activityId. This is true only by retrieving data from the server. And the child attribute `activity` in our example has nothing to do in deleting or updating. Its job only to show the `activityId` information. We will let the frontend developer solve this issue as a homework 🙂
 
-  #### **8. Any attribute of type `Date` -in javascript- its name should contains `Date`, or `Datetime` if time is concerned.**
+#### **8. Any attribute of type `Date` -in javascript- its name should contains `Date`, or `Datetime` if time is concerned.**
 
-  Because JSON format dose not has type `Date`. But the database has different types for `DATE` and `DATETIME`.
-  > `person(..., birthDate, createdDatetime)` Here we can know `birthDate` is type of `Date` -in javascript- and time is NOT concerned. `createdDatetime` is also type of `Date` but time is concerned.
+Because JSON format dose not has type `Date`. But the database has different types for `DATE` and `DATETIME`.
+> `person(..., birthDate, createdDatetime)` Here we can know `birthDate` is type of `string` -in javascript- because time is NOT concerned (e.g., `2023-11-15`). `createdDatetime` is type of `Date` because time is concerned.
 
-- ### **API**
+### **API**
 
-  #### **1. Each table will have 5 calls base on params and operations:**
+#### **1. Each table will have 5 calls base on params and operations:**
   
-  - Create, with `POST` operation passing an object as in request body.
-    > `http.post("domain.com/api/field", fieldObject)`
+Create, with `POST` operation passing an object as in request body.
+> `http.post("domain.com/api/field", fieldObject)`
 
-  - Update, with `PATCH` operation passing updated object in request body, and the item id in the request param.
-    > `http.patch("domain.com/api/field/"+fieldObject.id, fieldObject)`
+Update, with `PATCH` operation passing updated object in request body, and the item id in the request param.
+> `http.patch("domain.com/api/field/"+fieldObject.id, fieldObject)`
 
-  - Delete, with `DELETE` operation passing the id of the deleted item in request param.
-    > `http.delete("domain.com/api/field/"+fieldObject.id)`
+Delete, with `DELETE` operation passing the id of the deleted item in request param.
+> `http.delete("domain.com/api/field/"+fieldObject.id)`
 
-  - Read, with `GET` operation optionally passing id as param if not passed will return all.
-    > `http.get("domain.com/api/field")` will return all fields.
+Read, with `GET` operation optionally passing id as param if not passed will return all.
+> `http.get("domain.com/api/field")` will return all fields.
     
-    > `http.get("domain.com/api/field/1")` will return array of length one -if exist or zero- of the field with `id == 1`
+> `http.get("domain.com/api/field/1")` will return array of length one -if exist or zero- of the field with `id == 1`
 
-    Tables may have foreign key so to get an object instead only foreign key id. We pass true to `FK` query
-    > `http.get("domain.com/api/child?FK=true")` will return all children with `person` property has person object that correspond to `personId`.
+Tables may have foreign key so to get an object instead only foreign key id. We pass true to `FK` query
+> `http.get("domain.com/api/child?FK=true")` will return all children with `person` property has person object that correspond to `personId`.
 
-  #### **2. GET request of path with table name (e.g., `.../api/field` or `.../api/field/1`) will return an object its properties is exactly its columns. And properties with derived attribute. And foreign key will be as said in (`Convention` > `Naming` > `7`)**
+#### **2. GET request of path with table name (e.g., `.../api/field` or `.../api/field/1`) will return an object its properties is exactly its columns. And foreign key will be as said in (`Convention` > `Naming` > `7`)**
 
-  > Table `goal(id, activityId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, activityId:9, activity:{...,minAge:4,maxAge:6}...}, ...]`
+> Table `goal(id, activityId, ...)` will has path `.../api/goal` and will respond -for GET operation- with an array of goals object structure as `[{id:1, activityId:9, activity:{...,minAge:4,maxAge:6}...}, ...]`
 
-  #### **3. Each request should provide a token in the request header. And authorization of user privilege should be in the server before any respond.**
+#### **3. Each request should provide a token in the request header. And authorization of user privilege should be in the server before any respond.**
 
-  > `headers:{'Authorization': 'Bearer a876d8a5dd79a79f6f'}`
+> `headers:{'Authorization': 'Bearer a876d8a5dd79a79f6f'}`
 
-  #### **4. Properties of type `Date` should send to the server with type string and its value is in ISO format.**
+#### **4. Properties of type `Date` should send to the server with type string and its value is in ISO format.**
 
-  > we can easily convert variable of type `Date` to string of ISO format by `new Date().toISOString()`
+> we can easily convert variable of type `Date` to string of ISO format by `new Date().toISOString()`
 
-<br/>
 
-## Versions
+---
+
+
+# Versions
 
 <table>
   <tr>
@@ -165,3 +167,23 @@
   <tr><td>@schematics/angular</td><td>15.0.5 (cli-only)</td></tr>
   <tr><td>Nest CLI</td><td>9.1.8</td></tr>
 </table>
+
+
+---
+
+
+# Local deployment steps
+1. Build frontend project.
+2. Clone `backend-nest` from Github to the new computer which will be the Server.
+3. Run `npm install` to install all packages needed.
+4. Install `MySQL` and make sure its service start when the Server start up.
+5. Run `database-mysql/schema.sql` file by `MySQL` to create the Database and its schema.
+6. Change `.env` file to the database settings (port, user).
+7. Check the router DHCP IPs scope, then assign the Server to static IP that is not in DHCP scope.
+8. Change `HOST_SERVER` variable in `.env` file to the Server static IP.
+9. Run the NodeJs. (Can be access by `http://ip:port` where `ip` is the Server IP and `port` is the NodeJs port).
+
+## Tips
+1. Create file that runs the NodeJs. (CMD shortcut with the run command).
+2. Create Edge Application.
+3. 

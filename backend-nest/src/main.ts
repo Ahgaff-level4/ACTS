@@ -31,7 +31,7 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
     //// beautify the message
     let message = '';
     // if (constrains.length <= 1)
-      message = constrains[0];
+    message = constrains[0];
     // else {
     //   for (let i = 0; i < constrains.length; i++)
     //     message += `${i + 1}- ${constrains[i]}.\n`;
@@ -56,10 +56,11 @@ const host: string = process.env.HOST_SERVER || 'localhost';
 const port: number = +process.env.PORT_SERVER || 3000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  app.use(helmet({
-    crossOriginResourcePolicy:false,
-  }))
-  app.enableCors({ origin: ["http://localhost:4200","http://acts:4200","http://192.168.0.139:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
+  // app.use(helmet({
+  //   crossOriginResourcePolicy: process.env.PRODUCTION == 'true',
+  // }))
+  // if (process.env.PRODUCTION == 'false')
+    app.enableCors({ origin: ["http://localhost:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor());
