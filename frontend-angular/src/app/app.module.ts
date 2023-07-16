@@ -1,4 +1,4 @@
-import { NgModule, enableProdMode } from '@angular/core';
+import { NgModule, isDevMode } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { HTTP_INTERCEPTORS, HttpClient, HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
@@ -14,6 +14,7 @@ import { YouTubePlayerModule } from '@angular/youtube-player';
 import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { DetailsViewService, FileManagerModule, NavigationPaneService, ToolbarService } from '@syncfusion/ej2-angular-filemanager';
+import { ServiceWorkerModule } from '@angular/service-worker';
 
 import { AppComponent } from './components/static/app/app.component';
 import { HomeComponent } from './components/pages/home/home.component';
@@ -167,6 +168,12 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
       },
     }),
     NzIconModule.forRoot(icons),
+    ServiceWorkerModule.register('ngsw-worker.js', {
+      enabled: !isDevMode(),
+      // Register the ServiceWorker as soon as the application is stable
+      // or after 30 seconds (whichever comes first).
+      registrationStrategy: 'registerWhenStable:30000'
+    }),
 
   ],
   providers: [

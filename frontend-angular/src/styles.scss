@@ -276,26 +276,27 @@ ejs-filemanager button,
 ejs-filemanager div.e-dialog,
 ejs-filemanager div.e-dlg-content,
 ejs-filemanager div.e-dlg-container {
-  border-radius: 2rem !important;
+  border-radius: 1rem !important;
+  border-width: 0 !important;
 }
 
 ejs-filemanager div.e-footer-content,
 ejs-filemanager #default-filemanager_upload_dialog_dialog-content {
-  border-bottom-right-radius: 2rem !important;
-  border-bottom-left-radius: 2rem !important;
+  border-bottom-right-radius: 1rem !important;
+  border-bottom-left-radius: 1rem !important;
 }
 
 ejs-filemanager div.e-dlg-header-content,
 ejs-filemanager div.e-control.e-toolbar.e-lib.e-keyboard.e-toolpop {
-  border-top-right-radius: 2rem !important;
-  border-top-left-radius: 2rem !important;
+  border-top-right-radius: 1rem !important;
+  border-top-left-radius: 1rem !important;
 }
 
 [dir="rtl"] ejs-filemanager div.e-hor-nav {
-  border-top-left-radius: 2rem !important;
+  border-top-left-radius: 1rem !important;
 }
 [dir="ltr"] ejs-filemanager div.e-hor-nav {
-  border-top-right-radius: 2rem !important;
+  border-top-right-radius: 1rem !important;
 }
 
 ejs-filemanager *[style*="z-index: 999999999"] {

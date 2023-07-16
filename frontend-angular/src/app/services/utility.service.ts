@@ -69,8 +69,7 @@ export class UtilityService {
   getActivePage(): IPage | undefined {
     const path = this.ngLocation.path(false);
     let lastSegment = path.split('/')[path.split('/').length - 1];
-    lastSegment = lastSegment.trim() == '' ? '/' : lastSegment;
-    return PAGES.find(v => v.link.includes(lastSegment))
+    return PAGES.find(v => v.link.replace('/', '') == lastSegment)
   }
 }
 

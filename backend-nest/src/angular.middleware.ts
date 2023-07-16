@@ -3,21 +3,8 @@ import { NextFunction, Response, Request } from "express";
 import { resolve } from "path";
 
 const allowedExt = [
-	'js',
-	'ico',
-	'css',
-	'png',
-	'jpg',
-	'woff2',
-	'woff',
-	'ttf',
-	'svg',
-	'mp4',
-	'pdf',
-	'gif',
-	'jpeg',
-	'tiff',
-	'bmp'
+	'js', 'ico', 'css', 'png', 'jpg', 'woff2', 'woff', 'ttf', 'svg', 'mp4', 'pdf',
+	'gif', 'jpeg', 'tiff', 'bmp', 'cur', 'apng', 'webp', 'avif', 'otf', 'webmanifest'
 ];
 
 const resolvePath = (path: string) => resolve(`./dist-angular/${path}`);
