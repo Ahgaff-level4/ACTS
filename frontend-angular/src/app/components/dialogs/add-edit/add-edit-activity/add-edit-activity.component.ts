@@ -7,6 +7,7 @@ import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { firstValueFrom } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-activity',
@@ -61,6 +62,7 @@ export class AddEditActivityComponent extends UnsubOnDestroy {
             newActivity = await this.service.postProgramItsActivities({ ...this.formGroup.value, programId: this.activityProgramId }, true);
           else
             newActivity = await this.service.postSpecialActivities({ ...this.formGroup.value, });
+          newActivity.field = (await firstValueFrom(this.fieldService.fields$)).find(v => v.id == newActivity.fieldId);
           this.nt.notify('Added successfully', 'The activity has been added successfully', 'success');
           this.dialogRef.close(this.activityProgramId ? 'added' : newActivity);
         } catch (e: any) {

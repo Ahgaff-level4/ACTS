@@ -146,33 +146,25 @@ Tables may have foreign key so to get an object instead only foreign key id. We 
 > we can easily convert variable of type `Date` to string of ISO format by `new Date().toISOString()`
 
 
----
 
 
-# Versions
+## **Versions**
 
-<table>
-  <tr>
-  <th>
-  Package</th>
-  <th>
-  Version</th></tr>
-  <tr><td>NodeJs</td><td>18.13.0</td></tr>
-  <tr><td>npm (Package Manager)</td><td>8.19.3</td></tr>
-  <tr><td>MySQL Workbench</td><td>8.0 CE</td></tr>
-  <tr><td>Angular CLI</td><td>15.0.5</td></tr>
-  <tr><td>@anSet-ExecutionPolicy -ExecutionPolicy RemoteSignedgular-devkit/architect</td><td>0.1500.5 (cli-only)</td></tr>
-  <tr><td>@angular-devkit/core</td><td>15.0.4</td></tr>
-  <tr><td>@angular-devkit/schematics</td><td>15.0.4</td></tr>
-  <tr><td>@schematics/angular</td><td>15.0.5 (cli-only)</td></tr>
-  <tr><td>Nest CLI</td><td>9.1.8</td></tr>
-</table>
+  Package | Version
+  :--- | :---
+  NodeJs | 18.13.0
+  npm (Package Manager) | 8.19.3
+  MySQL Workbench | 8.0 CE
+  Angular CLI | 15.0.5
+  @anSet-ExecutionPolicy -ExecutionPolicy RemoteSignedgular-devkit/architect | 0.1500.5 (cli-only)
+  @angular-devkit/core | 15.0.4
+  @angular-devkit/schematics | 15.0.4
+  @schematics/angular | 15.0.5 (cli-only)
+  Nest CLI | 9.1.8
 
 
----
 
-
-# Local deployment steps
+## **Local deployment steps**
 1. Build frontend project.
 2. Clone `backend-nest` from Github to the new computer which will be the Server.
 3. Run `npm install` to install all packages needed.
@@ -183,7 +175,8 @@ Tables may have foreign key so to get an object instead only foreign key id. We 
 8. Change `HOST_SERVER` variable in `.env` file to the Server static IP.
 9. Run the NodeJs. (Can be access by `http://ip:port` where `ip` is the Server IP and `port` is the NodeJs port).
 
-## Tips
+
+## **Tips**
 1. Create file that runs the NodeJs. (CMD shortcut with the run command).
 2. Create Edge Application.
 3. 
