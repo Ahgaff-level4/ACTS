@@ -3,7 +3,7 @@
   <app-search-export [isPrinting]="isPrinting" [gridOptions]="gridOptions"
   (keyup)="applySearch($event)" (print)="printTable()"></app-search-export>
 
-  <div class="mat-elevation-z4 table-responsive mb-4 rounded-4">
+  <div class="border border-1 table-responsive mb-4 rounded-4">
     <!-- AG Grid Angular Component -->
     <ag-grid-angular style="width: 100%;" class="ag-theme-material rtl" [gridOptions]="gridOptions"
       [rowData]="(service.goalItsEvaluations$|async)?.evaluations" domLayout='autoHeight'
