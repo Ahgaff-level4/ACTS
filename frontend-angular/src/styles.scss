@@ -38,7 +38,7 @@ body {
 }
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
+  font-family: Roboto, "Helvetica Neue", sans-serif !important;
 }
 
 mat-checkbox.text-white div label {
@@ -276,27 +276,31 @@ ejs-filemanager button,
 ejs-filemanager div.e-dialog,
 ejs-filemanager div.e-dlg-content,
 ejs-filemanager div.e-dlg-container {
-  border-radius: 1rem !important;
+  border-radius: 2rem !important;
   border-width: 0 !important;
+}
+
+ejs-filemanager span.e-input-group {
+  border-radius: 2rem !important;
 }
 
 ejs-filemanager div.e-footer-content,
 ejs-filemanager #default-filemanager_upload_dialog_dialog-content {
-  border-bottom-right-radius: 1rem !important;
-  border-bottom-left-radius: 1rem !important;
+  border-bottom-right-radius: 2rem !important;
+  border-bottom-left-radius: 2rem !important;
 }
 
 ejs-filemanager div.e-dlg-header-content,
 ejs-filemanager div.e-control.e-toolbar.e-lib.e-keyboard.e-toolpop {
-  border-top-right-radius: 1rem !important;
-  border-top-left-radius: 1rem !important;
+  border-top-right-radius: 2rem !important;
+  border-top-left-radius: 2rem !important;
 }
 
 [dir="rtl"] ejs-filemanager div.e-hor-nav {
-  border-top-left-radius: 1rem !important;
+  border-top-left-radius: 2rem !important;
 }
 [dir="ltr"] ejs-filemanager div.e-hor-nav {
-  border-top-right-radius: 1rem !important;
+  border-top-right-radius: 2rem !important;
 }
 
 ejs-filemanager *[style*="z-index: 999999999"] {
@@ -312,21 +316,31 @@ body > div > div[style*="background-color: rgba(0, 0, 0, 0.5)"] {
   display: none !important;
 }
 
-button[mat-button], a[mat-button],
-button[mat-raised-button], a[mat-raised-button],
-button[mat-stroked-button], a[mat-stroked-button],
-button[mat-flat-button], a[mat-flat-button]{
+button[mat-button],
+a[mat-button],
+button[mat-raised-button],
+a[mat-raised-button],
+button[mat-stroked-button],
+a[mat-stroked-button],
+button[mat-flat-button],
+a[mat-flat-button] {
   border-radius: 2rem !important;
   white-space: nowrap;
 }
 
-div[id*="mat-menu-panel"]{
-  border-radius: 1.4rem !important;
+div[id*="mat-menu-panel"] {
+  border-radius: 1.6rem !important;
 }
 
-div[id*="mat-select-"]{
-  border-radius: 1rem !important;
+div[id*="mat-select-"] {
+  border-radius: 1.2rem !important;
 }
-mat-datepicker-content{
+
+mat-datepicker-content {
+  border-radius: 1.8rem !important;
+}
+
+/* Round ~all input fields*/
+mat-form-field > div.mdc-text-field {
   border-radius: 1.8rem !important;
 }

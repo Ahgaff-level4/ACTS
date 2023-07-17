@@ -1,12 +1,13 @@
 <div class="d-flex" *ngIf="!isPrinting">
   <mat-form-field class="w-100">
     <mat-label>{{'Search'|translate}}</mat-label>
+    <mat-icon matPrefix class="material-symbols-rounded">search</mat-icon>
     <input matInput (keyup)="keyup.emit($event)" placeholder="...">
   </mat-form-field>
-  <div class="mx-3" *ngIf="pr.canUser('printTable')">
+  <div class="mx-3" style="margin-top:4px;" *ngIf="pr.canUser('printTable')">
     <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"
       aria-label="Export button with a menu">
-      <mat-icon color="primary">ios_share</mat-icon>
+      <mat-icon style="margin-bottom:3px" color="primary">ios_share</mat-icon>
     </button>
     <mat-menu #exportMenu="matMenu">
       <button mat-menu-item (click)="agGridService.exportCSV(gridOptions.api)">

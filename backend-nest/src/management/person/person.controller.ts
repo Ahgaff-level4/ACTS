@@ -43,7 +43,6 @@ export class PersonController {
       //we insert the person first to get the id value
       const person = await this.repo.save(this.repo.create(createPerson));
       const fileName = imageName(person.name, person.id, file.originalname);
-      console.log('PersonController : create : fileName:', fileName);
       await writeFile(imagePath(fileName), file.buffer);
       await this.repo.update(person.id, { image: fileName });//set the file name to the person entity
       person.image = fileName;
@@ -57,20 +56,21 @@ export class PersonController {
   @UseInterceptors(FileInterceptor('image'))
   async update(@Param('id', ParseIntPipe) id: string, @Body() updatePerson: UpdatePerson, @UploadedFile() file: Express.Multer.File) {
     //THIS IS OVER ENGINEERING :)
+    //Scenarios:
+    //1. update all person data except image.
+    //2. update only person image.
+    //3. update all person data with image.
     const originalPerson: IPersonEntity = await this.repo.findOneBy({ id: +id });
     let res;
-    if (originalPerson.image) {//update image name
-      const oldImageName = originalPerson.image;
-      const newImageName = imageName(updatePerson.name ?? originalPerson.name, id, file?.originalname ?? originalPerson.image);
-      await rename(imagePath(oldImageName), imagePath(newImageName));//rename the image file name
+    if (file) {
+      const newImageName = imageName(updatePerson.name ?? originalPerson.name, id, file.originalname);
+      if (originalPerson.image)
+        await rename(imagePath(originalPerson.image), imagePath(newImageName));//rename the image file name
+      await writeFile(imagePath(newImageName), file.buffer);
       res = await this.repo.update(id, { image: newImageName });
     }
-    if (file) {//update image data
-      const fileName = imageName(updatePerson.name ?? originalPerson.name, originalPerson.id, file.originalname);
-      await writeFile(imagePath(fileName), file.buffer);
-      if (fileName != originalPerson.image)
-        res = await this.repo.update(id, { image: fileName });
-    }
+
+    //update person data if exist, else is when 
     return Object.keys(updatePerson).length == 0 ? res : this.repo.update(id, updatePerson);
   }
 
@@ -86,15 +86,15 @@ export class PersonController {
 
 }
 
-/**
+/** 
  * @param fileOriginalName is used to know the file extension only. 
  * You can provide the file extension here as `a.jpeg` where `a` can be any letter 
  * but it should exist because the extraction process do not look for the first letter
  * and if the first letter is dot `.` then the imageName won't have an extension!! 
  * @see {@link extname}
- * @returns image file name with its extension as `personName-personId.png` */
+ * @returns image file name with its extension as `personId.png` */
 function imageName(personName: string, personId: string | number, fileOriginalName: string): string {
-  //Windows file names has some constraints (*/\...etc) so we use `sanitize` to make the file name compatible
+  // Windows file names has some constraints (*/\...etc) so we use `sanitize` to make the file name compatible
   return `${sanitize(personName)}-${personId}${extname(fileOriginalName)}`;
 }
 
