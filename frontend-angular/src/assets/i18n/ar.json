@@ -574,7 +574,7 @@
   "Head of Department can not access Account page. And can not create child's goal or evaluate a goal.": "لا يمكن لرئيس القسم الوصول إلى صفحة الحسابات. ولا يمكن إنشاء هدف للطفل أو تقييم الهدف.",
   "Network Error!": "خطأ في الشبكة!",
   "Special Activities": "الأنشطة الخاصة",
-  "This activity is not bind to any child! We strongly recommend deleting it": "هذا النشاط ليس ملزما لأي طفل! نوصي بشدة بحذفه",
+  "This activity is not bind to any child! We strongly recommend deleting it": "هذا النشاط ليس مرتبط بأي طفل ولا يمكن ربطه فهو نشاط خاص! نوصي بحذفه. يكون النشاط الخاص غير مرتبط إذا تم حذف هدف بنشاط خاص، حيث يحذف الهدف ولا يحذف النشاط",
   "Only Admin can change your account information, and you can only change your password.": "يمكن للمشرف فقط تغيير معلومات حسابك، ويمكنك فقط تغيير كلمة المرور الخاصة بك.",
   "Re-enter password": "أعد إدخال كلمة المرور",
   "This action is very sensitive. We need to make sure you are the one logged in.": "هذا الإجراء حساس للغاية. نحتاج إلى التأكد من أنك الشخص الذي قام بتسجيل الدخول.",
@@ -783,5 +783,10 @@
   "created between": "التي أُنشِئت في تاريخ بين",
   "Child Folder": "مجلد الطفل",
   "Account Folder": "مجلد الحساب",
-  "The value entered is not unique": "القيمة المدخلة ليست فريدة!"
+  "The value entered is not unique": "القيمة المدخلة ليست فريدة!",
+  "All Rights Reserved":"جميع الحقوق محفوظة",
+  "to Hadramout Foundation for Autism": "لمؤسسة حضرموت للتوحد",
+  "ACTS Team":"فريق ACTS",
+  "Designed & Programed by":"تصميم وبرمجة",
+  "Contact info":"معلومات التواصل"
 }

@@ -1,5 +1,5 @@
 <div class="align-self-start px-3 w-100">
-  <mat-form-field class="timeframe" appearance="outline">
+  <mat-form-field class="timeframe" appearance="fill">
     <mat-label>{{ "Timeframe" | translate }}</mat-label>
     <mat-date-range-input [max]="now" [formGroup]="timeframeFormGroup" [rangePicker]="picker10">
       <input [value]="timeframeFormGroup.controls.from.value" [formControl]="timeframeFormGroup.controls.from"

@@ -344,3 +344,11 @@ mat-datepicker-content {
 mat-form-field > div.mdc-text-field {
   border-radius: 1.8rem !important;
 }
+
+a.my-accent-text:hover{
+  text-decoration: underline;
+  opacity: 1;
+}
+a.my-accent-text{
+  opacity: .9;
+}
