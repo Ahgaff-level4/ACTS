@@ -18,9 +18,6 @@ import {
 import { IPersonEntity } from '../../../../../interfaces';
 import sanitize = require('sanitize-filename');
 /** Should be an instance for each request; so that a global contentRootPath(depends on person entity) is used in varies functions */
-//todo change every func to arrow func
-//todo change Sync to promise
-//todo fix conflict of local `location` and global nodejs location
 export class FileManagerService {
   private size = 0;
   private copyName = "";

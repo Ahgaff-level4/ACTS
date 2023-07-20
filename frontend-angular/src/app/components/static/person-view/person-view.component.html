@@ -16,5 +16,5 @@
       {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(person.birthDate)||'–'}}</p>
   </div>
   <img #imageRef class="mb-4 mb-md-0 align-self-center mx-0 mx-md-auto rounded-4 order-md-1 order-0" style="height:11rem" width="auto"
-  [src]="'assets/person-images/'+(person.image??'default.svg')" />
+  [attr.src]="person.image && person.image.startsWith('http')?person.image:'assets/person-images/'+(person.image??'default.svg')" />
 </div>

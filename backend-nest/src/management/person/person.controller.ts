@@ -64,7 +64,7 @@ export class PersonController {
     let res;
     if (file) {
       const newImageName = imageName(updatePerson.name ?? originalPerson.name, id, file.originalname);
-      if (originalPerson.image)
+      if (originalPerson.image && !originalPerson.image.startsWith('http'))//faker images start with http... so it is not in the server
         await rename(imagePath(originalPerson.image), imagePath(newImageName));//rename the image file name
       await writeFile(imagePath(newImageName), file.buffer);
       res = await this.repo.update(id, { image: newImageName });
@@ -78,7 +78,7 @@ export class PersonController {
   @Roles('Admin', 'HeadOfDepartment')
   async remove(@Param('id', ParseIntPipe) id: string) {
     const person: IPersonEntity = await this.repo.findOneBy({ id: +id });
-    if (person.image) {//if it has image then delete it
+    if (person.image && !person.image.startsWith('http')) {//if it has image then delete it
       await unlink(imagePath(person.image));
     }
     return this.repo.delete(id);

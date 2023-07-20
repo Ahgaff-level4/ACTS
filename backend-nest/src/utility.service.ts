@@ -53,7 +53,7 @@ export class UtilityService {
 }
 
 /**
- * Resources used instead of plain string; todo add languages
+ * Resources used instead of plain string, for DRY code.
  */
 export const R = {
     string: {
