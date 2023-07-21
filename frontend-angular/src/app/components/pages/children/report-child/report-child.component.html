@@ -26,7 +26,7 @@
 
   <app-card cardTitle="Activities fields">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
-    <div dir="ltr" style="min-height: 400px" class="me-4 mb-md-3">
+    <div dir="ltr" style="min-height: 400px" class="me-4 mb-md-3" [ngClass]="ut.getDirection() == 'rtl'?'mt-3':''">
       <ngx-charts-polar-chart [legend]="true" [animations]="true" [showGridLines]="true" [roundDomains]="false"
         [gradient]="true" [yAxis]="true" [results]="activitiesFieldsPolar$ | async" [yAxisTickFormatting]="stringify"
         [legendTitle]="'Activities types' | translate" [showXAxisLabel]="true" [showYAxisLabel]="true"
