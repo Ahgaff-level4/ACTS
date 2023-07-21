@@ -14,14 +14,17 @@ import { ActivityEntity } from "./management/activity/activity.entity";
 import { GoalEntity } from "./management/goal/Goal.entity";
 import { EvaluationEntity } from "./management/evaluation/evaluation.entity";
 const faker: Faker = process.env.FAKER_LANG == 'ar' ? fakerAR : fakerEN;
-
+const COUNT = {
+	persons: 300,
+	accounts: 100,
+}
 function log(msg: string) {
 	Logger.debug(msg, 'FAKER');
 }
 /**
  * Faker will generate random data if:
  * 1. environment is not production. AND
- * 2. children table is empty; because user can't delete a child we sure the database is empty if children table is empty.
+ * 2. children table is empty; because user can't delete a child we're sure the database is empty if children table is empty.
  * Note: faker should run after `schema.sql` have been run. So, roles won't be added and will be assigned as written in the file.
  * Also, all faker's accounts has one password which is `asdf`; because passwords are hashed you won't be able to access any account if it was random.
  */
@@ -41,13 +44,14 @@ export async function generateFakeData(dataSource: DataSource) {
 		dataSource.transaction(async manager => {
 			log('Generating begin...')
 			log('Generating persons...')
-			let createPersons: ICreatePerson[] = new Array(700).fill(null).map(() => {
+			let createPersons: ICreatePerson[] = new Array(COUNT.persons).fill(null).map((v, i) => {
 				const gender: 'Male' | 'Female' = faker.helpers.arrayElement(['Male', 'Female'])
+				const isChild: boolean = i > COUNT.accounts;
 				return {
 					name: faker.person.fullName({ sex: gender.toLowerCase() as 'female' | 'male' }),
 					gender,
-					createdDatetime: faker.date.recent({ days: 10000 }),
-					birthDate: optional(toDate(faker.date.birthdate())),
+					createdDatetime: faker.date.recent({ days: 1000 }),
+					birthDate: optional(toDate(faker.date.birthdate({ min: isChild ? 5 : 24, max: isChild ? 18 : 50, mode: 'age' }))),
 					image: optional(faker.image.avatar()),
 				}
 			});
@@ -55,19 +59,19 @@ export async function generateFakeData(dataSource: DataSource) {
 			log(persons.length + ' persons generated');
 
 			log('Generating accounts...')
-			let createAccounts: ICreateAccount[] = new Array(300).fill(null).map((v, i) => {
+			let createAccounts: ICreateAccount[] = new Array(COUNT.accounts).fill(null).map((v, i) => {
 				return {
 					personId: persons[i].id,
-					phone0: optional(faker.phone.number('+############')),
-					phone1: optional(faker.phone.number('+############')),
-					phone2: optional(faker.phone.number('+############')),
-					phone3: optional(faker.phone.number('+############')),
-					phone4: optional(faker.phone.number('+############')),
-					phone5: optional(faker.phone.number('+############')),
-					phone6: optional(faker.phone.number('+############')),
-					phone7: optional(faker.phone.number('+############')),
-					phone8: optional(faker.phone.number('+############')),
-					phone9: optional(faker.phone.number('+############')),
+					phone0: optional(faker.phone.number('7########'),14),
+					phone1: optional(faker.phone.number('7########'),12),
+					phone2: optional(faker.phone.number('7########'),10),
+					phone3: optional(faker.phone.number('7########'),8),
+					phone4: optional(faker.phone.number('7########'),7),
+					phone5: optional(faker.phone.number('7########'),6),
+					phone6: optional(faker.phone.number('7########'),5),
+					phone7: optional(faker.phone.number('7########'),4),
+					phone8: optional(faker.phone.number('7########'),3),
+					phone9: optional(faker.phone.number('7########'),2),
 					username: faker.internet.userName({ firstName: persons[i].name }).substring(0, 32),
 					password: '$2b$10$fjYy8Y5t7UWcV8I7LF6bj..N.Ua9wer/mzFBNB7ieNWz8cror6vM6',//asdf
 					address: optional(faker.location.streetAddress(true)),
@@ -80,8 +84,8 @@ export async function generateFakeData(dataSource: DataSource) {
 
 
 			log('Generating programs...')
-			let createPrograms: ICreateProgram[] = new Array(20).fill(null).map(() => ({
-				name: faker.word.noun(),
+			let createPrograms: ICreateProgram[] = new Array(10).fill(null).map(() => ({
+				name: titleCase(faker.word.noun()),
 				createdDatetime: faker.date.recent({ days: 1000 }),
 			}));
 
@@ -90,8 +94,8 @@ export async function generateFakeData(dataSource: DataSource) {
 
 
 			log('Generating fields...')
-			let createFields: ICreateField[] = new Array(20).fill(null).map(() => ({
-				name: faker.word.adjective({ length: { min: 4, max: 20 } }),
+			let createFields: ICreateField[] = new Array(10).fill(null).map(() => ({
+				name: titleCase(faker.word.adjective({ length: { min: 4, max: 20 } })),
 				createdDatetime: faker.date.recent({ days: 1000 }),
 			}));
 
@@ -99,11 +103,11 @@ export async function generateFakeData(dataSource: DataSource) {
 			log(fields.length + ' fields generated')
 
 			log('Generating children...')
-			const createChildren: CreateChild[] = new Array(persons.length - 300).fill(null).map((v, i) => {
+			const createChildren: CreateChild[] = new Array(persons.length - accounts.length).fill(null).map((v, i) => {
 				const maleFamilyMembers = optional(faker.number.int({ min: 0, max: 20 }));
 				const femaleFamilyMembers = optional(faker.number.int({ min: 0, max: 20 }));
 				return {
-					personId: persons[i + 300].id,
+					personId: persons[i + accounts.length].id,
 					behaviors: optional(faker.lorem.sentence()),
 					maleFamilyMembers,
 					femaleFamilyMembers,
@@ -119,7 +123,7 @@ export async function generateFakeData(dataSource: DataSource) {
 					isArchive: faker.helpers.arrayElement([true, false, false, false, false, false]),//increase `false` probability
 					parentId: optional(faker.helpers.arrayElement(accounts.filter(a => a.rolesEntities.map(r => r.id).includes(2))).id),//parent role is id=2
 					prioritySkills: optional(faker.lorem.sentence()),
-					teachers: optional(faker.helpers.arrayElements(accounts.filter(a => a.rolesEntities.map(r => r.id).includes(3))))//teacher role is id=3
+					teachers: optional(faker.helpers.arrayElements(accounts.filter(a => a.rolesEntities.map(r => r.id).includes(3)), { min: 0, max: 7 }))//teacher role is id=3
 				};
 			});
 
@@ -128,14 +132,14 @@ export async function generateFakeData(dataSource: DataSource) {
 
 
 			log('Generating activities...')
-			const createActivities: ICreateActivity[] = new Array(500).fill(null).map(() => {
-				const minAge = faker.number.int({ min: 0, max: 20 })
+			const createActivities: ICreateActivity[] = new Array(300).fill(null).map(() => {
+				const minAge = faker.number.int({ min: 0, max: 14 })
 				return {
 					name: faker.lorem.sentence(),
 					createdDatetime: faker.date.recent({ days: 1000 }),
 					fieldId: faker.helpers.arrayElement(fields).id,
 					minAge,
-					maxAge: faker.number.int({ min: minAge, max: 20 }),
+					maxAge: faker.number.int({ min: minAge, max: 18 }),
 					programId: optional(faker.helpers.arrayElement(programs).id),
 				}
 			});
@@ -145,11 +149,11 @@ export async function generateFakeData(dataSource: DataSource) {
 
 
 			log('Generating goals...')
-			const createGoals: ICreateGoal[] = new Array(20000).fill(null).map(() => {
+			const createGoals: ICreateGoal[] = new Array(10000).fill(null).map(() => {
 				return {
 					activityId: faker.helpers.arrayElement(activities).id,
 					childId: faker.helpers.arrayElement(children).id,
-					state: faker.helpers.arrayElement(['continual', "strength", "completed"]),
+					state: faker.helpers.arrayElement(['continual', "strength", "completed", "completed", "completed"]),
 					teacherId: faker.helpers.arrayElement(accounts.filter(a => a.rolesEntities.map(r => r.id).includes(3))).id,
 					assignDatetime: faker.date.recent({ days: 1000 }),
 					note: optional(faker.lorem.sentences()),
@@ -164,7 +168,7 @@ export async function generateFakeData(dataSource: DataSource) {
 			const createEvaluations: ICreateEvaluation[] = new Array(100000).fill(null).map(() => {
 				return {
 					description: faker.lorem.sentences(),
-					goalId: faker.helpers.arrayElement(goals).id,
+					goalId: faker.helpers.arrayElement(goals.filter(g => g.state != 'strength')).id,
 					rate: faker.helpers.arrayElement(['continual', 'excellent']),
 					teacherId: faker.helpers.arrayElement(accounts.filter(a => a.rolesEntities.map(r => r.id).includes(3))).id,
 					evaluationDatetime: faker.date.recent({ days: 1000 }),
@@ -197,8 +201,11 @@ function uniquify<T>(arr: T[], uniqueKey: keyof T): T[] {
 	return arr.filter(v => uniqueValues.includes(v[uniqueKey]));
 }
 
-function optional<T>(value: T): T | null {
-	return faker.number.int({ min: 0, max: 6 }) == 1 ? null : value;
+/**
+ *  @param oneOverN is the probability of a null value, `1/oneOverN` default is six (1/6)
+ *  */
+function optional<T>(value: T, oneOverN: number = 6): T | null {
+	return faker.number.int({ min: 0, max: oneOverN-1 }) == 0 ? null : value;
 }
 
 /** 2002-02-22T22:..etc => 2002-02-22*/
@@ -217,4 +224,8 @@ async function saveArray<Entity extends ObjectLiteral, T extends DeepPartial<Ent
 			savedArr.push(saved);
 	}
 	return savedArr;
+}
+/** 'hello' => 'Hello' */
+function titleCase(str: string): string {
+	return str[0].toUpperCase().concat(str.substring(1));
 }

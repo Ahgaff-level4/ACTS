@@ -40,7 +40,7 @@ export class AddEditAccountComponent extends UnsubOnDestroy implements OnInit {
     for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
       if (this.account?.['phone' + i])
         maxPhone = i;
-    for (let j = 0; j <= maxPhone + 1; j++) {
+    for (let j = 0; j <= maxPhone + 1 && j < 10; j++) {
       this.phoneFields.push('phone' + j)
     }
 
