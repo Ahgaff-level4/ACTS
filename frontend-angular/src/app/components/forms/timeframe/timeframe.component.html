@@ -16,15 +16,19 @@
         <mat-menu #exportMenu="matMenu">
           <button mat-menu-item matDatepickerCancel (click)="setTimeframe('All Time')">
             {{ "All time" | translate }}
+            <mat-icon *ngIf="chosenTimeframe() == 'All Time'" color="primary">check</mat-icon>
           </button>
           <button mat-menu-item matDatepickerCancel (click)="setTimeframe('Yearly')">
             {{ "Yearly" | translate }}
+            <mat-icon *ngIf="chosenTimeframe() == 'Yearly'" color="primary">check</mat-icon>
           </button>
           <button mat-menu-item matDatepickerCancel (click)="setTimeframe('Monthly')">
             {{ "Monthly" | translate }}
+            <mat-icon *ngIf="chosenTimeframe() == 'Monthly'" color="primary">check</mat-icon>
           </button>
           <button mat-menu-item matDatepickerCancel (click)="setTimeframe('Weekly')">
             {{ "Weekly" | translate }}
+            <mat-icon *ngIf="chosenTimeframe() == 'Weekly'" color="primary">check</mat-icon>
           </button>
         </mat-menu>
 
@@ -40,6 +44,6 @@
       "Invalid start date" | translate }}</mat-error>
     <mat-error *ngIf="timeframeFormGroup.controls.to.hasError('matEndDateInvalid')">{{
       "Invalid end date" | translate }}</mat-error>
-      <mat-hint>{{chosenTimeframe()}}</mat-hint>
+      <mat-hint>{{chosenTimeframe()|translate}}</mat-hint>
   </mat-form-field>
 </div>

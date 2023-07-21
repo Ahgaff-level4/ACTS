@@ -624,6 +624,7 @@
   "Why Autism Children Technical System?": "لماذا النظام الفني لأطفال التوحد؟",
   "Child name": "اسم الطفل",
   "All time": "كل الوقت",
+  "All Time": "كل الوقت",
   "Yearly": "سنويا",
   "Monthly": "شهريا",
   "Weekly": "أسبوعيا",
@@ -788,5 +789,7 @@
   "to Hadramout Foundation for Autism": "لمؤسسة حضرموت للتوحد",
   "ACTS Team":"فريق ACTS",
   "Designed & Programed by":"تصميم وبرمجة",
-  "Contact info":"معلومات التواصل"
+  "Contact info":"معلومات التواصل",
+  "Custom":"مخصص",
+  "This month":"الشهر الحالي"
 }
