@@ -19,12 +19,12 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+    - run: cd frontend-angular
     - name: Use Node.js 18.x
       uses: actions/setup-node@v3
       with:
         node-version: 18.x
         cache: 'npm'
-    - run: cd ./frontend-angular
     - name: Install Dependencies
       run: npm ci     # npm install
     - name: Building
