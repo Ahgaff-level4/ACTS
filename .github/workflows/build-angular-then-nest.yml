@@ -12,14 +12,6 @@ on:
       - 'documentation/**'
       - '.vscode/**'
       - '.todo'
-  pull_request:
-    branches: ['**']
-    paths-ignore:
-      - '*.md'
-      - 'documentation/**'
-      - '.vscode/**'
-      - '.todo'
-
 
     
 jobs:
@@ -40,6 +32,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: './frontend-angular/package-lock.json'
+        
     - name: Install Dependencies
       run: npm ci     # npm install
       working-directory: ./frontend-angular
@@ -68,6 +61,7 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: './backend-nest/package-lock.json'
+        
     - name: Install Dependencies
       run: npm ci
       working-directory: ./backend-nest
@@ -75,6 +69,3 @@ jobs:
     - name: Building
       run: npm run build
       working-directory: ./backend-nest
-
-    
-  
