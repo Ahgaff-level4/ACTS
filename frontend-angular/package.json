@@ -35,7 +35,7 @@
     "@angular/youtube-player": "^15.2.9",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
-    "@swimlane/ngx-charts": "^20.4.0",
+    "@swimlane/ngx-charts": "^20.4.1",
     "@syncfusion/ej2-angular-filemanager": "^22.1.36",
     "ag-grid-angular": "^29.3.4",
     "ag-grid-community": "^29.3.5",
