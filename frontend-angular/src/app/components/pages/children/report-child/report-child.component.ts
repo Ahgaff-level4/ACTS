@@ -59,7 +59,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     public display: DisplayService) { super(); }
 
   ngOnInit(): void {
-    //refresh every minute
+    //refresh displayed dateTimeWeek every minute
     this.nowDatetime = this.display.toDateTimeWeek(new Date());
     this.sub.add(interval(1000)
       .pipe(filter(() => this.nowDatetime != this.display.toDateTimeWeek(new Date())))

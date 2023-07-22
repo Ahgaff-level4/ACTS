@@ -1,0 +1,78 @@
+{
+  "name": "Autism Children Technical System",
+  "short_name": "ACTS",
+  "theme_color": "#1a237e",
+  "background_color": "#fafafa",
+  "display": "standalone",
+  "description": "The project manages the state of the autistic children and children with special needs. It enables the assignment of goals for children and tracking how the child performs the goal by evaluating the goal with a description by the trainer. The project shows weekly, monthly, or annual reports on the child’s goals' progress. These reports and other information can be shown by the child’s parents online. ACTS transfers the manual management and education system into an integrated computer system that facilitates the many written and complex processes for easier operations (e.g., children's information, goals, evaluations, …etc.). \nIn conclusion, Children with autism or special needs are trained with complex processes and overwhelming duplicated written papers. Therefore, ACTS is cost-effective in the sense that it has eliminated the paperwork. Also, the system is time effective because the calculations are automated and are made to the trainer's requirements. Finally, ACTS is easy to use and learn due to its simple attractive interface. Trainers do not require special training to operate the system.",
+  "scope": "./",
+  "start_url": "./",
+  "icons": [
+    {
+      "src": "assets/img/ico/logo-32x32.ico",
+      "sizes": "32x32",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-48x48.ico",
+      "sizes": "48x48",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-64x64.ico",
+      "sizes": "64x64",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-72x72.ico",
+      "sizes": "72x72",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-96x96.ico",
+      "sizes": "96x96",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-128x128.ico",
+      "sizes": "128x128",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-144x144.ico",
+      "sizes": "144x144",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-152x152.ico",
+      "sizes": "152x152",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-192x192.ico",
+      "sizes": "192x192",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-256x256.ico",
+      "sizes": "256x256",
+      "type": "image/ico",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/img/ico/logo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ]
+}

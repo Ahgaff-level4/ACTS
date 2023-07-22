@@ -4,6 +4,10 @@ The project manages the state of the autistic children and children with special
 
 In conclusion, Children with autism or special needs are trained with complex processes and overwhelming duplicated written papers. Therefore, ACTS is cost-effective in the sense that it has eliminated the paperwork. Also, the system is time effective because the calculations are automated and are made to the trainer's requirements. Finally, ACTS is easy to use and learn due to its simple attractive interface. Trainers do not require special training to operate the system.
 
+
+[Full documentation PDF file](./documentation/Final%20Report%2007-06-2023.pdf)
+
+
 # Setup
 
 ### NodeJs

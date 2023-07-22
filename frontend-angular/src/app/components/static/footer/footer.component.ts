@@ -9,4 +9,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 })
 export class FooterComponent {
   constructor(public pr: PrivilegeService, public ut: UtilityService) { }
+
+  getFullYear() {
+    return new Date().getFullYear();
+  }
 }

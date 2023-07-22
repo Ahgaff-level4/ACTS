@@ -6,33 +6,33 @@ USE `acts_typeorm`;
 -- Table structure for table `person_entity`
 DROP TABLE IF EXISTS `person_entity`;
 CREATE TABLE `person_entity` (
-  `name` varchar(100) NOT NULL,
+  `name` nvarchar(100) NOT NULL,
   `birthDate` date DEFAULT NULL,
   `gender` enum('Male','Female') NOT NULL,
   `createdDatetime` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `image` varchar(120) DEFAULT NULL,
+  `image` nvarchar(120) DEFAULT NULL,
   UNIQUE KEY `IDX_983277fd47c770fe55104f9f6a` (`image`),
   PRIMARY KEY (`id`)
-) ;
+);
 
 -- Table structure for table `account_entity`
 DROP TABLE IF EXISTS `account_entity`;
 CREATE TABLE `account_entity` (
-  `username` varchar(32) NOT NULL,
+  `username` nvarchar(32) NOT NULL,
   `password` char(60) NOT NULL,
   `personId` int(10) unsigned NOT NULL,
-  `address` varchar(64) DEFAULT NULL,
-  `phone0` varchar(15) DEFAULT NULL,
-  `phone1` varchar(15) DEFAULT NULL,
-  `phone2` varchar(15) DEFAULT NULL,
-  `phone3` varchar(15) DEFAULT NULL,
-  `phone4` varchar(15) DEFAULT NULL,
-  `phone5` varchar(15) DEFAULT NULL,
-  `phone6` varchar(15) DEFAULT NULL,
-  `phone7` varchar(15) DEFAULT NULL,
-  `phone8` varchar(15) DEFAULT NULL,
-  `phone9` varchar(15) DEFAULT NULL,
+  `address` nvarchar(64) DEFAULT NULL,
+  `phone0` nvarchar(15) DEFAULT NULL,
+  `phone1` nvarchar(15) DEFAULT NULL,
+  `phone2` nvarchar(15) DEFAULT NULL,
+  `phone3` nvarchar(15) DEFAULT NULL,
+  `phone4` nvarchar(15) DEFAULT NULL,
+  `phone5` nvarchar(15) DEFAULT NULL,
+  `phone6` nvarchar(15) DEFAULT NULL,
+  `phone7` nvarchar(15) DEFAULT NULL,
+  `phone8` nvarchar(15) DEFAULT NULL,
+  `phone9` nvarchar(15) DEFAULT NULL,
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_b3b2774feaf52239dd28e4c5e8` (`username`),
@@ -45,7 +45,7 @@ CREATE TABLE `account_entity` (
 DROP TABLE IF EXISTS `role_entity`;
 CREATE TABLE `role_entity` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(16) NOT NULL,
+  `name` nvarchar(16) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `IDX_61db0b4faa9a193b713c7f952e` (`name`)
 );
@@ -65,7 +65,7 @@ CREATE TABLE `account_entity_roles_entities_role_entity` (
 -- Table structure for table `program_entity`
 DROP TABLE IF EXISTS `program_entity`;
 CREATE TABLE `program_entity` (
-  `name` varchar(50) NOT NULL,
+  `name` nvarchar(50) NOT NULL,
   `createdDatetime` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
@@ -77,7 +77,7 @@ DROP TABLE IF EXISTS `field_entity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `field_entity` (
-  `name` varchar(50) NOT NULL,
+  `name` nvarchar(50) NOT NULL,
   `createdDatetime` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   PRIMARY KEY (`id`),
@@ -90,15 +90,15 @@ CREATE TABLE `child_entity` (
   `femaleFamilyMembers` tinyint(4) DEFAULT NULL,
   `maleFamilyMembers` tinyint(4) DEFAULT NULL,
   `birthOrder` tinyint(4) DEFAULT NULL,
-  `parentsKinship` varchar(512) DEFAULT NULL,
+  `parentsKinship` nvarchar(512) DEFAULT NULL,
   `diagnosticDate` date DEFAULT NULL,
-  `pregnancyState` varchar(512) DEFAULT NULL,
-  `birthState` varchar(512) DEFAULT NULL,
-  `growthState` varchar(512) DEFAULT NULL,
-  `diagnostic` varchar(512) DEFAULT NULL,
-  `medicine` varchar(512) DEFAULT NULL,
-  `behaviors` varchar(512) DEFAULT NULL,
-  `prioritySkills` varchar(512) DEFAULT NULL,
+  `pregnancyState` nvarchar(512) DEFAULT NULL,
+  `birthState` nvarchar(512) DEFAULT NULL,
+  `growthState` nvarchar(512) DEFAULT NULL,
+  `diagnostic` nvarchar(512) DEFAULT NULL,
+  `medicine` nvarchar(512) DEFAULT NULL,
+  `behaviors` nvarchar(512) DEFAULT NULL,
+  `prioritySkills` nvarchar(512) DEFAULT NULL,
   `isArchive` tinyint(4) NOT NULL DEFAULT 0,
   `parentId` int(10) unsigned DEFAULT NULL,
   `personId` int(10) unsigned NOT NULL,
@@ -129,7 +129,7 @@ CREATE TABLE `account_entity_teaches_child_entity` (
 -- Table structure for table `activity_entity`
 DROP TABLE IF EXISTS `activity_entity`;
 CREATE TABLE `activity_entity` (
-  `name` varchar(512) NOT NULL,
+  `name` nvarchar(512) NOT NULL,
   `minAge` tinyint(3) unsigned DEFAULT NULL,
   `maxAge` tinyint(3) unsigned DEFAULT NULL,
   `fieldId` int(10) unsigned DEFAULT NULL,
@@ -147,7 +147,7 @@ CREATE TABLE `activity_entity` (
 -- Table structure for table `goal_entity`
 DROP TABLE IF EXISTS `goal_entity`;
 CREATE TABLE `goal_entity` (
-  `note` varchar(512) DEFAULT NULL,
+  `note` nvarchar(512) DEFAULT NULL,
   `assignDatetime` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `state` enum('continual','strength','completed') NOT NULL DEFAULT 'continual',
   `activityId` int(10) unsigned NOT NULL,
@@ -166,9 +166,9 @@ CREATE TABLE `goal_entity` (
 -- Table structure for table `evaluation_entity`
 DROP TABLE IF EXISTS `evaluation_entity`;
 CREATE TABLE `evaluation_entity` (
-  `description` varchar(512) NOT NULL,
-  `mainstream` varchar(512) DEFAULT NULL,
-  `note` varchar(512) DEFAULT NULL,
+  `description` nvarchar(512) NOT NULL,
+  `mainstream` nvarchar(512) DEFAULT NULL,
+  `note` nvarchar(512) DEFAULT NULL,
   `rate` enum('continual','excellent') NOT NULL,
   `evaluationDatetime` datetime(6) NOT NULL DEFAULT current_timestamp(6),
   `goalId` int(10) unsigned NOT NULL,

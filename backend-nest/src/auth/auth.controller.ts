@@ -27,7 +27,7 @@ export class AuthController {
 		if (!(await bcrypt.compare(loginInfo.password, account.password)))
 			throw new UnauthorizedException(R.string.invalidPassword);
 		const user: User = { person: account.person, isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name, username: account.username, birthdate: account.person.birthDate, address: account.address, phones: [account.phone0, account.phone1, account.phone2, account.phone3, account.phone4, account.phone5, account.phone6, account.phone7, account.phone8, account.phone9] };
-		req.session['user'] = user;//todo specify session age base on loginInfo.isRememberMe user selection to be very short. Or do the right thing 🤷‍♂️
+		req.session['user'] = user;
 		return { ...user };
 	}
 

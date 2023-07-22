@@ -23,12 +23,19 @@ export class DisplayService {
 
   /**Display an account phones joined by a comma. Empty string if none */
   accountPhones(account: IAccountEntity | undefined): string {
-    if (!account)
+    const phones = this.accountPhonesArr(account);
+    if (phones.length == 0)
       return '';
+    return phones.filter(v => !!v).join(this.ut.translate(', '));
+  }
+
+  accountPhonesArr(account: IAccountEntity | undefined): string[] {
+    if (!account)
+      return [];
     const phones = [];
     for (let i = 0; i < 10; i++)
       phones.push(account['phone' + i]);
-    return phones.filter(v => !!v).join(this.ut.translate(', '));
+    return phones;
   }
 
 

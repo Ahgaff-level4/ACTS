@@ -41,7 +41,6 @@ export class AccountService {
             .createQueryBuilder('account')
             .leftJoinAndMapOne('account.person', PersonEntity, 'person', 'account.personId=person.id')
             .leftJoinAndSelect('account.rolesEntities', 'roles')
-            .leftJoinAndSelect('account.evaluations', 'evaluations')
             .leftJoinAndSelect('account.goals', 'goals')
             .leftJoinAndSelect('account.children', 'parentChild')
             .leftJoinAndSelect('account.teaches', 'teacherChild')

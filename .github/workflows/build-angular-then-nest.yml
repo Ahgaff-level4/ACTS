@@ -1,0 +1,74 @@
+# This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
+# For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
+
+name: Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '*.md'
+      - 'documentation/**'
+      - '.vscode/**'
+      - '.todo'
+
+    
+jobs:
+  build-angular:
+    name: Build Angular
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 19.x, 20.x]
+        os: [ubuntu-latest, windows-latest, windows-2019, macos-latest]
+      fail-fast: false
+        
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: './frontend-angular/package-lock.json'
+        
+    - name: Install Dependencies
+      run: npm ci     # npm install
+      working-directory: ./frontend-angular
+
+    - name: Building
+      run: npm run build
+      working-directory: ./frontend-angular
+
+
+
+  build-nest:
+    needs: build-angular
+    name: Build Nest
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 19.x, 20.x]
+        os: [ubuntu-latest, windows-latest, windows-2019, macos-latest]
+      fail-fast: false
+
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js ${{ matrix.node-version }}
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ matrix.node-version }}
+        cache: 'npm'
+        cache-dependency-path: './backend-nest/package-lock.json'
+        
+    - name: Install Dependencies
+      run: npm ci
+      working-directory: ./backend-nest
+      
+    - name: Building
+      run: npm run build
+      working-directory: ./backend-nest

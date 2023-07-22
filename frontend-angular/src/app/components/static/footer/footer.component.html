@@ -1,25 +1,52 @@
-<footer class=" my-primary-bg shadow"
-  style="border-top-left-radius:1.4rem; border-top-right-radius:1.4rem;margin-top:10vh;">
-  <div class="d-flex flex-wrap justify-content-md-center justify-content-between pt-5 pb-5 container">
-    <div class="text-white d-flex flex-md-grow-0 flex-grow-1 flex-column flex-shrink-1 align-items-center">
-      <img src="assets/img/logo.png" width="200wv" height="200wv" class="mb-4" alt="ACTS logo">
-      <div class="text-center">
-        <h1 class="display-1 text-white">{{'ACTS'|translate}}</h1>
-        <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
+<footer class="shadow" style="border-top-left-radius:1.4rem; border-top-right-radius:1.4rem;margin-top:10vh;">
+  <div class="container py-5">
+
+    <div class="d-flex flex-wrap justify-content-md-center justify-content-between">
+      <div class="text-white d-flex flex-md-grow-0 flex-grow-1 flex-column flex-shrink-1 align-items-center">
+        <img src="assets/img/logo.png" width="200wv" height="200wv" class="mb-4" alt="ACTS logo">
+        <div class="text-center">
+          <h1 class="display-1 text-white">{{'ACTS'|translate}}</h1>
+          <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
+        </div>
+      </div>
+
+      <div class="flex-fill">
+        <mat-divider class="d-md-none mb-3 mx-5 bg-white opacity-25 px-5"></mat-divider>
+        <ul class="navbar-nav px-0 text-center d-flex flex-column">
+          <li *ngFor="let p of pr.getUserPages('Settings')|async" class="px-3 nav-item" routerLinkActive="active">
+            <a class="nav-link" [ngClass]="ut.getActivePage()?.link==p.link?'activeLink':''"
+              [routerLink]="p.link">{{p.title|translate}}</a>
+          </li>
+          <li class="px-3 nav-item d-flex justify-content-center" routerLinkActive="active">
+            <app-header-actions></app-header-actions>
+          </li>
+        </ul>
+        <p class="text-light text-center mt-4 fs-6">{{'Contact info'|translate}}</p>
+        <div class="d-flex justify-content-center align-items-center">
+          <div class="d-inline-flex flex-column">
+            <p><a class="text-light text-opacity-75" href="https://www.facebook.com/hadaidorg" rel="noopener"
+              target="_blank"><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+              <span class="mx-2"><svg fill="#ffffffaa" width="24px" height="24px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" stroke="#ffffffaa"><g id="SVGRepo_bgCarrier" stroke-width="0"/><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"/><g id="SVGRepo_iconCarrier"> <path d="M12 2.03998C6.5 2.03998 2 6.52998 2 12.06C2 17.06 5.66 21.21 10.44 21.96V14.96H7.9V12.06H10.44V9.84998C10.44 7.33998 11.93 5.95998 14.22 5.95998C15.31 5.95998 16.45 6.14998 16.45 6.14998V8.61998H15.19C13.95 8.61998 13.56 9.38998 13.56 10.18V12.06H16.34L15.89 14.96H13.56V21.96C15.9164 21.5878 18.0622 20.3855 19.6099 18.57C21.1576 16.7546 22.0054 14.4456 22 12.06C22 6.52998 17.5 2.03998 12 2.03998Z"/> </g>
+              </svg></span>Facebook</a></p>
+            <p><a class="text-light text-opacity-75" href="mailto:hadaid2@gmail.com" rel="noopener" target="_blank"><span
+              class="mx-2"><svg width="24px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" transform="rotate(0)matrix(1, 0, 0, 1, 0, 0)" stroke="#000000" stroke-width="0.00024000000000000003"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round"></g><g id="SVGRepo_iconCarrier"> <path fill-rule="evenodd" clip-rule="evenodd" d="M3.75 5.25L3 6V18L3.75 18.75H20.25L21 18V6L20.25 5.25H3.75ZM4.5 7.6955V17.25H19.5V7.69525L11.9999 14.5136L4.5 7.6955ZM18.3099 6.75H5.68986L11.9999 12.4864L18.3099 6.75Z" fill="#ffffffaa"></path> </g>
+              </svg></span>hadaid2@gmail.com</a></p>
+            <p><a class="text-light text-opacity-75" href="tel:+967777354041" rel="noopener" target="_blank"><span
+              class="mx-2"><svg width="24px" viewBox="-2.4 -2.4 28.80 28.80" fill="none" xmlns="http://www.w3.org/2000/svg"><g id="SVGRepo_bgCarrier" stroke-width="0"></g><g id="SVGRepo_tracerCarrier" stroke-linecap="round" stroke-linejoin="round" stroke="#CCCCCC" stroke-width="0.048"></g><g id="SVGRepo_iconCarrier"> <path d="M15 3C16.5315 3.17014 17.9097 3.91107 19 5C20.0903 6.08893 20.8279 7.46869 21 9M14.5 6.5C15.2372 6.64382 15.9689 6.96892 16.5 7.5C17.0311 8.03108 17.3562 8.76284 17.5 9.5M8.20049 15.799C1.3025 8.90022 2.28338 5.74115 3.01055 4.72316C3.10396 4.55862 5.40647 1.11188 7.87459 3.13407C14.0008 8.17945 6.5 8 11.3894 12.6113C16.2788 17.2226 15.8214 9.99995 20.8659 16.1249C22.8882 18.594 19.4413 20.8964 19.2778 20.9888C18.2598 21.717 15.0995 22.6978 8.20049 15.799Z" stroke="#ffffffaa" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path> </g>
+              </svg></span><span dir="ltr">777354041</span></a></p>
+          </div>
+        </div>
       </div>
     </div>
 
-    <div class="flex-fill">
-      <mat-divider class="d-md-none mb-3 mx-5 bg-white opacity-25 px-5"></mat-divider>
-      <ul class="navbar-nav text-center d-flex flex-column">
-        <li *ngFor="let p of pr.getUserPages('Settings')|async" class="px-3 nav-item" routerLinkActive="active">
-          <a class="nav-link" [ngClass]="ut.getActivePage()?.link==p.link?'activeLink':''"
-            [routerLink]="p.link">{{p.title|translate}}</a>
-        </li>
-        <li class="px-3 nav-item d-flex justify-content-center" routerLinkActive="active">
-          <app-header-actions></app-header-actions>
-        </li>
-      </ul>
+    <mat-divider class="mb-4 mt-5 mx-5 bg-white opacity-25 px-5"></mat-divider>
+
+    <div class="text-white opacity-75 fw-normal text-center">
+      <p>{{getFullYear()}}&nbsp;&copy;&nbsp;&nbsp;{{'All Rights Reserved'|translate}}&nbsp;<a
+          class="my-accent-text opacity-100 text-opacity-100 fw-bold" href="https://www.facebook.com/hadaidorg"
+          rel="noopener" target="_blank">{{'to Hadramout Foundation for Autism'|translate}}.</a></p>
+      <p>{{'Designed & Programed by'|translate}}&nbsp;<a class="my-accent-text opacity-100 text-opacity-100 fw-bold"
+          href="https://github.com/Ahgaff-level4" rel="noopener" target="_blank">{{'ACTS Team'|translate}}.</a></p>
     </div>
   </div>
 </footer>

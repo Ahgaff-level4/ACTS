@@ -24,12 +24,15 @@ export class ViewChildComponent extends UnsubOnDestroy implements OnInit, OnDest
     let childId = this.route.snapshot.paramMap.get('id');
     if (childId != null && typeof (+childId) == 'number')
       this.sub.add(this.service.children$.subscribe(async v => {
+        this.ut.isLoading.next(false);
         this.child = v.find(v => v.id == +childId!)
         if (!this.child)
           this.nt.notify(null);
       }));
-    else this.nt.errorDefaultDialog("Sorry, there was a problem fetching the children information. Please try again later or check your connection.");
-    this.ut.isLoading.next(false);
+    else {
+      this.nt.errorDefaultDialog("Sorry, there was a problem fetching the children information. Please try again later or check your connection.");
+      this.ut.isLoading.next(false);
+    }
   }
 
 }

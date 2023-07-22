@@ -60,7 +60,7 @@ async function bootstrap() {
   //   crossOriginResourcePolicy: process.env.PRODUCTION == 'true',
   // }))
   // if (process.env.PRODUCTION == 'false')
-    app.enableCors({ origin: ["http://localhost:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
+  app.enableCors({ origin: ["http://localhost:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
   app.useGlobalInterceptors(new SuccessInterceptor());
@@ -70,7 +70,3 @@ async function bootstrap() {
   });
 }
 bootstrap();
-//0.0.0.0 will be 127.0.0.1 and it: works in localhost and 127.0.0.1. Cross-Origin-Opener-Policy in {my_IPv4}
-//localhost will be http://[::1]:3000 and it: works in localhost. Site can't be reached in 127.0.0.1 and {my_IPv4}
-//127.0.0.1 running and it: works in localhost and 127.0.0.1. Site can’t be reached in {my_IPv4}
-//{my_IPv4} running and it: site can’t be reached in localhost and 127.0.0.1. Cross-Origin-Opener in {my_IPv4}

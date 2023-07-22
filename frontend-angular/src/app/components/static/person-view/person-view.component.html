@@ -1,5 +1,5 @@
-<div class="d-flex justify-content-between">
-  <div class="flex-fill">
+<div class="d-flex justify-md-content-between flex-md-row flex-column">
+  <div class="flex-fill order-md-0 order-1">
     <p>
       <span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{person.name||'–'}}
     </p>
@@ -15,6 +15,6 @@
     <p><span class="fw-bold">
       {{'Register date'|translate}}:</span>&nbsp;{{this.display.fromNow(person.birthDate)||'–'}}</p>
   </div>
-  <img #imageRef class="mx-3 rounded-4" style="height:11rem"
-  [src]="'assets/person-images/'+(person.image??'default.svg')" />
+  <img #imageRef class="mb-4 mb-md-0 align-self-center mx-0 mx-md-auto rounded-4 order-md-1 order-0" style="height:11rem" width="auto"
+  [attr.src]="person.image && person.image.startsWith('http')?person.image:'assets/person-images/'+(person.image??'default.svg')" />
 </div>
