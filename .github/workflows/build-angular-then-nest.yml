@@ -1,12 +1,13 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Build Angular then Nest
+name: Build
 
 on:
   workflow_dispatch:
   push:
-    branches: ['**']
+    branches:
+      - main
     paths-ignore:
       - '*.md'
       - 'documentation/**'
@@ -23,7 +24,8 @@ jobs:
       matrix:
         node-version: [16.x, 18.x, 19.x, 20.x]
         os: [ubuntu-latest, windows-latest, windows-2019, macos-latest]
-
+        fail-fast: [false]
+        
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
@@ -52,7 +54,8 @@ jobs:
       matrix:
         node-version: [16.x, 18.x, 19.x, 20.x]
         os: [ubuntu-latest, windows-latest, windows-2019, macos-latest]
-        
+        fail-fast: [false]
+
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js ${{ matrix.node-version }}
