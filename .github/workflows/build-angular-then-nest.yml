@@ -1,37 +1,43 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 
-name: Node.js CI
+name: Build Angular then Nest
 
 on:
   workflow_dispatch:
   push:
-    branches:
-      - main
+    branches: ['**']
     paths-ignore:
       - '*.md'
       - 'documentation/**'
       - '.vscode/**'
       - '.todo'
   pull_request:
-    branches:
-      - main
+    branches: ['**']
     paths-ignore:
       - '*.md'
       - 'documentation/**'
       - '.vscode/**'
       - '.todo'
 
+
+    
 jobs:
   build-angular:
     name: Build Angular
-    runs-on: windows-2019
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 19.x, 20.x]
+        os: [ubuntu-latest, windows-latest, windows-2019, macos-latest]
+
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js 18.x
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: 18.x
+        node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: './frontend-angular/package-lock.json'
     - name: Install Dependencies
@@ -42,16 +48,24 @@ jobs:
       run: npm run build
       working-directory: ./frontend-angular
 
+
+
   build-nest:
     needs: build-angular
     name: Build Nest
-    runs-on: windows-2019
+    runs-on: ${{ matrix.os }}
+    
+    strategy:
+      matrix:
+        node-version: [16.x, 18.x, 19.x, 20.x]
+        os: [ubuntu-latest, windows-latest, windows-2019, macos-latest]
+        
     steps:
     - uses: actions/checkout@v3
-    - name: Use Node.js 18.x
+    - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
-        node-version: 18.x
+        node-version: ${{ matrix.node-version }}
         cache: 'npm'
         cache-dependency-path: './backend-nest/package-lock.json'
     - name: Install Dependencies
