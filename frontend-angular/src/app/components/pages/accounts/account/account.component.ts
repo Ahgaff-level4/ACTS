@@ -67,7 +67,7 @@ export class AccountComponent extends UnsubOnDestroy {
     },
     {
       field: 'person.createdDatetime',
-      headerName: 'Register date',
+      headerName: 'Registration date',
       type: 'fromNow',
     },
     {

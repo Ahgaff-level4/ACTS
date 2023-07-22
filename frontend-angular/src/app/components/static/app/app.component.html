@@ -1,10 +1,10 @@
 <app-header></app-header>
-<div style="min-height: 89vh;" [@routeAnimations]="prepareRoute(outlet)">
+<main style="min-height: 89vh;" [@routeAnimations]="prepareRoute(outlet)">
   <div id="whiteLayer" style="z-index:999999;" class="position-absolute bg-white"></div>
   <router-outlet style="min-height: 100vh;" #outlet="outlet">
   </router-outlet>
   <app-spinner></app-spinner>
-</div>
+</main>
 <app-footer></app-footer>
 
 <!--to initialize it, so notification can use its ng-template-->

@@ -3,7 +3,7 @@
     <app-title [link]="{ title: 'Dashboard' }" [isPrinting]="undefined"></app-title>
   </div>
 
-  <app-card cardTitle="Numbers">
+  <app-card cardTitle="Statistics">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
     <div class="d-flex flex-wrap justify-content-evenly font mt-md-0" *ngIf="numberCardsData$|async as counts">
 
@@ -29,7 +29,7 @@
       <ngx-charts-area-chart [results]="childrenRegisterData$ | async" [gradient]="true" [legend]="false"
         [animations]="true" [xAxis]="true" [yAxis]="true" [showGridLines]="true" [roundDomains]="false"
         [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisTickFormatting]="xAxisTickFormatting"
-        [xAxisLabel]="'Register Date' | translate" [yAxisLabel]="'Number of Children' | translate" [gradient]="true"
+        [xAxisLabel]="'Registration Date' | translate" [yAxisLabel]="'Number of Children' | translate" [gradient]="true"
         [timeline]="true">
       </ngx-charts-area-chart>
     </div>

@@ -35,20 +35,25 @@ export class TimeframeComponent {
   }
 
   chosenTimeframe(): TimeframeDuration | 'Custom' | 'This month' {
-    if (this.timeframeFormGroup.controls.from.value?.toDateString() == new Date(0).toDateString()
-      && this.timeframeFormGroup.controls.to.value?.toDateString() == this.now.toDateString())
+    if (!this.timeframeFormGroup.controls.from.value || !this.timeframeFormGroup.controls.to.value)
+      return 'Custom';
+
+    const from: Date = new Date(this.timeframeFormGroup.controls.from.value);
+    const to: Date = new Date(this.timeframeFormGroup.controls.to.value);
+    if (from.toDateString() == new Date(0).toDateString()
+      && to.toDateString() == this.now.toDateString())
       return 'All Time';
-    if (this.timeframeFormGroup.controls.from.value?.toDateString() == new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()).toDateString()
-      && this.timeframeFormGroup.controls.to.value?.toDateString() == this.now.toDateString())
+    if (from.toDateString() == new Date(this.now.getFullYear() - 1, this.now.getMonth(), this.now.getDate()).toDateString()
+      && to.toDateString() == this.now.toDateString())
       return 'Yearly';
-    if (this.timeframeFormGroup.controls.from.value?.toDateString() == new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()).toDateString()
-      && this.timeframeFormGroup.controls.to.value?.toDateString() == this.now.toDateString())
+    if (from.toDateString() == new Date(this.now.getFullYear(), this.now.getMonth() - 1, this.now.getDate()).toDateString()
+      && to.toDateString() == this.now.toDateString())
       return 'Monthly';
-    if (this.timeframeFormGroup.controls.from.value?.toDateString() == new Date(this.now.getTime() - 7 * 24 * 60 * 60 * 1000).toDateString()
-      && this.timeframeFormGroup.controls.to.value?.toDateString() == this.now.toDateString())
+    if (from.toDateString() == new Date(this.now.getTime() - 7 * 24 * 60 * 60 * 1000).toDateString()
+      && to.toDateString() == this.now.toDateString())
       return 'Weekly';
-    if (this.timeframeFormGroup.controls.from.value?.toDateString() == new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') + '-01').toDateString()//current date at day one. Ex:'2023-06-17' => '2023-06-01'
-      && this.timeframeFormGroup.controls.to.value?.toDateString() == this.now.toDateString())
+    if (from.toDateString() == new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') + '-01').toDateString()//current date at day one. Ex:'2023-06-17' => '2023-06-01'
+      && to.toDateString() == this.now.toDateString())
       return 'This month';
     return 'Custom';
   }
