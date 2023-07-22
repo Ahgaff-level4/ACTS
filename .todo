@@ -1,15 +1,13 @@
 - reduce bundle size by reusing one component instead of duplicate code.
 Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by 5.19 MB with a total of 5.68 MB.
-
   
 - check host file domain name in PowerToys app, may enable you to run server on LAN.
 
-- Add visitors of the site in the ~Dashboard? Is NestJs provide such thing?
+- In dashboard cards add visitors of the site. Is NestJs provide such thing?
+- In dashboard cards add each child goals average number. 
 
 - Look for how to make a web page as Android App, Check out Capacitor.
   
 <!-- - Default load Goals page with filter of this month AND state=continues. -->
 
 - send email reset password. after adding email field in Account, dah...
-
-- add `about ACTS Developers` in about-us.
