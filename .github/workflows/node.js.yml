@@ -8,9 +8,19 @@ on:
   push:
     branches:
       - main
+    paths-ignore:
+      - '*.md'
+      - 'documentation/**'
+      - '.vscode/**'
+      - '.todo'
   pull_request:
     branches:
       - main
+    paths-ignore:
+      - '*.md'
+      - 'documentation/**'
+      - '.vscode/**'
+      - '.todo'
 
 jobs:
   build-angular:
