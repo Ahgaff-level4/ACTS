@@ -22,7 +22,7 @@ export class ActivityController {
             payloadId: ret.id,
             payload: ret,
         });
-        return ret;
+        return retcorrupt;
     }
 
     @Get('/special')
