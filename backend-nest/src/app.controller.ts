@@ -9,6 +9,7 @@ import { generateFakeData } from "./faker";
 export class AppController {
   constructor(@InjectDataSource() private dataSource: DataSource,) {
     generateFakeData(dataSource);
+    
   }
   @Get()
   angular(@Res() response: Response): void {
