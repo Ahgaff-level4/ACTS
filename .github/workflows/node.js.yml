@@ -13,10 +13,9 @@ on:
       - main
 
 jobs:
-  build:
-    name: Build
+  build-angular:
+    name: Build Angular
     runs-on: windows-2019
-
     steps:
     - uses: actions/checkout@v3
     - name: Use Node.js 18.x
@@ -30,6 +29,28 @@ jobs:
       working-directory: ./frontend-angular
 
     - name: Building
-      run: npm run build --if-present
+      run: npm run build
       working-directory: ./frontend-angular
 
+  build-nest:
+    needs: build-angular
+    name: Build Nest
+    runs-on: windows-2019
+    steps:
+    - uses: actions/checkout@v3
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v3
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: './backend-nest/package-lock.json'
+    - name: Install Dependencies
+      run: npm ci
+      working-directory: ./backend-nest
+      
+    - name: Building
+      run: npm run build
+      working-directory: ./backend-nest
+
+    
+  
