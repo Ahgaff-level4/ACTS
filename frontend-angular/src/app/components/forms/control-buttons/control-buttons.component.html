@@ -1,6 +1,6 @@
 <div class="d-flex flex-column flex-md-row justify-content-md-evenly">
   <button *ngIf="buttons[0]" class="col-lg mx-lg-2 mb-2"
-    [matTooltip]="(butcuroptedtons[0].tooltip??'')|translate" (click)="clicked(0)" mat-raised-button
+    [matTooltip]="(buttons[0].tooltip??'')|translate" (click)="clicked(0)" mat-raised-button
     [disabled]="buttons[0].disabled==true" [color]="buttons[0].color??'primary'">
     {{buttons[0].text|translate}}<mat-icon>{{buttons[0].icon}}</mat-icon>
   </button>
