@@ -42,8 +42,10 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
   },
 };
 
+const secret = process.env.SESSION_SECRET;
+if(!secret) throw new Error('Environment variable SESSION_SECRET is empty');
 const SESSION_OPTIONS: SessionOptions = {
-  secret: process.env.SESSION_SECRET || 'lkv4nippoqSFweuroivc1mxnvlsPa4353',
+  secret,
   resave: true,
   saveUninitialized: false,
   cookie: {
