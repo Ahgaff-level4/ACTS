@@ -1,6 +1,5 @@
-import { Component, OnInit } from '@angular/core';
-import { Privilege, PrivilegeService } from 'src/app/services/privilege.service';
-import { IPage, PAGES } from 'src/app/services/utility.service';
+import { Component } from '@angular/core';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-home',

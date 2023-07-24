@@ -1,13 +1,16 @@
-<div id="animate-home-header"
-  class="d-flex my-primary-bg flex-md-row flex-column justify-content-md-between mb-5 top pb-5 px-5">
-  <div class="text-white mb-5 text-center mt-md-5">
-    <h1 class="display-1 text-white">{{'ACTS'|translate}}</h1>
-    <p class="display-6">{{'Autism Children Technical System'|translate}}</p>
+<div id="animate-home-header" class="top my-primary-bg px-5">
+  <div class="row mb-2">
+    <div class="text-white mb-5 text-center mt-md-5 col-md-8">
+      <h1 class="display-1 text-white tracking-in-contract">{{'ACTS'|translate}}</h1>
+      <p class="display-6 tracking-in-expand-forward-top">{{'Autism Children Technical System'|translate}}</p>
+    </div>
+    <img class="col-md-4 scale-up-center" src="assets/img/teacher-teach-child.svg" width="auto" height="300px"
+      alt="Teacher teach a child">
   </div>
-  <img src="assets/img/teacher-teach-child.svg" width="auto" height="330px" alt="Teacher teach a child">
 </div>
-<div class="container-fluid">
+<div class="sticky-shadow shadow-lg position-sticky top-0 w-100">&nbsp;</div>
 
+<div class="container-fluid mt-5">
   <mat-divider class="mx-5 my-4"></mat-divider>
 
   <div class="px-md-5 mx-md-5 mb-4 d-flex flex-column justify-content-center align-items-center">
@@ -21,8 +24,7 @@
     [playerVars]="{
       autoplay: 0,
     }"></youtube-player> -->
-    <video style="max-width:100%; max-height:60vh;aspect-ratio: 16 / 9;" class="rounded-5 shadow-sm"
-      controls>
+    <video style="max-width:100%; max-height:60vh;aspect-ratio: 16 / 9;" class="rounded-5 shadow-sm" controls>
       <source src="assets/ACTS.mp4" type="video/mp4">
       Your browser does not support HTML5 video.
     </video>

@@ -14,19 +14,16 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
   styleUrls: ['./app.component.scss'],
   animations: [trigger('routeAnimations', [
     transition('* => homePage', [
-
       query('#whiteLayer', [
         style({ minWidth: '100%', minHeight: '100%', opacity: 1 }),
+        animate('1ms 1ms ease-in-out', style({ opacity: 0 })),
       ]),
       query('#animate-home-header', [
-        style({ height: 0, paddingTop: 0, marginTop: 0 }),
+        style({ transform: 'scaleY(0.1)', transformOrigin: 'center top' }),
       ]),
       group([
-        query('#whiteLayer', [
-          animate('500ms 1ms ease-out', style({ opacity: 0, marginTop: '90vh' })),
-        ]),
         query('#animate-home-header', [
-          animate("500ms 1ms ease-out", style({ height: "*", paddingTop: '*', marginTop: '*' }))
+          animate("500ms 1ms ease-out", style({ transform: 'scaleY(1)', transformOrigin: 'center top' })),
         ]),
       ])
     ],),
@@ -34,9 +31,8 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
       query('#whiteLayer', [
         style({ minWidth: '100%', minHeight: '100%', opacity: 1 }),
-        animate('500ms 1ms ease-in-out', style({ opacity: 0 })),
+        animate('600ms 1ms ease-in-out', style({ opacity: 0 })),
       ]),
-
     ],)
   ])]
 })
