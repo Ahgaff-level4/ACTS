@@ -422,7 +422,7 @@
   "Add new activity": "إضافة نشاط",
   "Add new goal": "إضافة هدف",
   "Add new evaluation": "إضافة تقييم",
-  "Add new strength": "أضف نقطة قوةة",
+  "Add new strength": "إضافة نقطة قوة",
   "Register new account": "تسجيل حساب",
   "Edit program": "تعديل البرنامج",
   "Edit field": "تعديل المجال",
@@ -792,5 +792,8 @@
   "Designed & Programed by":"تصميم وبرمجة",
   "Contact info":"معلومات التواصل",
   "Custom":"مخصص",
-  "This month":"الشهر الحالي"
+  "This month":"الشهر الحالي",
+  "Minimum date is ":"",
+  "Maximum date is ":"",
+  "is invalid date!":""
 }

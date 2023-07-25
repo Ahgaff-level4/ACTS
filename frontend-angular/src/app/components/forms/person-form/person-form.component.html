@@ -5,7 +5,10 @@
         [attr.src]="image?undefined:(formGroup.controls['image'].value && formGroup.controls['image'].value.startsWith('http')?formGroup.controls['image'].value:('assets/person-images/'+(formGroup.controls['image'].value??'default.svg')))" />
       <input #imageInput type="file" name="image" (change)="onFileChange($event)" accept="image/*" hidden>
       <button type="button" class="w-75 mt-2 mx-auto mb-3 mb-md-0" mat-stroked-button (click)="imageInput.click()"
-        color="primary">{{(formGroup.get('image')?.value != null||image?'Change image':'Choose image')|translate}}<mat-icon>edit</mat-icon></button>
+        color="primary">
+        {{(formGroup.get('image')?.value != null||image?'Change image':'Choose image')|translate}}
+        <mat-icon>edit</mat-icon>
+      </button>
     </div>
     <div class="col-md-9 p-2 align-self-start">
       <div class="row">
@@ -39,24 +42,14 @@
           </mat-form-field>
         </div>
         <div class="col-md-4">
-          <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
-            <mat-label>{{'Birthdate'|translate}}</mat-label>
-            <input matInput [matDatepicker]="picker" placeholder="..." formControlName="birthDate">
-            <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
-            <mat-datepicker startView="multi-year" #picker></mat-datepicker>
-          </mat-form-field>
+          <app-datepicker label="Birthdate" [min]="formService.before80y$|async"
+          [max]="formService.nowDate$|async" controlName="birthDate"
+          [formGroup]="formGroup"></app-datepicker>
         </div>
         <div class="col-md-4">
-          <mat-form-field style="max-width: 250px;width:100%">
-            <mat-label>{{'Registration date'|translate}}</mat-label>
-            <input required matInput [matDatepicker]="picker2" [max]="nowDate" placeholder="..."
-              formControlName="createdDatetime">
-            <mat-datepicker-toggle matSuffix [for]="picker2"></mat-datepicker-toggle>
-            <mat-datepicker #picker2></mat-datepicker>
-            <mat-error *ngIf="formGroup.controls['createdDatetime'].errors?.['required']">
-              {{'You must choose a date'|translate}}
-            </mat-error>
-          </mat-form-field>
+          <app-datepicker label="Registration date" [min]="formService.minCreatedDate$|async"
+          [max]="formService.nowDate$|async" controlName="createdDatetime"
+          [formGroup]="formGroup"></app-datepicker>
         </div>
       </div>
     </div>

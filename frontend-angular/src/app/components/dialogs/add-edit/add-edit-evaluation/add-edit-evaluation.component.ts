@@ -14,9 +14,8 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 })
 export class AddEditEvaluationComponent {
   public formGroup!: FormGroup;
-  protected nowDate = new Date();
   constructor(private fb:FormBuilder, public service: EvaluationService, private pr:PrivilegeService,
-    public dialogRef: MatDialogRef<any>, private formService: FormService,private nt:NotificationService,
+    public dialogRef: MatDialogRef<any>, public formService: FormService,private nt:NotificationService,
     /** @param data is either an evaluation to be Edit. Or goalId to be Add */
     @Inject(MAT_DIALOG_DATA) public evaluationOrGoalId?: IEvaluationEntity | number,) {
   }

@@ -13,14 +13,14 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class AddEditFieldComponent {
   public formGroup!: FormGroup;
-  protected nowDate = new Date();
+
   constructor(private fb: FormBuilder, public service: FieldService, private nt: NotificationService,
-    public dialogRef: MatDialogRef<any>, private formService: FormService, @Inject(MAT_DIALOG_DATA) public field?: IFieldEntity,) {
+    public dialogRef: MatDialogRef<any>, public formService: FormService, @Inject(MAT_DIALOG_DATA) public field?: IFieldEntity,) {
   }
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
-      name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3),this.formService.validation.unique]],
+      name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3), this.formService.validation.unique]],
       createdDatetime: [new Date(), [Validators.required]],
     });
     if (this.field)
@@ -39,7 +39,7 @@ export class AddEditFieldComponent {
           await this.service.post(this.formGroup.value);
           this.nt.notify("Added successfully", 'The field has been added successfully', 'success')
           this.dialogRef.close();
-        } catch (e:any) {
+        } catch (e: any) {
           if (e?.error?.code === "ER_DUP_ENTRY")
             this.formGroup.get('name')?.setErrors({ notUnique: true });
         }

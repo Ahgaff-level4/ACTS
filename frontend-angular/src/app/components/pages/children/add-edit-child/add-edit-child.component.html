@@ -1,5 +1,7 @@
 <!--Note: this component used in add/edit child page AND in children table-->
-<app-title [link]="{title:(child?.id?'Edit child information':'Register a child'),titleLink:this.child?'Edit':undefined}" [isPrinting]="undefined"></app-title>
+<app-title
+  [link]="{title:(child?.id?'Edit child information':'Register a child'),titleLink:this.child?'Edit':undefined}"
+  [isPrinting]="undefined"></app-title>
 <div class="container">
   <app-person-form [(person)]="person"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
@@ -10,7 +12,7 @@
           <mat-label>{{'Number of sisters'|translate}}</mat-label>
           <mat-select formControlName="femaleFamilyMembers"
             (selectionChange)="familyMembers.value = calcFamilyMembers()">
-            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
+            <mat-option *ngFor="let o of [1,2,3,4,5,6,7,8,9,10]; let i=index;" [value]="i">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -18,7 +20,7 @@
         <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
           <mat-label>{{'Number of brothers'|translate}}</mat-label>
           <mat-select formControlName="maleFamilyMembers" (selectionChange)="familyMembers.value = calcFamilyMembers()">
-            <mat-option *ngFor="let o of ut.ordinalNumbers; let i=index;" [value]="i">{{i}}</mat-option>
+            <mat-option *ngFor="let o of [1,2,3,4,5,6,7,8,9,10]; let i=index;" [value]="i">{{i}}</mat-option>
           </mat-select>
         </mat-form-field>
       </div>
@@ -71,12 +73,9 @@
         </mat-form-field>
       </div>
       <div class="col-md-4 p-2">
-        <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
-          <mat-label>{{'Diagnostic date'|translate}}</mat-label>
-          <input matInput [matDatepicker]="picker3" placeholder="..." formControlName="diagnosticDate">
-          <mat-datepicker-toggle matIconSuffix [for]="picker3"></mat-datepicker-toggle>
-          <mat-datepicker startView="multi-year" #picker3></mat-datepicker>
-        </mat-form-field>
+        <app-datepicker label="Diagnostic date" [min]="formService.before20y$|async"
+          [max]="formService.nowDate$|async" controlName="diagnosticDate"
+          [formGroup]="childForm"></app-datepicker>
       </div>
     </div>
 
@@ -196,8 +195,7 @@
     </div>
 
     <div class="d-flex mt-4 mb-5  pb-5">
-      <button [disabled]="this.ut.isLoading.value" type="submit" class="w-75 mx-auto" mat-raised-button
-        color="primary">
+      <button [disabled]="this.ut.isLoading.value" type="submit" class="w-75 mx-auto" mat-raised-button color="primary">
         {{(child?.id == null?'Submit':'Save Changes')|translate}} </button>
     </div>
   </form>

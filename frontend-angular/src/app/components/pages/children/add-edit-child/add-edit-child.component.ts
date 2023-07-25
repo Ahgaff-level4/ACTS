@@ -27,7 +27,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
   maxlength = { maxlength: 512 };
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
-    private accountService: AccountService, private formService: FormService,
+    private accountService: AccountService, public formService: FormService,
     private nt: NotificationService, public programService: ProgramService) {
     super();
   }

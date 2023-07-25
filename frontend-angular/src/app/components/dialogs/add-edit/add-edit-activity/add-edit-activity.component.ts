@@ -16,11 +16,10 @@ import { firstValueFrom } from 'rxjs';
 })
 export class AddEditActivityComponent extends UnsubOnDestroy {
   public formGroup!: FormGroup;
-  protected nowDate = new Date();
   public isSpecialActivity!: boolean;
   // public fields: IFieldEntity[] | undefined;
   constructor(private fb: FormBuilder, public service: ActivityService, public fieldService: FieldService,
-    public dialogRef: MatDialogRef<any>, private formService: FormService,
+    public dialogRef: MatDialogRef<any>, public formService: FormService,
     private nt: NotificationService,
     /**passed data could be:
      * 1- `activity` to be edit. If activity.programId == null THEN it is special activity

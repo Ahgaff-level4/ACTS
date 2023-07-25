@@ -17,14 +17,13 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 })
 export class AddEditStrengthComponent extends UnsubOnDestroy {
   public formGroup!: FormGroup;
-  protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new strength */
   public child$!: BehaviorSubject<IChildEntity | undefined>;
 
   constructor(private fb: FormBuilder, public service: StrengthService, public strengthService: StrengthService,
     private pr:PrivilegeService, public dialogRef: MatDialogRef<any>,
-    private formService: FormService, private nt: NotificationService,
+    public formService: FormService, private nt: NotificationService,
     /**Either goal to be edit. Or childId to add the new goal into it */
     @Inject(MAT_DIALOG_DATA) public strengthOrChildId: IStrengthEntity | number,) {
     super()

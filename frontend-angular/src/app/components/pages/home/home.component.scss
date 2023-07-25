@@ -12,7 +12,7 @@
   z-index: 998;
   height: 3rem;
   margin-top: -3rem;
-  animation: fade-in 600ms 2100ms ease-out both;
+  animation: fade-in 500ms 3000ms ease-in-out both;
 }
 @keyframes fade-in {
   0% {
@@ -53,7 +53,7 @@
 ---------------------------------------------- */
 
 .scale-up-center {
-  animation: scale-up-center 600ms 200ms ease-out both;
+  animation: scale-up-center 600ms 300ms ease-out both;
 }
 @keyframes scale-up-center {
   0% {
@@ -73,11 +73,11 @@
 
 
 .tracking-in-contract {
-  animation: tracking-in-contract 600ms 900ms ease-out both;
+  animation: tracking-in-contract 700ms 1000ms ease-in-out both;
 }
 @keyframes tracking-in-contract {
   0% {
-    letter-spacing: 1.5em;
+    letter-spacing: 1.7em;
     opacity: 0;
   }
   40% {
@@ -90,11 +90,11 @@
 }
 
 .tracking-in-expand-forward-top {
-  animation: tracking-in-expand-forward-top 600ms 1500ms ease-out both;
+  animation: tracking-in-expand-forward-top 800ms 2000ms ease-in-out both;
 }
 @keyframes tracking-in-expand-forward-top {
   0% {
-    letter-spacing: -0.5em;
+    letter-spacing: -0.4em;
     transform: translateY(-100px);
     opacity: 0;
   }

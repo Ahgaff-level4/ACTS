@@ -16,7 +16,7 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
     transition('* => homePage', [
       query('#whiteLayer', [
         style({ minWidth: '100%', minHeight: '100%', opacity: 1 }),
-        animate('1ms 1ms ease-in-out', style({ opacity: 0 })),
+        animate('1ms 1ms', style({ opacity: 0 })),
       ]),
       query('#animate-home-header', [
         style({ transform: 'scaleY(0.1)', transformOrigin: 'center top' }),
@@ -31,7 +31,7 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
       query('#whiteLayer', [
         style({ minWidth: '100%', minHeight: '100%', opacity: 1 }),
-        animate('600ms 1ms ease-in-out', style({ opacity: 0 })),
+        animate('600ms 1ms ease-out', style({ opacity: 0 })),
       ]),
     ],)
   ])]

@@ -17,7 +17,6 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 })
 export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
   public formGroup!: FormGroup;
-  protected nowDate = new Date();
   public selectedActivity: IActivityEntity | undefined;
   /**Used when adding new goal */
   public child$ = new BehaviorSubject<IChildEntity | undefined>(undefined);
@@ -27,7 +26,7 @@ export class AddEditGoalComponent extends UnsubOnDestroy implements OnDestroy {
    * - Or childId to add the new goal into it */
   constructor(private fb: FormBuilder, public service: GoalService, public goalService: GoalService,
     private pr:PrivilegeService, public dialogRef: MatDialogRef<any>,
-    private formService: FormService, private nt: NotificationService,
+    public formService: FormService, private nt: NotificationService,
     @Inject(MAT_DIALOG_DATA) public goalOrChildId: IGoalEntity | number,) {
     super();
   }

@@ -13,9 +13,9 @@ import { NotificationService } from 'src/app/services/notification.service';
 })
 export class AddEditProgramComponent {
   public formGroup: FormGroup;
-  protected nowDate = new Date();
+
   constructor(private fb: FormBuilder, public service: ProgramService,
-    private formService: FormService, public dialogRef: MatDialogRef<any>, private nt: NotificationService,
+    public formService: FormService, public dialogRef: MatDialogRef<any>, private nt: NotificationService,
     @Inject(MAT_DIALOG_DATA) public program?: IProgramEntity) {
     this.formGroup = this.fb.group({
       name: [null, [Validators.required, Validators.maxLength(50), Validators.minLength(3), formService.validation.unique]],

@@ -14,13 +14,12 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
   @Input() public person?: IPersonEntity | ICreatePerson;//optional for edit
   @Output() public personChange = new EventEmitter<IPersonEntity | ICreatePerson>();
   public formGroup!: FormGroup;
-  protected nowDate = new Date();
   /**image is the image file chosen by the user. If user dose not choose an image OR edit a person that has image, then it is `undefined`.
    * It will be defined only when user select an image as placeholder to submit the file
   */
   protected image?: File;
 
-  constructor(private fb: FormBuilder, public personService: PersonService, private formService: FormService) {
+  constructor(private fb: FormBuilder, public personService: PersonService, public formService: FormService) {
     super();
   }
 
@@ -45,7 +44,6 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
    * Called by the parent component. Hint: using `@ViewChild` decorator
    */
   public submit(): Promise<IPersonEntity> {
-    console.log('controls', this.formGroup.controls)
     const formData = new FormData();
     for (let c in this.formGroup.value) {
       if (c != 'image' && this.formGroup.controls[c].value != null)
@@ -58,7 +56,6 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
 
   /** void if there is no dirty fields*/
   public async submitEdit(): Promise<SucResEditDel | void> {
-    console.log('controls', this.formGroup.controls)
     const formData = new FormData();
     for (let c in this.formGroup.value) {
       if (c != 'image' && this.formGroup.controls[c].dirty)
