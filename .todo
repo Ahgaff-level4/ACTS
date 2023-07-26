@@ -11,3 +11,11 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 <!-- - Default load Goals page with filter of this month AND state=continues. -->
 
 - send email reset password. after adding email field in Account, dah...
+
+- Report: make use of (evaluations & goals) rate.
+
+- add/edit-child: add search by name to parents account. (input field with auto-complete if no parent exist then show Add button to add new parent without leaving add/edit-child form aka dialog).
+  
+- Logged in parent should see the new goals/evaluations that happened to their children. (Timeline?).
+
+- Report: child improvement within timeframe. IMPROVEMENT how he become better or worse :(
