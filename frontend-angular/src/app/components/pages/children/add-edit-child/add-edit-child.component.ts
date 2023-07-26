@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity, IProgramEntity } from '../../../../../../../interfaces';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
+import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UtilityService } from 'src/app/services/utility.service';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
@@ -9,6 +9,8 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
+import { AddParentComponent } from 'src/app/components/dialogs/add-edit/add-parent/add-parent.component';
+import { iif, of } from 'rxjs';
 
 @Component({
   selector: 'app-add-edit-child',
@@ -24,6 +26,8 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
   public selectedParent: IAccountEntity | undefined;
   public parents!: IAccountEntity[];
   public teachers!: IAccountEntity[];
+  //Used as placeholder to choose a parent
+  public parentNameControl = new FormControl('');
   maxlength = { maxlength: 512 };
 
   constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
@@ -38,7 +42,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       maleFamilyMembers: [null, [Validators.max(99), Validators.min(0)]],
       birthOrder: [null, [Validators.max(99), Validators.min(0)]],
       parentsKinship: [null, [Validators.maxLength(512)]],
-      diagnosticDate: null,
+      diagnosticDate: [null,],
       pregnancyState: [null, [Validators.maxLength(512)]],
       birthState: [null, [Validators.maxLength(512)]],
       growthState: [null, [Validators.maxLength(512)]],
@@ -59,6 +63,10 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
         return;
       }
       this.parents = v.filter(v => v.roles.includes('Parent'));
+      if (typeof this.child?.parentId == 'number')
+        this.parentNameControl.setValue(this.parents.find(v => v.id == this.child!.parentId)?.person.name ?? '')
+
+      this.searchedParents = [...this.parents].filter(p => p.person.name.toLowerCase().includes(this.parentNameControl.value?.toLowerCase() ?? ''));
       this.teachers = v.filter(v => v.roles.includes('Teacher'));
       if (this.child?.teachers)
         for (let c of this.child.teachers)
@@ -93,7 +101,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
     this.formService.trimFormGroup(this.childForm)
     this.personForm?.formGroup?.markAllAsTouched();
     this.childForm?.markAllAsTouched();
-    if (this.personForm?.formGroup?.valid && this.childForm?.valid) {
+    if (this.personForm?.formGroup?.valid && this.childForm?.valid && this.parentNameControl.valid) {
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
 
@@ -146,6 +154,37 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       title: { text: 'Archive child information' },
       content: "Archiving a child will hide the child information from all pages and won't count their data in most report, such as children page. Only Admin can view archived children in the Children page by applying ‘Archive’ filter. Note: a parent of this child won't be able to view its information.",
       type: 'info',
+    })
+  }
+  public searchedParents: IAccountEntity[] = [];//will be initialize onInit()
+  keyUpParentName(name: string) {
+    name = name.toLowerCase();
+    this.childForm.get('parentId')!.markAllAsTouched();
+    this.childForm.get('parentId')!.markAsDirty();
+
+    const chosenParent = this.parents.find(v => v.person.name.toLowerCase() === name);
+    if (!chosenParent) {
+      this.parentNameControl.setErrors({ noParent: { name } });
+      this.childForm.get('parentId')!.setValue(null);
+    }
+    else {
+      this.parentNameControl.setErrors(null);
+      this.childForm.get('parentId')!.setValue(chosenParent.id);
+    }
+    this.searchedParents = this.parents.filter(v => v.person.name.toLowerCase().includes(name));
+  }
+
+  showAddParentDialog() {
+    this.nt.openDialog<AddParentComponent, string, IAccountEntity>(AddParentComponent, this.parentNameControl.value ?? '').afterClosed().subscribe(v => {
+      if (!v)
+        throw 'Unexpected new parent account';
+      iif(() => !!this.parents.find(p => p.person.name == v.person.name),
+        of(v),
+        of(this.accountService.accounts$.value?.find(p => p.roles.includes('Parent') && p.person.name == v.person.name)))
+        .subscribe(v => {
+          this.parentNameControl.setValue(v?.person.name ?? '');
+          this.keyUpParentName(v?.person.name ?? '');
+        })
     })
   }
 

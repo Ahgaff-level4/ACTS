@@ -2,13 +2,14 @@ import { Component, Inject, OnInit } from '@angular/core';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { IActivityEntity, IChildEntity, IFieldEntity, IProgramEntity } from '../../../../../../interfaces';
-import { MAT_DIALOG_DATA, MatDialog, MatDialogRef } from '@angular/material/dialog';
+import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/CRUD/goal.service';
 import { AddEditActivityComponent } from '../add-edit/add-edit-activity/add-edit-activity.component';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { NotificationService } from 'src/app/services/notification.service';
 
 @Component({
   selector: 'app-select-activity',
@@ -27,7 +28,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
    */
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService,
     private ut: UtilityService, private goalService: GoalService, private strengthService: StrengthService,
-    private activityService: ActivityService, private dialog: MatDialog, public fieldService: FieldService,
+    private activityService: ActivityService, private nt:NotificationService, public fieldService: FieldService,
     @Inject(MAT_DIALOG_DATA) public data: { child: IChildEntity, state: 'goal' | 'strength' }) {
     super();
   }
@@ -90,7 +91,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   }
 
   createSpecialActivity() {
-    this.dialog.open<AddEditActivityComponent, undefined, IActivityEntity>(AddEditActivityComponent, { direction: this.ut.getDirection() })
+    this.nt.openDialog<AddEditActivityComponent, undefined, IActivityEntity>(AddEditActivityComponent)
       .afterClosed().subscribe(v => {
         if (typeof v === 'object')
           this.dialogRef.close(v);

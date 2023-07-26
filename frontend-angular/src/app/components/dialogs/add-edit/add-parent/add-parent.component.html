@@ -1,0 +1,4 @@
+<h2 mat-dialog-title>{{'Register new parent'|translate}}</h2>
+<mat-dialog-content>
+  <app-add-edit-account-form [defaultPersonName]="defaultPersonName" state="add-parent" (submitted)="dialogRef.close($event)"></app-add-edit-account-form>
+</mat-dialog-content>

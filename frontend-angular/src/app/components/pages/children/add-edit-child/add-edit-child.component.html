@@ -66,16 +66,15 @@
     <div class="row">
       <div class="col-md-8 p-2">
         <mat-form-field class="w-100" appearance="fill">
-          <mat-label>{{'Parent kinship'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #parentsKinship matInput formControlName="parentsKinship"
+          <mat-label>{{'Diagnostic'|translate}}</mat-label>
+          <textarea type="text" placeholder="..." #diagnostic matInput formControlName="diagnostic"
             maxlength="512"></textarea>
-          <mat-hint align="end">{{parentsKinship.value.length}}/500</mat-hint>
+          <mat-hint align="end">{{diagnostic.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
       <div class="col-md-4 p-2">
-        <app-datepicker label="Diagnostic date" [min]="formService.before20y$|async"
-          [max]="formService.nowDate$|async" controlName="diagnosticDate"
-          [formGroup]="childForm"></app-datepicker>
+        <app-datepicker label="Diagnostic date" [min]="formService.before20y$|async" [max]="formService.nowDate$|async"
+          controlName="diagnosticDate" startView="multi-year" [formGroup]="childForm"></app-datepicker>
       </div>
     </div>
 
@@ -109,10 +108,10 @@
       </div>
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100" appearance="fill">
-          <mat-label>{{'Diagnostic'|translate}}</mat-label>
-          <textarea type="text" placeholder="..." #diagnostic matInput formControlName="diagnostic"
+          <mat-label>{{'Parent kinship'|translate}}</mat-label>
+          <textarea type="text" placeholder="..." #parentsKinship matInput formControlName="parentsKinship"
             maxlength="512"></textarea>
-          <mat-hint align="end">{{diagnostic.value.length}}/500</mat-hint>
+          <mat-hint align="end">{{parentsKinship.value.length}}/500</mat-hint>
         </mat-form-field>
       </div>
     </div>
@@ -148,13 +147,22 @@
       <div class="col-md-6 p-2">
         <mat-form-field class="w-100">
           <mat-label>{{'Parent'|translate}}</mat-label>
-          <mat-select formControlName="parentId">
-            <mat-option class="text-center" [value]="null">&mdash;</mat-option>
-            <mat-option *ngFor="let parent of parents" [value]="parent.id">
-              <span style="font-size: medium;" class="d-block pt-2">{{parent.person.name}}</span>&nbsp;
-              <span style="font-size: small;" class="opacity-75">{{parent.username}}</span>
+          <input type="text" [formControl]="parentNameControl" #inputParentName matInput
+            [placeholder]="'Parent name...'|translate" minlength="4" maxlength="100"
+            [matAutocomplete]="autocompleteParents" (keyup)="keyUpParentName(inputParentName.value)">
+          <mat-autocomplete #autocompleteParents="matAutocomplete">
+            <mat-option *ngFor="let p of searchedParents" [value]="p.person.name"
+              (click)="keyUpParentName(inputParentName.value)">
+              <span style="font-size: medium;" class="d-block pt-2">{{p.person.name}}</span>&nbsp;
+              <small class="opacity-75">{{p.username}}</small>
             </mat-option>
-          </mat-select>
+          </mat-autocomplete>
+          <mat-error *ngIf="parentNameControl.getError('noParent') as err">
+            {{'There is no parent with name'|translate}}:&nbsp;'{{err.name}}'&nbsp;&nbsp;
+            <span (click)="showAddParentDialog()" class="my-accent-text my-link text-decoration-underline">
+              {{'Add new?'|translate}}
+            </span>
+          </mat-error>
         </mat-form-field>
       </div>
     </div>

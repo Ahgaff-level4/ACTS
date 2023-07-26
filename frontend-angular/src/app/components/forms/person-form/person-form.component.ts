@@ -15,6 +15,7 @@ import { Router } from '@angular/router';
 export class PersonFormComponent extends UnsubOnDestroy implements OnInit, AfterViewInit {
   @Input() public person?: IPersonEntity | ICreatePerson;//optional for edit
   @Input() public state!: 'child' | 'account';
+  @Input() public defaultPersonName = '';
   @Output() public personChange = new EventEmitter<IPersonEntity | ICreatePerson>();
   @ViewChild('nameInput') private nameInput!: ElementRef;
   protected existedPersons$!: Observable<{ name: string, id: number }[]>;
@@ -32,8 +33,8 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit, After
 
   ngOnInit(): void {
     this.formGroup = this.fb.group({
-      name: [null, [Validators.required, Validators.maxLength(100), Validators.minLength(4)]],
-      birthDate: null,
+      name: [this.defaultPersonName || null, [Validators.required, Validators.maxLength(100), Validators.minLength(4)]],
+      birthDate: [null,],
       gender: [null, [Validators.required]],
       image: [null],
       createdDatetime: [new Date(), [Validators.required]],

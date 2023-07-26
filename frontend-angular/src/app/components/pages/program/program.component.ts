@@ -2,7 +2,6 @@ import { Component, OnDestroy } from '@angular/core';
 import { IProgramEntity } from '../../../../../../interfaces';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -79,15 +78,15 @@ export class ProgramComponent extends UnsubOnDestroy {
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
       (e) => e.api.sizeColumnsToFit()
     ),
-    onSelectionChanged:(e)=>this.selectedItem = e.api.getSelectedRows()[0]??undefined,
+    onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
-  constructor(private service: ProgramService, public ut: UtilityService,private nt:NotificationService,
-    private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
+  constructor(private service: ProgramService, public ut: UtilityService, private nt: NotificationService,
+    public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
 
-  ngOnInit(){
+  ngOnInit() {
     this.service.fetch();
   }
 
@@ -96,10 +95,10 @@ export class ProgramComponent extends UnsubOnDestroy {
   }
 
 
-  /** if `data` param passed then it is Edit. Otherwise will be Add */
-  addEdit(data?: IProgramEntity) {
-    this.dialog
-      .open<AddEditProgramComponent, IProgramEntity>(AddEditProgramComponent, { data, direction: this.ut.getDirection() });
+  /** if `program` param passed then it is Edit. Otherwise will be Add */
+  addEdit(program?: IProgramEntity) {
+    this.nt
+      .openDialog(AddEditProgramComponent, program);
   }
 
   deleteDialog(program: IProgramEntity | undefined) {

@@ -1,8 +1,6 @@
-import { Component, OnDestroy } from '@angular/core';
-import { IChildEntity, IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
-import { Subscription, first } from 'rxjs';
+import { Component } from '@angular/core';
+import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
 import { ActivatedRoute } from '@angular/router';
-import { MatDialog } from '@angular/material/dialog';
 import { UtilityService } from 'src/app/services/utility.service';
 import { GoalService } from 'src/app/services/CRUD/goal.service';
 import { AddEditGoalComponent } from '../../dialogs/add-edit/add-edit-goal/add-edit-goal.component';
@@ -145,7 +143,7 @@ export class GoalComponent extends UnsubOnDestroy {
 
 
   constructor(public service: GoalService, public ut: UtilityService, private nt: NotificationService,
-    private dialog: MatDialog, private route: ActivatedRoute, public agGrid: AgGridService,
+    private route: ActivatedRoute, public agGrid: AgGridService,
     private fieldService: FieldService, private programService: ProgramService,
     public pr: PrivilegeService) {
     super();
@@ -200,8 +198,8 @@ export class GoalComponent extends UnsubOnDestroy {
     if (typeof goalOrChildId != 'object' && typeof goalOrChildId != 'number')
       this.nt.notify(undefined);
     else
-      this.dialog
-        .open<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, { data: goalOrChildId, direction: this.ut.getDirection() })
+      this.nt
+        .openDialog<AddEditGoalComponent, IGoalEntity | number, 'edited' | 'added' | null>(AddEditGoalComponent, goalOrChildId)
         .afterClosed().subscribe(v => {
           // if (v === 'added' || v === 'edited')//has been
           // this.fetch(); we don't need fetch child's goals; goalService will fetch when added/edited
@@ -230,8 +228,8 @@ export class GoalComponent extends UnsubOnDestroy {
     if (goalId == null)
       this.nt.notify(undefined);
     else
-      this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data: goalId, direction: this.ut.getDirection() });
+      this.nt
+        .openDialog<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, goalId);
   }
 
 }

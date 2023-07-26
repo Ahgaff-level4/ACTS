@@ -1,18 +1,11 @@
-import { Component, OnDestroy, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
-import { IActivityEntity, IFieldEntity } from '../../../../../../interfaces';
+import { Component, OnDestroy } from '@angular/core';
+import { IActivityEntity } from '../../../../../../interfaces';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute } from '@angular/router';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
-import { Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -79,7 +72,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
   ];
 
   constructor(public service: ActivityService, private ut: UtilityService,
-    private dialog: MatDialog, public agGrid: AgGridService, private fieldService: FieldService,
+    public agGrid: AgGridService, private fieldService: FieldService,
     public pr: PrivilegeService, private nt: NotificationService,) {
     super();
   }
@@ -119,8 +112,8 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     if (typeof data != 'object' && typeof data != 'number')
       this.nt.notify(undefined);
     else
-      this.dialog
-        .open<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, { data, direction: this.ut.getDirection() })
+      this.nt
+        .openDialog<AddEditActivityComponent, IActivityEntity | number, 'edited' | 'added' | null>(AddEditActivityComponent, data)
   }
 
   deleteDialog(activity: IActivityEntity | undefined) {

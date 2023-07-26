@@ -793,11 +793,14 @@
   "Contact info": "معلومات التواصل",
   "Custom": "مخصص",
   "This month": "الشهر الحالي",
-  "Minimum date is ": "",
-  "Maximum date is ": "",
-  "is invalid date!": "",
-  "There is an account containing the same name": "",
-  "There is a child containing the same name": "",
-  "Existed children": "",
-  "Existed accounts": ""
+  "Minimum date is ": "الحد الأدنى للتاريخ",
+  "Maximum date is ": "الحد الأقصى للتاريخ",
+  "is invalid date!": "تاريخ غير صالح",
+  "There is an account containing the same name": "هناك حساب يحتوي نفس الاسم",
+  "There is a child containing the same name": "هناك طفل يحتوي نفس الاسم",
+  "Existed children": "أطفال موجودين",
+  "Existed accounts": "حسابات موجودة",
+  "Parent name...":"اسم ولي الأمر...",
+  "There is no parent with name":"لايوجد ولي أمر باسم",
+  "Register new parent": "تسجيل ولي أمر جديد"
 }

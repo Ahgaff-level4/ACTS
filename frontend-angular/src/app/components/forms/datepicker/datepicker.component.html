@@ -1,10 +1,11 @@
 <mat-form-field *ngIf="formGroup?.get(formControlName) as control" [formGroup]="formGroup" style="max-width: 250px;width:100%">
   <mat-label>{{label|translate}}</mat-label>
-  <input required matInput [name]="formControlName" [matDatepicker]="picker" [min]="min"
+  <input matInput [name]="formControlName" [matDatepicker]="picker" [min]="min"
     [max]="max" [placeholder]="placeholder" [formControlName]="formControlName">
   <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-  <mat-datepicker #picker></mat-datepicker>
-  <mat-error *ngIf="formGroup.getError('matDatepickerParse',formControlName) as err">
+  <mat-datepicker #picker [startView]="startView"></mat-datepicker>
+  <mat-error *ngIf="(formGroup.getError('matDatepickerParse',formControlName)
+  ||formGroup.getError('matDatepickerFilter',formControlName)) as err">
     {{err.text}}&nbsp;{{'is invalid date!'|translate}}
   </mat-error>
   <mat-error *ngIf="formGroup.getError('required',formControlName)">

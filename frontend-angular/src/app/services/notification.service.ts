@@ -1,6 +1,6 @@
-import { Injectable, TemplateRef, inject } from '@angular/core';
+import { Injectable, TemplateRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { ErrorResponse, IAccountEntity, SuccessResponse, User } from '../../../../interfaces';
+import { ErrorResponse, SuccessResponse, User } from '../../../../interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
 import { UtilityService } from './utility.service';
 import { NotificationDrawerComponent } from '../components/dialogs/notification-drawer/notification-drawer.component';
@@ -8,8 +8,8 @@ import { NzNotificationRef, NzNotificationService } from 'ng-zorro-antd/notifica
 import { HttpErrorResponse } from '@angular/common/http';
 import { ButtonType, MessageDialogComponent, MessageDialogData } from '../components/dialogs/message/message.component';
 import { ComponentType } from '@angular/cdk/overlay';
-import { HeaderActionsComponent } from '../components/static/header/header-actions/header-actions.component';
-import { NotificationItemComponent } from '../components/dialogs/notification-drawer/notification-item/notification-item.component';
+import { SelectActivityComponent } from '../components/dialogs/select-activity/select-activity.component';
+import { AddParentComponent } from '../components/dialogs/add-edit/add-parent/add-parent.component';
 
 @Injectable({
   providedIn: 'root'
@@ -147,7 +147,12 @@ export class NotificationService {
   }
 
   public openDialog<COMPONENT, PASS_DATA, RECEIVE_DATA>(component: ComponentType<COMPONENT>, data?: PASS_DATA) {
-    return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.ut.getDirection() })
+    let width = '500px'
+    if (component.name == SelectActivityComponent.name)//activity name won't be shown all in 500px width
+      width = '90%';
+    else if (component.name == AddParentComponent.name)
+      width = '95%';
+    return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.ut.getDirection(), width })
   }
 
   /**Used by notification-item when initialized */

@@ -1,15 +1,12 @@
 import { Location as NgLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
-import { NavigationEnd } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ACTS_Segment } from 'src/app/app-routing.module';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
-import { GoalService } from 'src/app/services/CRUD/goal.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
-import { TitlePathService } from 'src/app/services/title-path.service';
 import { UtilityService } from 'src/app/services/utility.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 

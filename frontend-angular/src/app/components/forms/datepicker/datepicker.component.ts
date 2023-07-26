@@ -13,4 +13,5 @@ export class DatepickerComponent {
   @Input('controlName') formControlName!: string;
   @Input() formGroup!: FormGroup;
   @Input() label!: string;
+  @Input() startView:'month'|'year'|'multi-year' = 'month';
 }

@@ -1,12 +1,10 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { IFieldEntity } from '../../../../../../interfaces';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
 import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -64,7 +62,7 @@ export class FieldComponent extends UnsubOnDestroy {
   ];
 
   constructor(private service: FieldService, public ut: UtilityService, private nt: NotificationService,
-    private dialog: MatDialog, public agGrid: AgGridService, public pr: PrivilegeService) {
+    public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
 
@@ -91,8 +89,8 @@ export class FieldComponent extends UnsubOnDestroy {
 
   /** if `data` param passed then it is Edit. Otherwise will be Add */
   addEdit(data?: IFieldEntity) {
-    this.dialog
-      .open<AddEditFieldComponent, IFieldEntity>(AddEditFieldComponent, { data, direction: this.ut.getDirection() });
+    this.nt
+      .openDialog(AddEditFieldComponent, data);
   }
 
   deleteDialog(field: IFieldEntity | undefined) {

@@ -1,14 +1,8 @@
-import { Component, ViewChild } from '@angular/core';
-import { MatPaginator } from '@angular/material/paginator';
-import { MatSort } from '@angular/material/sort';
-import { MatTable, MatTableDataSource } from '@angular/material/table';
+import { Component } from '@angular/core';
 import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
-import { Subscription } from 'rxjs';
 import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
-import { CdkDragDrop, moveItemInArray } from '@angular/cdk/drag-drop';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -95,7 +89,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
 
   constructor(public service: EvaluationService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute, private nt: NotificationService,
+    private route: ActivatedRoute, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -133,8 +127,8 @@ export class EvaluationComponent extends UnsubOnDestroy {
     if (typeof data != 'object' && typeof data != 'number')
       this.nt.notify(undefined);
     else
-      this.dialog
-        .open<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, { data, direction: this.ut.getDirection() });
+      this.nt
+        .openDialog<AddEditEvaluationComponent, IEvaluationEntity | number, 'edited' | 'added' | null>(AddEditEvaluationComponent, data);
   }
 
   deleteDialog(evaluation?: IEvaluationEntity) {

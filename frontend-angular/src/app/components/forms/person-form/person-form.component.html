@@ -59,7 +59,7 @@
         </div>
         <div class="col-md-4">
           <app-datepicker label="Birthdate" [min]="formService.before80y$|async" [max]="formService.nowDate$|async"
-            controlName="birthDate" [formGroup]="formGroup"></app-datepicker>
+            controlName="birthDate" startView="multi-year" [formGroup]="formGroup"></app-datepicker>
         </div>
         <div class="col-md-4">
           <app-datepicker label="Registration date" [min]="formService.minCreatedDate$|async"

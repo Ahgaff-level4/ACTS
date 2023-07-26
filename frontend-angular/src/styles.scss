@@ -108,11 +108,6 @@ li > .activeLink {
   text-decoration-line: underline !important;
 }
 
-mat-dialog-container {
-  max-width: 600px;
-  width: 600px !important;
-}
-
 .mat-mdc-dialog-surface {
   border-radius: 2rem !important;
 }
@@ -342,10 +337,13 @@ mat-form-field > div.mdc-text-field {
   border-radius: 1.8rem !important;
 }
 
-a.my-accent-text:hover {
+a.my-accent-text:hover,
+.my-link.my-accent-text:hover {
   text-decoration: underline;
   opacity: 1;
 }
-a.my-accent-text {
+a.my-accent-text,
+.my-link.my-accent-text {
+  cursor: pointer;
   opacity: 0.9;
 }

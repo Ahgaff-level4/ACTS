@@ -1,6 +1,5 @@
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
-import { MatDialog } from '@angular/material/dialog';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
 import { UtilityService } from 'src/app/services/utility.service';
@@ -21,7 +20,7 @@ export class SettingsComponent {
   public API = environment.API;
 
   constructor(public pr: PrivilegeService, public translate: TranslateService,
-    public ut: UtilityService, private http: HttpClient, private dialog: MatDialog,
+    public ut: UtilityService, private http: HttpClient,
     public display: DisplayService, public nt:NotificationService) { }
 
 
@@ -62,7 +61,7 @@ export class SettingsComponent {
   }
 
   changePassword() {
-    this.dialog.open(PasswordDialogComponent, { direction: this.ut.getDirection() });
+    this.nt.openDialog(PasswordDialogComponent);
   }
 
   closeAfter = this.nt.notificationSettings.value.closeAfter / 1000;

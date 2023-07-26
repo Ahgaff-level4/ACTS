@@ -1,0 +1,97 @@
+<app-person-form [defaultPersonName]="defaultPersonName" [(person)]="person" state="account"></app-person-form>
+<mat-divider class="p-2 my-3 mx-5"></mat-divider>
+<form [formGroup]="accountForm" class="container-fluid" (ngSubmit)="submit()">
+  <div class="row">
+    <div class="col-md-4 p-2">
+      <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+        <mat-label>{{'Username'|translate}}</mat-label>
+        <input matInput formControlName="username" minlength="4" maxlength="32">
+        <mat-error>{{getUsernameErrorMessage()|translate}}</mat-error>
+        <mat-hint>{{'Username should be unique.'|translate}}</mat-hint>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="!account?.id" class="col-md-4 p-2"><!--Add new-->
+      <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+        <mat-label>{{'Password'|translate}}</mat-label>
+        <input [type]="hide ? 'password' : 'text'" matInput autocomplete="new-password" formControlName="password"
+          minlength="4" maxlength="1000">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+        <mat-error>{{getPasswordErrorMessage()|translate}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div *ngIf="!account?.id" class="col-md-4 p-2"><!--Add new-->
+      <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+        <mat-label>{{'Repeat password'|translate}}</mat-label>
+        <input [type]="hide ? 'password' : 'text'" autocomplete="new-password" matInput formControlName="repeatPassword"
+          minlength="4" maxlength="1000">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+        <mat-error>{{getRepeatPasswordErrorMessage()|translate}}</mat-error>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="account?.id && accountForm.get('password')?.value" class="col-md-4 p-2"><!--Edit-->
+      <mat-form-field style="max-width: 250px;width:100%" appearance="fill">
+        <mat-label>{{'Password'|translate}}</mat-label>
+        <input [type]="hide ? 'password' : 'text'" autocomplete="new-password" matInput formControlName="password"
+          [disabled]="true">
+        <button type="button" mat-icon-button matSuffix (click)="hide = !hide" [attr.aria-label]="'Hide password'"
+          [attr.aria-pressed]="hide">
+          <mat-icon>{{hide ? 'visibility_off' : 'visibility'}}</mat-icon></button>
+        <mat-error>{{getPasswordErrorMessage()|translate}}</mat-error>
+      </mat-form-field>
+    </div>
+    <div *ngIf="account?.id" class="col-md-4 p-3"><!--Edit-->
+      <button type="button" mat-stroked-button color="primary" (click)="resetPassword()">
+        {{'Reset password'|translate}}
+      </button>
+    </div>
+  </div>
+
+  <div class="row">
+    <div class="col-md-12 p-2">
+      <h5>{{'Role'|translate}}</h5>
+      <div class="d-flex align-items-center">
+
+        <mat-button-toggle-group formControlName="roles" multiple style="flex-wrap: wrap;">
+          <mat-button-toggle [matTooltip]="'Admin has all roles privileges.'|translate"
+            value="Admin">{{'Admin'|translate}}</mat-button-toggle>
+          <mat-button-toggle value="HeadOfDepartment">{{"Head of Department"|translate}}</mat-button-toggle>
+          <mat-button-toggle value="Teacher">{{'Teacher'|translate}}</mat-button-toggle>
+          <mat-button-toggle value="Parent">{{'Parent'|translate}}</mat-button-toggle>
+        </mat-button-toggle-group>
+        <button mat-icon-button (click)="showRolesInfo()" type="button" class="align-self-baseline"
+          [matTooltip]="'Click to see more information'|translate">
+          <mat-icon class="mb-1">info</mat-icon>
+        </button>
+      </div>
+      <mat-error style="font-size: small;font-weight: 500;"
+        class="mx-2 mat-error">{{getRolesErrorMessage()|translate}}</mat-error>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-md-8 p-2">
+      <mat-form-field style="width:90%">
+        <mat-label>{{'Address'|translate}}</mat-label>
+        <textarea matInput placeholder="..." formControlName="address" maxlength="64"></textarea>
+        <mat-hint align="end">{{accountForm.get('address')?.value?.length??0}}/60</mat-hint>
+      </mat-form-field>
+    </div>
+    <div *ngFor="let phoneField of phoneFields; let i = index" class="col-md-4 p-2">
+      <mat-form-field>
+        <mat-label>{{'Phone'|translate}}&nbsp;{{i+1}}</mat-label>
+        <input dir="ltr" matInput type="tel" formControlName="{{ phoneField }}" (input)="onPhoneChange(i)"
+          placeholder="..." maxlength="15" minlength="9" />
+        <mat-error>{{getPhoneErrorMessage(phoneField)|translate}}</mat-error>
+      </mat-form-field>
+    </div>
+  </div>
+  <div class="d-flex mt-4">
+    <button [disabled]="isLoading" class="w-75 mx-auto" type="submit" mat-raised-button color="primary">
+      {{(account?.id == null?'Submit':'Edit')|translate}} </button>
+  </div>
+</form>

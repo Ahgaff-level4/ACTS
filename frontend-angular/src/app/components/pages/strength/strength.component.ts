@@ -1,8 +1,6 @@
 import { Component } from '@angular/core';
-import { Subscription } from 'rxjs';
 import { IChildEntity, IStrengthEntity } from '../../../../../../interfaces';
 import { UtilityService } from 'src/app/services/utility.service';
-import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute } from '@angular/router';
 import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { AddEditStrengthComponent } from '../../dialogs/add-edit/add-edit-strength/add-edit-strength.component';
@@ -89,7 +87,7 @@ export class StrengthComponent extends UnsubOnDestroy {
   ];
 
   constructor(public service: StrengthService, public ut: UtilityService,
-    private dialog: MatDialog, private route: ActivatedRoute, private nt: NotificationService,
+    private route: ActivatedRoute, private nt: NotificationService,
     public agGrid: AgGridService, private fieldService: FieldService,
     private programService: ProgramService, public pr: PrivilegeService) {
     super();
@@ -150,8 +148,8 @@ export class StrengthComponent extends UnsubOnDestroy {
     if (typeof strengthOrChildId != 'object' && typeof strengthOrChildId != 'number')
       this.nt.notify(undefined);
     else
-      this.dialog
-        .open<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, { data: strengthOrChildId, direction: this.ut.getDirection() })
+      this.nt
+        .openDialog<AddEditStrengthComponent, IStrengthEntity | number, 'edited' | 'added' | null>(AddEditStrengthComponent, strengthOrChildId)
   }
 
   deleteDialog(strength?: IStrengthEntity) {

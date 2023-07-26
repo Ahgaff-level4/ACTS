@@ -80,6 +80,8 @@ import { EntityItemComponent } from './components/static/entity-item/entity-item
 import { NumberCardComponent } from './components/pages/dashboard/number-card/number-card.component';
 import { FileManagerComponent } from './components/static/file-manager/file-manager.component';
 import { DatepickerComponent } from './components/forms/datepicker/datepicker.component';
+import { AddParentComponent } from './components/dialogs/add-edit/add-parent/add-parent.component';
+import { AddEditAccountFormComponent } from './components/forms/add-edit-account-form/add-edit-account-form.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
@@ -147,6 +149,8 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     NumberCardComponent,
     FileManagerComponent,
     DatepickerComponent,
+    AddParentComponent,
+    AddEditAccountFormComponent,
   ],
   imports: [
     BrowserModule,

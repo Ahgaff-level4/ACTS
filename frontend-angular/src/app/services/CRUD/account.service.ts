@@ -2,9 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
 import { UtilityService } from '../utility.service';
-import { BehaviorSubject, Observable, ReplaySubject, map, tap, throwError } from 'rxjs';
+import { BehaviorSubject, Observable, map, tap, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
-import { MatDialog } from '@angular/material/dialog';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from '../privilege.service';
 import { NotificationService } from '../notification.service';
@@ -19,7 +18,7 @@ export class AccountService implements OnInit {
   public isLoggerIn: boolean = false;
 
   constructor(private http: HttpClient, private ut: UtilityService,
-    private pr: PrivilegeService, private dialog: MatDialog,
+    private pr: PrivilegeService,
     private nt: NotificationService, private personService: PersonService) {
   }
 
@@ -63,11 +62,12 @@ export class AccountService implements OnInit {
  * api request to post a account information. Then append the new account with previous `accounts` BehaviorSubject and emit the new accounts array.
  * @returns `resolve` if request succeeded. Otherwise `reject`.
  */
-  post(account: ICreateAccount, manageLoading = false): Promise<IAccountEntity> {
+  post(account: ICreateAccount, manageLoading = false, isSensitive = true): Promise<IAccountEntity> {
     return new Promise(async (res, rej) => {
-      if ((await this.sensitive().catch(() => false) !== true)) {
-        return rej();
-      }
+      if (isSensitive)
+        if ((await this.sensitive().catch(() => false) !== true)) {
+          return rej();
+        }
       manageLoading && this.ut.isLoading.next(true);
       this.http.post<IAccountEntity>(this.URL, account)
         .subscribe({
@@ -164,7 +164,7 @@ export class AccountService implements OnInit {
     return new Promise((res, rej) => {
       if (this.isLoggerIn === true)
         return res(true);
-      else this.dialog.open<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, { data: false, direction: this.ut.getDirection() })
+      else this.nt.openDialog<PasswordDialogComponent, false, true | undefined>(PasswordDialogComponent, false)
         .afterClosed().subscribe((v) => {
           if (v === true) {
             this.isLoggerIn = v;
