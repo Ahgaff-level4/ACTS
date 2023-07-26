@@ -3,6 +3,8 @@ import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angu
 import * as moment from 'moment';
 import { UtilityService } from './utility.service';
 import { Observable, takeWhile } from 'rxjs';
+import { HttpClient } from '@angular/common/http';
+import { environment } from 'src/environments/environment';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +15,7 @@ export class FormService {
   public before20y$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 20, new Date().getMonth(), new Date().getDate())));
   public minCreatedDate$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 5, new Date().getMonth(), new Date().getDate())));
 
-  constructor(private ut: UtilityService) { }
+  constructor(private ut: UtilityService, private http: HttpClient) { }
   /**
    * Used in formGroup to setValue of formGroup.controls with the correspond object properties.
    * Ex: `keys={'name':FormControl...}` and `properties={'name':'Ahmad','age':20,...}`
@@ -103,5 +105,10 @@ export class FormService {
 
       return '';
     },
+  }
+
+  public fetchPersonsByName(name: string, personState: 'child' | 'account'): Observable<{ name: string, id: number }[]> {
+    return this.http.get<{ name: string, id: number }[]>(environment.API + 'person/names',
+      { params: { name, personState } });
   }
 }

@@ -59,12 +59,9 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
     const path = this.location.path();
     if (this.link) this.link.link = path;
     this.calcLinks(path);
-    // this.sub.add(this.ut.router.events.subscribe((event) => {
-    //   if (event instanceof NavigationEnd)
-    //     this.calcLinks(this.location.path());
-    // }));
+
     this.back?.subscribe(() => {
-      if (this.links[1].link)
+      if (this.links[1]?.link)
         this.ut.router.navigateByUrl(this.links[1].link)
     });
 
@@ -77,12 +74,6 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
   async calcLinks(path: string) {
     const segments = path.split('/') as ACTS_Segment[];
-    // let i = 0;
-    // if (segments.length > this.service.links.length) {
-    //   i = this.service.links.length + 1;
-    //   this.links = this.service.links;
-    //   // this.links.reverse();
-    // } else this.links = [];
 
     for (let i = 0; i < segments.length; i++) {
       let s = segments[i];
@@ -99,7 +90,7 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
       else if (s == 'accounts')
         this.links.push({ title: 'Accounts', link: '/accounts' });
       else if (s == 'add-child' || s == 'edit-child')
-        this.links.push({ title: (s == 'edit-child' ? 'Edit child information' : 'Register a child'), titleLink: s == 'edit-child' ? 'Edit' : 'Add' });
+        this.links.push({ title: (s == 'edit-child' ? 'Edit child information' : 'Register a child'), titleLink: (s == 'edit-child' ? 'Edit' : 'Add') });
       else if (s == 'add-account' || s == 'edit-account')
         this.links.push({ title: (s == 'edit-account' ? 'Edit account' : 'Register new account'), titleLink: s == 'edit-account' ? 'Edit' : 'Add' });
       else if (s == 'child') {

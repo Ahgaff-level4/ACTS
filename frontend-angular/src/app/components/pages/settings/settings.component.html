@@ -26,11 +26,11 @@
 
 <app-card *ngIf="pr.user.value" cardTitle="Notifications">
   <div class="row m-3 mb-0 d-flex">
-    <mat-slide-toggle class="col-md-8 align-self-baseline mt-3" (change)="changeNotification($event.checked)"
+    <mat-slide-toggle class="col-md-7 align-self-baseline mt-3 mb-md-0 mb-4" (change)="changeNotification($event.checked)"
       [checked]="(nt.notificationSettings|async)?.showNotification" color="primary">
       {{'Show notifications'|translate}}
     </mat-slide-toggle>
-    <mat-form-field class="col-md-4">
+    <mat-form-field class="col-md-5">
       <mat-label>{{'Close after'|translate}}</mat-label>
       <input matInput [disabled]="!(nt.notificationSettings|async)?.showNotification" type="number"
         [(ngModel)]="closeAfter" (change)="changeNotification($event)" (keyup)="changeNotification($event)"

@@ -1,6 +1,6 @@
 <app-title [isPrinting]="undefined"></app-title>
 <div class="container ">
-  <app-person-form [(person)]="person"></app-person-form>
+  <app-person-form [(person)]="person" state="account"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
   <form [formGroup]="accountForm" class="container-fluid" (ngSubmit)="submit()">
     <div class="row">

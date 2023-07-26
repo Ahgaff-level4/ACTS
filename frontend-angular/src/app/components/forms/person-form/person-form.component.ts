@@ -1,25 +1,32 @@
-import { Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild } from '@angular/core';
 import { ICreatePerson, SucResEditDel, IPersonEntity } from '../../../../../../interfaces';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { PersonService } from 'src/app/services/CRUD/person.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormService } from 'src/app/services/form.service';
+import { Observable, debounceTime, distinctUntilChanged, fromEvent, of, share, switchMap } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
-  selector: 'app-person-form',
+  selector: 'app-person-form[state]',
   templateUrl: './person-form.component.html',
   styleUrls: ['./person-form.component.scss']
 })
-export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
+export class PersonFormComponent extends UnsubOnDestroy implements OnInit, AfterViewInit {
   @Input() public person?: IPersonEntity | ICreatePerson;//optional for edit
+  @Input() public state!: 'child' | 'account';
   @Output() public personChange = new EventEmitter<IPersonEntity | ICreatePerson>();
+  @ViewChild('nameInput') private nameInput!: ElementRef;
+  protected existedPersons$!: Observable<{ name: string, id: number }[]>;
+
   public formGroup!: FormGroup;
   /**image is the image file chosen by the user. If user dose not choose an image OR edit a person that has image, then it is `undefined`.
    * It will be defined only when user select an image as placeholder to submit the file
   */
   protected image?: File;
 
-  constructor(private fb: FormBuilder, public personService: PersonService, public formService: FormService) {
+  constructor(private fb: FormBuilder, public personService: PersonService,
+    public formService: FormService, public router: Router) {
     super();
   }
 
@@ -38,6 +45,20 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit {
       this.person = { ...this.person, ...this.formGroup.value };
       this.personChange.emit(this.person);
     }));
+  }
+
+  ngAfterViewInit(): void {
+    if (!this.existedPersons$)
+      this.existedPersons$ = fromEvent(this.nameInput.nativeElement, 'keyup')
+        .pipe(
+          debounceTime(300),
+          distinctUntilChanged(),
+          switchMap(() => {
+            if (this.nameInput.nativeElement.value.length >= 4)
+              return this.formService.fetchPersonsByName(this.nameInput.nativeElement.value, this.state)
+            return of([]);
+          }),
+          share());
   }
 
   /**

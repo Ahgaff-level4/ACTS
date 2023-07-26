@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Param, ParseIntPipe, Patch, Delete, UseInterceptors, UploadedFile, Injectable } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete, UseInterceptors, UploadedFile, Injectable, BadRequestException, Query } from '@nestjs/common';
 import { CreatePerson, PersonEntity, UpdatePerson } from './person.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { DataSource, Repository } from 'typeorm';
@@ -8,14 +8,14 @@ import { rename, unlink, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
 import { IPersonEntity } from '../../../../interfaces';
 import sanitize = require('sanitize-filename');
-import { NotContains, NotEquals } from 'class-validator';
 import { ChildEntity } from '../child/child.entity';
 import { AccountEntity } from '../account/account.entity';
 
 @Controller('api/person')
 export class PersonController {
   constructor(@InjectRepository(PersonEntity)
-  private repo: Repository<PersonEntity>, @InjectDataSource() dataSource: DataSource) {
+  private repo: Repository<PersonEntity>,
+    @InjectDataSource() private dataSource: DataSource) {
 
     //Delete unused person entities. Person is used as child or account. It can be generated without any relations if something went wrong like deadlock error. Happened to me :)
     Promise.all([
@@ -82,6 +82,24 @@ export class PersonController {
       await unlink(imagePath(person.image));
     }
     return this.repo.delete(id);
+  }
+
+  @Get('names')
+  @Roles('Admin', 'HeadOfDepartment')
+  async searchNames(@Query('name') searchName: string, @Query('personState') personState: 'child' | 'account'): Promise<{ name: string, id: number }[]> {
+    if (personState == 'account')
+      return (await this.dataSource.getRepository(AccountEntity)
+        .createQueryBuilder('account')
+        .leftJoinAndMapOne('account.person', PersonEntity, 'person', 'account.personId=person.id')
+        .where('name LIKE :searchName', { searchName: `%${searchName}%` })
+        .getMany()).map(v => ({ name: v.person.name, id: v.id }));
+    else if (personState == 'child')
+      return (await this.dataSource.getRepository(ChildEntity)
+        .createQueryBuilder('child')
+        .leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId = person.id')
+        .where('name LIKE :searchName', { searchName: `%${searchName}%` })
+        .getMany()).map(v => ({ name: v.person.name, id: v.id }));
+    else throw new BadRequestException(`Invalid 'personState'=${personState}`);
   }
 
 }

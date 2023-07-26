@@ -3,7 +3,7 @@
   [link]="{title:(child?.id?'Edit child information':'Register a child'),titleLink:this.child?'Edit':undefined}"
   [isPrinting]="undefined"></app-title>
 <div class="container">
-  <app-person-form [(person)]="person"></app-person-form>
+  <app-person-form [(person)]="person" state="child"></app-person-form>
   <mat-divider class="p-2 my-3 mx-5"></mat-divider>
   <form [formGroup]="childForm" class="container-fluid" (ngSubmit)="submit()">
     <div class="row">

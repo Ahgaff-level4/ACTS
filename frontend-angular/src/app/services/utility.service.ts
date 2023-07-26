@@ -14,7 +14,7 @@ export class UtilityService {
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth'];
   public isLoading = new BehaviorSubject<boolean>(false);
   /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
-  constructor(private http: HttpClient, private translatePipe: TranslatePipe,
+  constructor(private translatePipe: TranslatePipe,
     private calcAgePipe: CalcAgePipe, private ngLocation: NgLocation,
     public router: Router, private translateService: TranslateService,) {
   }
