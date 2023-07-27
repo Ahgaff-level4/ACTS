@@ -39,7 +39,6 @@ export class ProgramController {
   @Get(':id')
   @Roles('Admin', 'HeadOfDepartment', 'Teacher')
   findOne(@Param('id', ParseIntPipe) id: number) {
-    // return this.repo.find({relations:['activities'],where:{id}})
     return this.repo.createQueryBuilder('program')
       .leftJoinAndMapMany('program.activities', ActivityEntity, 'activity', 'activity.programId=program.id')
       .leftJoinAndMapOne('activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')

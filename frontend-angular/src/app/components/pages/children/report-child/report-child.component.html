@@ -1,9 +1,8 @@
 <div class="container">
   <ng-container *ngIf="childReport$ | async as childReport">
-    <div class="d-flex justify-content-between align-items-end">
+  <div class="d-flex justify-content-between align-items-end">
       <app-title [isPrinting]="isPrinting"></app-title>
-      <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5" mat-stroked-button
-        color="primary">
+      <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5" mat-stroked-button color="primary">
         <mat-icon>print</mat-icon>{{ "Print" | translate }}
       </button>
     </div>
@@ -13,7 +12,6 @@
     <app-card cardTitle="Personal information">
       <app-child-info [hideReport]="true" [isPrinting]="isPrinting" [child]="childReport.child"></app-child-info>
     </app-card>
-  </ng-container>
 
   <app-card cardTitle="Goals state">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
@@ -24,11 +22,22 @@
     </div>
   </app-card>
 
+  <app-card cardTitle="Improvement">
+    <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+    <div>
+      <!-- <ngx-charts-sparkline>
+      </ngx-charts-sparkline> -->
+      <p *ngFor="let g of childReport.goalStrength.goals">{{g.activity.name+': '+g.improveRate}}</p>
+    </div>
+  </app-card>
+</ng-container>
+
   <app-card cardTitle="Activities fields">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
     <div dir="ltr" style="min-height: 400px" class="me-4 mb-md-3" [ngClass]="ut.getDirection() == 'rtl'?'mt-3':''">
       <ngx-charts-polar-chart [legend]="true" [animations]="true" [showGridLines]="true" [roundDomains]="false"
-        [gradient]="true" [yAxis]="true" [results]="activitiesFieldsPolar$ | async" [yAxisTickFormatting]="stringify"
+        [gradient]="true" [yAxis]="true" [xAxis]="true" [labelTrim]="false" [labelTrimSize]="30"
+        [trimYAxisTicks]="false" [autoScale]="true" [results]="activitiesFieldsPolar$ | async"
         [legendTitle]="'Activities types' | translate" [showXAxisLabel]="true" [showYAxisLabel]="true"
         [xAxisLabel]="'Fields' | translate" [yAxisLabel]="'Number of Activities' | translate">
       </ngx-charts-polar-chart>

@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { IsDate, IsEnum, MaxLength } from "class-validator";
 import { IsOptional, IsString } from "class-validator";
 import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn } from "typeorm";
-import { Gender, ICreatePerson } from "../../../../interfaces.d";
+import { Gender, ICreatePerson } from "../../../../interfaces";
 
 export class CreatePerson implements ICreatePerson {
 	@IsString() @MaxLength(100)

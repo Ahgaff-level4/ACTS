@@ -128,7 +128,7 @@ export const PAGES: IPage[] = [
     title: 'Settings',
     link: '/settings',
     img: 'assets/img/Setting.svg',
-    desc: 'Settings and preference',
+    desc: 'Settings and preferences',
   },
 ];
 

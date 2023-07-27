@@ -29,9 +29,9 @@
     </mat-card>
   </div>
 
-  <mat-divider *ngIf="pr.canUser('dashboard')" class="mx-5 my-6"></mat-divider>
+  <mat-divider class="mx-5 my-6"></mat-divider>
 
-  <app-dashboard loading="lazy" *ngIf="pr.canUser('dashboard')"></app-dashboard>
+  <app-dashboard></app-dashboard>
 
   <mat-divider *ngIf="pr.user.value" class="mx-5 my-6"></mat-divider>
 

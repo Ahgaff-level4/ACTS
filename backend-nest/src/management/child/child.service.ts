@@ -65,7 +65,6 @@ export class ChildService {
       .leftJoinAndMapOne('activity.program', ProgramEntity, 'activityProgram', 'activity.programId=activityProgram.id')
       .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .where('child.id=:id', { id })
-      // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();
     }
     
@@ -80,7 +79,6 @@ export class ChildService {
       .leftJoinAndMapOne('activity.program', ProgramEntity, 'activityProgram', 'activity.programId=activityProgram.id')
       .leftJoinAndMapOne('child.program', ProgramEntity, 'program', 'child.programId=program.id')
       .where('child.id=:id', { id })
-      // .andWhere('goal.state != :state', { state: 'strength' })
       .getMany();
   }
 

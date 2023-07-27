@@ -271,7 +271,7 @@ export interface CustomTimeframe {
 export interface IChildReport {
 	child: IChildEntity;
 	goal: { completedCount: number, continualCount: number },
-	goalStrength: { goals: IGoalEntity[], strengths: IStrengthEntity[] }
+	goalStrength: { goals: (IGoalEntity & { improveRate: number })[], strengths: IStrengthEntity[] }
 }
 
 export interface IDashboard {
@@ -279,12 +279,12 @@ export interface IDashboard {
 	childrenCount: number;//the number of children in the system despite the timeframe
 	/**All counts depends on the timeframe */
 	counts: {
-		children:number;
+		children: number;
 		fields: number;
 		programs: number;
 		accounts: number;
-		completedGoals:number;
-		continualGoals:number;
+		completedGoals: number;
+		continualGoals: number;
 	}
 }
 

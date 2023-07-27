@@ -1,7 +1,7 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsOptional, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
-import { IAccountEntity, IChangePassword, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from './../../../../interfaces.d';
+import { IAccountEntity, IChangePassword, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from '../../../../interfaces';
 import { Transform } from "class-transformer";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEntity } from "./role/role.entity";

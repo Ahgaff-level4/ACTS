@@ -3,7 +3,7 @@ import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { UnauthorizedException } from "@nestjs/common/exceptions";
 import { Reflector } from "@nestjs/core";
 import { R } from "src/utility.service";
-import { Role, User } from './../../../interfaces.d';
+import { Role, User } from '../../../interfaces';
 import { Request } from "express";
 
 
@@ -25,6 +25,7 @@ export class RolesGuard implements CanActivate {
     if (req.path === '/api/auth/login'
       || req.path == '/api/auth/isLogin'
       || req.path == '/api/auth/logout'
+      || req.path.startsWith('/api/report/dashboard')
       || (req.path.startsWith('/api/person/')&&req.path.includes('file-manager')))//No authentication needed for these
       return true;
 
