@@ -11,33 +11,14 @@
 <div class="sticky-shadow shadow-lg position-sticky top-0 w-100">&nbsp;</div>
 
 <div class="container-fluid mt-5">
-  <mat-divider class="mx-5 my-5"></mat-divider>
+  <mat-divider class="mx-5 my-6"></mat-divider>
 
-  <div class="px-md-5 mx-md-5 mb-4 d-flex flex-column justify-content-center align-items-center">
-    <h3 class="my-primary-text mt-2 pb-2">
-      {{'Why Autism Children Technical System?'|translate}}
-    </h3>
-    <!-- <youtube-player class="rounded-5 shadow"
-    videoId="PeIN-Fe7DQo"
-    [width]="560"
-    [height]="315"
-    [playerVars]="{
-      autoplay: 0,
-    }"></youtube-player> -->
-    <video style="max-width:100%; max-height:60vh;aspect-ratio: 16 / 9;" class="rounded-5 shadow-sm" controls>
-      <source src="assets/ACTS.mp4" type="video/mp4">
-      Your browser does not support HTML5 video.
-    </video>
-  </div>
+  <app-about-us *ngIf="!pr.user.value"></app-about-us>
 
-  <mat-divider class="mx-5 mt-5"></mat-divider>
-
-  <app-about-us></app-about-us>
-
-  <mat-divider class="mx-5 my-5"></mat-divider>
+  <mat-divider *ngIf="!pr.user.value" class="mx-5 my-6"></mat-divider>
 
   <div class="d-flex flex-wrap justify-content-evenly">
-    <mat-card *ngFor="let card of pr.getUserPages('Home')|async" [routerLink]="card.link"
+    <mat-card *ngFor="let card of pr.getUserPages('Home')|async" [routerLink]="card.link" [fragment]="card.fragment"
       class="card m-3 shadow cursor-pointer mb-4 d-flex mdc-elevation--z7 rounded-5 align-items-center">
       <img loading="lazy" style="max-width:220px; max-height: 220px;" class="p-2" [src]="card.img"
         [alt]="card.alt??'image represent card\'s content'">
@@ -48,8 +29,13 @@
     </mat-card>
   </div>
 
-  <mat-divider class="mx-5 my-5"></mat-divider>
+  <mat-divider *ngIf="pr.canUser('dashboard')" class="mx-5 my-6"></mat-divider>
 
   <app-dashboard loading="lazy" *ngIf="pr.canUser('dashboard')"></app-dashboard>
 
+  <mat-divider *ngIf="pr.user.value" class="mx-5 my-6"></mat-divider>
+
+  <app-about-us *ngIf="pr.user.value"></app-about-us>
+
+  <mat-divider class="mx-5 my-6"></mat-divider>
 </div>

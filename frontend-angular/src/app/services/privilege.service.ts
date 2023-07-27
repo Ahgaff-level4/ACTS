@@ -17,10 +17,8 @@ export class PrivilegeService {
   public canUser(...actions: Privilege[]): boolean;
   public canUser(action: Privilege): boolean;
   public canUser(action: Privilege | Privilege[]): boolean {
-    if (Array.isArray(action))
-      return action.every(v => this.userHasAny(PRIVILEGES[v]));
-    else
-      return this.userHasAny(PRIVILEGES[action])
+    const actions: Privilege[] = Array.isArray(action) ? action : [action];
+    return actions.every(v => v == 'notLoggedIn' ? !this.user.value : this.userHasAny(PRIVILEGES[v]));
   }
 
   /**
@@ -38,7 +36,7 @@ export class PrivilegeService {
 
   /**@returns the pages that user has privilege to access */
   public getUserPages(without?: 'Home' | 'Settings') {
-    return this.user.pipe(map(v=>{
+    return this.user.pipe(map(v => {
       const pages = PAGES.filter(v => v.privilege ? this.canUser(v.privilege) : true);
       if (without == 'Home') {
         const [home, ...noHome] = pages;
@@ -178,4 +176,6 @@ export const PRIVILEGES = {
   backupRestore: A,
   /**print/export/copy table */
   printTable: AH,
+  /**Used to show/hide something only for notLoggedIn users */
+  notLoggedIn: [],
 }

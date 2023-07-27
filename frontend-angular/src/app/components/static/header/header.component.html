@@ -17,7 +17,7 @@
       <li *ngFor="let p of pr.getUserPages('Settings')|async" (click)="isShowDivIf=true" class="nav-item"
         routerLinkActive="active">
         <a class="nav-link" [ngClass]="ut.getActivePage()?.link==p.link?'activeLink':''"
-          [routerLink]="p.link">{{p.title|translate}}</a>
+          [routerLink]="p.link" [fragment]="p.fragment">{{p.title|translate}}</a>
       </li>
       <mat-divider class="w-25 center border-white border-opacity-25 d-lg-none d-block"></mat-divider>
       <app-header-actions class="d-lg-none d-block" (hideHeader)="isShowDivIf=true">

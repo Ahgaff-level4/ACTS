@@ -621,7 +621,7 @@
   "Copy row (with headers)": "نسخ الصف (مع الرؤوس)",
   "Edit row": "تعديل",
   "Delete the selected goal": "حذف الهدف المحدد",
-  "Why Autism Children Technical System?": "لماذا النظام الفني لأطفال التوحد؟",
+  "About Autism Children Technical System": "لماذا النظام الفني لأطفال التوحد؟",
   "Child name": "اسم الطفل",
   "All time": "كل الوقت",
   "All Time": "كل الوقت",
@@ -802,5 +802,7 @@
   "Existed accounts": "حسابات موجودة",
   "Parent name...":"اسم ولي الأمر...",
   "There is no parent with name":"لايوجد ولي أمر باسم",
-  "Register new parent": "تسجيل ولي أمر جديد"
+  "Register new parent": "تسجيل ولي أمر جديد",
+  "About Us":"معلومات عنا",
+  "Who we are?":"من نحن؟"
 }

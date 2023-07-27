@@ -15,7 +15,7 @@
         <ul class="navbar-nav px-0 text-center d-flex flex-column">
           <li *ngFor="let p of pr.getUserPages('Settings')|async" class="px-3 nav-item" routerLinkActive="active">
             <a class="nav-link" [ngClass]="ut.getActivePage()?.link==p.link?'activeLink':''"
-              [routerLink]="p.link">{{p.title|translate}}</a>
+              [routerLink]="p.link" [fragment]="p.fragment">{{p.title|translate}}</a>
           </li>
           <li class="px-3 nav-item d-flex justify-content-center" routerLinkActive="active">
             <app-header-actions></app-header-actions>

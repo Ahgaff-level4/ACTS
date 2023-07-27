@@ -13,7 +13,6 @@ import { Privilege } from './privilege.service';
 export class UtilityService {
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth'];
   public isLoading = new BehaviorSubject<boolean>(false);
-  /**Used in ag-grid options. So, that we generalize some common columns' options by setting the type of the column with one of these types */
   constructor(private translatePipe: TranslatePipe,
     private calcAgePipe: CalcAgePipe, private ngLocation: NgLocation,
     public router: Router, private translateService: TranslateService,) {
@@ -24,7 +23,7 @@ export class UtilityService {
   /**
    * We recommend using pipe translate (e.g., `<h1>{{title | translate}}</h1>`)
    * @param key key inside the ar.json file. If `null` or `undefined` returns empty string
-   * @returns correspond value of the provided key translation (e.g., 'Login' or 'تسجيل دخول')
+   * @returns correspond value of the provided key translation base on user's selected language (e.g., 'Login' or 'تسجيل دخول')
    */
   public translate(key: string | null | undefined, ...args: any[]): string {
     if (key === null || key === undefined)
@@ -119,6 +118,13 @@ export const PAGES: IPage[] = [
     privilege: 'accountsPage'
   },
   {
+    title: 'About Us',
+    link: '/about',
+    img: 'assets/img/logo.png',
+    desc: 'Who we are?',
+    privilege:'notLoggedIn'
+  },
+  {
     title: 'Settings',
     link: '/settings',
     img: 'assets/img/Setting.svg',
@@ -132,5 +138,6 @@ export interface IPage {
   img: string,
   alt?: string,
   desc: string,
+  fragment?:string,
   privilege?: Privilege
 }

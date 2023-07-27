@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, ParseIntPipe, Patch, Post, Put, UnauthorizedException } from '@nestjs/common';
 import { AccountService } from './account.service';
 import { ChangePassword, CreateAccount, UpdateAccount } from './account.entity';
 import { Roles } from 'src/auth/Role.guard';
@@ -12,8 +12,10 @@ export class AccountController {
     constructor(private readonly accountService: AccountService, private notify: NotificationGateway) { }
 
     @Post()
-    @Roles('Admin')
+    @Roles('Admin', 'HeadOfDepartment')//HeadOfDepartment can only create Parent account
     async create(@Body() createAccount: CreateAccount, @UserMust() user: User) {
+        if (!user.roles.includes('Admin') && (createAccount.roles.length != 1 || !createAccount.roles.includes('Parent')))
+            throw new UnauthorizedException('HeadOfDepartment can only create parent account. createAccount.roles=' + createAccount.roles + '. User roles=' + user.roles);
         const ret = await this.accountService.create(createAccount);
         this.notify.emitNewNotification({
             by: user,

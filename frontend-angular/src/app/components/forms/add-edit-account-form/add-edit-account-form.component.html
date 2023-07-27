@@ -52,7 +52,7 @@
     </div>
   </div>
 
-  <div class="row">
+  <div *ngIf="state != 'add-parent'" class="row">
     <div class="col-md-12 p-2">
       <h5>{{'Role'|translate}}</h5>
       <div class="d-flex align-items-center">

@@ -1,5 +1,5 @@
 
-<section class="container">
+<section id="about-us" class="container">
   <app-title [link]="{title:'About the Hadramout Foundation for Autism',class:'my-primary-text'}" [isPrinting]="undefined"></app-title>
 
   <div class="row my-5">
@@ -35,5 +35,23 @@
   <div class="m-md-3 mt-5 pt-5">
     <a href="https://www.facebook.com/hadaidorg" rel="noopener" target="_blank"><img class="rounded-4 shadow-sm" width="100%"
         src="assets/img/HFA-banner.jpg" alt="Hadramout Foundation for Autism banner" /></a>
+  </div>
+
+  <mat-divider class="mx-5 my-6"></mat-divider>
+  <div class="px-md-5 mx-md-5 mb-4 d-flex flex-column justify-content-center align-items-center">
+    <h3 class="my-primary-text mt-2 pb-2">
+      {{'About Autism Children Technical System'|translate}}
+    </h3>
+    <!-- <youtube-player class="rounded-5 shadow"
+    videoId="PeIN-Fe7DQo"
+    [width]="560"
+    [height]="315"
+    [playerVars]="{
+      autoplay: 0,
+    }"></youtube-player> -->
+    <video style="max-width:100%; max-height:60vh;aspect-ratio: 16 / 9;" class="rounded-5 shadow-sm" controls>
+      <source src="assets/ACTS.mp4" type="video/mp4">
+      Your browser does not support HTML5 video.
+    </video>
   </div>
 </section>
