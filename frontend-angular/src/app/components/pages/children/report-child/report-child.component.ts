@@ -94,7 +94,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
       };
     if (this.childReport$.value)
       this.service.fetchChildReport(this.childReport$.value.child.id, timeframe)
-        .pipe(tap(v => this.childReport$.next(v)),tap(v=>console.log(v))).subscribe();
+        .pipe(tap(v => this.childReport$.next(v)), tap(v => console.log(v))).subscribe();
 
   }
 
@@ -106,8 +106,6 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
       this.isPrinting = false
     }, 1000);
   }
-
-  stringify = (v: any) => v + '';
 
 
 }

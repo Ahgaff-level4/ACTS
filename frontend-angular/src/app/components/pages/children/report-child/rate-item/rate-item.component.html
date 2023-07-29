@@ -1,0 +1,19 @@
+<div class="d-flex flex-column justify-content-center m-3 p-2 align-items-center text-center">
+  <div class="justify-content-center mb-1 align-items-center d-flex">
+    <p class="mb-0 d-inline my-primary-text fs-1 mx-2" [matTooltip]="description">
+      {{header}}
+    </p>
+    <div *ngIf="changeRate() != null" class="d-inline-flex rounded-5 bg-opacity-25 px-1" style="font-size: 1rem;"
+      [ngClass]="(changeRate()??0) >0?'bg-success text-success':((changeRate()??0)<0?'bg-danger text-danger':'bg-secondary text-black')"
+      [matTooltip]="changeRateTooltip|translate">
+      <mat-icon inline class="mx-1">
+        {{(changeRate()??0)>0?'trending_up':((changeRate()??0)<0?'trending_down':'trending_flat')}} </mat-icon>
+          <span class="mx-1">{{(changeRate()??0)|number:'1.0-1'}}%</span>
+    </div>
+  </div>
+  <p class="d-flex">{{description|translate}}&nbsp;
+    <mat-icon inline [matTooltip]="descriptionTooltip|translate">
+      help
+    </mat-icon>
+  </p>
+</div>

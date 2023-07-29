@@ -60,14 +60,6 @@ export class ReportService {
 
 		const goals = await this.dataSource.getRepository(GoalEntity)
 			.find({ relations: ['activity'], where: { childId: id, state: Not('strength'), assignDatetime: Between(new Date(from), new Date(to)) } });
-		// .createQueryBuilder('goal')
-		// .leftJoinAndMapOne('goal.activity', ActivityEntity, 'activity', "goal.activityId=activity.id")
-		// .leftJoinAndSelect('goal.evaluations', 'evaluation')
-		// .where({
-		// 	childId: id, state: Not('strength'), assignDatetime: Between(new Date(from), new Date(to)),
-		// 	evaluations: {}
-		// })
-		// .getMany(); Got error `cannot query one-to-many for property evaluations`
 
 		const strengths = await this.dataSource.getRepository(GoalEntity)
 			.find({ relations: ['activity'], where: { childId: id, state: 'strength', assignDatetime: Between(new Date(from), new Date(to)) } });
@@ -110,53 +102,31 @@ export class ReportService {
 		 * goalImprovementRate = (NewRate - OriginRate) / OriginRate * 100;
 		 */
 
-		// const goalNewEvaluation = await this.dataSource.getRepository(EvaluationEntity)
-		// 	.find({ where: { goalId: goals[0].id, evaluationDatetime: Between(new Date(from), new Date(to)) } })
-		let promises: Promise<EvaluationEntity[]>[] = [];
-		for (let goal of goals) {
-			let newFrom = new Date(from);
-			let newTo = new Date(to);
-			let durationSpan = newTo.getTime() - newFrom.getTime();//duration in millisecond
-			let originFrom = new Date(newFrom.getTime() - durationSpan);
-			let originTo = newFrom;
-			promises.push(this.dataSource.getRepository(EvaluationEntity)
-				.find({ where: { goalId: goal.id, evaluationDatetime: Between(newFrom, newTo) } }));
-			promises.push(this.dataSource.getRepository(EvaluationEntity)
-				.find({ where: { goalId: goal.id, evaluationDatetime: Between(originFrom, originTo) } }))
-		}
-		const promisesResult = await Promise.all(promises);
+		let newFrom = new Date(from);
+		let newTo = new Date(to);
+		let durationSpan = newTo.getTime() - newFrom.getTime();//duration in millisecond
+		let originFrom = new Date(newFrom.getTime() - durationSpan);
+		let originTo = newFrom;
+		const [evaluationsNEW, evaluationsORIGIN] = await Promise.all([this.dataSource.getRepository(EvaluationEntity).createQueryBuilder('evaluation')
+			.leftJoinAndMapOne('evaluation.goal', GoalEntity, 'goal', 'goal.id=evaluation.goalId')
+			.where('goal.childId=:id', { id })
+			.andWhere({ evaluationDatetime: Between(newFrom, newTo) })
+			.getMany(),
+		this.dataSource.getRepository(EvaluationEntity).createQueryBuilder('evaluation')
+			.leftJoinAndMapOne('evaluation.goal', GoalEntity, 'goal', 'goal.id=evaluation.goalId')
+			.where('goal.childId=:id', { id })
+			.andWhere({ evaluationDatetime: Between(originFrom, originTo) })
+			.getMany()]);
 
+		//also called NEW avg evaluations rate
+		const avgEvaluationsRate = evaluationsNEW.length == 0 ? 0 : (evaluationsNEW.filter(e => e.rate == 'excellent').length / evaluationsNEW.length) * 100;
+		//also called ORIGIN avg evaluations rate
+		const oldAvgEvaluationsRate = evaluationsORIGIN.length == 0 ? 0 : (evaluationsORIGIN.filter(e => e.rate == 'excellent').length / evaluationsORIGIN.length) * 100;
+		const evaluationsCount = evaluationsNEW.length;
+		const oldEvaluationsCount = evaluationsORIGIN.length;
+		
+		//we let the frontend developer calculate the change by this formula: (NEW - ORIGIN)/ORIGIN
 
-		// const newEvaluations = await Promise.all(
-		// goals.map((v:IChildReport['goalStrength']['goals'][0] & {newEvaluations:IEvaluationEntity[],originEvaluations:IEvaluationEntity[]})=>{
-
-		// });
-		// )
-		let goalsWithRate = goals.map((goal: IChildReport['goalStrength']['goals'][0], i) => {
-			//promisesResult is array goals's evaluations. And it is double the length of goals;
-			//each goal has two group NEW and ORIGIN evaluations, and they are located as:
-			//goal[0]'s NEW group is promisesResult[0] and ORIGIN is promisesResult[1]
-			//goal[1]'s NEW group is promisesResult[2] and ORIGIN is promisesResult[3]
-			//formula:
-			//goal[x]'s NEW group is promisesResult[x*2],  ORIGIN is promisesResult[x*2+1]
-			let newGroup = promisesResult[i * 2];
-			let originGroup = promisesResult[i * 2 + 1];
-			let newRate = 0;
-			let originRate = 0;
-
-			if (newGroup.length > 0)//avoid dividing over zero
-				newRate = newGroup.filter(v => v.rate == 'excellent').length / newGroup.length;
-
-			if (originGroup.length > 0)
-				originRate = originGroup.filter(v => v.rate == 'excellent').length / originGroup.length;
-
-			goal.improveRate = 0;
-			if (originRate > 0)
-				goal.improveRate = ((newRate - originRate) / originRate) * 100;
-			return goal;
-		})
-
-
-		return { child, goal: { completedCount, continualCount }, goalStrength: { goals: goalsWithRate, strengths }, };
+		return { child, goal: { completedCount, continualCount, evaluationsCount,  oldEvaluationsCount, avgEvaluationsRate, oldAvgEvaluationsRate }, goalStrength: { goals, strengths }, };
 	}
 }

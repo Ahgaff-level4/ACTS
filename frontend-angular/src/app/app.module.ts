@@ -82,6 +82,7 @@ import { FileManagerComponent } from './components/static/file-manager/file-mana
 import { DatepickerComponent } from './components/forms/datepicker/datepicker.component';
 import { AddParentComponent } from './components/dialogs/add-edit/add-parent/add-parent.component';
 import { AddEditAccountFormComponent } from './components/forms/add-edit-account-form/add-edit-account-form.component';
+import { RateItemComponent } from './components/pages/children/report-child/rate-item/rate-item.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
@@ -151,6 +152,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     DatepickerComponent,
     AddParentComponent,
     AddEditAccountFormComponent,
+    RateItemComponent,
   ],
   imports: [
     BrowserModule,

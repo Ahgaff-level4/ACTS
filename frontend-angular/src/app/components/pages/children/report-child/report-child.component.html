@@ -1,6 +1,6 @@
 <div class="container">
   <ng-container *ngIf="childReport$ | async as childReport">
-  <div class="d-flex justify-content-between align-items-end">
+    <div class="d-flex justify-content-between align-items-end">
       <app-title [isPrinting]="isPrinting"></app-title>
       <button *ngIf="!isPrinting" (click)="printHandle()" class="mx-1 mx-md-5" mat-stroked-button color="primary">
         <mat-icon>print</mat-icon>{{ "Print" | translate }}
@@ -13,6 +13,26 @@
       <app-child-info [hideReport]="true" [isPrinting]="isPrinting" [child]="childReport.child"></app-child-info>
     </app-card>
 
+    <app-card cardTitle="Rate">
+      <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+      <div class="d-flex justify-content-evenly flex-wrap">
+        <app-rate-item [header]="(childReport.goal.avgEvaluationsRate|number:'1.0-1')+'%'"
+          description="Average evaluations rate"
+          descriptionTooltip="The average of all evaluations rate within the chosen timeframe"
+          [rate]="{newRate:childReport.goal.avgEvaluationsRate,oldRate:childReport.goal.oldAvgEvaluationsRate}"
+          [changeRateTooltip]="('The change in the Average evaluations rate, compare to the old Average evaluations rate'|translate)+' ('+(childReport.goal.oldAvgEvaluationsRate|number:'1.0-1')+'%). '+ ('The old evaluations are the evaluations within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+
+        <app-rate-item [header]="(childReport.goal.evaluationsCount|number)??'0'"
+          description="Number of evaluations"
+          descriptionTooltip="Number of evaluations within the chosen timeframe"
+          [rate]="{newRate:childReport.goal.evaluationsCount,oldRate: childReport.goal.oldEvaluationsCount}"
+          [changeRateTooltip]="('The change in the number of evaluations, compare to the old number of evaluations'|translate)+' ('+(childReport.goal.oldEvaluationsCount|number)+'). '+('The old evaluations are the evaluations within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+      </div>
+    </app-card>
+  </ng-container>
+
   <app-card cardTitle="Goals state">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
     <div dir="ltr" class="ms-md-5 mb-md-3">
@@ -21,16 +41,6 @@
       </ngx-charts-advanced-pie-chart>
     </div>
   </app-card>
-
-  <app-card cardTitle="Improvement">
-    <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
-    <div>
-      <!-- <ngx-charts-sparkline>
-      </ngx-charts-sparkline> -->
-      <p *ngFor="let g of childReport.goalStrength.goals">{{g.activity.name+': '+g.improveRate}}</p>
-    </div>
-  </app-card>
-</ng-container>
 
   <app-card cardTitle="Activities fields">
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>

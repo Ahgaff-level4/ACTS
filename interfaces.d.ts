@@ -270,8 +270,17 @@ export interface CustomTimeframe {
 
 export interface IChildReport {
 	child: IChildEntity;
-	goal: { completedCount: number, continualCount: number },
-	goalStrength: { goals: (IGoalEntity & { improveRate: number })[], strengths: IStrengthEntity[] }
+	goal: {
+		completedCount: number, continualCount: number,
+		evaluationsCount:number,
+		/** old is used to calculate the change as: (evaluationsCount - oldEvaluationsCount) / oldEvaluationsCount. old is the evaluations within past mirror of chosen timeframe so if timeframe is February then past mirror(old) is January evaluations  */
+		oldEvaluationsCount:number,
+		/**ExcellentEvaluations / TotalEvaluations. Within the chosen timeframe*/
+		avgEvaluationsRate: number,
+		/** old is used to calculate the change as: (newEvaluationsRatePercent - oldEvaluationsRatePercent) / oldEvaluationsRatePercent. old is the evaluations within past mirror of chosen timeframe so if timeframe is February then past mirror(old) is January evaluations  */
+		oldAvgEvaluationsRate: number
+	},
+	goalStrength: { goals: IGoalEntity[], strengths: IStrengthEntity[] }
 }
 
 export interface IDashboard {
