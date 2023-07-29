@@ -12,11 +12,8 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - send email reset password. after adding email field in Account, dah...
 
-- Report: make use of (evaluations & goals) rate.
-
   
 - Logged in parent should see the new goals/evaluations that happened to their children. (Timeline?).
 
-- Report: child improvement within timeframe. IMPROVEMENT how he become better or worse :(
 
 - show Teacher/Admin 's evaluations & goals in view-account. NOTE: evaluations are very a lot, pagination?

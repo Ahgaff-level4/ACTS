@@ -16,13 +16,11 @@ import { NotificationService } from 'src/app/services/notification.service';
 export class DashboardComponent extends UnsubOnDestroy {
   public dashboard$ = new BehaviorSubject<IDashboard | null>(null);
   public childrenRegisterData$: Observable<[{ name: string, series: { value: number, name: Date | string }[] }]> = this.dashboard$.pipe(filter(v => v != null), map(v => {
-    let i = v!.childrenCount;
-    const ret = [{
+    return [{
       name: this.ut.translate('Number of Children'), series: v!.children
         .sort((a, b) => a.person.createdDatetime < b.person.createdDatetime ? 1 : (a.person.createdDatetime > b.person.createdDatetime ? -1 : 0))
-        .map((v) => ({ value: i--, name: new Date(v.person.createdDatetime) }))
-    }] as any;
-    return ret;
+        .map((c, i) => ({ value: v!.childrenCount - i, name: new Date(c.person.createdDatetime) }))
+    }];
   }));
 
   public numberCardsData$: Observable<IDashboard['counts']> = this.dashboard$.pipe(filter(v => v != null), map(dashboard => {

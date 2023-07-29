@@ -15,7 +15,7 @@ export class CreateGoal implements ICreateGoal {
 
 	@Type(() => Date) @IsDate() @IsOptional()
 	@CreateDateColumn({ type: 'datetime' })
-	public assignDatetime?: Date;
+	public assignDatetime: Date;
 
 	@IsEnum({ "continual": "continual", "strength": "strength", "completed": "completed" }
 		, { message: `state must be a valid enum value. Enum values are (continual, strength, completed)` })

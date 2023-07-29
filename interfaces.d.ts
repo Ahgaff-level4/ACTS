@@ -140,7 +140,7 @@ export interface ICreateEvaluation {
 	description: string;
 	mainstream?: string;
 	note?: string;
-	evaluationDatetime?: Date;
+	evaluationDatetime: Date;
 	rate: EvaluationRate;
 	goalId: number;
 	teacherId: number;
@@ -166,7 +166,7 @@ export interface IPersonEntity extends ICreatePerson {
 
 export interface ICreateStrength {
 	note?: string;
-	assignDatetime?: Date;
+	assignDatetime: Date;
 	activityId: number;
 	childId: number;
 	teacherId: number;
@@ -268,19 +268,82 @@ export interface CustomTimeframe {
 	to: string | Date,
 }
 
+/** HOW TO CALCULATE IMPROVEMENT/CHANGE RATE:
+ * To show the change of goals/evaluations...etc within a timeframe (start date (from), end date (to)).
+ * We need an old/origin value and a new/current value, new is the current value so if the average evaluations within X timeframe is 50% then it is what we call NEW.
+ * Then what is the old/origin, will let have an example of change rate in Gold prices.
+ * We can't say how the Gold price rise unless we have the old Gold price.
+ * But when it comes to the change in the average evaluations rate what will be the old/origin average evaluations rate?
+ * Let have an example:
+ * If user chose timeframe such as January (from: 1/1, to: 1/31) 
+ * then we will compare the evaluations of January to the evaluations of December 2022.
+ * Why? because to compare an improvement/change we should have base to compare to, 
+ * and the base timeframe from a chosen timeframe can not be static, it won't be helpful.
+ * So, we can't say for example the evaluations in this week improved unless we compare it with the previous week.
+ * To do this in an arbitrary timeframe such as from: 5/13, to: 7/29 (not static such as Week/Month...etc).
+ * We first will get all evaluations within the NEW timeframe.
+ * The OLD/ORIGIN timeframe is the past mirrored of the user's chosen timeframe;
+ * the past mirror of a timeframe can be easily understand as below:
+ * February => ~January (Past mirror of January).
+ * This week => Last week.
+ * from:2/20, to:2/30 => from:2/10, to:2/20.
+ * Note: past mirror is made up term :)
+ * to calculate a past mirror from a timeframe we do the following (Pseudocode):
+ * ```pseudocode
+ * //user chosen timeframe
+ * NewFrom = 4/20;
+ * NewTo   = 4/25;
+ * daysDuration = NewTo - NewFrom;// 5 days
+ * OriginFrom = NewFrom - daysDuration;// 4/15
+ * OriginTo = NewFrom;// 4/20
+ * ```
+ * To get the improvement/change of average evaluations rate after we get the evaluations within NEW timeframe and ORIGIN timeframe:
+ * Calculate the NEW and ORIGIN rate by dividing number Of excellent evaluations over the number of evaluations:
+ * ```javascript
+ * rate = numberOfExcellentEvaluations / numberOfEvaluations;
+ * ```
+ * Finally after we get NEW rate and ORIGIN rate we calculate the improvement/change rate as following:
+ * ```javascript
+ * //improvement/change formula: (new - origin) / origin * 100; You can use this to calculate the raise of Gold price :)
+ * changeRate = (NewRate - OriginRate) / OriginRate * 100;
+ * ```
+ */
 export interface IChildReport {
+	//some properties can be drive from the same object such as `goalsCount=completedCount+continualCount` but for the sake of simplicity and readability we ignore that
 	child: IChildEntity;
-	goal: {
-		completedCount: number, continualCount: number,
-		evaluationsCount:number,
+	evaluation: {
+		evaluationsCount: number,
 		/** old is used to calculate the change as: (evaluationsCount - oldEvaluationsCount) / oldEvaluationsCount. old is the evaluations within past mirror of chosen timeframe so if timeframe is February then past mirror(old) is January evaluations  */
-		oldEvaluationsCount:number,
+		oldEvaluationsCount: number,
 		/**ExcellentEvaluations / TotalEvaluations. Within the chosen timeframe*/
 		avgEvaluationsRate: number,
 		/** old is used to calculate the change as: (newEvaluationsRatePercent - oldEvaluationsRatePercent) / oldEvaluationsRatePercent. old is the evaluations within past mirror of chosen timeframe so if timeframe is February then past mirror(old) is January evaluations  */
-		oldAvgEvaluationsRate: number
+		oldAvgEvaluationsRate: number,
+		evaluations: {
+			rate: IEvaluationEntity['rate'],
+			evaluationDatetime: IEvaluationEntity['evaluationDatetime'],
+		}[]
 	},
-	goalStrength: { goals: IGoalEntity[], strengths: IStrengthEntity[] }
+	goal: {
+		goals: IGoalEntity[],
+		completedCount: number,
+		continualCount: number,
+		goalsCount: number,
+		oldGoalsCount: number,
+		/** CompletedGoals / totalGoals */
+		avgGoalsRate: number,
+		oldAvgGoalsRate: number,
+		goalsStrengthsCount: number,
+		oldGoalsStrengthsCount: number,
+		/** (CompletedGoals + totalStrengths) / (totalGoals + totalStrengths) */
+		avgGoalsStrengthsRate: number,
+		oldAvgGoalsStrengthsRate: number,
+	},
+	strength: {
+		strengths: IStrengthEntity[],
+		strengthsCount: number,
+		oldStrengthsCount: number,
+	},
 }
 
 export interface IDashboard {

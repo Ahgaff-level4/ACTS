@@ -16,18 +16,48 @@
     <app-card cardTitle="Rate">
       <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
       <div class="d-flex justify-content-evenly flex-wrap">
-        <app-rate-item [header]="(childReport.goal.avgEvaluationsRate|number:'1.0-1')+'%'"
-          description="Average evaluations rate"
-          descriptionTooltip="The average of all evaluations rate within the chosen timeframe"
-          [rate]="{newRate:childReport.goal.avgEvaluationsRate,oldRate:childReport.goal.oldAvgEvaluationsRate}"
-          [changeRateTooltip]="('The change in the Average evaluations rate, compare to the old Average evaluations rate'|translate)+' ('+(childReport.goal.oldAvgEvaluationsRate|number:'1.0-1')+'%). '+ ('The old evaluations are the evaluations within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+
+        <app-rate-item [header]="(childReport.evaluation.evaluationsCount|number)??'0'" description="Number of Evaluations"
+          descriptionTooltip="Number of evaluations within the chosen timeframe"
+          [rate]="{newRate:childReport.evaluation.evaluationsCount,oldRate: childReport.evaluation.oldEvaluationsCount}"
+          [changeRateTooltip]="('The change in the number of evaluations, compare to the old number of evaluations'|translate)+' ('+(childReport.evaluation.oldEvaluationsCount|number)+'). '+('The old evaluations are the evaluations within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
         </app-rate-item>
 
-        <app-rate-item [header]="(childReport.goal.evaluationsCount|number)??'0'"
-          description="Number of evaluations"
-          descriptionTooltip="Number of evaluations within the chosen timeframe"
-          [rate]="{newRate:childReport.goal.evaluationsCount,oldRate: childReport.goal.oldEvaluationsCount}"
-          [changeRateTooltip]="('The change in the number of evaluations, compare to the old number of evaluations'|translate)+' ('+(childReport.goal.oldEvaluationsCount|number)+'). '+('The old evaluations are the evaluations within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        <app-rate-item [header]="(childReport.evaluation.avgEvaluationsRate|number:'1.0-1')+'%'"
+          description="Average Evaluations Rate"
+          descriptionTooltip="Average of all evaluations rate within the chosen timeframe"
+          [rate]="{newRate:childReport.evaluation.avgEvaluationsRate,oldRate:childReport.evaluation.oldAvgEvaluationsRate}"
+          [changeRateTooltip]="('The change in the Average evaluations rate, compare to the old Average evaluations rate'|translate)+' ('+(childReport.evaluation.oldAvgEvaluationsRate|number:'1.0-1')+'%). '+ ('The old evaluations are the evaluations within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+
+        <app-rate-item [header]="(childReport.goal.goalsCount|number)??'0'" description="Number of Goals"
+          descriptionTooltip="Number of goals within the chosen timeframe"
+          [rate]="{newRate:childReport.goal.goalsCount,oldRate: childReport.goal.oldGoalsCount}"
+          [changeRateTooltip]="('The change in the number of goals, compare to the old number of goals'|translate)+' ('+(childReport.goal.oldGoalsCount|number)+'). '+('The old goals are the goals within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+
+        <app-rate-item [header]="(childReport.goal.avgGoalsRate|number:'1.0-1')+'%'" description="Average Goals Rate"
+          descriptionTooltip="Average of all goals rate within the chosen timeframe. Note: goals rate is determine by its State, 'completed' state will have positive affect on this rate"
+          [rate]="{newRate:childReport.goal.avgGoalsRate,oldRate: childReport.goal.oldAvgGoalsRate}"
+          [changeRateTooltip]="('The change in the Average goals rate, compare to the old Average goals rate'|translate)+' ('+(childReport.goal.oldAvgGoalsRate|number:'1.0-1')+'%). '+('The old goals are the goals within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+
+        <app-rate-item [header]="(childReport.strength.strengthsCount|number)??'0'" description="Number of Strengths"
+          descriptionTooltip="Number of strengths within the chosen timeframe"
+          [rate]="{newRate:childReport.strength.strengthsCount,oldRate: childReport.strength.oldStrengthsCount}"
+          [changeRateTooltip]="('The change in the number of strengths, compare to the old number of strengths'|translate)+' ('+(childReport.strength.oldStrengthsCount|number)+'). '+('The old strengths are the strengths within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+
+        <app-rate-item [header]="(childReport.goal.goalsStrengthsCount|number)??'0'" description="Number of Goals & Strengths"
+          descriptionTooltip="Number of goals and strengths combined within the chosen timeframe"
+          [rate]="{newRate:childReport.goal.goalsStrengthsCount,oldRate: childReport.goal.oldGoalsStrengthsCount}"
+          [changeRateTooltip]="('The change in the number of goals and strengths combined, compare to the old number of goals and strengths combined'|translate)+' ('+(childReport.goal.oldGoalsStrengthsCount|number)+'). '+('The old goals and strengths are within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
+        </app-rate-item>
+
+        <app-rate-item [header]="(childReport.goal.avgGoalsStrengthsRate|number:'1.0-1')+'%'" description="Average Goals & Strengths Rate"
+          descriptionTooltip="Average of all goals and strengths rate within the chosen timeframe. Note: goals with 'completed' state and number of strengths will have positive affect on this rate"
+          [rate]="{newRate:childReport.goal.avgGoalsStrengthsRate,oldRate: childReport.goal.oldAvgGoalsStrengthsRate}"
+          [changeRateTooltip]="('The change in the Average goals & strengths rate, compare to the old Average goals & strengths rate'|translate)+' ('+(childReport.goal.oldAvgGoalsStrengthsRate|number:'1.0-1')+'%). '+('The old goals and strengths are within a mirror of the chosen timeframe. Example: if chosen timeframe is this week then the old timeframe will be the previous week.'|translate)">
         </app-rate-item>
       </div>
     </app-card>
@@ -39,6 +69,30 @@
       <ngx-charts-advanced-pie-chart [view]="[0, 200]" [results]="goalsStatePieData$ | async" [gradient]="true"
         [label]="'Total' | translate">
       </ngx-charts-advanced-pie-chart>
+    </div>
+  </app-card>
+
+  <app-card cardTitle="Evaluations">
+    <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+    <div dir="ltr" class="me-3 me-md-5 mb-md-3 mt-2">
+      <ngx-charts-line-chart [results]="evaluationsChartData$|async" [gradient]="true"
+        [animations]="true" [xAxis]="true" [yAxis]="true" [showGridLines]="true" [roundDomains]="false"
+        [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisTickFormatting]="xAxisTickFormatting"
+        [xAxisLabel]="'Evaluation Date' | translate" [yAxisLabel]="'Number of Evaluations' | translate"
+        [timeline]="true" [legend]="true" [legendTitle]="'Evaluation Rate' | translate">
+      </ngx-charts-line-chart>
+    </div>
+  </app-card>
+
+  <app-card cardTitle="Goals & Strengths">
+    <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+    <div dir="ltr" class="me-3 me-md-5 mb-md-3 mt-2">
+      <ngx-charts-line-chart [results]="goalsStrengthsChartData$|async" [gradient]="true"
+        [animations]="true" [xAxis]="true" [yAxis]="true" [showGridLines]="true" [roundDomains]="false"
+        [showXAxisLabel]="true" [showYAxisLabel]="true" [xAxisTickFormatting]="xAxisTickFormatting"
+        [xAxisLabel]="'Assignment Date' | translate" [yAxisLabel]="'Number' | translate"
+        [timeline]="true" [legend]="true" [legendTitle]="'Type' | translate">
+      </ngx-charts-line-chart>
     </div>
   </app-card>
 

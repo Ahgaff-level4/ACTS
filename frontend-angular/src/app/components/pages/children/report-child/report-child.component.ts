@@ -33,20 +33,57 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     return [{
       name: this.ut.translate('Completed goals'), series: fields.map(f => ({
         name: f.name,
-        value: report.goalStrength.goals.filter(g => g.state == 'completed' && g.activity.fieldId == f.id).length
+        value: report.goal.goals.filter(g => g.state == 'completed' && g.activity.fieldId == f.id).length
       }))
     }, {
       name: this.ut.translate('Continual goals'), series: fields.map(f => ({
         name: f.name,
-        value: report.goalStrength.goals.filter(g => g.state == 'continual' && g.activity.fieldId == f.id).length,
+        value: report.goal.goals.filter(g => g.state == 'continual' && g.activity.fieldId == f.id).length,
       }))
     }, {
       name: this.ut.translate('Strengths activities'), series: fields.map(f => ({
         name: f.name,
-        value: report.goalStrength.strengths.filter(s => s.activity.fieldId == f.id).length
+        value: report.strength.strengths.filter(s => s.activity.fieldId == f.id).length
       }))
     }]
-  }))
+  }));
+
+  public evaluationsChartData$: Observable<{ name: string, series: { value: number, name: Date | string }[] }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
+    v!.evaluation.evaluations = v!.evaluation.evaluations.sort((a, b) => a.evaluationDatetime < b.evaluationDatetime ? 1 : (a.evaluationDatetime > b.evaluationDatetime ? -1 : 0))
+    const excellentEvaluations = v!.evaluation.evaluations.filter(e => e.rate == 'excellent');
+    const continualEvaluations = v!.evaluation.evaluations.filter(e => e.rate == 'continual');
+    return [{
+      name: this.ut.translate('Excellent'), series: excellentEvaluations
+        .map((v, i) => ({ value: excellentEvaluations.length - i, name: new Date(v.evaluationDatetime) }))
+    },
+    {
+      name: this.ut.translate('Continual'), series: continualEvaluations
+        .map((v, i) => ({ value: continualEvaluations.length - i, name: new Date(v.evaluationDatetime) }))
+    },
+    ];
+  }));
+
+  public goalsStrengthsChartData$: Observable<{ name: string, series: { value: number, name: Date | string }[] }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
+    v!.goal.goals = v!.goal.goals.sort((a, b) => a.assignDatetime < b.assignDatetime ? 1 : (a.assignDatetime > b.assignDatetime ? -1 : 0))
+    v!.strength.strengths = v!.strength.strengths.sort((a, b) => a.assignDatetime < b.assignDatetime ? 1 : (a.assignDatetime > b.assignDatetime ? -1 : 0))
+    const completedGoals = v!.goal.goals.filter(e => e.state == 'completed');
+    const continualGoals = v!.goal.goals.filter(e => e.state == 'continual');
+    const strengths = v!.strength.strengths;
+    return [{
+      name: this.ut.translate('Completed goal'), series: completedGoals
+        .map((v, i) => ({ value: completedGoals.length - i, name: new Date(v.assignDatetime) }))
+    },
+    {
+      name: this.ut.translate('Continual goal'), series: continualGoals
+        .map((v, i) => ({ value: continualGoals.length - i, name: new Date(v.assignDatetime) }))
+    },
+    {
+      name: this.ut.translate('Strength'), series: strengths
+        .map((v, i) => ({ value: strengths.length - i, name: new Date(v.assignDatetime) }))
+    },
+    ];
+  }));
+
 
   public timeframeFormGroup = new FormGroup({
     from: new FormControl<Date>(new Date(new Date().getFullYear() + '-' + (new Date().getMonth() + 1).toString().padStart(2, '0') + '-01')),//current date at day one. Ex:'2023-06-17' => '2023-06-01'
@@ -107,5 +144,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     }, 1000);
   }
 
-
+  xAxisTickFormatting = (v?: any) => {
+    return this.display.fromNow(v)
+  }
 }
