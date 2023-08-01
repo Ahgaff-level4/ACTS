@@ -10,11 +10,13 @@ import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { Router } from '@angular/router';
+import { CalcAgePipe } from 'src/app/pipes/date/calc-age.pipe';
 
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
+  providers: [CalcAgePipe]
 })
 export class ChildrenComponent extends UnsubOnDestroy {
   public selectedItem?: IChildEntity;
@@ -43,11 +45,11 @@ export class ChildrenComponent extends UnsubOnDestroy {
       colId: 'Age',//assigned `colId` because there are multiple columns with same field.
       field: 'person.birthDate',
       headerName: 'Age',
-      valueGetter: (v) => this.display.calcAge(v.data?.person.birthDate),//set the under the hood value
+      valueGetter: (v) => this.calcAgePipe.transform(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
-      valueFormatter: (v) => this.display.fromNow(v.data?.person.birthDate, true),
+      valueFormatter: (v) => this.display.fromNowPipe.transform(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
-      tooltipValueGetter: (v) => this.display.toDate(v.data?.person.birthDate),
+      tooltipValueGetter: (v) => this.display.toDatePipe.transform(v.data?.person.birthDate),
     },
     {
       colId: 'birthDate',
@@ -164,7 +166,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
     {
       field: 'teachers',
       headerName: 'Teachers',
-      valueGetter: (v) => this.display.childTeachers(v.data),
+      valueGetter: (v) => this.display.childTeachersPipe.transform(v.data),
       tooltipValueGetter: (v) => v.data?.teachers ? this.display.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.display.translate(', ')) : '',
     },
     {
@@ -192,14 +194,14 @@ export class ChildrenComponent extends UnsubOnDestroy {
   // Data that gets displayed in the grid
   public rowData = this.childService.children$.pipe(map(v => {
     if (this.pr.canUser('archiveChild'))
-      return this.display.deepClone(v);
-    else return this.display.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
+      return  JSON.parse(JSON.stringify(v));
+    else return  JSON.parse(JSON.stringify(v.filter(v => v.isArchive == false)));//Parent with archived child can not be viewed
   }));
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
-    public display: DisplayService, public pr: PrivilegeService, private nt: NotificationService,
-    private programService: ProgramService, private router:Router,) {
+    private display: DisplayService, public pr: PrivilegeService, private nt: NotificationService,
+    private programService: ProgramService, private router: Router, private calcAgePipe: CalcAgePipe) {
     super();
   }
 

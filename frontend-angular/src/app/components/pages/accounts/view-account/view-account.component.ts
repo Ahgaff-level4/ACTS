@@ -7,7 +7,6 @@ import { DisplayService } from 'src/app/services/display.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
-import { ChildService } from 'src/app/services/CRUD/child.service';
 
 @Component({
   selector: 'app-view-account',
@@ -18,7 +17,7 @@ export class ViewAccountComponent extends UnsubOnDestroy {
   public account$!: Observable<IAccountEntity>;
 
   constructor(public route: ActivatedRoute, public service: AccountService, private nt: NotificationService,
-    public display: DisplayService, public pr: PrivilegeService, public router: Router,) { super(); }
+    private display: DisplayService, public pr: PrivilegeService, public router: Router,) { super(); }
 
   ngOnInit(): void {
     let accountId = +(this.route.snapshot.paramMap.get('id') ?? 'null');

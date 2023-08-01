@@ -10,5 +10,4 @@ import { DisplayService } from 'src/app/services/display.service';
 export class PersonViewComponent {
   @Input() person!: IPersonEntity;
 
-  constructor(public display: DisplayService,) { }
 }

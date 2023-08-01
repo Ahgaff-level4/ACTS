@@ -7,11 +7,14 @@ import { ColDef, GridOptions } from 'ag-grid-community';
 import { NotificationService } from 'src/app/services/notification.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { Router } from '@angular/router';
+import { AccountRolesPipe } from 'src/app/pipes/account-roles.pipe';
+import { CalcAgePipe } from 'src/app/pipes/date/calc-age.pipe';
 
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
   styleUrls: ['./account.component.scss'],
+  providers:[AccountRolesPipe,CalcAgePipe]
 })
 export class AccountComponent extends UnsubOnDestroy {
   public selectedItem?: IAccountEntity;
@@ -33,11 +36,11 @@ export class AccountComponent extends UnsubOnDestroy {
       colId: 'Age',//assigned `colId` because there are multiple columns with same field.
       field: 'person.birthDate',
       headerName: 'Age',
-      valueGetter: (v) => this.display.calcAge(v.data?.person.birthDate),//set the under the hood value
+      valueGetter: (v) => this.calcAgePipe.transform(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
-      valueFormatter: (v) => this.display.fromNow(v.data?.person.birthDate, true),
+      valueFormatter: (v) => this.display.fromNowPipe.transform(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
-      tooltipValueGetter: (v) => this.display.toDate(v.data?.person.birthDate),
+      tooltipValueGetter: (v) => this.display.toDatePipe.transform(v.data?.person.birthDate),
     },
     {
       field: 'person.gender',
@@ -63,7 +66,7 @@ export class AccountComponent extends UnsubOnDestroy {
       field: 'roles',
       headerName: 'Roles',
       type: 'long',//filterParams in init
-      valueGetter: v => v.data?.roles ? this.display.accountRoles(v.data.roles) : '',
+      valueGetter: v => v.data?.roles ? this.accountRolesPipe.transform(v.data.roles) : '',
     },
     {
       field: 'person.createdDatetime',
@@ -74,7 +77,7 @@ export class AccountComponent extends UnsubOnDestroy {
       field: 'phones',
       headerName: 'Phone',
       type: 'long',
-      valueGetter: v => v.data ? this.display.accountPhones(v.data) : '',
+      valueGetter: v => v.data ? this.display.accountPhonesPipe.transform(v.data) : '',
     },
     {
       field: 'address',
@@ -98,9 +101,10 @@ export class AccountComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(public accountService: AccountService, public display: DisplayService,
+  constructor(public accountService: AccountService, private display: DisplayService,
     public nt: NotificationService, public router:Router,
-    public agGrid: AgGridService,) {
+    public agGrid: AgGridService,private accountRolesPipe:AccountRolesPipe,
+    private calcAgePipe:CalcAgePipe) {
     super()
   }
 
@@ -108,7 +112,7 @@ export class AccountComponent extends UnsubOnDestroy {
     this.accountService.fetch();
     this.sub.add(this.accountService.accounts$.subscribe(v => {
       if (v == undefined) return;
-      this.rowData = this.display.deepClone(v);
+      this.rowData = JSON.parse(JSON.stringify(v));
       this.gridOptions?.api?.refreshCells()
       this.gridOptions?.api?.redrawRows()
     }));

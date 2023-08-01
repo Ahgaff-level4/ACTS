@@ -61,7 +61,7 @@ export class FieldComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(private service: FieldService, public display: DisplayService, private nt: NotificationService,
+  constructor(private service: FieldService, private display: DisplayService, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }

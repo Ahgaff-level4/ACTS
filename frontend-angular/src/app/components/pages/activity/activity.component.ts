@@ -123,13 +123,13 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
           if (this.activitiesOf == 'program')
             this.sub.add(this.service.programItsActivities$.subscribe(async v => {
               if (v && v.id == +(id as string)) {
-                this.programOrField = this.display.deepClone(v);
+                this.programOrField =  JSON.parse(JSON.stringify(v));
               }
               else await this.service.fetchProgramItsActivities(+(id as string), true).catch(() => { });
             }));
           else this.sub.add(this.service.fieldItsActivities$.subscribe(async v => {
             if (v && v.id == +(id as string))
-              this.programOrField = this.display.deepClone(v);
+              this.programOrField =  JSON.parse(JSON.stringify(v));
             else await this.service.fetchFieldItsActivities(+(id as string), true).catch(() => { })
           }));
         } else {

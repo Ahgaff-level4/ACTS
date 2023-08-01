@@ -1,15 +1,21 @@
 import { Injectable } from '@angular/core';
 import { IAccountEntity, IChildEntity, Role } from '../../../../interfaces';
-import { DatePipe } from '../pipes/date.pipe';
-import { FromNowPipe } from '../pipes/from-now.pipe';
-import { DateTimeWeekPipe } from '../pipes/date-time-week.pipe';
+import { DatePipe } from '../pipes/date/date.pipe';
+import { FromNowPipe } from '../pipes/date/from-now.pipe';
+import { DateTimeWeekPipe } from '../pipes/date/date-time-week.pipe';
 import { BehaviorSubject, first } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { CalcAgePipe } from '../pipes/calc-age.pipe';
 import { Location as NgLocation } from '@angular/common';
-import * as moment from 'moment';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Privilege } from './privilege.service';
+import { AccountRolesPipe } from '../pipes/account-roles.pipe';
+import { CalcAgePipe } from '../pipes/date/calc-age.pipe';
+import { ChildTeachersPipe } from '../pipes/child-teachers.pipe';
+import { DateWeekPipe } from '../pipes/date/date-week.pipe';
+import { RangePipe } from '../pipes/range.pipe';
+import { TeacherTeachesPipe } from '../pipes/teacher-teaches.pipe';
+import { AccountPhonesPipe } from '../pipes/account-phones.pipe';
+import { AccountPhonesArrPipe } from '../pipes/account-phones-arr.pipe';
 @Injectable({
   providedIn: 'root'
 })
@@ -17,39 +23,18 @@ export class DisplayService {
   public isLoading = new BehaviorSubject<boolean>(false);
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth'];
 
-  constructor(private toDatePipe: DatePipe,
-    private fromNowPipe: FromNowPipe, private dateTimeWeekPipe: DateTimeWeekPipe,
-    private translatePipe: TranslatePipe, private calcAgePipe: CalcAgePipe,
+  constructor(private translatePipe: TranslatePipe,
+    public accountRolesPipe: AccountRolesPipe, public calcAgePipe: CalcAgePipe,
+    public childTeachersPipe: ChildTeachersPipe, public toDateTimeWeekPipe: DateTimeWeekPipe,
+    public toDateWeekPipe: DateWeekPipe, public toDatePipe: DatePipe, public fromNowPipe: FromNowPipe,
+    public teacherTeachesPipe: TeacherTeachesPipe, public accountPhonesPipe: AccountPhonesPipe,
+    public accountPhonesArrPipe: AccountPhonesArrPipe,
     private ngLocation: NgLocation, private translateService: TranslateService,) { }
 
-  /**User friendly to display a child's teachers name */
-  childTeachers(child: IChildEntity | undefined): string {
-    if (Array.isArray(child?.teachers))
-      return child!.teachers!.map(v => v.person.name).join(this.translate(', '))
-    else return '';
-  }
-
-  /**Display an account phones joined by a comma. Empty string if none */
-  accountPhones(account: IAccountEntity | undefined): string {
-    const phones = this.accountPhonesArr(account);
-    if (phones.length == 0)
-      return '';
-    return phones.filter(v => !!v).join(this.translate(', '));
-  }
-
-  accountPhonesArr(account: IAccountEntity | undefined): string[] {
-    if (!account)
-      return [];
-    const phones = [];
-    for (let i = 0; i < 10; i++)
-      phones.push(account['phone' + i]);
-    return phones;
-  }
 
 
-  public accountRoles(roles: Role[]): string {
-    return roles.map(v => this.translate(v === 'HeadOfDepartment' ? 'Head of Department' : v)).join(this.translate(', '));
-  }
+
+
 
   /**@returns ex: `Third of 5 siblings (2 girls, 3 boys)` */
   public childFamilyInformation(child: IChildEntity) {
@@ -72,56 +57,18 @@ export class DisplayService {
     return ret + ')';
   }
 
-  /**
- *
- * @param value date object
- * @param noAgo boolean|undefined
- * @returns string user friendly date from now.
- * - If `noAgo==true` Ex: `4 months`, `2 days`.
- * - If `noAgo==undefined|false` Ex: `4 months ago`, `2 days ago`.
- * - If value is not expected returns empty string.
- */
-  public fromNow(value: string | Date | moment.Moment | null | undefined, noAgo?: boolean): string {
-    return this.fromNowPipe.transform(value, noAgo) ?? '';
-  }
-
-  /**@returns string format as 'yyyy/M/D' */
-  public toDate(value: string | Date | moment.Moment | null | undefined): string {
-    return this.toDatePipe.transform(value);
-  }
-
-  /**@returns string format as 'yyyy/M/D. h:mm A. dddd' */
-  public toDateTimeWeek(value: string | Date | moment.Moment | null | undefined): string {
-    return this.dateTimeWeekPipe.transform(value);
-  }
-
-  /** display the children that the teacher teaches, specifically children name array joined by a comma */
-  accountTeaches(teacher: IAccountEntity): string {
-    return teacher.teaches?.map(c => c.person?.name).join(this.translate(', ')) ?? '';
-  }
-
-  //use titleCase built in pipe if you want titleCase in an html
-  titleCase(n: string): string {
-    return n.split('').map((v, i) => (i == 0 ? v.toUpperCase() : v)).join('');
-  }
 
   /**
    * We recommend using pipe translate (e.g., `<h1>{{title | translate}}</h1>`)
    * @param key key inside the ar.json file. If `null` or `undefined` returns empty string
    * @returns correspond value of the provided key translation base on user's selected language (e.g., 'Login' or 'تسجيل دخول')
-   */
+   *///some pipes use copy of this function reconsider change them if you wanna change it
   public translate(key: string | null | undefined, ...args: any[]): string {
     if (key === null || key === undefined)
       return '';
     return this.translatePipe.transform(key, args);
   }
 
-  /**
-   * @returns number of years from provided date until now.
-   * NOTE: IF PROVIDED DATE IS INVALID THEN IT RETURNS `0` */
-  public calcAge(value: string | Date | moment.Moment | null | undefined): number {
-    return this.calcAgePipe.transform(value);
-  }
 
   public get currentLang(): 'ar' | 'en' {
     return this.translateService.currentLang.includes('ar') ? 'ar' : 'en'

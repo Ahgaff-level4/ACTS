@@ -11,7 +11,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
   constructor(private display: DisplayService, private nt: NotificationService, private router: Router,) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
-    const requestClone = req.clone();
+    // const requestClone = req.clone();
 
     const obs = next.handle(req)
       .pipe(

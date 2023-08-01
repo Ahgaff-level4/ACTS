@@ -7,7 +7,7 @@ import * as moment from 'moment';
 export class CalcAgePipe implements PipeTransform {
 
   /**@returns number of years from provided date until now. IF PROVIDED DATE IS INVALID RETURN `0` */
-  transform(value: unknown, ...args: unknown[]): number {
+  transform(value?: Date|string|null): number {
     var date;
     if (value == undefined || value === '')
       return 0;

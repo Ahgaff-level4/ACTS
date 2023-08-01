@@ -96,10 +96,10 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
 
   ngOnInit(): void {
     //refresh displayed dateTimeWeek every minute
-    this.nowDatetime = this.display.toDateTimeWeek(new Date());
+    this.nowDatetime = this.display.toDateTimeWeekPipe.transform(new Date());
     this.sub.add(interval(1000)
-      .pipe(filter(() => this.nowDatetime != this.display.toDateTimeWeek(new Date())))
-      .subscribe(() => this.nowDatetime = this.display.toDateTimeWeek(new Date()))
+      .pipe(filter(() => this.nowDatetime != this.display.toDateTimeWeekPipe.transform(new Date())))
+      .subscribe(() => this.nowDatetime = this.display.toDateTimeWeekPipe.transform(new Date()))
     );
 
 
@@ -144,6 +144,6 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
   }
 
   xAxisTickFormatting = (v?: any) => {
-    return this.display.fromNow(v)
+    return this.display.fromNowPipe.transform(v)
   }
 }

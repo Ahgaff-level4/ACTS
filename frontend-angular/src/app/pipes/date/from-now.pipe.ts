@@ -17,7 +17,7 @@ export class FromNowPipe implements PipeTransform {
    * - If `args==undefined` Ex: `4 months ago`, `2 days ago`.
    * - If value is not expected returns empty string.
    */
-  transform(value: unknown, ...args: unknown[]): string {
+  transform(value: Date|string|null|undefined, isShort:boolean = false): string {
     var date;
     if (value == null || value === '')
       return '';
@@ -28,7 +28,7 @@ export class FromNowPipe implements PipeTransform {
 
     if (date) {
       moment.locale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
-      if (args[0] === true)
+      if (isShort === true)
         return moment(date).fromNow(true);
 
       return moment(date).fromNow();

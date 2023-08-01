@@ -82,7 +82,7 @@ export class ProgramComponent extends UnsubOnDestroy {
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
-  constructor(private service: ProgramService, public display: DisplayService, private nt: NotificationService,
+  constructor(private service: ProgramService, private display: DisplayService, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService, private router:Router,) {
     super();
   }

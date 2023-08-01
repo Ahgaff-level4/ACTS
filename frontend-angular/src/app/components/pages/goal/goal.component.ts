@@ -142,7 +142,7 @@ export class GoalComponent extends UnsubOnDestroy {
   ];
 
 
-  constructor(public service: GoalService, public display: DisplayService, private nt: NotificationService,
+  constructor(public service: GoalService, private display: DisplayService, private nt: NotificationService,
     private route: ActivatedRoute, public agGrid: AgGridService, private router:Router,
     private fieldService: FieldService, private programService: ProgramService,
     public pr: PrivilegeService) {

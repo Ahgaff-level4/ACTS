@@ -6,7 +6,8 @@ import * as moment from 'moment';
 })
 export class DatePipe implements PipeTransform {
 
-  transform(value: unknown, ...args: unknown[]): string {
+  /**@returns string format as 'yyyy/M/D' */
+  transform(value: Date | string | null | undefined): string {
     var date;
     if (value == undefined || value === '')
       return '';

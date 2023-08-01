@@ -6,16 +6,16 @@
     <p><span class="fw-bold">
         {{'Address'|translate}}:</span>&nbsp;{{account.address||'–'}}</p>
     <p><span class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;
-      <span *ngFor="let phone of display.accountPhonesArr(account)">
+      <span *ngFor="let phone of (account|accountPhonesArr)">
         <a dir="ltr" [href]="'tel:'+phone">{{phone}}</a>{{phone ? (', '|translate) : ''}}
       </span>
-      <span *ngIf="display.accountPhonesArr(account).length == 0">'–'</span>
+      <span *ngIf="(account|accountPhonesArr).length == 0">'–'</span>
     </p>
     <p><span class="fw-bold">
-        {{'Roles'|translate}}:</span>&nbsp;{{display.accountRoles(account.roles)||'–'}}</p>
+        {{'Roles'|translate}}:</span>&nbsp;{{(account.roles|accountRoles)||'–'}}</p>
 
     <p *ngIf="accountHasAny(account,'Teacher','Admin')"><span
-        class="fw-bold">{{'Teaches'|translate}}:</span>&nbsp;{{display.accountTeaches(account)}}</p>
+        class="fw-bold">{{'Teaches'|translate}}:</span>&nbsp;{{(account|teacherTeaches)}}</p>
     <app-control-buttons [buttons]="[null,{text:'Edit',icon:'edit',},
         {text:'Delete',icon:'person_remove',color:'warn'}]"
       (click1)="this.router.navigate(['edit-account'], { state: { data: account },relativeTo:this.route })"

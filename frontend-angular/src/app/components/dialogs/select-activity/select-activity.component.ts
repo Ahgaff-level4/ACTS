@@ -10,11 +10,13 @@ import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { NotificationService } from 'src/app/services/notification.service';
+import { CalcAgePipe } from 'src/app/pipes/date/calc-age.pipe';
 
 @Component({
   selector: 'app-select-activity',
   templateUrl: './select-activity.component.html',
-  styleUrls: ['./select-activity.component.scss']
+  styleUrls: ['./select-activity.component.scss'],
+  providers: [CalcAgePipe],
 })
 export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
   public chosenProgram: IProgramEntity | undefined;
@@ -27,8 +29,8 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
    * - 'strength' for choosing the strength's activity.
    */
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService,
-    private display: DisplayService, private goalService: GoalService, private strengthService: StrengthService,
-    private activityService: ActivityService, private nt:NotificationService, public fieldService: FieldService,
+    private calcAgePipe:CalcAgePipe, private goalService: GoalService, private strengthService: StrengthService,
+    private activityService: ActivityService, private nt: NotificationService, public fieldService: FieldService,
     @Inject(MAT_DIALOG_DATA) public data: { child: IChildEntity, state: 'goal' | 'strength' }) {
     super();
   }
@@ -67,7 +69,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
     if (this.filterByAgeTwoWay == 'age' &&
       this.chosenProgram?.activities &&
       this.data.child?.person?.birthDate) { //filter by age
-      var age = this.display.calcAge(this.data.child.person?.birthDate);
+      var age = this.calcAgePipe.transform(this.data.child.person?.birthDate);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
           if (v.maxAge == null || v.minAge == null || (age <= v.maxAge && age >= v.minAge))

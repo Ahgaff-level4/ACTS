@@ -14,5 +14,5 @@ export class SearchExportComponent {
   @Output() keyup: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() print: EventEmitter<void> = new EventEmitter<void>();
   @Input() gridOptions!: GridOptions<any>;
-  constructor(public agGridService: AgGridService, public display: DisplayService,public pr:PrivilegeService) { }
+  constructor(public agGridService: AgGridService, public pr: PrivilegeService) { }
 }

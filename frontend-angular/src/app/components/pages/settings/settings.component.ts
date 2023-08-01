@@ -19,7 +19,7 @@ export class SettingsComponent {
   public API = environment.API;
 
   constructor(public pr: PrivilegeService, public translate: TranslateService,
-    public display: DisplayService, private http: HttpClient,
+    private http: HttpClient,
     public nt: NotificationService) { }
 
 

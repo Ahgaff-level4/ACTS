@@ -30,7 +30,7 @@ export class DashboardComponent extends UnsubOnDestroy {
     from: new FormControl<Date>(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate())),//Default Yearly
     to: new FormControl<Date>(new Date()),
   });
-  constructor(public service: ReportService, public display: DisplayService,
+  constructor(public service: ReportService, private display: DisplayService,
     private nt: NotificationService,) { super(); }
 
   ngOnInit() {
@@ -61,6 +61,6 @@ export class DashboardComponent extends UnsubOnDestroy {
   }
 
   xAxisTickFormatting = (v?: any) => {
-    return this.display.fromNow(v)
+    return this.display.fromNowPipe.transform(v)
   }
 }

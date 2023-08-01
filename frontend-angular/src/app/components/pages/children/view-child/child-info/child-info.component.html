@@ -25,7 +25,7 @@
     </a>
     {{pr.canUser('viewAccountPage')?(child.parent?.person?.name?'':'–'):(child.parent?.person?.name??'–')}}
   </p>
-  <p><span class="fw-bold">{{'Teachers'|translate}}:</span>&nbsp;{{this.display.childTeachers(child)||'–'}}</p>
+  <p><span class="fw-bold">{{'Teachers'|translate}}:</span>&nbsp;{{(child|childTeachers)||'–'}}</p>
   <p><span class="fw-bold">{{'Program'|translate}}:</span>&nbsp;{{child.program?.name||'–'}}</p>
 
   <app-control-buttons *ngIf="!isPrinting"

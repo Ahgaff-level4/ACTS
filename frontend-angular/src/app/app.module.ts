@@ -17,6 +17,10 @@ import { DetailsViewService, FileManagerModule, NavigationPaneService, ToolbarSe
 import { ServiceWorkerModule } from '@angular/service-worker';
 import { NgxTimelineModule } from '@frxjs/ngx-timeline'
 
+import { AccountRolesPipe } from './pipes/account-roles.pipe';
+import { TeacherTeachesPipe } from './pipes/teacher-teaches.pipe';
+import { ChildTeachersPipe } from './pipes/child-teachers.pipe';
+
 import { AppComponent } from './components/static/app/app.component';
 import { HomeComponent } from './components/pages/home/home.component';
 import { FieldComponent } from './components/pages/field/field.component';
@@ -27,9 +31,9 @@ import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children/children.component';
 import { MessageDialogComponent } from './components/dialogs/message/message.component';
 import { AddEditChildComponent } from './components/pages/children/add-edit-child/add-edit-child.component';
-import { DatePipe } from './pipes/date.pipe';
-import { DateTimeWeekPipe } from './pipes/date-time-week.pipe';
-import { FromNowPipe } from './pipes/from-now.pipe';
+import { DatePipe } from './pipes/date/date.pipe';
+import { DateTimeWeekPipe } from './pipes/date/date-time-week.pipe';
+import { FromNowPipe } from './pipes/date/from-now.pipe';
 import { PersonFormComponent } from './components/forms/person-form/person-form.component';
 import { DateAdapter, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MAT_MOMENT_DATE_ADAPTER_OPTIONS, MomentDateAdapter } from '@angular/material-moment-adapter';
@@ -55,7 +59,7 @@ import { AddEditStrengthComponent } from './components/dialogs/add-edit/add-edit
 import { WithCredentialsInterceptor } from './interceptors/WithCredentials.interceptor';
 import { HttpCatchInterceptor } from './interceptors/HttpCatch.interceptor';
 import { SpecialActivityComponent } from './components/pages/special-activity/special-activity.component';
-import { CalcAgePipe } from './pipes/calc-age.pipe';
+import { CalcAgePipe } from './pipes/date/calc-age.pipe';
 import 'ag-grid-enterprise';
 import { LoginFormComponent } from './components/pages/login/login-form/login-form.component';
 import { ReportChildComponent } from './components/pages/children/report-child/report-child.component';
@@ -90,7 +94,9 @@ import {
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
 import { VerticalTimelineComponent } from './components/pages/children/vertical-timeline/vertical-timeline.component';
-import { DateWeekPipe } from './pipes/date-week.pipe';
+import { DateWeekPipe } from './pipes/date/date-week.pipe';
+import { AccountPhonesPipe } from './pipes/account-phones.pipe';
+import { AccountPhonesArrPipe } from './pipes/account-phones-arr.pipe';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -158,6 +164,11 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     AddEditAccountFormComponent,
     RateItemComponent,
     VerticalTimelineComponent,
+    AccountRolesPipe,
+    TeacherTeachesPipe,
+    ChildTeachersPipe,
+    AccountPhonesPipe,
+    AccountPhonesArrPipe,
   ],
   imports: [
     BrowserModule,
@@ -190,11 +201,18 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
 
   ],
   providers: [
-    TranslatePipe,
     FromNowPipe,
+    AccountRolesPipe,
     CalcAgePipe,
-    DatePipe,
+    ChildTeachersPipe,
     DateTimeWeekPipe,
+    DateWeekPipe,
+    DatePipe,
+    FromNowPipe,
+    TeacherTeachesPipe,
+    TranslatePipe,
+    AccountPhonesPipe,
+    AccountPhonesArrPipe,
     ToolbarService, DetailsViewService,
     { provide: DateAdapter, useClass: MomentDateAdapter, deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS] },
     {

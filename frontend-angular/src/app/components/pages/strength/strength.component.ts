@@ -86,7 +86,7 @@ export class StrengthComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(public service: StrengthService, public display: DisplayService,
+  constructor(public service: StrengthService, private display: DisplayService,
     private route: ActivatedRoute, private nt: NotificationService, private router: Router,
     public agGrid: AgGridService, private fieldService: FieldService,
     private programService: ProgramService, public pr: PrivilegeService) {
@@ -103,7 +103,7 @@ export class StrengthComponent extends UnsubOnDestroy {
           this.service.fetchChildItsStrengths(+(childId as string), true);
           this.sub.add(this.service.childItsStrengths$.subscribe(async v => {
             if (v && v.id == +(childId as string))
-              this.childItsStrengths = this.display.deepClone(v);
+              this.childItsStrengths = JSON.parse(JSON.stringify(v));
           }));
         }
         else {

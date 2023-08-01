@@ -31,7 +31,7 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
   hide = true;
   phoneFields: string[] = [];
 
-  constructor(private fb: FormBuilder, public display: DisplayService, private accountService: AccountService,
+  constructor(private fb: FormBuilder, private display: DisplayService, private accountService: AccountService,
     public formService: FormService, private nt: NotificationService,
     private pr: PrivilegeService, private router:Router,) {
     super();

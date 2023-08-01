@@ -88,7 +88,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
 
 
-  constructor(public service: EvaluationService, public display: DisplayService,
+  constructor(public service: EvaluationService, private display: DisplayService,
     private route: ActivatedRoute, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();

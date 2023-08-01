@@ -1,5 +1,5 @@
 import { Location as NgLocation } from '@angular/common';
-import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, EventEmitter, Input, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ACTS_Segment } from 'src/app/app-routing.module';
@@ -47,10 +47,10 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
   /**back button will navigate to links[1] */
   // protected back: Link | undefined;
-  constructor(public display: DisplayService, private location: NgLocation,
+  constructor(private display: DisplayService, private location: NgLocation,
     private childService: ChildService, private programService: ProgramService,
     private fieldService: FieldService, private evaluationService: EvaluationService,
-    private accountService: AccountService, private router:Router,
+    private accountService: AccountService, private router: Router, private cd: ChangeDetectorRef,
   ) { super() }
 
   ngOnInit(): void {
@@ -60,7 +60,8 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
     this.back?.subscribe(() => {
       if (this.links[1]?.link)
-        this.router.navigateByUrl(this.links[1].link)
+        this.router.navigateByUrl(this.links[1].link);
+      this.cd.detectChanges();
     });
 
     if (this.links.length == 0)

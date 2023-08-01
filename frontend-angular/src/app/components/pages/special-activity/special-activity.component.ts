@@ -86,7 +86,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     this.service.fetchSpecialActivities(true);
     this.sub.add(this.service.specialActivities$.subscribe(v => {
       if (v)
-        this.rowData = this.display.deepClone(v);
+        this.rowData =  JSON.parse(JSON.stringify(v));
     }))
   }
 

@@ -3,12 +3,13 @@ import { TranslateService } from '@ngx-translate/core';
 import * as moment from 'moment';
 
 @Pipe({
-  name: 'toDateWeek'
+  name: 'toDateTimeWeek'
 })
-export class DateWeekPipe implements PipeTransform {
+export class DateTimeWeekPipe implements PipeTransform {
   constructor(private translate: TranslateService) { }
 
-  transform(value: unknown, ...args: unknown[]): string {
+  /**@returns string format as 'yyyy/M/D. h:mm A. dddd' */
+  transform(value?: Date | string | null): string {
     var date;
     if (value == undefined || value === '')
       return '';
@@ -19,7 +20,7 @@ export class DateWeekPipe implements PipeTransform {
 
     if (date) {
       moment.locale(this.translate.currentLang === 'ar' ? 'ar-ly' : 'en-gb');
-      return moment(date).format('LL');
+      return moment(date).format('yyyy/M/D. h:mm A. dddd');
     }
     return '';
   }
