@@ -35,11 +35,11 @@
       </p>
       <div *ngFor="let account of (nt.onlineAccounts|async)??[];let i=index" class="my-3">
         <div class="ant-notification-notice-content d-flex my-2">
-          <div class="flex-fill px-3 " [dir]="ut.getDirection()">
+          <div class="flex-fill px-3 " [dir]="display.getDirection()">
             <div class="fw-normal fs-6 mb-1 position-relative">
               {{account?.person?.name}}
               <span class="fs-7 fst-italic position-absolute opacity-75" style="top:-8px"
-                [ngClass]="{'end-0':ut.getDirection()=='ltr','start-0':ut.getDirection()=='rtl'}">{{display.fromNow(account.timestamp,true)}}</span>
+                [ngClass]="{'end-0':display.getDirection()=='ltr','start-0':display.getDirection()=='rtl'}">{{(account.timestamp|fromNow)}}</span>
             </div>
             <div class="d-inline">
               {{'Username'|translate}}:&nbsp;{{account.username}}

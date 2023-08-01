@@ -4,7 +4,7 @@ import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { FormService } from 'src/app/services/form.service';
 import { NotificationService } from 'src/app/services/notification.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-reset-change-password',
@@ -25,7 +25,7 @@ export class PasswordDialogComponent {
    * 2- data:undefined. Change password will be handled here. dialog buttons 'Cancel' and 'Change' handed here. dialog return nothing aka undefined
    * 3- data:false. dialog buttons `Cancel` and `Confirm` will check the entered password. dialog return true if confirmed.
    */
-  constructor(private fb:FormBuilder, public accountService: AccountService, private ut: UtilityService,
+  constructor(private fb:FormBuilder, public accountService: AccountService, private display: DisplayService,
     public dialogRef: MatDialogRef<any>, @Inject(MAT_DIALOG_DATA) public data: string | undefined | false,
     private formService: FormService,private nt:NotificationService) {
   }
@@ -62,16 +62,16 @@ export class PasswordDialogComponent {
           } catch (e) { }
         }
       } else {//re-enter
-        this.ut.isLoading.next(true);
+        this.display.isLoading.next(true);
         this.accountService.reenter(this.formGroup.get('password')?.value)
           .subscribe({
             next: (u) => {
-              this.ut.isLoading.next(false);
+              this.display.isLoading.next(false);
               if (u?.isLoggedIn)
                 this.dialogRef.close(true);
               else this.nt.errorDefaultDialog();
             }, error: (err) => {
-              this.ut.isLoading.next(false);
+              this.display.isLoading.next(false);
               this.nt.errorDefaultDialog(err);
             }
           });

@@ -2,11 +2,11 @@ import { Injectable } from '@angular/core';
 import { IActivityEntity, ICreateActivity, IFieldEntity, IProgramEntity, SucResEditDel } from '../../../../../interfaces';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { UtilityService } from '../utility.service';
 import { ProgramService } from './program.service';
 import { BehaviorSubject, ReplaySubject, first, last } from 'rxjs';
 import { NotificationService } from '../notification.service';
 import { FieldService } from './field.service';
+import { DisplayService } from '../display.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,7 +16,7 @@ export class ActivityService {
   public specialActivities$ = new BehaviorSubject<IActivityEntity[] | undefined>(undefined);
   public fieldItsActivities$ = new BehaviorSubject<IFieldEntity | undefined>(undefined);
 
-  constructor(private http: HttpClient, private ut: UtilityService,
+  constructor(private http: HttpClient, private display: DisplayService,
     private programService: ProgramService, private nt: NotificationService,
     private fieldService: FieldService,) {
   }
@@ -43,17 +43,17 @@ export class ActivityService {
   */
   private _post(field: ICreateActivity, manageLoading = false): Promise<IActivityEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.post<IActivityEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the activity. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     });
   }
@@ -81,17 +81,17 @@ export class ActivityService {
 
   private _patch(id: number, updateActivity: Partial<IActivityEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true)
+      manageLoading && this.display.isLoading.next(true)
       this.http.patch<SucResEditDel>(this.URL + '/' + id, updateActivity)
         .subscribe({
           next: (v) => {
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the activity. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
@@ -117,23 +117,23 @@ export class ActivityService {
 
   private _delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true)
+      manageLoading && this.display.isLoading.next(true)
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the activity. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
 
   public fetchProgramItsActivities(programId: number, manageLoading: boolean = false): Promise<IProgramEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IProgramEntity[]>(this.programService.URL + '/' + programId)
         .subscribe({
           next: v => {
@@ -145,16 +145,16 @@ export class ActivityService {
             }
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the program's activities. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
 
   public fetchFieldItsActivities(fieldId: number, manageLoading: boolean = false): Promise<IFieldEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IFieldEntity[]>(this.fieldService.URL + '/' + fieldId)
         .subscribe({
           next: v => {
@@ -166,16 +166,16 @@ export class ActivityService {
             }
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the field's activities. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
 
   public fetchSpecialActivities(manageLoading = false): Promise<IActivityEntity[]> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IActivityEntity[]>(this.URL + '/special')
         .subscribe({
           next: v => {
@@ -183,9 +183,9 @@ export class ActivityService {
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the special activities. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }

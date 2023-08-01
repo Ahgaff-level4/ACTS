@@ -3,7 +3,6 @@ import { MatDialogRef } from '@angular/material/dialog';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService, OnlineAccount } from 'src/app/services/notification.service';
 import { PrivilegeService } from 'src/app/services/privilege.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { SendMessageComponent } from './send-message/send-message.component';
 
 @Component({
@@ -13,8 +12,7 @@ import { SendMessageComponent } from './send-message/send-message.component';
 })
 export class NotificationDrawerComponent {
   constructor(public pr: PrivilegeService, public nt: NotificationService,
-    public dialogRef: MatDialogRef<any>, public display: DisplayService,
-    public ut: UtilityService) { }
+    public dialogRef: MatDialogRef<any>, public display: DisplayService,) { }
 
   openSendMessageDialog(account?: OnlineAccount) {
     this.nt.openDialog(SendMessageComponent, account);

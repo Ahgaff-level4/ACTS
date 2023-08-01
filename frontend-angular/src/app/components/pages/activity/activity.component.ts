@@ -1,8 +1,8 @@
 import { Component, OnDestroy } from '@angular/core';
 import { IActivityEntity } from '../../../../../../interfaces';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
-import { UtilityService } from 'src/app/services/utility.service';
-import { ActivatedRoute } from '@angular/router';
+import { DisplayService } from 'src/app/services/display.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
@@ -81,7 +81,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
       field: 'program.name',
       headerName: 'Program',
       type: 'enum',
-      valueGetter: (v) => v.data?.program?.name ?? this.ut.translate('«Special activity»'),
+      valueGetter: (v) => v.data?.program?.name ?? this.display.translate('«Special activity»'),
       // filterParams: assigned on init
     },
     {
@@ -103,8 +103,8 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
   ];
 
 
-  constructor(public service: ActivityService, public ut: UtilityService,
-    private route: ActivatedRoute, private nt: NotificationService,
+  constructor(public service: ActivityService, public display: DisplayService,
+    private route: ActivatedRoute, private nt: NotificationService, private router:Router,
     private fieldService: FieldService, public agGrid: AgGridService,
     public pr: PrivilegeService, private programService: ProgramService,) {
     super();
@@ -113,7 +113,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
 
 
   ngOnInit(): void {
-    this.ut.isLoading.next(true);
+    this.display.isLoading.next(true);
     this.route.paramMap.subscribe({
       next: async params => {
         let programOrField = params.get('programOrField');
@@ -123,21 +123,21 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
           if (this.activitiesOf == 'program')
             this.sub.add(this.service.programItsActivities$.subscribe(async v => {
               if (v && v.id == +(id as string)) {
-                this.programOrField = this.ut.deepClone(v);
+                this.programOrField = this.display.deepClone(v);
               }
               else await this.service.fetchProgramItsActivities(+(id as string), true).catch(() => { });
             }));
           else this.sub.add(this.service.fieldItsActivities$.subscribe(async v => {
             if (v && v.id == +(id as string))
-              this.programOrField = this.ut.deepClone(v);
+              this.programOrField = this.display.deepClone(v);
             else await this.service.fetchFieldItsActivities(+(id as string), true).catch(() => { })
           }));
         } else {
           this.nt.errorDefaultDialog("Sorry, there was a problem fetching the activities. Please try again later or check your connection.");
-          this.ut.router.navigateByUrl('/404');
+          this.router.navigateByUrl('/404');
         }
-        this.ut.isLoading.next(false);
-      }, error: () => this.ut.isLoading.next(false)
+        this.display.isLoading.next(false);
+      }, error: () => this.display.isLoading.next(false)
     });
 
     this.sub.add(this.fieldService.fields$.subscribe(v => {
@@ -190,7 +190,7 @@ export class ActivityComponent extends UnsubOnDestroy implements OnDestroy {
       this.nt.notify(undefined);
     else
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
+        content: this.display.translate('You are about to delete the activity: \"') + activity.name + this.display.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

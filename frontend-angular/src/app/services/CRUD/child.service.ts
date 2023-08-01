@@ -3,8 +3,8 @@ import { BehaviorSubject, EMPTY, Observable, ReplaySubject, Subject, catchError,
 import { IChildEntity, ICreateChild, SucResEditDel } from '../../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
-import { UtilityService } from '../utility.service';
 import { NotificationService } from '../notification.service';
+import { DisplayService } from '../display.service';
 
 @Injectable({
   providedIn: 'root'
@@ -21,7 +21,7 @@ export class ChildService {
       .catch(() => { });
   }).pipe(shareReplay(1));//Observable function will be start execution when the first observer subscribe. Then it will emit new values by the subject.
 
-  constructor(private http: HttpClient, private ut: UtilityService, private nt: NotificationService,) {
+  constructor(private http: HttpClient, private display: DisplayService, private nt: NotificationService,) {
   }
 
   /**
@@ -31,16 +31,16 @@ export class ChildService {
    */
   public fetchChildren(manageLoading = false): Promise<IChildEntity[]> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IChildEntity[]>(this.childURL, { params: { 'FK': true } })
         .subscribe({
           next: (v) => {
             this.subject$.next(v);
             res(v)
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the children information. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         });
     })
   }
@@ -52,7 +52,7 @@ export class ChildService {
  */
   postChild(child: ICreateChild, manageLoading = false): Promise<IChildEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.post<IChildEntity>(this.childURL, child)
         .subscribe({
           next: (v) => {
@@ -60,27 +60,27 @@ export class ChildService {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem registering the child. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     });
   }
 
   patchChild(id: number, child: Partial<IChildEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.childURL + '/' + id, child)
         .subscribe({
           next: (v) => {
             this.fetchChildren(); res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the child information. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }

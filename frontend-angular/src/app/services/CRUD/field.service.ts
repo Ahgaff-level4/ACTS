@@ -3,8 +3,8 @@ import { BehaviorSubject, Observable, ReplaySubject, Subject, shareReplay } from
 import { ICreateField, IFieldEntity, SucResEditDel } from '../../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
 import { environment as env } from 'src/environments/environment';
-import { UtilityService } from '../utility.service';
 import { NotificationService } from '../notification.service';
+import { DisplayService } from '../display.service';
 
 @Injectable({
   providedIn: 'root'
@@ -19,21 +19,21 @@ export class FieldService {
       .catch(() => { });
   }).pipe(shareReplay(1));
 
-  constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,) {
+  constructor(private http: HttpClient, private display: DisplayService,private nt:NotificationService,) {
   }
 
   /** fetch fields from DB and emit it to fields */
   public fetch(manageLoading = false): Promise<IFieldEntity[]> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IFieldEntity[]>(this.URL)
         .subscribe({
           next: (v) => {
             this.subject$.next(v); res(v);
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the fields. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         });
     })
   }
@@ -43,7 +43,7 @@ export class FieldService {
  */
   post(field: ICreateField, manageLoading = false): Promise<IFieldEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.post<IFieldEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
@@ -51,17 +51,17 @@ export class FieldService {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the field. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     });
   }
 
   patch(id: number, field: Partial<IFieldEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.URL + '/' + id, field)
         .subscribe({
           next: (v) => {
@@ -69,17 +69,17 @@ export class FieldService {
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the field. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
 
   delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
@@ -87,9 +87,9 @@ export class FieldService {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the field. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }

@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { LoginService } from 'src/app/services/login.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { User } from '../../../../../../../interfaces';
 import { NotificationService } from 'src/app/services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login-form',
@@ -22,7 +23,7 @@ export class LoginFormComponent implements OnInit {
    * - login page.
    * - as dialog.
    */
-  constructor(private loginService: LoginService, private ut: UtilityService,
+  constructor(private loginService: LoginService, private router: Router,
     private nt: NotificationService,) { }
 
   ngOnInit(): void {
@@ -37,7 +38,7 @@ export class LoginFormComponent implements OnInit {
         next: (v: User) => {
           if (typeof v.accountId === 'number' && Array.isArray(v.roles)) {
             this.loginService.pr.user.next(v);
-            this.ut.router.navigate(['main']);
+            this.router.navigate(['main']);
           } else this.nt.errorDefaultDialog(v as any);
         }, error: e => {
           this.nt.errorDefaultDialog(e);

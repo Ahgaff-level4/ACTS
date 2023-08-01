@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IChildEntity, IStrengthEntity } from '../../../../../../interfaces';
-import { UtilityService } from 'src/app/services/utility.service';
-import { ActivatedRoute } from '@angular/router';
+import { DisplayService } from 'src/app/services/display.service';
+import { ActivatedRoute, Router } from '@angular/router';
 import { StrengthService } from 'src/app/services/CRUD/strength.service';
 import { AddEditStrengthComponent } from '../../dialogs/add-edit/add-edit-strength/add-edit-strength.component';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -50,7 +50,7 @@ export class StrengthComponent extends UnsubOnDestroy {
       field: 'activity.program.name',
       headerName: 'Program',
       type: 'enum',//filterParams in init
-      valueGetter: (v) => v.data?.activity?.program?.name ?? this.ut.translate('«Special activity»'),
+      valueGetter: (v) => v.data?.activity?.program?.name ?? this.display.translate('«Special activity»'),
     },
     {
       field: 'activity.field.name',
@@ -86,8 +86,8 @@ export class StrengthComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(public service: StrengthService, public ut: UtilityService,
-    private route: ActivatedRoute, private nt: NotificationService,
+  constructor(public service: StrengthService, public display: DisplayService,
+    private route: ActivatedRoute, private nt: NotificationService, private router: Router,
     public agGrid: AgGridService, private fieldService: FieldService,
     private programService: ProgramService, public pr: PrivilegeService) {
     super();
@@ -103,12 +103,12 @@ export class StrengthComponent extends UnsubOnDestroy {
           this.service.fetchChildItsStrengths(+(childId as string), true);
           this.sub.add(this.service.childItsStrengths$.subscribe(async v => {
             if (v && v.id == +(childId as string))
-              this.childItsStrengths = this.ut.deepClone(v);
+              this.childItsStrengths = this.display.deepClone(v);
           }));
         }
         else {
           this.nt.errorDefaultDialog("Sorry, there was a problem fetching the child's strengths. Please try again later or check your connection.");
-          this.ut.router.navigateByUrl('/404');
+          this.router.navigateByUrl('/404');
         }
       },
     });
@@ -122,7 +122,7 @@ export class StrengthComponent extends UnsubOnDestroy {
     this.sub.add(this.programService.programs$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.program.name');
       if (col)
-        col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };
+        col.filterParams = { values: [...v.map(n => n.name), this.display.translate('«Special activity»')] };
     }));
 
   }
@@ -157,7 +157,7 @@ export class StrengthComponent extends UnsubOnDestroy {
       this.nt.notify(undefined);
     else
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the strength: \"') + strength.activity.name + this.ut.translate("\" permanently."),
+        content: this.display.translate('You are about to delete the strength: \"') + strength.activity.name + this.display.translate("\" permanently."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

@@ -14,7 +14,7 @@
   {disabled:selectedItem==null,tooltip:'View all information',link:selectedItem?'/accounts/account/'+selectedItem!.id:'./',text:'View',icon:'wysiwyg'},
   {disabled:selectedItem==null,tooltip:'Edit the selected row',icon:'edit',text:'Edit'},
   {disabled:selectedItem==null,color:'warn',tooltip:'Delete the selected account',text:'Delete',icon:'person_remove'}]"
-  (click2)="this.selectedItem?this.ut.router.navigate(['accounts','edit-account'], { state: { data: selectedItem } }):nt.notify(null)"
+  (click2)="this.selectedItem?this.router.navigate(['accounts','edit-account'], { state: { data: selectedItem } }):nt.notify(null)"
   (click3)="this.selectedItem?accountService.deleteAccount(this.selectedItem):nt.notify(null)"
   ></app-control-buttons>
 </div>

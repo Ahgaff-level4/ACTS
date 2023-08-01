@@ -8,7 +8,7 @@
       {{'Family information'|translate}}:</span>&nbsp;{{this.display.childFamilyInformation(child)||'–'}}</p>
   <p><span class="fw-bold">{{'Parent kinship'|translate}}:</span>&nbsp;{{child.parentsKinship||'–'}}</p>
   <p><span class="fw-bold">
-      {{'Diagnostic date'|translate}}:</span>&nbsp;{{this.display.toDate(child.diagnosticDate)||'–'}}</p>
+      {{'Diagnostic date'|translate}}:</span>&nbsp;{{(child.diagnosticDate|toDate)||'–'}}</p>
   <p><span class="fw-bold">
       {{'Pregnancy state'|translate}}:</span>&nbsp;{{child.pregnancyState||'–'}}</p>
   <p><span class="fw-bold">
@@ -33,5 +33,5 @@
       {show:pr.canUser('childGoalsPage'),link:'children/child/'+child.id+'/goals',text:'Goals',icon:'sports_score'},
       {show:pr.canUser('childStrengthsPage'),link:'children/child/'+child.id+'/strengths',text:'Strengths',icon:'fitness_center'},
       {show:hideReport != true && this.pr.canUser('childReportPage'),link:'children/child/'+child.id+'/report',text:'Report',icon:'analytics'}]"
-    (click1)="ut.router.navigate(['edit-child'], { state: { data: child },relativeTo:this.route })"></app-control-buttons>
+    (click1)="router.navigate(['edit-child'], { state: { data: child },relativeTo:this.route })"></app-control-buttons>
 </div>

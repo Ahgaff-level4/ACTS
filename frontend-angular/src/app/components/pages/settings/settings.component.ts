@@ -2,11 +2,10 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { environment } from 'src/environments/environment';
 import { PasswordDialogComponent } from '../../dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from 'src/app/services/privilege.service';
-import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
 @Component({
   selector: 'app-settings',
@@ -20,8 +19,8 @@ export class SettingsComponent {
   public API = environment.API;
 
   constructor(public pr: PrivilegeService, public translate: TranslateService,
-    public ut: UtilityService, private http: HttpClient,
-    public display: DisplayService, public nt:NotificationService) { }
+    public display: DisplayService, private http: HttpClient,
+    public nt: NotificationService) { }
 
 
   restore() {

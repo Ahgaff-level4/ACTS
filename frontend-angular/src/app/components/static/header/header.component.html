@@ -1,7 +1,7 @@
 <!--<nav> style is used in home.component be careful-->
 <nav style="border-bottom-left-radius:1.8rem; border-bottom-right-radius:1.8rem; z-index:999"
   class="navbar position-fixed top-0 navbar-expand-lg navbar-dark my-primary-bg w-100"
-  [ngClass]="{'shadow':ut.router.url!='/'||!isShowDivIf}">
+  [ngClass]="{'shadow':router.url!='/'||!isShowDivIf}">
   <div class="d-flex w-100 justify-content-between align-items-center"
     [ngClass]="!isShowDivIf?'flex-wrap':'flex-nowrap'">
     <a routerLink="/"><img class="image mx-2" src="/assets/img/logo.png" alt="ACTS logo" /></a>
@@ -16,7 +16,7 @@
       class="navbar-nav w-100 collapse navbar-collapse mt-lg-0 mx-0 px-5 mt-3 justify-content-evenly">
       <li *ngFor="let p of pr.getUserPages('Settings')|async" (click)="isShowDivIf=true" class="nav-item"
         routerLinkActive="active">
-        <a class="nav-link" [ngClass]="ut.getActivePage()?.link==p.link?'activeLink':''"
+        <a class="nav-link" [ngClass]="display.getActivePage()?.link==p.link?'activeLink':''"
           [routerLink]="p.link" [fragment]="p.fragment">{{p.title|translate}}</a>
       </li>
       <mat-divider class="w-25 center border-white border-opacity-25 d-lg-none d-block"></mat-divider>

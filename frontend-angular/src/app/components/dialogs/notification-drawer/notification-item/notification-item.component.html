@@ -5,11 +5,11 @@
       <span nz-icon [nzType]="getNzType(data.icon)" [class]="getNzColor(data.icon) +' fs-3'"></span>
 
     </div>
-    <div class="flex-fill px-3 " [dir]="ut.getDirection()">
+    <div class="flex-fill px-3 " [dir]="display.getDirection()">
       <div class="fw-normal text-black fs-6 mb-1 position-relative">
         {{data.title}}
         <span *ngIf="item" class="fs-7 fst-italic position-absolute opacity-50" style="top:-8px"
-          [ngClass]="{'end-0':ut.getDirection()=='ltr','start-0':ut.getDirection()=='rtl'}">{{display.fromNow(data.timestamp)}}</span>
+          [ngClass]="{'end-0':display.getDirection()=='ltr','start-0':display.getDirection()=='rtl'}">{{(data.timestamp|fromNow)}}</span>
       </div>
       <div class="d-inline">
         {{data.content}}

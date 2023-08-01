@@ -2,7 +2,7 @@ import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { GridApi, GridOptions } from 'ag-grid-community';
 import { AgGridService } from 'src/app/services/ag-grid.service';
 import { PrivilegeService, } from 'src/app/services/privilege.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-search-export[isPrinting][gridOptions][keyup][print]',
@@ -14,5 +14,5 @@ export class SearchExportComponent {
   @Output() keyup: EventEmitter<Event> = new EventEmitter<Event>();
   @Output() print: EventEmitter<void> = new EventEmitter<void>();
   @Input() gridOptions!: GridOptions<any>;
-  constructor(public agGridService: AgGridService, public ut: UtilityService,public pr:PrivilegeService) { }
+  constructor(public agGridService: AgGridService, public display: DisplayService,public pr:PrivilegeService) { }
 }

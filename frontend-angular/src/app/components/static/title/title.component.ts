@@ -1,5 +1,6 @@
 import { Location as NgLocation } from '@angular/common';
 import { Component, EventEmitter, Input, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { firstValueFrom } from 'rxjs';
 import { ACTS_Segment } from 'src/app/app-routing.module';
 import { AccountService } from 'src/app/services/CRUD/account.service';
@@ -7,7 +8,7 @@ import { ChildService } from 'src/app/services/CRUD/child.service';
 import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
@@ -46,10 +47,10 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
   /**back button will navigate to links[1] */
   // protected back: Link | undefined;
-  constructor(public ut: UtilityService, private location: NgLocation,
+  constructor(public display: DisplayService, private location: NgLocation,
     private childService: ChildService, private programService: ProgramService,
     private fieldService: FieldService, private evaluationService: EvaluationService,
-    private accountService: AccountService,
+    private accountService: AccountService, private router:Router,
   ) { super() }
 
   ngOnInit(): void {
@@ -59,7 +60,7 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
 
     this.back?.subscribe(() => {
       if (this.links[1]?.link)
-        this.ut.router.navigateByUrl(this.links[1].link)
+        this.router.navigateByUrl(this.links[1].link)
     });
 
     if (this.links.length == 0)
@@ -176,11 +177,11 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
   /**Add "Page" prefix to the link's title. (e.g. 'Page title_name') */
   tooltipOf(link: TitleLink | undefined) {
     if (link == this.links[this.links.length - 1])
-      return this.ut.translate('Current page');
+      return this.display.translate('Current page');
     if (link?.tooltip)
-      return this.ut.translate(link.tooltip) + (link.tooltipSuffix ? ' ' + link.tooltipSuffix : '');
-    else return this.ut.currentLang == 'ar' ? (this.ut.translate('page') + ' ' + this.ut.translate(link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : ''))
-      : ((link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : '') + ' ' + this.ut.translate('page'));
+      return this.display.translate(link.tooltip) + (link.tooltipSuffix ? ' ' + link.tooltipSuffix : '');
+    else return this.display.currentLang == 'ar' ? (this.display.translate('page') + ' ' + this.display.translate(link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : ''))
+      : ((link?.title) + (link?.titleSuffix ? ' ' + link?.titleSuffix : '') + ' ' + this.display.translate('page'));
 
   }
 

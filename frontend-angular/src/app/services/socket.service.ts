@@ -2,7 +2,7 @@ import { Injectable, OnDestroy } from '@angular/core';
 import { Socket, io } from 'socket.io-client';
 import { environment } from 'src/environments/environment';
 import { INotification, NotificationMessage, User } from '../../../../interfaces';
-import { UtilityService } from './utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { Subscription } from 'rxjs';
 import { NotificationIcon, NotificationLink, NotificationService } from './notification.service';
 import { PrivilegeService } from './privilege.service';
@@ -24,7 +24,7 @@ export class SocketService implements OnDestroy {
    *
    * NOTE: the server will handle the above condition and emit notification accordingly
    */
-  constructor(private ut: UtilityService, private nt: NotificationService, private pr: PrivilegeService) {
+  constructor(private display: DisplayService, private nt: NotificationService, private pr: PrivilegeService) {
   }
   public connect(v: User | null) {
     if (v == null) {
@@ -110,7 +110,7 @@ export class SocketService implements OnDestroy {
   }
 
   private getTitle(n: INotification): string | null {
-    return this.ut.translate('account') + ': ' + n.by.person?.name;
+    return this.display.translate('account') + ': ' + n.by.person?.name;
   }
 
   private getContent(n: INotification, user: User): string {
@@ -137,14 +137,14 @@ export class SocketService implements OnDestroy {
       case 'evaluation': part2 = this.getPartTwoOfEvaluation(n); break;//maybe parent
       case 'goal': part2 = this.getPartTwoOfGoal(n); break;//maybe parent
       case 'strength': part2 = this.getPartTwoOfStrength(n); break;
-      case 'field': part2 = this.ut.translate('a field') + ' ' + n.payload?.name ?? ''; break;
-      case 'program': part2 = this.ut.translate('a program') + ' ' + n.payload?.name ?? ''; break;
-      default: part2 = this.ut.translate(n.controller); break;
+      case 'field': part2 = this.display.translate('a field') + ' ' + n.payload?.name ?? ''; break;
+      case 'program': part2 = this.display.translate('a program') + ' ' + n.payload?.name ?? ''; break;
+      default: part2 = this.display.translate(n.controller); break;
     }
     let content = '';
     if (part1 && user.roles.includes('Admin'))
-      content = this.ut.translate(part1) + ' ';
-    content += this.ut.translate(part2);
+      content = this.display.translate(part1) + ' ';
+    content += this.display.translate(part2);
     return content;
   }
 
@@ -169,9 +169,9 @@ export class SocketService implements OnDestroy {
         n.method != 'DELETE')
         return { href: '/accounts/account/' + n.payloadId };//todo append `n.controller == 'account'` then `return '/account/'+n.payloadId` or something like that.
       else if (n.controller == 'program')
-        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Programs'), href: '/programs' }
+        return { btnText: this.display.translate('View') + ' ' + this.display.translate('Programs'), href: '/programs' }
       else if (n.controller == 'field')
-        return { btnText: this.ut.translate('View') + ' ' + this.ut.translate('Fields'), href: '/fields' }
+        return { btnText: this.display.translate('View') + ' ' + this.display.translate('Fields'), href: '/fields' }
     }
     return undefined;
   }
@@ -184,7 +184,7 @@ export class SocketService implements OnDestroy {
     if (n.controller == 'account' && n.method == 'PATCH')
       return 'Changed his own password';//part1 is empty string
     if (name)
-      return this.ut.translate('the following account') + ': ' + name;
+      return this.display.translate('the following account') + ': ' + name;
     return 'an account';
   }
 

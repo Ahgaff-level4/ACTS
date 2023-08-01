@@ -4,16 +4,16 @@
       <span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{person.name||'–'}}
     </p>
     <p>
-      <span class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{this.display.fromNow(person.birthDate,true)||'–'}}
+      <span class="fw-bold">{{'Age'|translate}}:</span>&nbsp;{{(person.birthDate|fromNow:true)||'–'}}
     </p>
     <p>
-      <span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{this.display.toDate(person.birthDate)||'–'}}
+      <span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{(person.birthDate|toDate)||'–'}}
     </p>
     <p>
-      <span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{this.ut.translate(person.gender)||'–'}}
+      <span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{(person.gender|translate)||'–'}}
     </p>
     <p><span class="fw-bold">
-      {{'Registration date'|translate}}:</span>&nbsp;{{this.display.fromNow(person.birthDate)||'–'}}</p>
+      {{'Registration date'|translate}}:</span>&nbsp;{{(person.birthDate|fromNow)||'–'}}</p>
   </div>
   <img #imageRef class="mb-4 mb-md-0 align-self-center mx-0 mx-md-auto rounded-4 order-md-1 order-0" style="height:11rem" width="auto"
   [attr.src]="person.image && person.image.startsWith('http')?person.image:'assets/person-images/'+(person.image??'default.svg')" />

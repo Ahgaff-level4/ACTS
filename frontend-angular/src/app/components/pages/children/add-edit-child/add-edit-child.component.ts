@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IAccountEntity, IChildEntity, ICreatePerson, IPersonEntity } from '../../../../../../../interfaces';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { PersonFormComponent } from 'src/app/components/forms/person-form/person-form.component';
 import { AccountService } from 'src/app/services/CRUD/account.service';
@@ -11,6 +11,7 @@ import { NotificationService } from 'src/app/services/notification.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { AddParentComponent } from 'src/app/components/dialogs/add-edit/add-parent/add-parent.component';
 import { iif, of } from 'rxjs';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-edit-child',
@@ -30,8 +31,8 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
   public parentNameControl = new FormControl('');
   maxlength = { maxlength: 512 };
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private childService: ChildService,
-    private accountService: AccountService, public formService: FormService,
+  constructor(private fb: FormBuilder, public display: DisplayService, private childService: ChildService,
+    private accountService: AccountService, public formService: FormService, private router:Router,
     private nt: NotificationService, public programService: ProgramService) {
     super();
   }
@@ -105,7 +106,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
       this.childForm?.disable();
       this.personForm?.formGroup?.disable();
 
-      this.ut.isLoading.next(true);
+      this.display.isLoading.next(true);
       FLAG: if (this.child?.id == null) {//Register a child
         let p: IPersonEntity | void = await this.personForm.submit().catch(() => { });
         if (!p || typeof p != 'object')
@@ -114,7 +115,7 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
           let dirtyFields = this.formService.extractDirty(this.childForm.controls);
           await this.childService.postChild({ ...dirtyFields == null ? {} : dirtyFields, personId: p.id }, true);
           this.nt.notify("Added successfully", 'The new child has been registered successfully', 'success');
-          this.ut.router.navigate(['/children']);
+          this.router.navigate(['/children']);
         } catch (e) {
           this.personForm.personService.deletePerson(p.id, true);//if creating a child run some problem but person created successfully then just delete the person :>
         }
@@ -125,12 +126,12 @@ export class AddEditChildComponent extends UnsubOnDestroy implements OnInit, OnD
           if (dirtyFields != null)
             await this.childService.patchChild(this.child.id, dirtyFields, true);
           this.nt.notify("Edited successfully", 'The child has been edited successfully', 'success');
-          this.ut.router.navigate(['/children']);
+          this.router.navigate(['/children']);
         } catch (e) { }
       }
       this.childForm?.enable();
       this.personForm?.formGroup?.enable();
-      this.ut.isLoading.next(false);
+      this.display.isLoading.next(false);
     } else this.nt.notify('Invalid Field', 'There are invalid fields!', 'error');
   }
 

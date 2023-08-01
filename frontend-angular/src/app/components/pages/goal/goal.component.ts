@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
-import { ActivatedRoute } from '@angular/router';
-import { UtilityService } from 'src/app/services/utility.service';
+import { ActivatedRoute, Router } from '@angular/router';
+import { DisplayService } from 'src/app/services/display.service';
 import { GoalService } from 'src/app/services/CRUD/goal.service';
 import { AddEditGoalComponent } from '../../dialogs/add-edit/add-edit-goal/add-edit-goal.component';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
@@ -48,7 +48,7 @@ export class GoalComponent extends UnsubOnDestroy {
       field: 'activity.program.name',
       headerName: 'Program',
       type: 'enum',//filterParams in init
-      valueGetter: (v) => v.data?.activity?.program?.name ?? this.ut.translate('«Special activity»'),
+      valueGetter: (v) => v.data?.activity?.program?.name ?? this.display.translate('«Special activity»'),
     },
     {
       field: 'activity.field.name',
@@ -61,7 +61,7 @@ export class GoalComponent extends UnsubOnDestroy {
       type: ['enum', 'madeUp'],
       filterParams: {
         values: ['Checked', 'Unchecked'],
-        valueFormatter: v => this.ut.translate(v.value),
+        valueFormatter: v => this.display.translate(v.value),
       } as ISetFilterParams<IGoalEntity, string>,
       cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
         if (params.data?.state == 'completed')
@@ -69,7 +69,7 @@ export class GoalComponent extends UnsubOnDestroy {
         return '';
       },
       valueGetter: v => v.data?.state == 'completed' ? 'Checked' : 'Unchecked',
-      valueFormatter: v => this.ut.translate(v.value),
+      valueFormatter: v => this.display.translate(v.value),
     },
     {
       field: 'continual',//not property of Goal
@@ -77,7 +77,7 @@ export class GoalComponent extends UnsubOnDestroy {
       type: ['enum', 'madeUp'],
       filterParams: {
         values: ['Checked', 'Unchecked'],
-        valueFormatter: v => this.ut.translate(v.value),
+        valueFormatter: v => this.display.translate(v.value),
       } as ISetFilterParams<IGoalEntity, string>,
       cellRenderer: function (params: ICellRendererParams<IGoalEntity>) {
         if (params.data?.state == 'continual')
@@ -85,17 +85,17 @@ export class GoalComponent extends UnsubOnDestroy {
         return '';
       },
       valueGetter: v => v.data?.state == 'continual' ? 'Checked' : 'Unchecked',
-      valueFormatter: v => this.ut.translate(v.value),
+      valueFormatter: v => this.display.translate(v.value),
       // cellRenderer: '<mat-icon _ngcontent-xxc-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">done</mat-icon>',
     },
     {
       field: 'state',//not property of Goal
       headerName: 'State',
-      valueFormatter: v => this.ut.translate(v.value),
+      valueFormatter: v => this.display.translate(v.value),
       type: 'enum',
       filterParams: {
         values: ['continual', 'completed'],
-        valueFormatter: v => v.value == 'continual' ? this.ut.translate('Continual') : this.ut.translate('Completed'),
+        valueFormatter: v => v.value == 'continual' ? this.display.translate('Continual') : this.display.translate('Completed'),
       } as ISetFilterParams<IGoalEntity, string>,
       hide: true,
     },
@@ -128,7 +128,7 @@ export class GoalComponent extends UnsubOnDestroy {
     {
       name: 'Evaluations',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">reviews</mat-icon>`,
-      action: (v) => v && this.service.childItsGoals$.value ? this.ut.router.navigateByUrl('children/child/' + this.service.childItsGoals$.value.id + '/goals/goal/' + v.id + '/evaluations') : '',
+      action: (v) => v && this.service.childItsGoals$.value ? this.router.navigateByUrl('children/child/' + this.service.childItsGoals$.value.id + '/goals/goal/' + v.id + '/evaluations') : '',
       tooltip: 'View evaluations of the selected goal',
       disabled: !this.pr.canUser('goalEvaluationsPage'),
     },
@@ -142,8 +142,8 @@ export class GoalComponent extends UnsubOnDestroy {
   ];
 
 
-  constructor(public service: GoalService, public ut: UtilityService, private nt: NotificationService,
-    private route: ActivatedRoute, public agGrid: AgGridService,
+  constructor(public service: GoalService, public display: DisplayService, private nt: NotificationService,
+    private route: ActivatedRoute, public agGrid: AgGridService, private router:Router,
     private fieldService: FieldService, private programService: ProgramService,
     public pr: PrivilegeService) {
     super();
@@ -153,7 +153,7 @@ export class GoalComponent extends UnsubOnDestroy {
 
   async ngOnInit() {
     try {
-      let childId = await this.ut.getRouteParamId(this.route);
+      let childId = await this.display.getRouteParamId(this.route);
       await this.service.fetchChildItsGoals(childId, true).catch(() => { });
     } catch (e) {
       this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection.")
@@ -168,7 +168,7 @@ export class GoalComponent extends UnsubOnDestroy {
     this.sub.add(this.programService.programs$.subscribe(v => {
       let col = this.gridOptions.api?.getColumnDef('activity.program.name');
       if (col)
-        col.filterParams = { values: [...v.map(n => n.name), this.ut.translate('«Special activity»')] };
+        col.filterParams = { values: [...v.map(n => n.name), this.display.translate('«Special activity»')] };
     }));
 
   }
@@ -211,7 +211,7 @@ export class GoalComponent extends UnsubOnDestroy {
       this.nt.notify(undefined);
     else
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the goal: \"') + goal.activity.name + this.ut.translate("\" permanently. If the child has finished the goal then edit the goal state as completed. NOTE: all evaluations of this goal will also be deleted permanently."),
+        content: this.display.translate('You are about to delete the goal: \"') + goal.activity.name + this.display.translate("\" permanently. If the child has finished the goal then edit the goal state as completed. NOTE: all evaluations of this goal will also be deleted permanently."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

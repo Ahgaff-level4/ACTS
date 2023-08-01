@@ -1,13 +1,13 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable, OnInit } from '@angular/core';
 import { environment as env } from 'src/environments/environment';
-import { UtilityService } from '../utility.service';
 import { BehaviorSubject, Observable, map, tap, throwError } from 'rxjs';
 import { IAccountEntity, IChangePassword, ICreateAccount, SucResEditDel, User } from '../../../../../interfaces';
 import { PasswordDialogComponent } from '../../components/dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from '../privilege.service';
 import { NotificationService } from '../notification.service';
 import { PersonService } from './person.service';
+import { DisplayService } from '../display.service';
 
 @Injectable({
   providedIn: 'root'
@@ -17,7 +17,7 @@ export class AccountService implements OnInit {
   public accounts$ = new BehaviorSubject<IAccountEntity[] | undefined>(undefined);
   public isLoggerIn: boolean = false;
 
-  constructor(private http: HttpClient, private ut: UtilityService,
+  constructor(private http: HttpClient, private display: DisplayService,
     private pr: PrivilegeService,
     private nt: NotificationService, private personService: PersonService) {
   }
@@ -32,24 +32,24 @@ export class AccountService implements OnInit {
    */
   public fetch(manageLoading = false): Promise<void> {
     return new Promise(async (res, rej) => {
-      manageLoading && this.ut.isLoading.next(true)
+      manageLoading && this.display.isLoading.next(true)
       this.http.get<IAccountEntity[]>(this.URL, { params: { 'FK': true } })
         .subscribe({
           next: (v) => {
             this.accounts$.next(v);
             res();
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the accounts information. Please try again later or check your connection."); rej(e);
-          }, complete: () => manageLoading && this.ut.isLoading.next(false),
+          }, complete: () => manageLoading && this.display.isLoading.next(false),
         });
     })
   }
 
   public fetchOne(id: number, manageLoading = false): Observable<IAccountEntity> {
-    manageLoading && this.ut.isLoading.next(true);
+    manageLoading && this.display.isLoading.next(true);
     return this.http.get<IAccountEntity[]>(this.URL + '/' + id).pipe(
-      tap(() => manageLoading && this.ut.isLoading.next(false)),
+      tap(() => manageLoading && this.display.isLoading.next(false)),
       map(v => {
         if (v[0])
           return v[0];
@@ -68,7 +68,7 @@ export class AccountService implements OnInit {
         if ((await this.sensitive().catch(() => false) !== true)) {
           return rej();
         }
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.post<IAccountEntity>(this.URL, account)
         .subscribe({
           next: (v) => {
@@ -76,17 +76,17 @@ export class AccountService implements OnInit {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem registering the account. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     });
   }
 
   changePassword(changePassword: IChangePassword, manageLoading = false): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.URL + '/' + this.pr.user.value?.accountId, changePassword)
         .subscribe({
           next: (v) => {
@@ -94,10 +94,10 @@ export class AccountService implements OnInit {
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem changing your password. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
@@ -108,7 +108,7 @@ export class AccountService implements OnInit {
       if ((await this.sensitive().catch(() => false) !== true)) {
         return rej();
       }
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.put<SucResEditDel>(this.URL + '/' + id, account)
         .subscribe({
           next: (v) => {
@@ -116,10 +116,10 @@ export class AccountService implements OnInit {
             res(v);
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the account information. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
@@ -132,7 +132,7 @@ export class AccountService implements OnInit {
       try {
         const success = await Promise.all([
           new Promise(async (res, rej) => {
-            manageLoading && this.ut.isLoading.next(true);
+            manageLoading && this.display.isLoading.next(true);
             this.http.delete<SucResEditDel>(this.URL + '/' + account.id)
               .subscribe({
                 next: (v) => {
@@ -140,9 +140,9 @@ export class AccountService implements OnInit {
                   res(v);
                 },
                 error: (e) => {
-                  manageLoading && this.ut.isLoading.next(false);
+                  manageLoading && this.display.isLoading.next(false);
                   this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the account. Please try again later or check your connection."); rej(e);
-                }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+                }, complete: () => { manageLoading && this.display.isLoading.next(false); }
               })
           }),
           this.personService.deletePerson(account.personId, false)
@@ -206,7 +206,7 @@ export class AccountService implements OnInit {
   deleteAccount(account: IAccountEntity): Promise<'deleted'> {
     return new Promise((res, rej) => {
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the account: ') + account.username + this.ut.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
+        content: this.display.translate('You are about to delete the account: ') + account.username + this.display.translate(" permanently. If account has or had role Parent: any child has this account as parent will no longer has it. If account has or had role Teacher: any child has this account as teacher will no longer has it. You won't be able to delete the account if there is at least one goal or evaluation still exist and have been created by this account."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

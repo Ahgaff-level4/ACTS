@@ -1,5 +1,5 @@
 import { NgModule, inject } from '@angular/core';
-import { ActivatedRouteSnapshot, Route, RouterModule, RouterStateSnapshot, Routes, UrlMatchResult, UrlSegment, UrlSegmentGroup } from '@angular/router';
+import { ActivatedRouteSnapshot, Route, Router, RouterModule, RouterStateSnapshot, Routes, UrlMatchResult, UrlSegment, UrlSegmentGroup } from '@angular/router';
 import { HomeComponent } from './components/pages/home/home.component';
 import { FieldComponent } from './components/pages/field/field.component';
 import { LoginComponent } from './components/pages/login/login.component';
@@ -7,7 +7,6 @@ import { ProgramComponent } from './components/pages/program/program.component';
 import { ChildrenComponent } from './components/pages/children/children/children.component';
 import { AddEditChildComponent } from './components/pages/children/add-edit-child/add-edit-child.component';
 import { Role, User } from '../../../interfaces';
-import { UtilityService } from './services/utility.service';
 import { ActivityComponent } from './components/pages/activity/activity.component';
 import { GoalComponent } from './components/pages/goal/goal.component';
 import { AccountComponent } from './components/pages/accounts/account/account.component';
@@ -25,6 +24,7 @@ import { PRIVILEGES } from './services/privilege.service';
 import { NotificationService } from './services/notification.service';
 import { AboutUsComponent } from './components/pages/about-us/about.component';
 import { LoginService } from './services/login.service';
+import { DisplayService } from './services/display.service';
 
 export interface ComponentCanDeactivate {
   /**@returns false to prevent user navigating. true otherwise */
@@ -44,8 +44,8 @@ export function PendingChangesGuard(component: Component, state: RouterStateSnap
     if (component.canDeactivate())
       return true
     else {
-      const ut = inject(UtilityService);
-      return confirm(ut.translate('Changes you made may not be saved.'));
+      const display = inject(DisplayService);
+      return confirm(display.translate('Changes you made may not be saved.'));
     }
   }
   return true;
@@ -54,7 +54,7 @@ export function PendingChangesGuard(component: Component, state: RouterStateSnap
 
 export async function RoleGuard(route: ActivatedRouteSnapshot,
   state: RouterStateSnapshot) {
-  const ut = inject(UtilityService);
+  const router = inject(Router);
   const nt = inject(NotificationService);
   const loginService = inject(LoginService);
   let allowRoles: Role[] = route.data['allowRoles'] as Role[];
@@ -91,7 +91,7 @@ export async function RoleGuard(route: ActivatedRouteSnapshot,
       buttons: [{ color: 'primary', type: isLoggedIn ? 'Login by another account' : 'Login' }, { color: 'accent', type: 'Ok' },]
     }).afterClosed().subscribe(v => {
       if (v === 'Login' || v == 'Login by another account')
-        ut.router.navigateByUrl('login');
+        router.navigateByUrl('login');
     });
   }
 

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IFieldEntity } from '../../../../../../interfaces';
 import { FieldService } from 'src/app/services/CRUD/field.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -61,7 +61,7 @@ export class FieldComponent extends UnsubOnDestroy {
     },
   ];
 
-  constructor(private service: FieldService, public ut: UtilityService, private nt: NotificationService,
+  constructor(private service: FieldService, public display: DisplayService, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
   }
@@ -98,7 +98,7 @@ export class FieldComponent extends UnsubOnDestroy {
       this.nt.notify(undefined);
     else
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the field: ') + field.name + this.ut.translate(' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
+        content: this.display.translate('You are about to delete the field: ') + field.name + this.display.translate(' permanently. Any existing activity that has this field will no longer have it, and will have empty field instead!'),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

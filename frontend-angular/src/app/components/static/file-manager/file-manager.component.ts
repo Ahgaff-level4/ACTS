@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { environment } from 'src/environments/environment';
 import { enableRtl, L10n } from '@syncfusion/ej2-base'
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
@@ -18,13 +18,13 @@ export class FileManagerComponent extends UnsubOnDestroy implements OnInit {
   public toolbarSettings: any;
   public contextMenuSettings: any;
 
-  constructor(public ut: UtilityService, private translateService: TranslateService) { super(); }
+  constructor(public display: DisplayService, private translateService: TranslateService) { super(); }
   ngOnInit(): void {
-    enableRtl(this.ut.currentLang == 'ar');
-    this.rootAliasName = this.ut.translate('Child Folder');
+    enableRtl(this.display.currentLang == 'ar');
+    this.rootAliasName = this.display.translate('Child Folder');
     this.sub.add(this.translateService.onLangChange.subscribe(v => {
       enableRtl(v.lang.includes('ar'))
-      this.rootAliasName = this.ut.translate('Child Folder');
+      this.rootAliasName = this.display.translate('Child Folder');
     }));
     this.ajaxSettings = {
       url: environment.API + 'person/' + this.personId + '/file-manager/FileOperations',

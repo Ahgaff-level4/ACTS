@@ -1,6 +1,6 @@
 import { Component, Inject, OnInit } from '@angular/core';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { IActivityEntity, IChildEntity, IFieldEntity, IProgramEntity } from '../../../../../../interfaces';
 import { MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dialog';
 import { GoalService } from 'src/app/services/CRUD/goal.service';
@@ -27,7 +27,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
    * - 'strength' for choosing the strength's activity.
    */
   constructor(public dialogRef: MatDialogRef<any>, public programService: ProgramService,
-    private ut: UtilityService, private goalService: GoalService, private strengthService: StrengthService,
+    private display: DisplayService, private goalService: GoalService, private strengthService: StrengthService,
     private activityService: ActivityService, private nt:NotificationService, public fieldService: FieldService,
     @Inject(MAT_DIALOG_DATA) public data: { child: IChildEntity, state: 'goal' | 'strength' }) {
     super();
@@ -67,7 +67,7 @@ export class SelectActivityComponent extends UnsubOnDestroy implements OnInit {
     if (this.filterByAgeTwoWay == 'age' &&
       this.chosenProgram?.activities &&
       this.data.child?.person?.birthDate) { //filter by age
-      var age = this.ut.calcAge(this.data.child.person?.birthDate);
+      var age = this.display.calcAge(this.data.child.person?.birthDate);
       this.activities = this.chosenProgram.activities
         .filter((v) => {
           if (v.maxAge == null || v.minAge == null || (age <= v.maxAge && age >= v.minAge))

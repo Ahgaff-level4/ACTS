@@ -1,5 +1,5 @@
 <div
-  [matTooltip]="('Number of'|translate)+' '+(content|translate)+' '+('created between'|translate)+' '+display.toDate(timeframe.controls.from.value)+' - '+display.toDate(timeframe.controls.to.value)"
+  [matTooltip]="('Number of'|translate)+' '+(content|translate)+' '+('created between'|translate)+' '+(timeframe.controls.from.value|toDate)+' - '+(timeframe.controls.to.value|toDate)"
   class="border-1 border rounded-4 m-3 d-flex">
   <img class="m-3 me-0 ms-3" width="100px" [src]="src" [alt]="alt" />
   <div class="m-3 d-flex flex-column align-items-center text-center justify-content-center">

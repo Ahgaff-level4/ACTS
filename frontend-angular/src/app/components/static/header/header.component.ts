@@ -2,7 +2,8 @@ import { Component } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { LoginService } from 'src/app/services/login.service';
 import { PrivilegeService } from 'src/app/services/privilege.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-header',
@@ -12,7 +13,8 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class HeaderComponent  {
   public isShowDivIf = true;
   public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
-  constructor(public ut: UtilityService, public pr: PrivilegeService, public loginService: LoginService, public translate: TranslateService,) {
+  constructor(public display: DisplayService, public pr: PrivilegeService, public router:Router,
+    public loginService: LoginService, public translate: TranslateService,) {
   }
 
 

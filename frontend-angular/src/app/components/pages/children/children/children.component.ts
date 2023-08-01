@@ -1,7 +1,6 @@
 import { Component } from '@angular/core';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
-import { UtilityService } from 'src/app/services/utility.service';
 import { ColDef, GridOptions, ISetFilterParams, NewValueParams, } from 'ag-grid-enterprise';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { map } from 'rxjs';
@@ -10,6 +9,7 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-children',
@@ -43,7 +43,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
       colId: 'Age',//assigned `colId` because there are multiple columns with same field.
       field: 'person.birthDate',
       headerName: 'Age',
-      valueGetter: (v) => this.ut.calcAge(v.data?.person.birthDate),//set the under the hood value
+      valueGetter: (v) => this.display.calcAge(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
       valueFormatter: (v) => this.display.fromNow(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
@@ -60,8 +60,8 @@ export class ChildrenComponent extends UnsubOnDestroy {
       field: 'person.gender',
       headerName: 'Gender',
       type: 'enum',
-      valueGetter: v => this.ut.translate(v.data?.person?.gender),
-      filterParams: { values: [this.ut.translate('Male'), this.ut.translate('Female')], },
+      valueGetter: v => this.display.translate(v.data?.person?.gender),
+      filterParams: { values: [this.display.translate('Male'), this.display.translate('Female')], },
       width: 110
     },
     {
@@ -99,7 +99,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
       field: 'birthOrder',
       headerName: 'Order between siblings',
       type: 'number',
-      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.ut.translate(this.ut.ordinalNumbers[v.data.birthOrder - 1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
+      valueFormatter: (v) => typeof v.data?.birthOrder == 'number' ? this.display.translate(this.display.ordinalNumbers[v.data.birthOrder - 1]) : '',//todo check the birthOrder value because ordinalNumbers start with First
       hide: true,
     },
     {
@@ -159,13 +159,13 @@ export class ChildrenComponent extends UnsubOnDestroy {
     {
       field: 'parent.person.name',
       headerName: 'Parent',
-      tooltipValueGetter: (v) => v.data?.parent?.username ? this.ut.translate('Username') + ': ' + v.data.parent.username : '',
+      tooltipValueGetter: (v) => v.data?.parent?.username ? this.display.translate('Username') + ': ' + v.data.parent.username : '',
     },
     {
       field: 'teachers',
       headerName: 'Teachers',
       valueGetter: (v) => this.display.childTeachers(v.data),
-      tooltipValueGetter: (v) => v.data?.teachers ? this.ut.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.ut.translate(', ')) : '',
+      tooltipValueGetter: (v) => v.data?.teachers ? this.display.translate('Username') + ': ' + v.data.teachers.map(v => v.username).join(this.display.translate(', ')) : '',
     },
     {
       field: 'program.name',
@@ -180,9 +180,9 @@ export class ChildrenComponent extends UnsubOnDestroy {
       type: 'enum',
       filterParams: {
         values: [true, false],
-        valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive')
+        valueFormatter: v => v.value == true ? this.display.translate('Archive') : this.display.translate('Not Archive')
       } as ISetFilterParams<IChildEntity, boolean>,
-      valueFormatter: v => v.value == true ? this.ut.translate('Archive') : this.ut.translate('Not Archive'),
+      valueFormatter: v => v.value == true ? this.display.translate('Archive') : this.display.translate('Not Archive'),
       hide: true,
     }
   ];
@@ -192,14 +192,14 @@ export class ChildrenComponent extends UnsubOnDestroy {
   // Data that gets displayed in the grid
   public rowData = this.childService.children$.pipe(map(v => {
     if (this.pr.canUser('archiveChild'))
-      return this.ut.deepClone(v);
-    else return this.ut.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
+      return this.display.deepClone(v);
+    else return this.display.deepClone(v.filter(v => v.isArchive == false));//Parent with archived child can not be viewed
   }));
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
-    public ut: UtilityService, public pr: PrivilegeService, private nt: NotificationService,
-    public display: DisplayService, private programService: ProgramService) {
+    public display: DisplayService, public pr: PrivilegeService, private nt: NotificationService,
+    private programService: ProgramService, private router:Router,) {
     super();
   }
 
@@ -218,7 +218,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
   edit(child: IChildEntity | undefined) {
     if (child || this.selectedItem)
-      this.ut.router.navigate(['children','edit-child'], { state: { data: child ?? this.selectedItem } });
+      this.router.navigate(['children', 'edit-child'], { state: { data: child ?? this.selectedItem } });
   }
 
   printTable() {
@@ -229,25 +229,25 @@ export class ChildrenComponent extends UnsubOnDestroy {
     {
       name: 'View',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">wysiwyg</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('children/child/' + v.id) : '',
+      action: (v) => v ? this.router.navigateByUrl('children/child/' + v.id) : '',
       tooltip: 'View all information',
     },
     {
       name: 'Goals',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">sports_score</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('children/child/' + v.id + '/goals') : '',
+      action: (v) => v ? this.router.navigateByUrl('children/child/' + v.id + '/goals') : '',
       tooltip: 'View goals of the selected child',
     },
     {
       name: 'Strengths',
       icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">fitness_center</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('children/child/' + v.id + '/strengths') : '',
+      action: (v) => v ? this.router.navigateByUrl('children/child/' + v.id + '/strengths') : '',
       tooltip: 'View strengths of the selected child',
     },
     {
       name: 'Report',
       icon: `<mat-icon _ngcontent-glk-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">analytics</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('children/child/' + v.id + '/report') : '',
+      action: (v) => v ? this.router.navigateByUrl('children/child/' + v.id + '/report') : '',
       tooltip: 'View report of the selected child',
     },
   ];

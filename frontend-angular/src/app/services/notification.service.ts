@@ -2,7 +2,7 @@ import { Injectable, TemplateRef } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { ErrorResponse, SuccessResponse, User } from '../../../../interfaces';
 import { MatDialog, MatDialogRef } from '@angular/material/dialog';
-import { UtilityService } from './utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { NotificationDrawerComponent } from '../components/dialogs/notification-drawer/notification-drawer.component';
 import { NzNotificationRef, NzNotificationService } from 'ng-zorro-antd/notification';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -34,7 +34,7 @@ export class NotificationService {
   */
   private template!: TemplateRef<NotificationShape>;
 
-  constructor(private dialog: MatDialog, private ut: UtilityService, private nzNotification: NzNotificationService) { }
+  constructor(private dialog: MatDialog, private display: DisplayService, private nzNotification: NzNotificationService) { }
 
   /**append into `notifications` BehaviorSubject then emit & return the new values */
   private appendNewNotification(notification: NotificationShape): NotificationShape[] {
@@ -54,18 +54,18 @@ export class NotificationService {
     let translatedTitle = ''
     if (Array.isArray(title))
       for (let str of title)
-        translatedTitle += this.ut.translate(str);
-    else translatedTitle = this.ut.translate(title);
+        translatedTitle += this.display.translate(str);
+    else translatedTitle = this.display.translate(title);
     let translatedContent = '';
     if (Array.isArray(content))
       for (let str of content)
-        translatedContent += this.ut.translate(str);
-    else translatedContent = this.ut.translate(content);
+        translatedContent += this.display.translate(str);
+    else translatedContent = this.display.translate(content);
 
     const newNotify = { title: translatedTitle, content: translatedContent ?? '', icon, link, timestamp: new Date(), shown: false, };
     this.appendNewNotification(newNotify);
 
-    return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration: this.notificationSettings.value.closeAfter, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true });
+    return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration: this.notificationSettings.value.closeAfter, nzClass: 'rounded-4 notify-' + this.display.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true });
   }
   /**
  * If title is null then show error message of something went wrong!
@@ -83,16 +83,16 @@ export class NotificationService {
     let translatedTitle = '';
     if (Array.isArray(title))
       for (let str of title)
-        translatedTitle += this.ut.translate(str);
-    else translatedTitle = this.ut.translate(title);
+        translatedTitle += this.display.translate(str);
+    else translatedTitle = this.display.translate(title);
     let translatedContent = '';
     if (Array.isArray(content))
       for (let str of content)
-        translatedContent += this.ut.translate(str);
-    else translatedContent = this.ut.translate(content)
+        translatedContent += this.display.translate(str);
+    else translatedContent = this.display.translate(content)
     const newNotify = { title: translatedTitle, content: translatedContent ?? '', icon: type, timestamp: new Date(), shown: false, };
     const nzDuration = duration <= 0 ? undefined : duration;
-    return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.ut.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
+    return this.nzNotification.template(this.template, { nzData: newNotify, nzAnimate: true, nzDuration, nzClass: 'rounded-4 notify-' + this.display.getDirection(), nzPlacement: 'bottomRight', nzPauseOnHover: true })
   }
 
   public openNotificationsDrawer() {
@@ -115,7 +115,7 @@ export class NotificationService {
    * @param appendMsg used when error could not be identified and will be appended after the default error message: `'Something Went Wrong! '+appendMsg`
    */
   public errorDefaultDialog = (eOrMessage?: HttpErrorResponse | string | ErrorResponse | SuccessResponse, appendMsg?: string): MatDialogRef<MessageDialogComponent, any> => {
-    console.warn('UtilityService : errorDefaultDialog : eOrMessage:', eOrMessage);
+    console.warn('NotificationService : errorDefaultDialog : eOrMessage:', eOrMessage);
 
     let message: string;
     if (typeof eOrMessage === 'string')
@@ -126,13 +126,13 @@ export class NotificationService {
       && typeof (eOrMessage as ErrorResponse)?.message === 'string')
       message = eOrMessage?.message;
     else {
-      let somethingWentWrong = this.ut.translate('Something went wrong!');
-      appendMsg = appendMsg ? this.ut.translate(appendMsg) : '';
-      let sorry = this.ut.translate('Sorry, there was a problem. Please try again later or check your connection.');
+      let somethingWentWrong = this.display.translate('Something went wrong!');
+      appendMsg = appendMsg ? this.display.translate(appendMsg) : '';
+      let sorry = this.display.translate('Sorry, there was a problem. Please try again later or check your connection.');
       message = (appendMsg ? appendMsg : somethingWentWrong + ' ' + sorry);
     }
 
-    return this.showMsgDialog({ content: this.ut.translate(message), type: 'error' })
+    return this.showMsgDialog({ content: this.display.translate(message), type: 'error' })
   }
 
   /**
@@ -152,7 +152,7 @@ export class NotificationService {
       width = '90%';
     else if (component.name == AddParentComponent.name)
       width = '95%';
-    return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.ut.getDirection(), width })
+    return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.display.getDirection(), width })
   }
 
   /**Used by notification-item when initialized */

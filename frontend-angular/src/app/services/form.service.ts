@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AbstractControl, FormControl, FormGroup, ValidationErrors } from '@angular/forms';
 import * as moment from 'moment';
-import { UtilityService } from './utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { Observable, takeWhile } from 'rxjs';
 import { HttpClient } from '@angular/common/http';
 import { environment } from 'src/environments/environment';
@@ -15,7 +15,7 @@ export class FormService {
   public before20y$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 20, new Date().getMonth(), new Date().getDate())));
   public minCreatedDate$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 5, new Date().getMonth(), new Date().getDate())));
 
-  constructor(private ut: UtilityService, private http: HttpClient) { }
+  constructor(private display: DisplayService, private http: HttpClient) { }
   /**
    * Used in formGroup to setValue of formGroup.controls with the correspond object properties.
    * Ex: `keys={'name':FormControl...}` and `properties={'name':'Ahmad','age':20,...}`
@@ -98,10 +98,10 @@ export class FormService {
         return 'You must enter a value';
 
       if (control?.hasError('maxlength'))
-        return this.ut.translate('Maximum length is ') + control.getError('maxlength').requiredLength;
+        return this.display.translate('Maximum length is ') + control.getError('maxlength').requiredLength;
 
       if (control?.hasError('minlength'))
-        return this.ut.translate('Minimum length is ') + control.getError('minlength').requiredLength;
+        return this.display.translate('Minimum length is ') + control.getError('minlength').requiredLength;
 
       return '';
     },

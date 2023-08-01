@@ -16,6 +16,5 @@ export class NumberCardComponent {
     from: FormControl<Date | null>;
     to: FormControl<Date | null>;
   }>
-
-  constructor(public display: DisplayService) { }
+  
 }

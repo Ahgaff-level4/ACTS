@@ -3,7 +3,6 @@ import { CustomTimeframe, IDashboard, TimeframeDuration } from '../../../../../.
 import { BehaviorSubject, Observable, filter, map, throttleTime } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { ReportService } from 'src/app/services/report.service';
-import { UtilityService } from 'src/app/services/utility.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NotificationService } from 'src/app/services/notification.service';
@@ -17,7 +16,7 @@ export class DashboardComponent extends UnsubOnDestroy {
   public dashboard$ = new BehaviorSubject<IDashboard | null>(null);
   public childrenRegisterData$: Observable<[{ name: string, series: { value: number, name: Date | string }[] }]> = this.dashboard$.pipe(filter(v => v != null), map(v => {
     return [{
-      name: this.ut.translate('Number of Children'), series: v!.children
+      name: this.display.translate('Number of Children'), series: v!.children
         .sort((a, b) => a.person.createdDatetime < b.person.createdDatetime ? 1 : (a.person.createdDatetime > b.person.createdDatetime ? -1 : 0))
         .map((c, i) => ({ value: v!.childrenCount - i, name: new Date(c.person.createdDatetime) }))
     }];
@@ -31,8 +30,8 @@ export class DashboardComponent extends UnsubOnDestroy {
     from: new FormControl<Date>(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate())),//Default Yearly
     to: new FormControl<Date>(new Date()),
   });
-  constructor(public service: ReportService, public ut: UtilityService,
-    private nt: NotificationService, public display: DisplayService) { super(); }
+  constructor(public service: ReportService, public display: DisplayService,
+    private nt: NotificationService,) { super(); }
 
   ngOnInit() {
     this.sub.add(this.service.fetchDashboard({

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { IEvaluationEntity, IGoalEntity } from '../../../../../../interfaces';
 import { EvaluationService } from 'src/app/services/CRUD/evaluation.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { ActivatedRoute } from '@angular/router';
 import { AddEditEvaluationComponent } from '../../dialogs/add-edit/add-edit-evaluation/add-edit-evaluation.component';
 import { ColDef, GridOptions, ISetFilterParams, NewValueParams } from 'ag-grid-community';
@@ -48,9 +48,9 @@ export class EvaluationComponent extends UnsubOnDestroy {
       type: 'enum',
       filterParams: {
         values: ['continual', 'excellent'],
-        valueFormatter: v => v.value == 'continual' ? this.ut.translate('Continual') : this.ut.translate('Excellent'),
+        valueFormatter: v => v.value == 'continual' ? this.display.translate('Continual') : this.display.translate('Excellent'),
       } as ISetFilterParams<IGoalEntity, string>,
-      valueGetter: (v) => v.data?.rate == 'excellent' ? this.ut.translate('Excellent') : this.ut.translate('Continual'),
+      valueGetter: (v) => v.data?.rate == 'excellent' ? this.display.translate('Excellent') : this.display.translate('Continual'),
     },
     {
       field: 'mainstream',
@@ -88,7 +88,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
 
 
-  constructor(public service: EvaluationService, public ut: UtilityService,
+  constructor(public service: EvaluationService, public display: DisplayService,
     private route: ActivatedRoute, private nt: NotificationService,
     public agGrid: AgGridService, public pr: PrivilegeService) {
     super();
@@ -98,7 +98,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
 
   async ngOnInit() {
     try {
-      let goalId = await this.ut.getRouteParamId(this.route);
+      let goalId = await this.display.getRouteParamId(this.route);
       this.service.fetchGoalItsEvaluations(goalId);
     } catch (e) {
       this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the goal's evaluations. Please try again later or check your connection.");
@@ -136,7 +136,7 @@ export class EvaluationComponent extends UnsubOnDestroy {
       this.nt.notify(undefined);
     else
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the evaluation with description: \"') + evaluation.description + this.ut.translate("\" permanently."),
+        content: this.display.translate('You are about to delete the evaluation with description: \"') + evaluation.description + this.display.translate("\" permanently."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

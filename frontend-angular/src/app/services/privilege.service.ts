@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Role, User } from '../../../../interfaces';
-import { IPage, PAGES, UtilityService } from './utility.service';
 import { BehaviorSubject, Observable, map } from 'rxjs';
+import { DisplayService, PAGES } from './display.service';
 
 @Injectable({
   providedIn: 'root'
@@ -10,7 +10,7 @@ export class PrivilegeService {
   /**null means not loggedIn */
   public user: BehaviorSubject<User | null> = new BehaviorSubject<User | null>(null);
 
-  constructor(private ut: UtilityService) {
+  constructor(private display: DisplayService) {
   }
 
   public canUser(actions: Privilege[]): boolean;
@@ -112,7 +112,7 @@ export class PrivilegeService {
     if (PRIVILEGES.printTable.includes(role))
       privileges.push("Can print/export any table that can access.")
 
-    return privileges.map(v => this.ut.translate(v));
+    return privileges.map(v => this.display.translate(v));
   }
 
 }

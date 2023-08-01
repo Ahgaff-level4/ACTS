@@ -1,7 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { IPersonEntity } from '../../../../../../interfaces';
 import { DisplayService } from 'src/app/services/display.service';
-import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-person-view[person]',
@@ -11,5 +10,5 @@ import { UtilityService } from 'src/app/services/utility.service';
 export class PersonViewComponent {
   @Input() person!: IPersonEntity;
 
-  constructor(public display: DisplayService,public ut:UtilityService) { }
+  constructor(public display: DisplayService,) { }
 }

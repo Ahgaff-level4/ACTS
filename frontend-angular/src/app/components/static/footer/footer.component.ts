@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { PrivilegeService } from 'src/app/services/privilege.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-footer',
@@ -8,7 +8,7 @@ import { UtilityService } from 'src/app/services/utility.service';
   styleUrls: ['./footer.component.scss']
 })
 export class FooterComponent {
-  constructor(public pr: PrivilegeService, public ut: UtilityService) { }
+  constructor(public pr: PrivilegeService, public display: DisplayService) { }
 
   getFullYear() {
     return new Date().getFullYear();

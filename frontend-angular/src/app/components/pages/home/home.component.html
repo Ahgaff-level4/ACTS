@@ -1,4 +1,4 @@
-<div id="animate-home-header" class="top my-primary-bg px-5">
+<!-- <div id="animate-home-header" class="top my-primary-bg px-5">
   <div class="row mb-2">
     <div class="text-white mb-5 text-center mt-md-5 col-md-8">
       <h1 class="display-1 text-white tracking-in-contract">{{'ACTS'|translate}}</h1>
@@ -8,9 +8,11 @@
       alt="Teacher teach a child">
   </div>
 </div>
-<div class="sticky-shadow shadow-lg position-sticky top-0 w-100">&nbsp;</div>
-
-<div class="container-fluid mt-5">
+<div class="sticky-shadow shadow-lg position-sticky top-0 w-100">&nbsp;</div> -->
+<div class="container">
+  <app-vertical-timeline forWho="child" [id]="1"></app-vertical-timeline>
+</div>
+<!-- <div class="container-fluid mt-5">
   <mat-divider class="mx-5 my-6"></mat-divider>
 
   <app-about-us *ngIf="!pr.user.value"></app-about-us>
@@ -38,4 +40,4 @@
   <app-about-us *ngIf="pr.user.value"></app-about-us>
 
   <mat-divider class="mx-5 my-6"></mat-divider>
-</div>
+</div> -->

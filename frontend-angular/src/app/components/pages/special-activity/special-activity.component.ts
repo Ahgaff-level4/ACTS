@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { IActivityEntity } from '../../../../../../interfaces';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -40,7 +40,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       field: 'goals.0.child.person.name',
       headerName: "child's name",//headerName will be translated
       type: 'long',
-      tooltipValueGetter: v => v.data?.goals?.length == 0 ? this.ut.translate('This activity is not bind to any child! We strongly recommend deleting it') : v.data?.goals?.[0]?.child?.person?.name,
+      tooltipValueGetter: v => v.data?.goals?.length == 0 ? this.display.translate('This activity is not bind to any child! We strongly recommend deleting it') : v.data?.goals?.[0]?.child?.person?.name,
     },
     {
       field: 'name',
@@ -71,7 +71,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     },
   ];
 
-  constructor(public service: ActivityService, private ut: UtilityService,
+  constructor(public service: ActivityService, private display: DisplayService,
     public agGrid: AgGridService, private fieldService: FieldService,
     public pr: PrivilegeService, private nt: NotificationService,) {
     super();
@@ -86,7 +86,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     this.service.fetchSpecialActivities(true);
     this.sub.add(this.service.specialActivities$.subscribe(v => {
       if (v)
-        this.rowData = this.ut.deepClone(v);
+        this.rowData = this.display.deepClone(v);
     }))
   }
 
@@ -121,7 +121,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
       this.nt.notify(undefined);
     else
       this.nt.showMsgDialog({
-        content: this.ut.translate('You are about to delete the activity: \"') + activity.name + this.ut.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
+        content: this.display.translate('You are about to delete the activity: \"') + activity.name + this.display.translate("\" permanently. NOTE: You won't be able to delete the activity if there is a child with at least one goal that depends on this activity."),
         type: 'confirm',
         buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
       }).afterClosed().subscribe(async (v) => {

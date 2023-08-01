@@ -2,10 +2,10 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, ReplaySubject } from 'rxjs';
 import { IChildEntity, ICreateStrength, IStrengthEntity, SucResEditDel } from '../../../../../interfaces';
 import { HttpClient } from '@angular/common/http';
-import { UtilityService } from '../utility.service';
 import { ChildService } from './child.service';
 import { GoalService } from './goal.service';
 import { NotificationService } from '../notification.service';
+import { DisplayService } from '../display.service';
 @Injectable({
   providedIn: 'root'
 })
@@ -21,7 +21,7 @@ export class StrengthService {
   /**Child object with its strengths. The idea is that: this child will be replaced every time user check another child strengths. And it is in service so it is shared with other components */
   public childItsStrengths$ = new BehaviorSubject<IChildEntity | undefined>(undefined)
 
-  constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,
+  constructor(private http: HttpClient, private display: DisplayService, private nt: NotificationService,
     private childService: ChildService, private goalService: GoalService) {
   }
   /**
@@ -29,7 +29,7 @@ export class StrengthService {
   */
   post(field: ICreateStrength, manageLoading = false): Promise<IStrengthEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.post<IStrengthEntity>(this.goalService.URL, field)
         .subscribe({
           next: (v) => {
@@ -38,17 +38,17 @@ export class StrengthService {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the strength. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     });
   }
 
   patch(id: number, child: Partial<IStrengthEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.goalService.URL + '/' + id, child)
         .subscribe({
           next: (v) => {
@@ -57,17 +57,17 @@ export class StrengthService {
             res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the strength. Please try again later or check your connection.");
             rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
 
   delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.delete<SucResEditDel>(this.goalService.URL + '/' + id)
         .subscribe({
           next: (v) => {
@@ -76,9 +76,9 @@ export class StrengthService {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the strength. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
@@ -90,7 +90,7 @@ export class StrengthService {
    * */
   public fetchChildItsStrengths(id: number, manageLoading = false): Promise<IChildEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IChildEntity[]>(this.childService.childURL + '/' + id + '/strengths')
         .subscribe({
           next: v => {
@@ -103,9 +103,9 @@ export class StrengthService {
             }
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem fetching the child's goals. Please try again later or check your connection."); rej(e);
-          },complete:()=>{manageLoading && this.ut.isLoading.next(false);}
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }

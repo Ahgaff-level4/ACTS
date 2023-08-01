@@ -3,8 +3,8 @@ import { Observable, Subject, shareReplay } from 'rxjs';
 import { ICreateProgram, IProgramEntity, SucResEditDel } from '../../../../../interfaces';
 import { environment as env } from 'src/environments/environment';
 import { HttpClient } from '@angular/common/http';
-import { UtilityService } from '../utility.service';
 import { NotificationService } from '../notification.service';
+import { DisplayService } from '../display.service';
 
 @Injectable({
   providedIn: 'root'
@@ -20,21 +20,21 @@ export class ProgramService {
   }).pipe(shareReplay(1));
 
 
-  constructor(private http: HttpClient, private ut: UtilityService,private nt:NotificationService,) {
+  constructor(private http: HttpClient, private display: DisplayService,private nt:NotificationService,) {
   }
 
   /** fetch programs from DB and emit it to programs */
   public fetch(manageLoading = false): Promise<IProgramEntity[]> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.get<IProgramEntity[]>(this.URL)
         .subscribe({
           next: (v) => {
             this.subject$.next(v); res(v);
           }, error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, 'Sorry, there was a problem fetching the programs. Please try again later or check your connection.'); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         });
     })
   }
@@ -44,7 +44,7 @@ export class ProgramService {
  */
   post(field: ICreateProgram, manageLoading = false): Promise<IProgramEntity> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.post<IProgramEntity>(this.URL, field)
         .subscribe({
           next: (v) => {
@@ -52,43 +52,43 @@ export class ProgramService {
             res(v);
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem creating the program. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     });
   }
 
   patch(id: number, child: Partial<IProgramEntity>, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.patch<SucResEditDel>(this.URL + '/' + id, child)
         .subscribe({
           next: (v) => {
             this.fetch(); res(v)
           },
           error: e => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem editing the program. Please try again later or check your connection.");
             rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }
 
   delete(id: number, manageLoading = false): Promise<SucResEditDel> {
     return new Promise((res, rej) => {
-      manageLoading && this.ut.isLoading.next(true);
+      manageLoading && this.display.isLoading.next(true);
       this.http.delete<SucResEditDel>(this.URL + '/' + id)
         .subscribe({
           next: (v) => {
             this.fetch(); res(v)
           },
           error: (e) => {
-            manageLoading && this.ut.isLoading.next(false);
+            manageLoading && this.display.isLoading.next(false);
             this.nt.errorDefaultDialog(e, "Sorry, there was a problem deleting the program. Please try again later or check your connection."); rej(e);
-          }, complete: () => { manageLoading && this.ut.isLoading.next(false); }
+          }, complete: () => { manageLoading && this.display.isLoading.next(false); }
         })
     })
   }

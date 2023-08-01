@@ -1,7 +1,7 @@
 import { Component, OnDestroy } from '@angular/core';
 import { IProgramEntity } from '../../../../../../interfaces';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
 import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
@@ -9,6 +9,7 @@ import { Observable, Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-program',
@@ -60,7 +61,7 @@ export class ProgramComponent extends UnsubOnDestroy {
     {
       name: 'Activities',
       icon: `<mat-icon _ngcontent-tvg-c62="" color="primary" role="img" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" data-mat-icon-type="font">interests</mat-icon>`,
-      action: (v) => v ? this.ut.router.navigateByUrl('/programs/program/' + v.id + '/activities') : '',
+      action: (v) => v ? this.router.navigateByUrl('/programs/program/' + v.id + '/activities') : '',
       tooltip: 'View activities of the selected program',
     },
     {
@@ -81,8 +82,8 @@ export class ProgramComponent extends UnsubOnDestroy {
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
-  constructor(private service: ProgramService, public ut: UtilityService, private nt: NotificationService,
-    public agGrid: AgGridService, public pr: PrivilegeService) {
+  constructor(private service: ProgramService, public display: DisplayService, private nt: NotificationService,
+    public agGrid: AgGridService, public pr: PrivilegeService, private router:Router,) {
     super();
   }
 
@@ -107,7 +108,7 @@ export class ProgramComponent extends UnsubOnDestroy {
       return;
     }
     this.nt.showMsgDialog({
-      content: this.ut.translate('You are about to delete the program: ') + program.name + this.ut.translate(" permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
+      content: this.display.translate('You are about to delete the program: ') + program.name + this.display.translate(" permanently. All its activities will be deleted! NOTE: You won't be able to delete the program if there is a child with at least one goal that depends on this program."),
       type: 'confirm',
       buttons: [{ color: 'primary', type: 'Cancel' }, { color: 'warn', type: 'Delete' }]
     }).afterClosed().subscribe(async (v) => {

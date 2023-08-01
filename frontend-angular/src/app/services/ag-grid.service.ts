@@ -1,11 +1,10 @@
 import { Injectable } from '@angular/core';
-import { UtilityService } from './utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { ColDef, GetContextMenuItemsParams, GetLocaleTextParams, GridApi, GridOptions, MenuItemDef, SideBarDef } from 'ag-grid-enterprise';
 import { GridReadyEvent } from 'ag-grid-community';
 import { Clipboard } from '@angular/cdk/clipboard';
 import * as moment from 'moment';
 import { PrivilegeService } from './privilege.service';
-import { DisplayService } from './display.service';
 import { NotificationService } from './notification.service';
 @Injectable({
   providedIn: 'root'
@@ -24,8 +23,8 @@ export class AgGridService {
    * - if field is number then set `type='number'`. Default filter is for string.
    * - if field is enum then set `type='enum'` and set values as `filterParams:{values:['Male','Female'], valueFormatter?:Func, },`
    */
-  constructor(private ut: UtilityService, private clipboard: Clipboard, private nt: NotificationService,
-    private pr: PrivilegeService, private display: DisplayService) { }
+  constructor(private display: DisplayService, private clipboard: Clipboard, private nt: NotificationService,
+    private pr: PrivilegeService,) { }
 
   /**
    * @param data any nested object
@@ -71,7 +70,7 @@ export class AgGridService {
     preventDefaultOnContextMenu: true,
     suppressClipboardPaste: true,
     suppressCutToClipboard: true,
-    enableRtl: this.ut.getDirection() == 'rtl' ? true : false,
+    enableRtl: this.display.getDirection() == 'rtl' ? true : false,
     enableCellTextSelection: true,
     ensureDomOrder: true,
   }
@@ -79,7 +78,7 @@ export class AgGridService {
   private tapColumnDefs(columnDefs: ColDef<any>[], canEdit: boolean): ColDef<any>[] {
     return columnDefs.map(v => {
       v.editable = typeof v.onCellValueChanged == 'function' && canEdit;
-      v.headerName = this.ut.translate(v.headerName);
+      v.headerName = this.display.translate(v.headerName);
       v.headerTooltip = v.headerName;
       return v;
     })
@@ -161,7 +160,7 @@ export class AgGridService {
     toolPanels: [
       {
         id: 'columns',
-        labelDefault: this.ut.translate('Columns'),
+        labelDefault: this.display.translate('Columns'),
         labelKey: 'columns',
         iconKey: 'columns',
         toolPanel: 'agColumnsToolPanel',
@@ -174,7 +173,7 @@ export class AgGridService {
       },
       {
         id: 'filters',
-        labelDefault: this.ut.translate('Filters'),
+        labelDefault: this.display.translate('Filters'),
         labelKey: 'filters',
         iconKey: 'filter',
         toolPanel: 'agFiltersToolPanel',
@@ -184,7 +183,7 @@ export class AgGridService {
 
   private getLocaleText = (params: GetLocaleTextParams<any, any>): string => {
     const { key, defaultValue } = params;
-    const t = this.ut.translate(key);//in english `t` will equal `key`. This is normal
+    const t = this.display.translate(key);//in english `t` will equal `key`. This is normal
     if ((t == key && t != defaultValue) || t.trim() == '')
       return defaultValue;
     return t;
@@ -238,7 +237,7 @@ export class AgGridService {
     }
   }
 
-  /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.ut.commonGridOptions(...),(add your own options)}
+  /**used in ag-grid by javascript destruction. Ex: myGridOptions={...this.display.commonGridOptions(...),(add your own options)}
 * @param keyTableName use to store/restore table state from localStorage.
 * @param columnDefs used to set its `editable` base on if onCellChange exists. `headerName` will be translated
 * @param canEdit to set editable. And if user double click will show error message.
@@ -295,7 +294,7 @@ export class AgGridService {
         const items: MenuItemDef[] = [];
         if (typeof editRowAction == 'function' && canEdit)
           items.push({
-            name: this.ut.translate('Edit row'),
+            name: this.display.translate('Edit row'),
             icon: '<mat-icon _ngcontent-cen-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">edit</mat-icon>',
             action: () => editRowAction(v.node?.data),
             disabled: !canEdit
@@ -305,14 +304,14 @@ export class AgGridService {
           items.push(...menu.map(this.mapMyMenuItemToMenuItemDef(v.node?.data)));
 
         items.push({
-          name: this.ut.translate('Copy'),
+          name: this.display.translate('Copy'),
           icon: copyIcon,
           subMenu: this.copySubMenu(v, copyIcon),
         });
         return this.pr.canUser('printTable') == false ? items : [...items,
           'separator',
         {
-          name: this.ut.translate('Export table'),
+          name: this.display.translate('Export table'),
           icon: '<mat-icon _ngcontent-qgp-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">ios_share</mat-icon>',
           subMenu: this.exportTableSubMenu(v, printTableArgs),
         },
@@ -340,9 +339,9 @@ export class AgGridService {
       if (typeof action == 'function')
         item.action = () => action!(data);
       if (item.name)
-        item.name = this.ut.translate(item.name);
+        item.name = this.display.translate(item.name);
       if (item.tooltip)
-        item.tooltip = this.ut.translate(item.tooltip);
+        item.tooltip = this.display.translate(item.tooltip);
       return item;
     }
   }
@@ -350,32 +349,32 @@ export class AgGridService {
   private copySubMenu(menuParam: GetContextMenuItemsParams, copyIcon: string): (string | MenuItemDef)[] {
     const api = menuParam.api;
     const copyCellRow = [{
-      name: this.ut.translate('Copy cell'),
+      name: this.display.translate('Copy cell'),
       icon: copyIcon,
       action: () => {
         this.clipboard.copy(menuParam.value) == false ? this.nt.notify(undefined) : '';
       }
     },
     {
-      name: this.ut.translate('Copy row'),
+      name: this.display.translate('Copy row'),
       icon: copyIcon,
       shortcut: 'Ctrl + C',
       action: api.copyToClipboard,
     },
     {
-      name: this.ut.translate('Copy row (with headers)'),
+      name: this.display.translate('Copy row (with headers)'),
       icon: copyIcon,
       action: () => api.copyToClipboard({ includeHeaders: true })
     },];
 
     return this.pr.canUser('printTable') == false ? copyCellRow : [...copyCellRow, 'separator',
     {
-      name: this.ut.translate('Copy table'),
+      name: this.display.translate('Copy table'),
       icon: copyIcon,
       action: () => this.exportClipboard(api, false),
     },
     {
-      name: this.ut.translate('Copy table (with headers)'),
+      name: this.display.translate('Copy table (with headers)'),
       icon: `<mat-icon _ngcontent-ceh-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">table_view</mat-icon>`,
       action: () => this.exportClipboard(api, true),
     },]
@@ -383,18 +382,18 @@ export class AgGridService {
 
   private exportTableSubMenu(gridOptions: GridOptions, printTableArgs: PrintTableArg | null): (string | MenuItemDef)[] {
     const tableMenu = [{
-      name: this.ut.translate('Export as CSV'),
+      name: this.display.translate('Export as CSV'),
       icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
       action: () => this.exportCSV(gridOptions.api),
     },
     {
-      name: this.ut.translate('Export as Excel'),
+      name: this.display.translate('Export as Excel'),
       icon: '<mat-icon _ngcontent-hwt-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">download</mat-icon>',
       action: () => this.exportExcel(gridOptions.api),
     },];
     if (printTableArgs != null)
       tableMenu.push({
-        name: this.ut.translate('Print'),
+        name: this.display.translate('Print'),
         icon: `<mat-icon _ngcontent-xhr-c62="" role="img" color="primary" class="mat-icon notranslate mat-primary material-icons mat-ligature-font" aria-hidden="true" ng-reflect-color="primary" data-mat-icon-type="font">print</mat-icon>`,
         action: this.getPrintTableFunc(gridOptions, printTableArgs),
       });

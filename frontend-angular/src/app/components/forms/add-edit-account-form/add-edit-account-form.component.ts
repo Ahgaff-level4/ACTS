@@ -2,13 +2,14 @@ import { Component, EventEmitter, Input, OnInit, Output, ViewChild } from '@angu
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PasswordDialogComponent } from '../../dialogs/password-dialog/password-dialog.component';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { FormService } from 'src/app/services/form.service';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { IAccountEntity, ICreatePerson, IPersonEntity } from '../../../../../../interfaces';
 import { PersonFormComponent } from '../person-form/person-form.component';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-add-edit-account-form[submitted][state]',
@@ -30,9 +31,9 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
   hide = true;
   phoneFields: string[] = [];
 
-  constructor(private fb: FormBuilder, public ut: UtilityService, private accountService: AccountService,
+  constructor(private fb: FormBuilder, public display: DisplayService, private accountService: AccountService,
     public formService: FormService, private nt: NotificationService,
-    private pr: PrivilegeService) {
+    private pr: PrivilegeService, private router:Router,) {
     super();
   }
 
@@ -83,7 +84,7 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
       this.accountForm.get('roles')?.setValue(['Parent']);
       this.accountForm.get('roles')?.disable();
     }
-    this.sub.add(this.ut.isLoading.subscribe(v => this.isLoading = v));
+    this.sub.add(this.display.isLoading.subscribe(v => this.isLoading = v));
   }
 
 
@@ -97,12 +98,12 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
       this.accountForm?.disable();
       this.personForm?.formGroup?.disable();
       if (this.account?.id == null) {//Register new account
-        this.ut.isLoading.next(true);
+        this.display.isLoading.next(true);
         let person;
         if (this.state != 'add-parent')//not sensitive when adding parent account
-          person = await this.accountService.sensitiveWrapper(() => this.personForm?.submit()).catch(() => { this.ut.isLoading.next(false) });
-        else person = await this.personForm.submit().catch(() => this.ut.isLoading.next(false));
-        this.ut.isLoading.next(false);
+          person = await this.accountService.sensitiveWrapper(() => this.personForm?.submit()).catch(() => { this.display.isLoading.next(false) });
+        else person = await this.personForm.submit().catch(() => this.display.isLoading.next(false));
+        this.display.isLoading.next(false);
         if (typeof person != 'object')
           return;
         try {
@@ -117,15 +118,15 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
           this.personForm.personService.deletePerson(person.id, true);//if creating an account run into some problem but person created successfully then just delete the person :>
         }
       } else {//edit the account
-        this.ut.isLoading.next(true);
-        await this.accountService.sensitiveWrapper(() => this.personForm?.submitEdit()).catch(() => { this.ut.isLoading.next(false) });
-        this.ut.isLoading.next(false);
+        this.display.isLoading.next(true);
+        await this.accountService.sensitiveWrapper(() => this.personForm?.submitEdit()).catch(() => { this.display.isLoading.next(false) });
+        this.display.isLoading.next(false);
         let dirtyFields = this.formService.extractDirty(this.accountForm.controls);
         try {
           if (dirtyFields != null)
             await this.accountService.put(this.account.id, dirtyFields, true);
           this.nt.notify("Edited successfully", 'The account has been edited successfully', 'success');
-          this.ut.router.navigate(['/accounts']);
+          this.router.navigate(['/accounts']);
         } catch (e) { }
       }
       this.accountForm?.enable();
@@ -214,10 +215,10 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
   showRolesInfo() {
     this.nt.showMsgDialog({
       title: { text: 'Roles information' },
-      content: `<p>${this.ut.translate('There are four roles: Admin, Head of Department, Teacher, and Parent.')}<br>
-    ${this.ut.translate('Each role has different and shared privileges the following list describe each role privileges')}:</p>
+      content: `<p>${this.display.translate('There are four roles: Admin, Head of Department, Teacher, and Parent.')}<br>
+    ${this.display.translate('Each role has different and shared privileges the following list describe each role privileges')}:</p>
     <ul>
-      <li>${this.ut.translate('Admin has all roles privileges and')}:
+      <li>${this.display.translate('Admin has all roles privileges and')}:
         <ol>
           ${this.pr.rolePrivileges('Admin')
           .filter(v => !this.pr.rolePrivileges('HeadOfDepartment').includes(v))
@@ -225,17 +226,17 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
           .map(v => '<li>' + v + '</li>').join('\n')}
         </ol>
       </li>
-      <li>${this.ut.translate('Head of Department')}:
+      <li>${this.display.translate('Head of Department')}:
         <ol>
           ${this.pr.rolePrivileges('HeadOfDepartment').map(v => '<li>' + v + '</li>').join('\n')}
         </ol>
       </li>
-      <li>${this.ut.translate('Teacher')}:
+      <li>${this.display.translate('Teacher')}:
         <ol>
           ${this.pr.rolePrivileges('Teacher').map(v => '<li>' + v + '</li>').join('\n')}
         </ol>
       </li>
-      <li>${this.ut.translate('Parent')}:
+      <li>${this.display.translate('Parent')}:
         <ol>
           ${this.pr.rolePrivileges('Parent').map(v => '<li>' + v + '</li>').join('\n')}
         </ol>

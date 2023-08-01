@@ -1,13 +1,12 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { BehaviorSubject, Observable, combineLatest, filter, interval, map, tap, throttleTime } from 'rxjs';
 import { ReportService, } from 'src/app/services/report.service';
 import { CustomTimeframe, IChildReport, IFieldEntity } from '../../../../../../../interfaces';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { FormControl, FormGroup } from '@angular/forms';
 import { FieldService } from 'src/app/services/CRUD/field.service';
-import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
 @Component({
   selector: 'app-report-child',
@@ -20,8 +19,8 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
   public nowDatetime = '';
   public isPrinting = false;
   public goalsStatePieData$: Observable<{ name: string, value: number }[]> = this.childReport$.pipe(filter(v => v != null), map((v) => {
-    return [{ name: this.ut.translate('Completed'), value: v!.goal.completedCount },
-    { name: this.ut.translate('Continual'), value: v!.goal.continualCount }];
+    return [{ name: this.display.translate('Completed'), value: v!.goal.completedCount },
+    { name: this.display.translate('Continual'), value: v!.goal.continualCount }];
   }));
 
   public activitiesFieldsPolar$: Observable<{ name: string, series: { name: string, value: number }[] }[]> = combineLatest(
@@ -31,17 +30,17 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     const report: IChildReport = v[0] as IChildReport;
     const fields: IFieldEntity[] = v[1];
     return [{
-      name: this.ut.translate('Completed goals'), series: fields.map(f => ({
+      name: this.display.translate('Completed goals'), series: fields.map(f => ({
         name: f.name,
         value: report.goal.goals.filter(g => g.state == 'completed' && g.activity.fieldId == f.id).length
       }))
     }, {
-      name: this.ut.translate('Continual goals'), series: fields.map(f => ({
+      name: this.display.translate('Continual goals'), series: fields.map(f => ({
         name: f.name,
         value: report.goal.goals.filter(g => g.state == 'continual' && g.activity.fieldId == f.id).length,
       }))
     }, {
-      name: this.ut.translate('Strengths activities'), series: fields.map(f => ({
+      name: this.display.translate('Strengths activities'), series: fields.map(f => ({
         name: f.name,
         value: report.strength.strengths.filter(s => s.activity.fieldId == f.id).length
       }))
@@ -53,11 +52,11 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     const excellentEvaluations = v!.evaluation.evaluations.filter(e => e.rate == 'excellent');
     const continualEvaluations = v!.evaluation.evaluations.filter(e => e.rate == 'continual');
     return [{
-      name: this.ut.translate('Excellent'), series: excellentEvaluations
+      name: this.display.translate('Excellent'), series: excellentEvaluations
         .map((v, i) => ({ value: excellentEvaluations.length - i, name: new Date(v.evaluationDatetime) }))
     },
     {
-      name: this.ut.translate('Continual'), series: continualEvaluations
+      name: this.display.translate('Continual'), series: continualEvaluations
         .map((v, i) => ({ value: continualEvaluations.length - i, name: new Date(v.evaluationDatetime) }))
     },
     ];
@@ -70,15 +69,15 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
     const continualGoals = v!.goal.goals.filter(e => e.state == 'continual');
     const strengths = v!.strength.strengths;
     return [{
-      name: this.ut.translate('Completed goal'), series: completedGoals
+      name: this.display.translate('Completed goal'), series: completedGoals
         .map((v, i) => ({ value: completedGoals.length - i, name: new Date(v.assignDatetime) }))
     },
     {
-      name: this.ut.translate('Continual goal'), series: continualGoals
+      name: this.display.translate('Continual goal'), series: continualGoals
         .map((v, i) => ({ value: continualGoals.length - i, name: new Date(v.assignDatetime) }))
     },
     {
-      name: this.ut.translate('Strength'), series: strengths
+      name: this.display.translate('Strength'), series: strengths
         .map((v, i) => ({ value: strengths.length - i, name: new Date(v.assignDatetime) }))
     },
     ];
@@ -92,8 +91,8 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
 
 
   constructor(private route: ActivatedRoute, public service: ReportService,
-    public ut: UtilityService, public fieldService: FieldService, private nt: NotificationService,
-    public display: DisplayService) { super(); }
+    public display: DisplayService, public fieldService: FieldService,
+    private nt: NotificationService, private router: Router,) { super(); }
 
   ngOnInit(): void {
     //refresh displayed dateTimeWeek every minute
@@ -117,7 +116,7 @@ export class ReportChildComponent extends UnsubOnDestroy implements OnInit, OnDe
           this.service.fetchChildReport(+childId).pipe(tap(v => this.childReport$.next(v))).subscribe();
         else {
           this.nt.errorDefaultDialog(undefined, "Sorry, there was a problem fetching the child's report. Please try again later or check your connection.");
-          this.ut.router.navigateByUrl('/404');
+          this.router.navigateByUrl('/404');
         }
       },
     }));

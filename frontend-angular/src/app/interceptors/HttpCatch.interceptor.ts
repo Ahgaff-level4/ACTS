@@ -1,13 +1,14 @@
 import { Injectable } from '@angular/core';
 import { HttpInterceptor, HttpHandler, HttpRequest, HttpErrorResponse } from '@angular/common/http';
 import { EMPTY, Observable, catchError } from 'rxjs';
-import { UtilityService } from '../services/utility.service';
 import { NotificationService } from '../services/notification.service';
+import { DisplayService } from '../services/display.service';
+import { Router } from '@angular/router';
 
 @Injectable()
 export class HttpCatchInterceptor implements HttpInterceptor {
 
-  constructor(private ut: UtilityService, private nt:NotificationService,) { }
+  constructor(private display: DisplayService, private nt: NotificationService, private router: Router,) { }
 
   intercept(req: HttpRequest<any>, next: HttpHandler): Observable<any> {
     const requestClone = req.clone();
@@ -20,7 +21,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
             throw error;
           // Check the status and handle the error accordingly
           if (error?.status === 0 || error?.status === -1) {
-            this.ut.isLoading.next(false);
+            this.display.isLoading.next(false);
             this.showNetworkErrorDialog();
             return EMPTY;//call complete of the observable.
           } else if (error?.status === 401 && error.error?.action == 'login') {
@@ -29,7 +30,7 @@ export class HttpCatchInterceptor implements HttpInterceptor {
 
             this.showUnauthorizeDialog();
 
-            this.ut.isLoading.next(false);
+            this.display.isLoading.next(false);
             return EMPTY;
           }
           // Rethrow the error
@@ -40,8 +41,8 @@ export class HttpCatchInterceptor implements HttpInterceptor {
     return obs;
   }
 
-  showNetworkErrorDialog(){
-      this.nt.notify('Network Error!', `Please check your network connection and try again.`, 'error');
+  showNetworkErrorDialog() {
+    this.nt.notify('Network Error!', `Please check your network connection and try again.`, 'error');
   }
 
   showUnauthorizeDialog() {
@@ -52,8 +53,8 @@ export class HttpCatchInterceptor implements HttpInterceptor {
       buttons: [{ color: 'primary', type: 'Login' }, { color: 'accent', type: 'Ok' },]
     }).afterClosed().subscribe(v => {
       if (v === 'Login')
-        this.ut.router.navigateByUrl('login');
-      // else this.ut.router.navigateByUrl('/')
+        this.router.navigateByUrl('login');
+      // else this.router.navigateByUrl('/')
     });
   }
 }

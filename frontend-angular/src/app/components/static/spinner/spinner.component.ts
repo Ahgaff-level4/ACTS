@@ -1,5 +1,5 @@
 import { ChangeDetectorRef, Component } from '@angular/core';
-import { UtilityService } from 'src/app/services/utility.service';
+import { DisplayService } from 'src/app/services/display.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 
 @Component({
@@ -10,10 +10,10 @@ import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 export class SpinnerComponent extends UnsubOnDestroy {
   public isLoading: boolean = true;
 
-  constructor(private ut: UtilityService, private cd: ChangeDetectorRef) { super() }
+  constructor(private display: DisplayService, private cd: ChangeDetectorRef) { super() }
 
   ngOnInit() {
-    this.sub.add(this.ut.isLoading.subscribe(v => {
+    this.sub.add(this.display.isLoading.subscribe(v => {
       this.isLoading = v;
       this.cd.detectChanges();
     }));

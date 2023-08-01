@@ -1,5 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { UtilityService } from 'src/app/services/utility.service';
+import { Router } from '@angular/router';
+import { DisplayService } from 'src/app/services/display.service';
 
 @Component({
   selector: 'app-control-buttons[buttons]',
@@ -19,12 +20,12 @@ export class ControlButtonsComponent {
   @Output('click4') click4: EventEmitter<void> = new EventEmitter<void>();
   @Output('click5') click5: EventEmitter<void> = new EventEmitter<void>();//if a parent uses more that 6 buttons then just add click6 :)
 
-  constructor(private ut: UtilityService) { }
+  constructor(private router:Router) { }
 
   protected clicked(buttonIndex: number) {
     const btn = this.buttons[buttonIndex];
     if (btn?.link)
-      this.ut.router.navigateByUrl(btn.link);
+      this.router.navigateByUrl(btn.link);
     else
       switch (buttonIndex) {
         case 0: this.click0.emit(); break;

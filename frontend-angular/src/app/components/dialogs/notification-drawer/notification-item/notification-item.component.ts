@@ -2,7 +2,6 @@ import { AfterViewInit, Component, Input, OnDestroy, OnInit, TemplateRef, ViewCh
 import { MatDialogRef } from '@angular/material/dialog';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationIcon, NotificationService, NotificationShape } from 'src/app/services/notification.service';
-import { UtilityService } from 'src/app/services/utility.service';
 
 @Component({
   selector: 'app-notification-item',
@@ -14,8 +13,7 @@ export class NotificationItemComponent implements AfterViewInit, OnDestroy {
   @Input() item: NotificationShape | undefined = undefined;
   @Input() dialogRef: MatDialogRef<any> | undefined;
 
-  constructor(public nt: NotificationService, public ut: UtilityService,
-    public display: DisplayService) { this.item = undefined}
+  constructor(public nt: NotificationService, public display: DisplayService,) { this.item = undefined}
 
   getNzType(icon: NotificationIcon) {
     switch (icon) {
