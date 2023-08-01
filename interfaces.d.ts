@@ -366,3 +366,20 @@ export interface NotificationMessage {
 	to: User | null,
 	text: string;
 }
+
+export type ITimelineEvent = {
+	state: 'goal' | 'evaluation' | 'child' | 'strength';
+} & ({
+	state: 'child';
+	child: IChildEntity;
+}
+	| {
+		state: 'goal';
+		goal: IGoalEntity;
+	} | {
+		state: 'evaluation';
+		evaluation: IEvaluationEntity;
+	}|{
+		state:'strength';
+		strength:IStrengthEntity;
+	})

@@ -33,6 +33,7 @@
     "@angular/router": "^15.0.0",
     "@angular/service-worker": "^15.2.9",
     "@angular/youtube-player": "^15.2.9",
+    "@frxjs/ngx-timeline": "^2.1.0",
     "@ngx-translate/core": "^14.0.0",
     "@ngx-translate/http-loader": "^7.0.0",
     "@swimlane/ngx-charts": "^20.4.1",

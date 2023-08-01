@@ -15,6 +15,7 @@ import { NgxChartsModule } from '@swimlane/ngx-charts';
 import { NzIconModule } from 'ng-zorro-antd/icon';
 import { DetailsViewService, FileManagerModule, NavigationPaneService, ToolbarService } from '@syncfusion/ej2-angular-filemanager';
 import { ServiceWorkerModule } from '@angular/service-worker';
+import { NgxTimelineModule } from '@frxjs/ngx-timeline'
 
 import { AppComponent } from './components/static/app/app.component';
 import { HomeComponent } from './components/pages/home/home.component';
@@ -88,6 +89,8 @@ import {
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
+import { VerticalTimelineComponent } from './components/pages/children/vertical-timeline/vertical-timeline.component';
+import { DateWeekPipe } from './pipes/date-week.pipe';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -104,6 +107,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     ChildrenComponent,
     MessageDialogComponent,
     DatePipe,
+    DateWeekPipe,
     DateTimeWeekPipe,
     FromNowPipe,
     TypePipe,
@@ -153,6 +157,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     AddParentComponent,
     AddEditAccountFormComponent,
     RateItemComponent,
+    VerticalTimelineComponent,
   ],
   imports: [
     BrowserModule,
@@ -167,7 +172,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     YouTubePlayerModule,
     NgxChartsModule,
     FileManagerModule,
-
+    NgxTimelineModule,
     TranslateModule.forRoot({
       loader: {
         provide: TranslateLoader,
