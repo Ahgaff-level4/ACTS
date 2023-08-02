@@ -1,3 +1,6 @@
+<div align="center"><img src="./frontend-angular/src/assets/img/logo.png" \></div>
+
+
 # Autism Children Technical System (ACTS)
 
 The project manages the state of the autistic children and children with special needs. It enables the assignment of goals for children and tracking how the child performs the goal by evaluating the goal with a description by the trainer. The project shows weekly, monthly, or annual reports on the child’s goals' progress. These reports and other information can be shown by the child’s parents online. ACTS transfers the manual management and education system into an integrated computer system that facilitates the many written and complex processes for easier operations (e.g., children's information, goals, evaluations, …etc.).
@@ -178,12 +181,12 @@ Tables may have a foreign key to get an object instead only a foreign key id. We
 3. Run `npm install` to install all packages needed.
 4. Install `MySQL` and make sure its service starts when the Server starts up.
 5. Run the `database-mysql/schema.sql` file by `MySQL` to create the Database and its schema.
-6. Change the `.env` file to the database settings (port, user).
+6. Change the environment variables of `.env` file to the database settings (port, user).
 7. Check the router DHCP IPs scope, then assign the Server to static IP that is not in DHCP scope.
 8. Change the `HOST_SERVER` variable in the `.env` file to the Server static IP.
-9. Run the NodeJs. (Can be accessed by `http://ip:port` where `ip` is the Server IP and `port` is the NodeJs port).
+9. Run the NodeJs. (Can be accessed by `http://ip:port` where `ip` is the Server IP and `port` is the NodeJs port). `ip` and `port` can be changed from `.env` file.
 
 
 ## **Tips**
 1. Create a file that runs the NodeJs. (CMD shortcut with the run command).
-2. Create Edge Application.
+2. Create Edge Application of the local website to run it as Desktop application.
