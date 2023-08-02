@@ -12,19 +12,6 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - send email reset password. after adding email field in Account, dah...
 
-  
-- Logged in parent should see the new goals/evaluations that happened to their children. (Timeline?).
-|
-|- New goal G.activity.name created by G.teacher.person.name to child G.child.person.name created at G.date.[children/child/{G.child.id}/goals](Check out).
-|- New evaluation E.description to goal E.goal.activity.name created by E.teacher.person.name to child E.goal.child.person.name created at E.date.[children/child/{E.goal.child.id}/goals/goal/{E.goal.id}/evaluations](Check out).
-|- Child C.person.name registered at D.[children/child/{C.id}](Check out).
-|
-Where:
-G = correspond Goal entity.
-E = correspond Evaluation entity.
-C = correspond Child entity.
-NOTE: timeline can be shown for Parent/Teacher/Child. For child there won't be a child register event.
-
 - show Teacher/Admin 's evaluations & goals in view-account. NOTE: evaluations are very a lot, pagination?
 
 - add child from view-account.
