@@ -1,4 +1,6 @@
-import { BadRequestException, Controller, Get, Inject, ParseEnumPipe, ParseIntPipe, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-unused-vars */
+import { BadRequestException, Controller, Get, ParseIntPipe, Post, Query, Res, UploadedFile, UseInterceptors } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { Mutex } from 'async-mutex';
@@ -12,15 +14,8 @@ import { NotificationGateway } from 'src/notification/notification.gateway';
 import { Readable } from 'stream';
 import { DataSource } from 'typeorm';
 import { createGunzip, createGzip } from 'zlib';
-import { IChildEntity, IEvaluationEntity, ITimelineEvent, User } from '../../../../interfaces';
-import { ChildEntity } from '../child/child.entity';
-import { PersonEntity } from '../person/person.entity';
-import { GoalEntity } from '../goal/Goal.entity';
-import { ActivityEntity } from '../activity/activity.entity';
-import { AccountEntity } from '../account/account.entity';
-import { FieldEntity } from '../field/field.entity';
-import { ProgramEntity } from '../program/program.entity';
-import { EvaluationEntity } from '../evaluation/evaluation.entity';
+import { ITimelineEvent, User } from '../../../../interfaces';
+import { OtherService } from './other.service';
 
 
 @Controller('api')
@@ -28,84 +23,32 @@ export class OtherController {
 	// Create a mutex instance to lock the flow. So that backup/recovery process will be async
 	private mutex = new Mutex();
 
-	constructor(@InjectDataSource() private dataSource: DataSource, private notify: NotificationGateway) { }
+	constructor(@InjectDataSource() private dataSource: DataSource, private notify: NotificationGateway, private service: OtherService) { }
 
 	@Get('timeline')
-	async timeline(@Query('state') state: 'child' | 'parent' | 'teacher', @Query('id', ParseIntPipe) id: number): Promise<ITimelineEvent[]> {
+	async timeline(@Query('state') state: 'child' | 'account', @Query('id', ParseIntPipe) id: number, @Query('take', ParseIntPipe) take: number, @Query('skip', ParseIntPipe) skip: number, @UserMust() user: User): Promise<ITimelineEvent[]> {
+		if (take > 100)
+			throw new BadRequestException('invalid `take` value! `take` should be at most 100');
 		if (state == 'child') {
-			const child = await this.dataSource.getRepository(ChildEntity).createQueryBuilder('child')
-				.leftJoinAndMapOne('child.person', PersonEntity, 'person', 'child.personId=person.id')
-				.leftJoinAndMapMany('child.goals', GoalEntity, 'goal', 'child.id=goal.childId AND goal.state != :state', { state: 'strength' })
-				.leftJoinAndMapOne('goal.activity', ActivityEntity, 'goalActivity', "goal.activityId=goalActivity.id")
-				.leftJoinAndMapOne('goal.teacher', AccountEntity, 'goalTeacher', "goal.teacherId=goalTeacher.id")
-				.leftJoinAndMapOne('goalTeacher.person', PersonEntity, 'goalTeacherPerson', "goalTeacher.personId=goalTeacherPerson.id")
-				.leftJoinAndMapMany('goal.evaluations', EvaluationEntity, 'evaluation', "evaluation.goalId=goal.id")
-				.leftJoinAndMapMany('evaluation.teacher', AccountEntity, 'evaluationTeacher', "evaluation.teacherId=evaluationTeacher.id")
-				.leftJoinAndMapMany('evaluationTeacher.person', PersonEntity, 'evaluationTeacherPerson', "evaluationTeacherPerson.id=evaluationTeacher.personId")
-				.leftJoinAndMapMany('child.strengths', GoalEntity, 'strength', 'child.id=strength.childId AND strength.state = :state', { state: 'strength' })
-				.leftJoinAndMapOne('strength.activity', ActivityEntity, 'strengthActivity', "strength.activityId=strengthActivity.id")
-				.leftJoinAndMapOne('strength.teacher', AccountEntity, 'strengthTeacher', "goal.teacherId=strengthTeacher.id")
-				.leftJoinAndMapOne('strengthTeacher.person', PersonEntity, 'strengthTeacherPerson', "strengthTeacher.personId=strengthTeacherPerson.id")
-				// .leftJoinAndMapOne(goalActivity...'activity.field', FieldEntity, 'field', 'activity.fieldId=field.id')
-				// .leftJoinAndMapOne('activity.program', ProgramEntity, 'activityProgram', 'activity.programId=activityProgram.id')
-				.where('child.id=:id', { id })
-				.getOneOrFail();
-
-			const childClone = JSON.parse(JSON.stringify(child)) as IChildEntity;
-			delete childClone.strengths;
-			delete childClone.goals;
-
-			let ret: ITimelineEvent[] = child.strengths.map(v => {
-				v.child = childClone
-				return {
-					state: 'strength',
-					strength: v,
-				}
-			});
-
-			ret = ret.concat(child.goals.map(g => {
-				g.child = childClone;
-				return {
-					state: 'goal',
-					goal: g,
-				}
-			}));
-
-			const evaluations: IEvaluationEntity[] = child.goals.map((g, i) => {
-				g.child = childClone;
-				return g.evaluations.map(e => ({ ...e, goal: g, }));
-			}).flat();
-
-			ret = ret.concat(evaluations.map(v => ({
-				state: 'evaluation',
-				evaluation: v,
-			})
-			));
-			ret = ret.sort((a, b) => {
-				let d1: Date, d2: Date;
-				if (a.state == 'evaluation')
-					d1 = a.evaluation.evaluationDatetime;
-				else if (a.state == 'goal' || a.state == 'strength')
-					d1 = a.state == 'goal' ? a.goal.assignDatetime : a.strength.assignDatetime;
-				else if (a.state == 'child')
-					d1 = a.child.person.createdDatetime;
-				else throw 'unexpected timeline event state value. state=' + (a as any).state;
-
-				if (b.state == 'evaluation')
-					d2 = b.evaluation.evaluationDatetime;
-				else if (b.state == 'goal' || b.state == 'strength')
-					d2 = b.state == 'goal' ? b.goal.assignDatetime : b.strength.assignDatetime;
-				else if (b.state == 'child')
-					d2 = b.child.person.createdDatetime;
-				else throw 'unexpected timeline event state value. state=' + (b as any).state;
-
-				return new Date(d1) > new Date(d2) ? 1 : (new Date(d1) < new Date(d2) ? -1 : 0);
-			});
-			// console.log(JSON.stringify(ret));
-			console.log('timeline events length=', ret.length);
-			return ret;
+			return this.service.childTimeline(id, take, skip);
 		}
-		return []
+
+		let ret: ITimelineEvent[] = [];
+
+		if (user.roles.includes('Teacher'))
+			ret = ret.concat(await this.service.teacherTimeline(id, take, skip));
+
+		if (user.roles.includes('Parent'))
+			ret = ret.concat(await this.service.parentTimeline(id, take, skip))
+
+		if (user.roles.includes('HeadOfDepartment') || user.roles.includes('Admin'))
+			ret = ret.concat(await this.service.allTimeline(take, skip))
+
+		ret = ret.sort(this.service.sortTimelineEvents);
+		if (ret.length > take)
+			ret = ret.splice(0, take);
+
+		return ret;
 	}
 
 	@Get('backup')

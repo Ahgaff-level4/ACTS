@@ -9,7 +9,7 @@ export class VerticalTimelineService {
 
   constructor(private http: HttpClient) { }
 
-  public fetch(state: 'child' | 'teacher' | 'parent', id: number) {
-    return this.http.get<ITimelineEvent[]>(environment.API + 'timeline', { params: { state, id } });
+  public fetch(state: 'child' | 'account', id: number, take: number, skip: number) {
+    return this.http.get<ITimelineEvent[]>(environment.API + 'timeline', { params: { state, id, take, skip } });
   }
 }

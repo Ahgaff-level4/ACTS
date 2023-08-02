@@ -1,4 +1,4 @@
-<!-- <div id="animate-home-header" class="top my-primary-bg px-5">
+<div id="animate-home-header" class="top my-primary-bg px-5">
   <div class="row mb-2">
     <div class="text-white mb-5 text-center mt-md-5 col-md-8">
       <h1 class="display-1 text-white tracking-in-contract">{{'ACTS'|translate}}</h1>
@@ -8,16 +8,24 @@
       alt="Teacher teach a child">
   </div>
 </div>
-<div class="sticky-shadow shadow-lg position-sticky top-0 w-100">&nbsp;</div> -->
-<div class="container">
-  <app-vertical-timeline forWho="child" [id]="1"></app-vertical-timeline>
-</div>
-<!-- <div class="container-fluid mt-5">
+
+<!--Shadow div for header's shadow-->
+<div class="sticky-shadow shadow-lg position-sticky top-0 w-100">&nbsp;</div>
+
+<div class="container-fluid mt-5">
   <mat-divider class="mx-5 my-6"></mat-divider>
 
   <app-about-us *ngIf="!pr.user.value"></app-about-us>
 
   <mat-divider *ngIf="!pr.user.value" class="mx-5 my-6"></mat-divider>
+
+
+    <div class="container" *ngIf="pr.user.value && pr.canUser('mainTimeline')">
+      <h3 class="mx-lg-5 mb-0 p-4 pb-0 fw-normal my-primary-text">{{'Recent Activities'|translate}}</h3>
+      <app-vertical-timeline [forWho]="'account'" [id]="pr.user.value.accountId"></app-vertical-timeline>
+    </div>
+
+  <mat-divider *ngIf="pr.user.value && pr.canUser('mainTimeline')" class="mx-5 my-6"></mat-divider>
 
   <div class="d-flex flex-wrap justify-content-evenly">
     <mat-card *ngFor="let card of pr.getUserPages('Home')|async" [routerLink]="card.link" [fragment]="card.fragment"
@@ -40,4 +48,4 @@
   <app-about-us *ngIf="pr.user.value"></app-about-us>
 
   <mat-divider class="mx-5 my-6"></mat-divider>
-</div> -->
+</div>

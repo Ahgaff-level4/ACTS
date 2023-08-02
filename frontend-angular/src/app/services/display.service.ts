@@ -1,18 +1,17 @@
 import { Injectable } from '@angular/core';
-import { IAccountEntity, IChildEntity, Role } from '../../../../interfaces';
+import { IChildEntity } from '../../../../interfaces';
 import { DatePipe } from '../pipes/date/date.pipe';
 import { FromNowPipe } from '../pipes/date/from-now.pipe';
 import { DateTimeWeekPipe } from '../pipes/date/date-time-week.pipe';
 import { BehaviorSubject, first } from 'rxjs';
 import { TranslatePipe, TranslateService } from '@ngx-translate/core';
-import { Location as NgLocation } from '@angular/common';
+import { Location as NgLocation, TitleCasePipe } from '@angular/common';
 import { ActivatedRoute } from '@angular/router';
 import { Privilege } from './privilege.service';
 import { AccountRolesPipe } from '../pipes/account-roles.pipe';
 import { CalcAgePipe } from '../pipes/date/calc-age.pipe';
 import { ChildTeachersPipe } from '../pipes/child-teachers.pipe';
 import { DateWeekPipe } from '../pipes/date/date-week.pipe';
-import { RangePipe } from '../pipes/range.pipe';
 import { TeacherTeachesPipe } from '../pipes/teacher-teaches.pipe';
 import { AccountPhonesPipe } from '../pipes/account-phones.pipe';
 import { AccountPhonesArrPipe } from '../pipes/account-phones-arr.pipe';
@@ -23,12 +22,13 @@ export class DisplayService {
   public isLoading = new BehaviorSubject<boolean>(false);
   public ordinalNumbers = ['First', 'Second', 'Third', 'Fourth', 'Fifth', 'Sixth', 'Seventh', 'Eighth', 'Ninth', 'Tenth', 'Eleventh', 'Twelfth', 'Thirteenth', 'Fourteenth', 'Fifteenth', 'Sixteenth', 'Seventeenth', 'Eighteenth', 'Nineteenth'];
 
+  //pipes are public to be accessible by other components.
   constructor(private translatePipe: TranslatePipe,
     public accountRolesPipe: AccountRolesPipe, public calcAgePipe: CalcAgePipe,
     public childTeachersPipe: ChildTeachersPipe, public toDateTimeWeekPipe: DateTimeWeekPipe,
     public toDateWeekPipe: DateWeekPipe, public toDatePipe: DatePipe, public fromNowPipe: FromNowPipe,
     public teacherTeachesPipe: TeacherTeachesPipe, public accountPhonesPipe: AccountPhonesPipe,
-    public accountPhonesArrPipe: AccountPhonesArrPipe,
+    public accountPhonesArrPipe: AccountPhonesArrPipe, public titleCasePipe: TitleCasePipe,
     private ngLocation: NgLocation, private translateService: TranslateService,) { }
 
 

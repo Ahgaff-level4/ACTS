@@ -3,6 +3,11 @@
   <app-child-info [child]="child"></app-child-info>
 </app-card>
 
+<div class="container" *ngIf="pr.user.value && pr.canUser('childTimeline')">
+  <h3 class="mx-lg-5 mb-0 p-4 pb-0 fw-normal my-primary-text">{{'Recent Activities'|translate}}</h3>
+  <app-vertical-timeline [forWho]="'account'" [id]="pr.user.value.accountId"></app-vertical-timeline>
+</div>
+
 <app-card id="teachers" cardTitle="Child Teachers">
   <mat-list>
     <div *ngFor="let teacher of child?.teachers;let i=index;">

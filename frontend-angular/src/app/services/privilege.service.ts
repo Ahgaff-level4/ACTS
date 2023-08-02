@@ -52,64 +52,63 @@ export class PrivilegeService {
   /**@returns translated array of can and cannot privileges (e.g.'Can access accounts page') */
   rolePrivileges(role: Role): string[] {
     const privileges = [];
-
-    if (PRIVILEGES.accountsPage.concat(PRIVILEGES.viewAccountPage).includes(role))
+    if (PRIVILEGES['accountsPage'].concat(PRIVILEGES['viewAccountPage']).includes(role))
       privileges.push('Can access accounts page.');
-    if (PRIVILEGES.editAccountPage.concat(PRIVILEGES.addAccountPage).includes(role))
+    if (PRIVILEGES['editAccountPage'].concat(PRIVILEGES['addAccountPage']).includes(role))
       privileges.push('Can add/edit/delete an account.');
-    if (PRIVILEGES.fieldsPage.includes(role))
+    if (PRIVILEGES['fieldsPage'].includes(role))
       privileges.push('Can access fields page.');
-    if (PRIVILEGES.addField.concat(PRIVILEGES.editField).concat(PRIVILEGES.deleteField).includes(role))
+    if (PRIVILEGES['addField'].concat(PRIVILEGES['editField']).concat(PRIVILEGES['deleteField']).includes(role))
       privileges.push('Can add/edit/delete a field.');
-    if (PRIVILEGES.programsPage.includes(role))
+    if (PRIVILEGES['programsPage'].includes(role))
       privileges.push('Can access programs page.');
-    if (PRIVILEGES.addProgram.concat(PRIVILEGES.editProgram).concat(PRIVILEGES.deleteProgram).includes(role))
+    if (PRIVILEGES['addProgram'].concat(PRIVILEGES['editProgram']).concat(PRIVILEGES['deleteProgram']).includes(role))
       privileges.push('Can add/edit/delete a program.');
     if (role == 'Parent')
       privileges.push('Can access his children only.')
-    if (PRIVILEGES.childrenPage.concat(PRIVILEGES.viewChildPage).includes(role))
+    if (PRIVILEGES['childrenPage'].concat(PRIVILEGES['viewChildPage']).includes(role))
       privileges.push('Can access children page.');
-    if (PRIVILEGES.addChildPage.includes(role))
+    if (PRIVILEGES['addChildPage'].includes(role))
       privileges.push('Can access add child page.');
-    if (PRIVILEGES.editChildPage.includes(role))
+    if (PRIVILEGES['editChildPage'].includes(role))
       privileges.push('Can access edit child page.');
-    if (PRIVILEGES.childReportPage.includes(role))
+    if (PRIVILEGES['childReportPage'].includes(role))
       privileges.push('Can access report child page.');
-    if (PRIVILEGES.archiveChild.includes(role))
+    if (PRIVILEGES['archiveChild'].includes(role))
       privileges.push('Can archive a child information.')
-    if (PRIVILEGES.childGoalsPage.includes(role))
+    if (PRIVILEGES['childGoalsPage'].includes(role))
       privileges.push("Can access child's goals page.");
-    if (PRIVILEGES.addGoal.includes(role))
+    if (PRIVILEGES['addGoal'].includes(role))
       privileges.push("Can add a goal.")
-    if (PRIVILEGES.editGoal.concat(PRIVILEGES.deleteGoal).includes(role))
+    if (PRIVILEGES['editGoal'].concat(PRIVILEGES['deleteGoal']).includes(role))
       privileges.push("Can edit/delete a goal.")
-    if (PRIVILEGES.childStrengthsPage.includes(role))
+    if (PRIVILEGES['childStrengthsPage'].includes(role))
       privileges.push("Can access child's strengths page.");
-    if (PRIVILEGES.addStrength.includes(role))
+    if (PRIVILEGES['addStrength'].includes(role))
       privileges.push("Can add a strength.")
-    if (PRIVILEGES.editStrength.concat(PRIVILEGES.deleteStrength).includes(role))
+    if (PRIVILEGES['editStrength'].concat(PRIVILEGES['deleteStrength']).includes(role))
       privileges.push("Can edit/delete a strength.")
-    if (PRIVILEGES.goalEvaluationsPage.includes(role))
+    if (PRIVILEGES['goalEvaluationsPage'].includes(role))
       privileges.push("Can access goal's evaluations page.");
-    if (PRIVILEGES.addEvaluation.includes(role))
+    if (PRIVILEGES['addEvaluation'].includes(role))
       privileges.push("Can add an evaluation.")
-    if (PRIVILEGES.editEvaluation.concat(PRIVILEGES.deleteEvaluation).includes(role))
+    if (PRIVILEGES['editEvaluation'].concat(PRIVILEGES['deleteEvaluation']).includes(role))
       privileges.push("Can edit/delete an evaluation.")
-    if (PRIVILEGES.activitiesPage.includes(role))
+    if (PRIVILEGES['activitiesPage'].includes(role))
       privileges.push("Can access program's activities page.")
-    if (PRIVILEGES.specialActivitiesPage.includes(role))
+    if (PRIVILEGES['specialActivitiesPage'].includes(role))
       privileges.push("Can access special activities page.")
-    if (PRIVILEGES.addActivity.concat(PRIVILEGES.editActivity).concat(PRIVILEGES.deleteActivity).includes(role))
+    if (PRIVILEGES['addActivity'].concat(PRIVILEGES['editActivity']).concat(PRIVILEGES['deleteActivity']).includes(role))
       privileges.push("Can add/edit/delete an activity.")
-    if (PRIVILEGES.notificationDrawer.includes(role))
+    if (PRIVILEGES['notificationDrawer'].includes(role))
       privileges.push("Can view notifications drawer.")
-    if (PRIVILEGES.broadcastMessage.includes(role))
+    if (PRIVILEGES['broadcastMessage'].includes(role))
       privileges.push('Can access online accounts and send/broadcast notification message.')
-    if (PRIVILEGES.dashboard.includes(role))
+    if (PRIVILEGES['dashboard'].includes(role))
       privileges.push('Can access dashboard.')
-    if (PRIVILEGES.backupRestore.includes(role))
+    if (PRIVILEGES['backupRestore'].includes(role))
       privileges.push('Can create a backup and restore database.')
-    if (PRIVILEGES.printTable.includes(role))
+    if (PRIVILEGES['printTable'].includes(role))
       privileges.push("Can print/export any table that can access.")
 
     return privileges.map(v => this.display.translate(v));
@@ -120,9 +119,8 @@ const A: Role[] = ['Admin'];
 const AH: Role[] = ['Admin', 'HeadOfDepartment'];
 const AHT: Role[] = ['Admin', 'HeadOfDepartment', 'Teacher'];
 const AHTP: Role[] = ['Admin', 'HeadOfDepartment', 'Teacher', 'Parent'];
-const P: Role[] = ['Parent'];
-const T: Role[] = ['Teacher'];
-const AT: Role[] = ['Admin', 'Teacher']
+const AT: Role[] = ['Admin', 'Teacher'];
+const ATP: Role[] = ['Admin', 'Teacher', 'Parent'];
 export type Privilege = keyof typeof PRIVILEGES;
 export const PRIVILEGES = {
   //ACCOUNT
@@ -178,4 +176,6 @@ export const PRIVILEGES = {
   printTable: AH,
   /**Used to show/hide something only for notLoggedIn users */
   notLoggedIn: [],
+  mainTimeline: AHTP,
+  childTimeline: AHTP,
 }
