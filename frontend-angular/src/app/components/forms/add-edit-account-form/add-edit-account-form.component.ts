@@ -26,7 +26,6 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
   @Input() state!: 'add-edit-account' | 'add-parent';
   @Input() defaultPersonName = '';
   @ViewChild(PersonFormComponent) personForm?: PersonFormComponent;
-  @ViewChild('submitButton') submitButton!: HTMLButtonElement;
   isLoading = false;
   hide = true;
   phoneFields: string[] = [];

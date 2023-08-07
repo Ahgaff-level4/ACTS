@@ -10,6 +10,7 @@ import { ButtonType, MessageDialogComponent, MessageDialogData } from '../compon
 import { ComponentType } from '@angular/cdk/overlay';
 import { SelectActivityComponent } from '../components/dialogs/select-activity/select-activity.component';
 import { AddParentComponent } from '../components/dialogs/add-edit/add-parent/add-parent.component';
+import { AddChildComponent } from '../components/dialogs/add-edit/add-child/add-child.component';
 
 @Injectable({
   providedIn: 'root'
@@ -150,10 +151,10 @@ export class NotificationService {
     // let width = '500px'
     if (component.name == SelectActivityComponent.name)//activity name won't be shown all in 500px width
       width = '90%';
-    else if (component.name == AddParentComponent.name) {
+    else if (component.name == AddParentComponent.name)
       width = '95%';
-      // disableClose = true;
-    }
+    else if (component.name == AddChildComponent.name)
+      width = '95%';
     return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.display.getDirection(), width, disableClose })
   }
 

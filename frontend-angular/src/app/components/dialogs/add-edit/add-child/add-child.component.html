@@ -1,0 +1,4 @@
+<h2 mat-dialog-title>{{'Register new child'|translate}}</h2>
+<mat-dialog-content>
+  <app-add-edit-child-form [setTeacherParent]="setTeacherParent" state="add-child" (submitted)="dialogRef.close($event)"></app-add-edit-child-form>
+</mat-dialog-content>

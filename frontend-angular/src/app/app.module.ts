@@ -96,6 +96,8 @@ import { AddParentComponent } from './components/dialogs/add-edit/add-parent/add
 import { AddEditAccountFormComponent } from './components/forms/add-edit-account-form/add-edit-account-form.component';
 import { RateItemComponent } from './components/pages/children/report-child/rate-item/rate-item.component';
 import { VerticalTimelineComponent } from './components/pages/children/vertical-timeline/vertical-timeline.component';
+import { AddEditChildFormComponent } from './components/forms/add-edit-child-form/add-edit-child-form.component';
+import { AddChildComponent } from './components/dialogs/add-edit/add-child/add-child.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
@@ -178,6 +180,8 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     RateItemComponent,
     VerticalTimelineComponent,
     SelectChildComponent,
+    AddEditChildFormComponent,
+    AddChildComponent,
   ],
   imports: [
     BrowserModule,

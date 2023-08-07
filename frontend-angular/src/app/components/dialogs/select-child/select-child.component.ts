@@ -7,8 +7,8 @@ import { AccountService } from 'src/app/services/CRUD/account.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { MatListOption } from '@angular/material/list';
 import { DisplayService } from 'src/app/services/display.service';
-import { MatButton } from '@angular/material/button';
 import { PrivilegeService } from 'src/app/services/privilege.service';
+import { AddChildComponent } from '../add-edit/add-child/add-child.component';
 
 @Component({
   selector: 'app-select-child',
@@ -115,7 +115,13 @@ export class SelectChildComponent extends UnsubOnDestroy implements OnInit {
     });
   }
   registerNewChild() {
-    //after close
-    // this.dialogRef.close();
+    console.log('data', this.data);
+    this.nt.openDialog<AddChildComponent, { state: 'teacher' | 'parent', accountId: number }, IChildEntity>(AddChildComponent, this.data).afterClosed().subscribe(v => {
+      if (v && v.id) {
+        this.accountService.fetch(true).then(() => {
+          this.dialogRef.close();
+        })
+      }
+    });
   }
 }
