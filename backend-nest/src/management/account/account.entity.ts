@@ -1,11 +1,11 @@
 import { PartialType, PickType } from "@nestjs/mapped-types";
-import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsOptional, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
+import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsObject, IsOptional, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
 import { IAccountEntity, IChangePassword, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from '../../../../interfaces';
-import { Transform } from "class-transformer";
+import { Transform, Type } from "class-transformer";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEntity } from "./role/role.entity";
-import { ChildEntity } from "../child/child.entity";
+import { ChildEntity, UpdateChild } from "../child/child.entity";
 import { EvaluationEntity } from "../evaluation/evaluation.entity";
 import { GoalEntity } from "../goal/Goal.entity";
 
@@ -71,6 +71,15 @@ export class CreateAccount implements ICreateAccount {
 	@IsArray()
 	@IsEnum({ "Admin": "Admin", "HeadOfDepartment": "HeadOfDepartment", "Teacher": "Teacher", "Parent": "Parent" }, { each: true })
 	public roles: Role[];//!Account. Derived from `rolesEntities` property
+
+	@IsOptional() @IsArray() @IsObject({ each: true })
+	@OneToMany(() => ChildEntity, (child) => child.parent, { onDelete: 'SET NULL', nullable: true })
+	public children: IChildEntity[];//!Parent
+
+	@IsOptional() @IsArray() @IsObject({ each: true })
+	@ManyToMany(() => ChildEntity, (child) => child.teachers, { onDelete: 'CASCADE' })
+	@JoinTable()
+	public teaches: IChildEntity[];//!Teacher
 }
 
 
@@ -83,25 +92,18 @@ export class AccountEntity extends CreateAccount implements IAccountEntity {
 	@JoinColumn()
 	public person: IPersonEntity;//!Account
 
-	@ManyToMany(() => RoleEntity, (role) => role.accounts,{onDelete:"CASCADE"})
+	@ManyToMany(() => RoleEntity, (role) => role.accounts, { onDelete: "CASCADE" })
 	@JoinTable()
 	public rolesEntities: IRoleEntity[];//!All roles
-
-	@OneToMany(() => ChildEntity, (child) => child.parent,{onDelete:'SET NULL',nullable:true})
-	public children: IChildEntity[];//!Parent
 
 	@OneToMany(() => EvaluationEntity, (evaluation) => evaluation.teacher)
 	public evaluations: IEvaluationEntity[];//!Teacher
 
 	@OneToMany(() => GoalEntity, (goal) => goal.teacher)
 	public goals: IGoalEntity[];//!Teacher
-
-	@ManyToMany(() => ChildEntity, (child) => child.teachers,{onDelete:'CASCADE'})
-	@JoinTable()
-	public teaches: IChildEntity[];//!Teacher
 }
 
-export class ChangePassword extends PickType(CreateAccount,['password']) implements IChangePassword {
+export class ChangePassword extends PickType(CreateAccount, ['password']) implements IChangePassword {
 	@IsString()
 	oldPassword: string;
 }

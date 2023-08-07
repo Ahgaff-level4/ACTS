@@ -160,9 +160,14 @@
           <mat-error *ngIf="parentNameControl.getError('noParent') as err">
             {{'There is no parent with name'|translate}}:&nbsp;'{{err.name}}'&nbsp;&nbsp;
             <span (click)="showAddParentDialog()" class="my-accent-text my-link text-decoration-underline">
-              {{'Add new?'|translate}}
+              {{'Register new parent'|translate}}{{'?'|translate}}
             </span>
           </mat-error>
+          <mat-hint>
+            <span (click)="showAddParentDialog()" class="my-accent-text my-link text-decoration-underline">
+              {{'Register new parent'|translate}}{{'?'|translate}}
+            </span>
+          </mat-hint>
         </mat-form-field>
       </div>
     </div>

@@ -96,6 +96,7 @@
   "Invalid Field": "حقل غير صالح",
   "There are invalid fields!": "هناك حقول غير صالحة!",
   "Register a child": "إضافة طفل",
+  "Register new child": "إضافة طفل جديد",
   "Edit child information": "تعديل معلومات الطفل",
   "Fields": "المجالات",
   "Ok": "حسنًا",
@@ -822,5 +823,8 @@
   "and description:":"والوصف التالي:",
   "for child:":"للطفل:",
   "Recent Activities":"النشاطات الاخيرة",
-  "More":"تحميل المزيد"
+  "More":"تحميل المزيد",
+  "?":"؟",
+  "Be careful, selecting a child with an existed parent will change its parent permanently. Child has only one parent!":"كن حذرًا، فاختيار طفل لديه ولي امر سيغير ولي امره. الطفل لديه ولي امر واحد فقط!",
+  "Continue":"استمر"
 }

@@ -101,6 +101,7 @@ import {
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
+import { SelectChildComponent } from './components/dialogs/select-child/select-child.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -176,6 +177,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     AddEditAccountFormComponent,
     RateItemComponent,
     VerticalTimelineComponent,
+    SelectChildComponent,
   ],
   imports: [
     BrowserModule,

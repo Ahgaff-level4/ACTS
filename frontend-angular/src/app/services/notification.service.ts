@@ -146,13 +146,15 @@ export class NotificationService {
       ButtonType>(MessageDialogComponent, data);
   }
 
-  public openDialog<COMPONENT, PASS_DATA, RECEIVE_DATA>(component: ComponentType<COMPONENT>, data?: PASS_DATA) {
-    let width = '500px'
+  public openDialog<COMPONENT, PASS_DATA, RECEIVE_DATA>(component: ComponentType<COMPONENT>, data?: PASS_DATA, width: string = '500px', disableClose = false) {
+    // let width = '500px'
     if (component.name == SelectActivityComponent.name)//activity name won't be shown all in 500px width
       width = '90%';
-    else if (component.name == AddParentComponent.name)
+    else if (component.name == AddParentComponent.name) {
       width = '95%';
-    return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.display.getDirection(), width })
+      // disableClose = true;
+    }
+    return this.dialog.open<COMPONENT, PASS_DATA, RECEIVE_DATA>(component, { data, direction: this.display.getDirection(), width, disableClose })
   }
 
   /**Used by notification-item when initialized */

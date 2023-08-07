@@ -23,6 +23,7 @@
   </app-card>
 
   <app-card id="teaches" *ngIf="accountHasAny(account,'Teacher','Admin')" cardTitle="Teaches Children">
+
     <mat-list>
       <div *ngFor="let child of account.teaches;let i=index;">
         <app-entity-item [titleText]="child.person.name"
@@ -35,6 +36,9 @@
         {{'Empty list'|translate}}
       </p>
     </mat-list>
+    <button *ngIf="pr.canUser('editAccountPage')" (click)="editTeaches({state:'teacher',accountId:account.id})" class="float-end" mat-mini-fab color="primary" [matTooltip]="'Register a child'|translate">
+      <mat-icon>edit</mat-icon>
+    </button>
   </app-card>
 
   <app-card id="kids" *ngIf="accountHasAny(account,'Parent','Admin')" cardTitle="Parent Children">
@@ -50,5 +54,8 @@
         {{'Empty list'|translate}}
       </p>
     </mat-list>
+    <button *ngIf="pr.canUser('editAccountPage')" (click)="editKids({state:'parent',accountId:account.id})" class="float-end" mat-mini-fab color="primary" [matTooltip]="'Register a child'|translate">
+      <mat-icon>edit</mat-icon>
+    </button>
   </app-card>
 </div>

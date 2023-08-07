@@ -1,0 +1,55 @@
+<h4 mat-dialog-title>{{(data.state=='parent'? 'Parent Children':'Teaches Children')|translate}}</h4>
+<div mat-dialog-content class="w-100">
+  <!-- <div class="row">
+    <div class="col-md-12">
+
+    </div>
+  </div> -->
+
+
+  <!-- <div class="row m-3 d-flex">
+    <div class="col-5 border-bottom border-secondary align-self-center">
+    </div>
+    <div class="col-2 text-center align-self-center">
+      {{'Or'|translate}}
+    </div>
+    <div class="col-5 border-bottom border-secondary align-self-center">
+    </div>
+  </div> -->
+
+  <div class="w-100 d-flex">
+    <mat-form-field class="w-100">
+      <mat-label>{{'Search'|translate}}</mat-label>
+      <mat-icon matPrefix class="material-symbols-rounded">search</mat-icon>
+      <input matInput #searchInput type="search" (keyup)="filter(searchInput.value)" placeholder="...">
+    </mat-form-field>
+
+    <button *ngIf="pr.canUser('addChildPage')" class="ms-3 mt-1" type="button" mat-icon-button color="primary"
+      (click)="registerNewChild()" [matTooltip]="'Register new child'|translate">
+      <mat-icon>add</mat-icon>
+    </button>
+  </div>
+
+
+  <mat-selection-list #childrenList [multiple]="true">
+    <mat-list-option *ngFor="let child of filteredChildren" [value]="child" [selected]="isChildSelected(child)">
+      <span matListItemTitle>{{child.person.name}}</span>
+      <span matListItemLine> {{(data.state=='teacher'?'Teachers':'Parent')|translate}}:&nbsp;{{data.state=='teacher'?(child|childTeachers)||'–':(child.parent?.person?.name)||'–'}} </span>
+
+    </mat-list-option>
+    <p *ngIf="filteredChildren && filteredChildren.length == 0" class="text-center fst-italic opacity-50 my-2">
+      {{'Empty list'|translate}}
+    </p>
+    <p *ngIf="filteredChildren == undefined" class="text-center fst-italic opacity-50 my-2">
+      {{'Loading...'|translate}}
+    </p>
+  </mat-selection-list>
+</div>
+
+<div mat-dialog-actions>
+  <button type="button" mat-button (click)="dialogRef.close()" color="accent"
+    cdkFocusInitial>{{'Cancel'|translate}}</button>
+
+  <button mat-button type="button" (click)="confirm(childrenList.selectedOptions.selected)"
+    color="primary">{{'Confirm'|translate}}&nbsp;{{newSelectionLength(childrenList.selectedOptions.selected)==0?'':'('+newSelectionLength(childrenList.selectedOptions.selected)+')'}}</button>
+</div>

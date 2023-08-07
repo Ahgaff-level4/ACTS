@@ -2,7 +2,7 @@
   <mat-form-field class="w-100">
     <mat-label>{{'Search'|translate}}</mat-label>
     <mat-icon matPrefix class="material-symbols-rounded">search</mat-icon>
-    <input matInput (keyup)="keyup.emit($event)" placeholder="...">
+    <input matInput (keyup)="keyup.emit($event)" placeholder="..." type="search" />
   </mat-form-field>
   <div class="mx-3" style="margin-top:4px;" *ngIf="pr.canUser('printTable')">
     <button mat-icon-button [matMenuTriggerFor]="exportMenu" [matTooltip]="'Export table'|translate"
