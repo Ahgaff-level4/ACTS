@@ -1,6 +1,6 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { IsDate, IsEnum, IsInt, IsNumber, IsOptional, IsPositive, IsString, MaxLength } from "class-validator";
-import { GoalEntity } from "../goal/Goal.entity";
+import { GoalEntity } from "../goal/goal.entity";
 import { EvaluationRate, IAccountEntity, ICreateEvaluation, IEvaluationEntity, IGoalEntity } from "../../../../interfaces";
 import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";

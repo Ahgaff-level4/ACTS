@@ -1,11 +1,11 @@
 import { PartialType } from "@nestjs/mapped-types";
 import { FieldEntity } from "../field/field.entity";
 import { ProgramEntity } from "../program/program.entity";
-import { IsNotEmpty, IsNumber,IsDateString, IsOptional, IsDate, IsInt, IsPositive, IsString, MaxLength} from "class-validator";
-import { Check, Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { IsNumber,IsOptional, IsDate, IsInt, IsPositive, IsString, MaxLength} from "class-validator";
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 import { Type } from "class-transformer";
 import { IActivityEntity, ICreateActivity, IFieldEntity, IGoalEntity, IProgramEntity } from "../../../../interfaces";
-import { GoalEntity } from "../goal/Goal.entity";
+import { GoalEntity } from "../goal/goal.entity";
 
 export class CreateActivity implements ICreateActivity {
 	@IsString() @MaxLength(512)

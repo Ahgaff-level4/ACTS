@@ -4,7 +4,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { PersonEntity } from '../person/person.entity';
-import { GoalEntity } from '../goal/Goal.entity';
+import { GoalEntity } from '../goal/goal.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { AccountEntity } from '../account/account.entity';
 import { ITimelineEvent } from '../../../../interfaces';

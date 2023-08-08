@@ -3,7 +3,7 @@ import { ChildEntity, CreateChild, UpdateChild } from './child.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PersonEntity } from '../person/person.entity';
-import { GoalEntity } from '../goal/Goal.entity';
+import { GoalEntity } from '../goal/goal.entity';
 import { ActivityEntity } from '../activity/activity.entity';
 import { FieldEntity } from '../field/field.entity';
 import { AccountEntity } from '../account/account.entity';

@@ -5,7 +5,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectDataSource } from "@nestjs/typeorm";
 import { DataSource } from "typeorm";
 import { AccountEntity } from "src/management/account/account.entity";
-import { GoalEntity } from "src/management/goal/Goal.entity";
+import { GoalEntity } from "src/management/goal/goal.entity";
 import { ChildEntity } from "src/management/child/child.entity";
 import { EvaluationEntity } from "src/management/evaluation/evaluation.entity";
 import { PersonEntity } from "src/management/person/person.entity";

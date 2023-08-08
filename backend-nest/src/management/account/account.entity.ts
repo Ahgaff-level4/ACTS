@@ -2,12 +2,12 @@ import { PartialType, PickType } from "@nestjs/mapped-types";
 import { IsArray, IsEnum, IsInt, IsLowercase, IsNumber, IsObject, IsOptional, IsPositive, IsString, Length, MaxLength, NotContains } from "class-validator";
 import { PersonEntity } from "../person/person.entity";
 import { IAccountEntity, IChangePassword, IChildEntity, ICreateAccount, IEvaluationEntity, IGoalEntity, IPersonEntity, IRoleEntity, Role } from '../../../../interfaces';
-import { Transform, Type } from "class-transformer";
+import { Transform } from "class-transformer";
 import { Column, Entity, JoinColumn, JoinTable, ManyToMany, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";
 import { RoleEntity } from "./role/role.entity";
-import { ChildEntity, UpdateChild } from "../child/child.entity";
+import { ChildEntity } from "../child/child.entity";
 import { EvaluationEntity } from "../evaluation/evaluation.entity";
-import { GoalEntity } from "../goal/Goal.entity";
+import { GoalEntity } from "../goal/goal.entity";
 
 export class CreateAccount implements ICreateAccount {
 	@IsString() @NotContains(' ') @Length(4, 32) @IsLowercase()

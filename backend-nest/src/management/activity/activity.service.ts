@@ -4,7 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { FieldEntity } from '../field/field.entity';
 import { ProgramEntity } from '../program/program.entity';
-import { GoalEntity } from '../goal/Goal.entity';
+import { GoalEntity } from '../goal/goal.entity';
 import { ChildEntity } from '../child/child.entity';
 import { PersonEntity } from '../person/person.entity';
 

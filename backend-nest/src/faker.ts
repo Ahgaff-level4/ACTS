@@ -11,7 +11,7 @@ import { ICreateAccount, ICreateActivity, ICreateEvaluation, ICreateField, ICrea
 import { ProgramEntity } from "./management/program/program.entity";
 import { FieldEntity } from "./management/field/field.entity";
 import { ActivityEntity } from "./management/activity/activity.entity";
-import { GoalEntity } from "./management/goal/Goal.entity";
+import { GoalEntity } from "./management/goal/goal.entity";
 import { EvaluationEntity } from "./management/evaluation/evaluation.entity";
 const faker: Faker = process.env.FAKER_LANG == 'ar' ? fakerAR : fakerEN;
 const COUNT = {

@@ -3,7 +3,7 @@ import { IsNumber, IsOptional, IsString, MaxLength, IsDate, MinDate, MaxDate, Is
 import { PersonEntity } from "../person/person.entity";
 import { IAccountEntity, IChildEntity, ICreateChild, IGoalEntity, IPersonEntity, IProgramEntity, IStrengthEntity } from '../../../../interfaces'
 import { Type } from "class-transformer";
-import { GoalEntity } from "../goal/Goal.entity";
+import { GoalEntity } from "../goal/goal.entity";
 import { AccountEntity } from "../account/account.entity";
 import { ProgramEntity } from "../program/program.entity";
 import { Column, Entity, JoinColumn, ManyToMany, ManyToOne, OneToMany, OneToOne, PrimaryGeneratedColumn } from "typeorm";

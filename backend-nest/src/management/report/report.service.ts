@@ -7,7 +7,7 @@ import { ChildEntity } from '../child/child.entity';
 import { ProgramEntity } from '../program/program.entity';
 import { FieldEntity } from '../field/field.entity';
 import { AccountEntity } from '../account/account.entity';
-import { GoalEntity } from '../goal/Goal.entity';
+import { GoalEntity } from '../goal/goal.entity';
 import { PersonEntity } from '../person/person.entity';
 import { EvaluationEntity } from '../evaluation/evaluation.entity';
 
