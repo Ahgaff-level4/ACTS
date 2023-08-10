@@ -87,3 +87,9 @@ frontend-angular/src/assets/person-images/*-*.*
 Thumbs.db
 
 documentation
+.git
+.gitignore
+backend-nest/.gitignore
+frontend-angular/.gitignore
+docker-compose*
+Dockerfile*

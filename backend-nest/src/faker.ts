@@ -13,14 +13,21 @@ import { FieldEntity } from "./management/field/field.entity";
 import { ActivityEntity } from "./management/activity/activity.entity";
 import { GoalEntity } from "./management/goal/goal.entity";
 import { EvaluationEntity } from "./management/evaluation/evaluation.entity";
+import { RoleEntity } from "./management/account/role/role.entity";
+import { readFile } from 'fs/promises'
+import * as path from 'path';
 const faker: Faker = process.env.FAKER_LANG == 'ar' ? fakerAR : fakerEN;
+
 const COUNT = {
 	persons: 300,
 	accounts: 100,
-}
+	waitMillisecond: 10000,
+} as const;
+
 function log(msg: string) {
 	Logger.debug(msg, 'FAKER');
 }
+
 /**
  * Faker will generate random data if:
  * 1. environment is not production. AND
@@ -29,17 +36,31 @@ function log(msg: string) {
  * Also, all faker's accounts has one password which is `asdf`; because passwords are hashed you won't be able to access any account if it was random.
  */
 export async function generateFakeData(dataSource: DataSource) {
-	if (process.env.PRODUCTION == 'true') {
-		log('Production environment! Faker closed')
-		return;
-	}
-	log('Checking database is empty...');
-	const isEmpty: boolean = (await dataSource.getRepository(ChildEntity).count()) == 0;
+
+	log(`Checking database schema...⏳`);
+	const isNoSchema: boolean = (await dataSource.getRepository(RoleEntity).count()) === 0;//role table has static constant rows 'Admin, Teacher, ...etc' if not exist then 
+	if (isNoSchema) {
+		log(`There is no schema. Generating database schema...⏳`);
+		const sql: string = await readFile(path.resolve('../database-mysql/schema.sql'), { encoding: 'utf-8' });
+		await dataSource.query(sql);//will recreate the schema so we need to reconnect to the new schema
+		dataSource = await new DataSource(dataSource.options).initialize();
+		log(`Database schema created successfully ✔`);
+	} else log(`Database schema exists ✔`);
+
+	log('Checking database is empty...⏳');
+	const isEmpty: boolean = (await dataSource.getRepository(ChildEntity).count()) === 0;//children rows can not be deleted only archived. if there is existed rows then
 	if (!isEmpty) {
-		log(`Database is not empty. Faker closed`);
+		log(`Database is NOT empty. Faker closed ⛔`);
 		return;
 	}
-	log(`Database is empty. Generating Fake data in '${process.env.FAKER_LANG}' language after three seconds...`);
+	log(`Database is empty ✔`);
+
+	if (process.env.NODE_ENV != 'development') {
+		log('Production environment! Faker closed ⛔')
+		return;
+	}
+
+	log(`Generating Fake data in '${process.env.FAKER_LANG}' language after ${COUNT.waitMillisecond / 1000} seconds...`);
 	setTimeout(() => {
 		dataSource.transaction(async manager => {
 			log('Generating begin...')
@@ -62,16 +83,16 @@ export async function generateFakeData(dataSource: DataSource) {
 			let createAccounts: ICreateAccount[] = new Array(COUNT.accounts).fill(null).map((v, i) => {
 				return {
 					personId: persons[i].id,
-					phone0: optional(faker.phone.number('7########'),14),
-					phone1: optional(faker.phone.number('7########'),12),
-					phone2: optional(faker.phone.number('7########'),10),
-					phone3: optional(faker.phone.number('7########'),8),
-					phone4: optional(faker.phone.number('7########'),7),
-					phone5: optional(faker.phone.number('7########'),6),
-					phone6: optional(faker.phone.number('7########'),5),
-					phone7: optional(faker.phone.number('7########'),4),
-					phone8: optional(faker.phone.number('7########'),3),
-					phone9: optional(faker.phone.number('7########'),2),
+					phone0: optional(faker.phone.number('7########'), 14),
+					phone1: optional(faker.phone.number('7########'), 12),
+					phone2: optional(faker.phone.number('7########'), 10),
+					phone3: optional(faker.phone.number('7########'), 8),
+					phone4: optional(faker.phone.number('7########'), 7),
+					phone5: optional(faker.phone.number('7########'), 6),
+					phone6: optional(faker.phone.number('7########'), 5),
+					phone7: optional(faker.phone.number('7########'), 4),
+					phone8: optional(faker.phone.number('7########'), 3),
+					phone9: optional(faker.phone.number('7########'), 2),
 					username: faker.internet.userName({ firstName: persons[i].name }).substring(0, 32),
 					password: '$2b$10$fjYy8Y5t7UWcV8I7LF6bj..N.Ua9wer/mzFBNB7ieNWz8cror6vM6',//asdf
 					address: optional(faker.location.streetAddress(true)),
@@ -183,7 +204,7 @@ export async function generateFakeData(dataSource: DataSource) {
 				log('Error occur. Rollback Faker changes');
 				console.trace(e)
 			});
-	}, 3000);
+	}, COUNT.waitMillisecond);
 
 }
 
@@ -205,7 +226,7 @@ function uniquify<T>(arr: T[], uniqueKey: keyof T): T[] {
  *  @param oneOverN is the probability of a null value, `1/oneOverN` default is six (1/6)
  *  */
 function optional<T>(value: T, oneOverN: number = 6): T | null {
-	return faker.number.int({ min: 0, max: oneOverN-1 }) == 0 ? null : value;
+	return faker.number.int({ min: 0, max: oneOverN - 1 }) == 0 ? null : value;
 }
 
 /** 2002-02-22T22:..etc => 2002-02-22*/

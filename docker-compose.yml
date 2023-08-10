@@ -1,0 +1,52 @@
+# docker-compose syntax version compiler
+version: "3.8"
+name: "acts"
+services:
+
+  backend-nest:
+    depends_on:
+      - database-mysql
+    build:
+      context: .
+      dockerfile: ./Dockerfile.backend-nest
+      args:
+        NODE_ENV: development #should be on docker-compose.whatever.yml file
+    # env_file: # looks like .env file should be in the same directory with this file :(
+    #   - ./backend-nest/.env
+    environment:
+      - NODE_ENV=development #should be on docker-compose.whatever.yml file
+      - HOST_DB=database-mysql
+      - HOST_SERVER=localhost
+      - RETRY_CONNECT_DB_ATTEMPTS=10
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/backend-nest/node_modules
+    command: npm run start:dev
+    
+  database-mysql:
+    image: mysql
+    # NOTE: use of "mysql_native_password" is not recommended: https://dev.mysql.com/doc/refman/8.0/en/upgrading-from-previous-series.html#upgrade-caching-sha2-password
+    # (this is just an example, not intended to be a production configuration)
+    command: --default-authentication-plugin=mysql_native_password
+    restart: always
+    # env_file: ./backend-nest/.env
+    environment:
+      MYSQL_USER: nodejs
+      MYSQL_ROOT_PASSWORD: 12354678
+      MYSQL_DATABASE: acts_typeorm
+      MYSQL_PASSWORD: 12354678
+    volumes:
+      - mysql-database-volume:/var/lib/mysql
+  # frontend-angular:
+  #   build: ./frontend-angular.Dockerfile
+  #   ports:
+  #     - "4200:4200"
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/frontend-angular/node_modules
+
+# Declaring a global name volume
+volumes:
+  mysql-database-volume:

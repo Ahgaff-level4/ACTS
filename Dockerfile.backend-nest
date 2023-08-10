@@ -1,0 +1,31 @@
+# Create image based on the official Node image from dockerhub
+FROM node:18
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy dependency definitions
+RUN mkdir backend-nest;
+COPY backend-nest/package*.json ./backend-nest
+
+# set the path of persons image folder outside the app directory
+ENV PERSONS_FOLDER_PATH /usr/src/persons-folder
+
+# Get passed argument
+ARG NODE_ENV
+# Install dependecies base on the environment is it development or production. 
+RUN if [ "$NODE_ENV" = "development" ]; \
+		then cd backend-nest && npm install; \
+		else cd backend-nest && npm install --only=production; \
+		fi #todo if production then npm install then build angular before running backend so that there will be html page in the backend.
+
+WORKDIR /usr/src/app
+# Get all the code needed to run the app
+COPY . .
+
+# Expose the port the app runs in
+EXPOSE 3000
+
+WORKDIR /usr/src/app/backend-nest
+# will be overwrite by docker-compose
+CMD [ "node", "dist/main" ]

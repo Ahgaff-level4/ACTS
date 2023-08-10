@@ -7,7 +7,7 @@ import { HttpExceptionFilter } from './MyException.filter';
 import { config } from 'dotenv';
 import { BadRequestException, ValidationError, ValidationPipe, ValidationPipeOptions } from '@nestjs/common';
 import { SuccessInterceptor } from './interceptor';
-config();//to load environment variables from (.env) file. it called by global object process.env."variable name"
+config();//to load environment variables from (.env) file.
 
 const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
   forbidUnknownValues: true,
@@ -43,7 +43,7 @@ const VALIDATION_PIPE_OPTIONS: ValidationPipeOptions = {
 };
 
 const secret = process.env.SESSION_SECRET;
-if(!secret) throw new Error('Environment variable SESSION_SECRET is empty');
+if (!secret) throw new Error('Environment variable SESSION_SECRET is empty');
 const SESSION_OPTIONS: SessionOptions = {
   secret,
   resave: true,
@@ -58,10 +58,10 @@ const host: string = process.env.HOST_SERVER || 'localhost';
 const port: number = +process.env.PORT_SERVER || 3000;
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  // app.use(helmet({
-  //   crossOriginResourcePolicy: process.env.PRODUCTION == 'true',
-  // }))
-  // if (process.env.PRODUCTION == 'false')
+  if (process.env.NODE_ENV != 'development')
+    app.use(helmet({
+      crossOriginResourcePolicy: true,
+    }));
   app.enableCors({ origin: ["http://localhost:4200"], credentials: true, methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'] });
   app.use(session(SESSION_OPTIONS));
   app.useGlobalPipes(new ValidationPipe(VALIDATION_PIPE_OPTIONS));
