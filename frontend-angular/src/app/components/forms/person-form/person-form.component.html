@@ -58,7 +58,7 @@
           </mat-form-field>
         </div>
         <div class="col-md-4">
-          <app-datepicker label="Birthdate" [min]="formService.before80y$|async" [max]="formService.nowDate$|async"
+          <app-datepicker label="Birthdate" [min]="formService.before80y$|async" [max]="(state=='child'?formService.before4y$:formService.before10y$)|async"
             controlName="birthDate" startView="multi-year" [formGroup]="formGroup"></app-datepicker>
         </div>
         <div class="col-md-4">

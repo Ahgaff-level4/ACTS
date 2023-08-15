@@ -58,8 +58,10 @@ export class AddEditChildFormComponent extends UnsubOnDestroy {
       isArchive: [false],
       teachers: [[]]//array of IDs of teacher.
     });
-    this.child = history.state.data;
-    this.person = this.child?.person;
+    if (history.state.data && history.state.data.parentId) {//make sure it is child when editing; when edit-account then add-child it conflicts with account object!
+      this.child = history.state.data;
+      this.person = this.child?.person;
+    }
     this.sub.add(this.accountService.accounts$.subscribe((v) => {
       if (v == undefined) {
         this.accountService.fetch();

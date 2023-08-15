@@ -98,12 +98,13 @@ import { RateItemComponent } from './components/pages/children/report-child/rate
 import { VerticalTimelineComponent } from './components/pages/children/vertical-timeline/vertical-timeline.component';
 import { AddEditChildFormComponent } from './components/forms/add-edit-child-form/add-edit-child-form.component';
 import { AddChildComponent } from './components/dialogs/add-edit/add-child/add-child.component';
+import { SelectChildComponent } from './components/dialogs/select-child/select-child.component';
+import { EditMyInfoComponent } from './components/dialogs/edit-my-info/edit-my-info.component';
 import {
   BellOutline, EditOutline, DeleteOutline, PlusCircleOutline, LoginOutline,
   LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline, InfoCircleOutline,
   NotificationOutline, MessageOutline
 } from '@ant-design/icons-angular/icons';
-import { SelectChildComponent } from './components/dialogs/select-child/select-child.component';
 
 const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCircleOutline,
   LoginOutline, LogoutOutline, CheckCircleOutline, WarningOutline, CloseCircleOutline,
@@ -182,6 +183,7 @@ const icons: IconDefinition[] = [BellOutline, EditOutline, DeleteOutline, PlusCi
     SelectChildComponent,
     AddEditChildFormComponent,
     AddChildComponent,
+    EditMyInfoComponent,
   ],
   imports: [
     BrowserModule,

@@ -10,21 +10,28 @@
   </div>
 </app-card>
 
-<app-card id="my-account-information" *ngIf="pr.user.value" cardTitle="My Account Information">
-  <p class="opacity-75">
-    *{{'Only Admin can change your account information, and you can only change your password.'|translate}}</p>
-  <p>{{'Name'|translate}}:&nbsp;{{pr.user.value.person.name}}</p>
-  <p>{{'Username'|translate}}:&nbsp;{{pr.user.value.username}}</p>
-  <p *ngIf="pr.user.value.birthdate">
-    {{'Birthdate'|translate}}:&nbsp;{{pr.user.value.birthdate|toDate}}{{','|translate}}&nbsp;{{pr.user.value.birthdate|fromNow:true}}
-  </p>
-  <p>{{'Roles'|translate}}:&nbsp;{{(pr.user.value.roles|accountRoles)}}</p>
-  <button mat-stroked-button color="primary" (click)="changePassword()">
-    {{'Change my password'|translate}}
-  </button>
+<app-card id="my-account-information" *ngIf="user" cardTitle="My Account Information">
+  <div class="d-flex justify-md-content-between flex-md-row flex-column">
+    <div class="flex-fill order-md-0 order-1">
+      <p><span class="fw-bold">{{'Name'|translate}}:</span>&nbsp;{{user.person.name}}</p>
+      <p><span class="fw-bold">{{'Gender'|translate}}:</span>&nbsp;{{user.person.gender|translate}}</p>
+      <p><span class="fw-bold">{{'Username'|translate}}:</span>&nbsp;{{user.username}}</p>
+      <p *ngIf="user.birthdate">
+        <span class="fw-bold">{{'Birthdate'|translate}}:</span>&nbsp;{{user.birthdate|toDate}}{{','|translate}}&nbsp;{{user.birthdate|fromNow:true}}
+      </p>
+      <p><span class="fw-bold">{{'Roles'|translate}}:</span>&nbsp;{{(user.roles|accountRoles)}}</p>
+      <p><span class="fw-bold">{{'Phones'|translate}}:</span>&nbsp;{{(user|accountPhones)}}</p>
+      <p><span class="fw-bold">{{'Address'|translate}}:</span>&nbsp;{{(user.address)}}</p>
+      <button mat-stroked-button color="primary" (click)="editMyAccountInfo()">
+        {{'Edit'|translate}}<mat-icon color="primary">edit</mat-icon>
+      </button>
+    </div>
+    <img #imageRef class="mb-4 mb-md-0 align-self-center mx-0 mx-md-auto rounded-4 order-md-1 order-0" style="height:11rem" width="auto"
+    [attr.src]="user.person.image && user.person.image.startsWith('http')?user.person.image:'assets/person-images/'+(user.person.image??'default.svg')" />
+  </div>
 </app-card>
 
-<app-card *ngIf="pr.user.value" cardTitle="Notifications">
+<app-card *ngIf="user" cardTitle="Notifications">
   <div class="row m-3 mb-0 d-flex">
     <mat-slide-toggle class="col-md-7 align-self-baseline mt-3 mb-md-0 mb-4" (change)="changeNotification($event.checked)"
       [checked]="(nt.notificationSettings|async)?.showNotification" color="primary">

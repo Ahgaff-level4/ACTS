@@ -613,6 +613,7 @@
   "Activity text should be unique.": "يجب أن يكون نص النشاط فريدا.",
   "Please check your network connection and try again.": "يرجى التحقق من اتصال الشبكة والمحاولة مرة أخرى.",
   "My Account Information": "معلومات حسابي",
+  "Edit My Account Information": "تعديل معلومات حسابي",
   "Back": "رجوع",
   "Change my password": "تغيير كلمة المرور الخاصة بي",
   "Old password is invalid!": "كلمة المرور القديمة غير صالحة!",
@@ -826,5 +827,6 @@
   "More":"تحميل المزيد",
   "?":"؟",
   "Be careful, selecting a child with an existed parent will change its parent permanently. Child has only one parent!":"كن حذرًا، فاختيار طفل لديه ولي امر سيغير ولي امره. الطفل لديه ولي امر واحد فقط!",
-  "Continue":"استمر"
+  "Continue":"استمر",
+  "You are not logged in! Please login then try again":"انت غير مسجل الدخول! الرجاء تسجيل الدخول ثم المحاولة مرة اخرى"
 }

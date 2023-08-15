@@ -91,8 +91,8 @@ export class PersonFormComponent extends UnsubOnDestroy implements OnInit, After
       return await this.personService.patchPerson((this.person as IPersonEntity).id, formData).catch(() => { });
   }
 
-  @ViewChild('imageRef') imageRef!: ElementRef;
 
+  @ViewChild('imageRef') imageRef!: ElementRef;
   onFileChange(event: Event) {
     // get the file object from the event target
     const file = (event.target as HTMLInputElement)?.files?.[0];

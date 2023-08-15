@@ -72,7 +72,8 @@ export class AccountService implements OnInit {
       this.http.post<IAccountEntity>(this.URL, account)
         .subscribe({
           next: (v) => {
-            this.fetch();
+            if (isSensitive == true)//fetch all accounts is sensitive. At least for backend perspective
+              this.fetch();
             res(v);
           },
           error: (e) => {
@@ -90,7 +91,8 @@ export class AccountService implements OnInit {
       this.http.patch<SucResEditDel>(this.URL + '/' + this.pr.user.value?.accountId, changePassword)
         .subscribe({
           next: (v) => {
-            this.fetch();
+            if (Array.isArray(this.accounts$.value))
+              this.fetch();
             res(v);
           },
           error: e => {
@@ -103,16 +105,17 @@ export class AccountService implements OnInit {
   }
 
   /**Used only by Admin (can reset password without providing the old password) */
-  put(id: number, account: Partial<IAccountEntity>, manageLoading = false): Promise<SucResEditDel> {
+  put(id: number, account: Partial<IAccountEntity>, manageLoading = false, isSensitive = true,): Promise<SucResEditDel> {
     return new Promise(async (res, rej) => {
-      if ((await this.sensitive().catch(() => false) !== true)) {
+      if (isSensitive && (await this.sensitive().catch(() => false) !== true)) {
         return rej();
       }
       manageLoading && this.display.isLoading.next(true);
       this.http.put<SucResEditDel>(this.URL + '/' + id, account)
         .subscribe({
           next: (v) => {
-            this.fetch();
+            if (isSensitive == true)//fetch all accounts is sensitive
+              this.fetch();
             res(v);
           },
           error: e => {

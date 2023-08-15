@@ -2,26 +2,30 @@ import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Component, ElementRef, ViewChild } from '@angular/core';
 import { TranslateService } from '@ngx-translate/core';
 import { finalize } from 'rxjs';
-import { DisplayService } from 'src/app/services/display.service';
 import { environment } from 'src/environments/environment';
-import { PasswordDialogComponent } from '../../dialogs/password-dialog/password-dialog.component';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { EditMyInfoComponent } from '../../dialogs/edit-my-info/edit-my-info.component';
+import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
+import { User } from '../../../../../../interfaces';
 @Component({
   selector: 'app-settings',
   templateUrl: './settings.component.html',
   styleUrls: ['./settings.component.scss']
 })
-export class SettingsComponent {
+export class SettingsComponent extends UnsubOnDestroy {
   // public language: 'Arabic' | 'English' = this.translate.currentLang == 'ar' ? 'English' : 'Arabic';
   @ViewChild('fileInput') fileInput!: ElementRef;
   public uploadProgress: number | null = null;
   public API = environment.API;
-
+  public user: User | null = null;
   constructor(public pr: PrivilegeService, public translate: TranslateService,
     private http: HttpClient,
-    public nt: NotificationService) { }
+    public nt: NotificationService) { super(); }
 
+  ngOnInit() {
+    this.sub.add(this.pr.user.subscribe(v => { this.user = v }));
+  }
 
   restore() {
     this.nt.showMsgDialog({
@@ -59,8 +63,8 @@ export class SettingsComponent {
       });
   }
 
-  changePassword() {
-    this.nt.openDialog(PasswordDialogComponent);
+  editMyAccountInfo() {
+    this.nt.openDialog(EditMyInfoComponent, undefined, '95%');
   }
 
   closeAfter = this.nt.notificationSettings.value.closeAfter / 1000;

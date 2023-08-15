@@ -26,19 +26,24 @@ export class AuthController {
 		const account = sel[0];
 		if (!(await bcrypt.compare(loginInfo.password, account.password)))
 			throw new UnauthorizedException(R.string.invalidPassword);
-		const user: User = { person: account.person, isLoggedIn: true, accountId: account.id, roles: account.roles, name: account.person?.name, username: account.username, birthdate: account.person.birthDate, address: account.address, phones: [account.phone0, account.phone1, account.phone2, account.phone3, account.phone4, account.phone5, account.phone6, account.phone7, account.phone8, account.phone9] };
+		const user: User = this.authService.accountToUser(account);
 		req.session['user'] = user;
-		return { ...user };
+		return user;
 	}
 
 	@Get('isLogin')
-	isLogin(@Session() session: Express_Session) {
+	async isLogin(@Session() session: Express_Session) {
 		const user: User = session['user'];
-		// console.log('AuthController : isLogin : user:', user);
 
-		if (user && user.accountId)
-			return user;
-
+		//if user update his account we need to re-assign user info from DB
+		if (user && user.accountId) {
+			const account = await this.authService.findOneById(user.accountId);
+			if (!account)
+				throw new UnauthorizedException();
+			const newUser = this.authService.accountToUser(account);
+			session['user'] = newUser;
+			return newUser;
+		}
 
 		throw new UnauthorizedException({ message: R.string.mustLogin, action: 'login' });
 	}

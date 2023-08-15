@@ -1,5 +1,5 @@
 import { Pipe, PipeTransform } from '@angular/core';
-import { IAccountEntity } from '../../../../interfaces';
+import { IAccountEntity, User } from '../../../../interfaces';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Pipe({
@@ -10,8 +10,12 @@ export class AccountPhonesPipe implements PipeTransform {
   constructor(private translatePipe: TranslatePipe) { }
 
   /**Display an account phones joined by a comma. Empty string if none */
-  transform(account: IAccountEntity): string {
-    const phones = this.accountPhonesArr(account);
+  transform(account: IAccountEntity | User): string {
+    let phones: string[];
+    if (account.accountId)
+      phones = account.phones;
+    else
+      phones = this.accountPhonesArr(account as IAccountEntity);
     if (phones.length == 0)
       return '';
     return phones.filter(v => !!v).join(this.translate(', '));

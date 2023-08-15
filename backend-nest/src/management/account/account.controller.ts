@@ -56,8 +56,11 @@ export class AccountController {
     }
 
     @Put(':id')
-    @Roles('Admin')
+    @Roles('Admin', 'HeadOfDepartment', 'Teacher', 'Parent')
     async update(@Param('id', ParseIntPipe) id: string, @Body() updateAccount: UpdateAccount, @UserMust() user: User) {
+        //Admin can update all accounts info AND user can update some of his/her information
+        if (!user.roles.includes('Admin') && (+id != user.accountId || !Object.keys(updateAccount).every((v: keyof UpdateAccount) => v == 'address' || v == 'phone0' || v == 'phone1' || v == 'phone2' || v == 'phone3' || v == 'phone4' || v == 'phone5' || v == 'phone6' || v == 'phone7' || v == 'phone8' || v == 'phone9' || v == 'username')))
+            throw new UnauthorizedException();
         const ret = await this.accountService.update(+id, updateAccount);
         this.notify.emitNewNotification({
             by: user,

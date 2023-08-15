@@ -20,8 +20,7 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
   public accountForm!: FormGroup;
   public person?: IPersonEntity | ICreatePerson;
   public account: IAccountEntity | undefined;//account information to be edit or undefined for new child
-  //used to navigate to accounts page if this component used in add-edit-account page.
-  //OR used to close add-parent dialog if it used in add-edit-child page.
+  //fired after submit successfully
   @Output() submitted = new EventEmitter<IAccountEntity>();
   @Input() state!: 'add-edit-account' | 'add-parent';
   @Input() defaultPersonName = '';
@@ -32,14 +31,15 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
 
   constructor(private fb: FormBuilder, private display: DisplayService, private accountService: AccountService,
     public formService: FormService, private nt: NotificationService,
-    private pr: PrivilegeService, private router:Router,) {
+    private pr: PrivilegeService, private router: Router,) {
     super();
   }
 
   ngOnInit(): void {
-    if (history.state.data && history.state.data.username)//make sure it is account when editing; when edit-child and add-parent it conflicts with child object!
+    if (history.state.data && history.state.data.username) {//make sure it is account when editing; when edit-child and add-parent it conflicts with child object!
       this.account = history.state.data;
-
+      this.person = this.account?.person;
+    }
     let maxPhone = -1;
     for (let i = 0; i < 10; i++)//show at least one empty phone field. Phone fields will show multiple fields if the account already has multiple phones
       if (this.account?.['phone' + i])
@@ -48,7 +48,6 @@ export class AddEditAccountFormComponent extends UnsubOnDestroy implements OnIni
       this.phoneFields.push('phone' + j)
     }
 
-    this.person = this.account?.person;
     let pass = this.account?.id ? {} : {
       password: [null, [Validators.required, this.formService.validation.strongPasswordValidator, Validators.minLength(4)]],
       repeatPassword: [null, [Validators.required, this.passwordMatchValidator, Validators.minLength(4)]],

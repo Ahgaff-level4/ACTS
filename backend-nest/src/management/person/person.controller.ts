@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete, UseInterceptors, UploadedFile, Injectable, BadRequestException, Query } from '@nestjs/common';
+import { Controller, Post, Body, Get, Param, ParseIntPipe, Patch, Delete, UseInterceptors, UploadedFile, Injectable, BadRequestException, Query, UnauthorizedException } from '@nestjs/common';
 import { CreatePerson, PersonEntity, UpdatePerson } from './person.entity';
 import { Roles } from 'src/auth/Role.guard';
 import { DataSource, Repository } from 'typeorm';
@@ -6,10 +6,11 @@ import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { rename, unlink, writeFile } from 'fs/promises';
 import { extname, resolve } from 'path';
-import { IPersonEntity } from '../../../../interfaces';
+import { IPersonEntity, User } from '../../../../interfaces';
 import sanitize = require('sanitize-filename');
 import { ChildEntity } from '../child/child.entity';
 import { AccountEntity } from '../account/account.entity';
+import { UserMust } from 'src/utility.service';
 
 @Controller('api/person')
 export class PersonController {
@@ -52,9 +53,13 @@ export class PersonController {
   }
 
   @Patch(':id')
-  @Roles('Admin', 'HeadOfDepartment')
+  @Roles('Admin', 'HeadOfDepartment', 'Parent', 'Teacher')
   @UseInterceptors(FileInterceptor('image'))
-  async update(@Param('id', ParseIntPipe) id: string, @Body() updatePerson: UpdatePerson, @UploadedFile() file: Express.Multer.File) {
+  async update(@Param('id', ParseIntPipe) id: string, @Body() updatePerson: UpdatePerson, @UploadedFile() file: Express.Multer.File, @UserMust() user: User) {
+    //user can update some of his information
+    if (!user.roles.includes('Admin') && (+id != user.person.id || !Object.keys(updatePerson).every((v: keyof UpdatePerson) => v == 'name' || v == 'birthDate' || v == 'gender')))
+      throw new UnauthorizedException();
+    
     //THIS IS OVER ENGINEERING :)
     //Scenarios:
     //1. update all person data except image.
@@ -122,7 +127,7 @@ function imageName(personName: string, personId: string | number, fileOriginalNa
 /**@returns the absolute path of images folder path and suffix the provided image name. 
  * Ex: `C:/.../person-images/imageName` */
 export function imagePath(imageName: string): string {
-  return resolve((process.env.PRODUCTION == "false" ? '../frontend-angular/src/' : 'dist-angular') + '/assets/person-images/', imageName);
+  return resolve((process.env.NODE_ENV == 'development' ? '../frontend-angular/src/' : 'dist-angular') + '/assets/person-images/', imageName);
 }
 
 /**

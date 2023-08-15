@@ -13,6 +13,8 @@ export class FormService {
   public nowDate$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date()));
   public before80y$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 80, new Date().getMonth(), new Date().getDate())));
   public before20y$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 20, new Date().getMonth(), new Date().getDate())));
+  public before10y$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 10, new Date().getMonth(), new Date().getDate())));
+  public before4y$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 4, new Date().getMonth(), new Date().getDate())));
   public minCreatedDate$: Observable<Date> = new Observable(subscriber => subscriber.next(new Date(new Date().getFullYear() - 5, new Date().getMonth(), new Date().getDate())));
 
   constructor(private display: DisplayService, private http: HttpClient) { }
