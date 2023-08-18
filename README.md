@@ -15,9 +15,8 @@ In conclusion, Children with autism or special needs are trained with complex pr
 
 
 ## **Local deployment steps**
-1. Build a front-end project.
-2. Clone `backend-nest` from Github to the new computer which will be the Server.
-3. Run `npm install` to install all packages needed.
+3. Run `npm install` inside the `frontend-angular` and `backend-nest` directories to install all packages needed.
+1. Build the `front-end` project.
 4. Install `MySQL` and make sure its service starts when the Server starts up.
 5. Run the `database-mysql/schema.sql` file by `MySQL` to create the Database and its schema.
 6. Change the environment variables of `.env` file to the database settings (port, user).
@@ -28,7 +27,7 @@ In conclusion, Children with autism or special needs are trained with complex pr
 
 ## **Tips**
 1. Create a file that runs the NodeJs. (CMD shortcut with the run command).
-2. Create Edge Application of the local website to run it as Desktop application.
+2. Create an Edge Application of the local website to run it as a Desktop application.
 
 
 
