@@ -29,7 +29,7 @@ export class AccountController {
     }
 
     @Get()
-    @Roles('Admin')
+    @Roles('Admin', 'HeadOfDepartment')//select parent of a child needs this function
     findAll() {
         return this.accountService.findAll();
     }

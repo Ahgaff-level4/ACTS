@@ -5,15 +5,19 @@ import { Roles } from 'src/auth/Role.guard';
 import { R, UserMust } from 'src/utility.service';
 import { User } from '../../../../interfaces';
 import { NotificationGateway } from 'src/notification/notification.gateway';
+import { DataSource } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { PersonEntity } from '../person/person.entity';
 
 @Controller('api/child')
 export class ChildController {
-  constructor(private readonly childService: ChildService,  private notify: NotificationGateway) { }
+  constructor(private readonly childService: ChildService,  private notify: NotificationGateway,  @InjectDataSource() private dataSource: DataSource) { }
 
   @Post()
   @Roles('Admin', 'HeadOfDepartment')
   async create(@Body() createChild: CreateChild, @UserMust() user: User) {
     const ret = await this.childService.create(createChild);
+    ret.person = await this.dataSource.getRepository(PersonEntity).findOneByOrFail({ id: ret.personId });
     this.notify.emitNewNotification({
       by: user,
       controller: 'child',
