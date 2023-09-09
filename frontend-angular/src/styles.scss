@@ -352,3 +352,12 @@ a.my-accent-text,
   margin-top: 4.5rem !important;
   margin-bottom: 4rem !important;
 }
+
+@media print{
+  footer{
+    visibility: hidden;
+  }
+  nav{
+    visibility: hidden;
+  }
+}
