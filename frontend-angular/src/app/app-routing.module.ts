@@ -25,6 +25,7 @@ import { NotificationService } from './services/notification.service';
 import { AboutUsComponent } from './components/pages/about-us/about.component';
 import { LoginService } from './services/login.service';
 import { DisplayService } from './services/display.service';
+import { DashboardComponent } from './components/pages/dashboard/dashboard.component';
 
 export interface ComponentCanDeactivate {
   /**@returns false to prevent user navigating. true otherwise */
@@ -161,6 +162,7 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', data: { animation: 'settingsPage' } },
   { path: 'children/child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES['childReportPage'], animation: 'childReportPage' } },
   { path: 'about', component: AboutUsComponent, title: titlePrefix + 'About Us', data: { animation: 'AboutUsPage' } },
+  { path: 'dashboard', component: DashboardComponent, title: titlePrefix + 'Dashboard', data: { animation: 'Dashboard' } },
   { path: '**', component: Page404Component, title: 'Page Not Found', data: { animation: 'pageNotFoundPage' } },
 ];
 

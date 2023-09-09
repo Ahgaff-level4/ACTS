@@ -9,3 +9,12 @@
     margin-bottom: -20px;
   }
 }
+
+@media print{
+  .printable{
+    position: absolute;
+    top:0;
+    width:100%;
+    left:0;
+  }
+}

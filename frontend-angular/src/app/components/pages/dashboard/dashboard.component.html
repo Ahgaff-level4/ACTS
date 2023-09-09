@@ -7,18 +7,18 @@
     <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
     <div class="d-flex flex-wrap justify-content-evenly font mt-md-0" *ngIf="numberCardsData$|async as counts">
 
-      <app-number-card [timeframe]="timeframeFormGroup" content="Children" [number]="counts.children" src="assets/img/girl.svg"
-        alt="children photo"></app-number-card>
-      <app-number-card [timeframe]="timeframeFormGroup" content="Programs" [number]="counts.programs" src="assets/img/Program.svg"
-        alt="programs photo"></app-number-card>
-      <app-number-card [timeframe]="timeframeFormGroup" content="Fields" [number]="counts.fields" src="assets/img/Field.svg"
-        alt="fields photo"></app-number-card>
-      <app-number-card [timeframe]="timeframeFormGroup" content="Accounts" [number]="counts.accounts" src="assets/img/Account.svg"
-        alt="accounts photo"></app-number-card>
-      <app-number-card [timeframe]="timeframeFormGroup" content="Completed Goals" [number]="counts.completedGoals" src="assets/img/Completed-goals.svg"
-        alt="Completed goals photo"></app-number-card>
-      <app-number-card [timeframe]="timeframeFormGroup" content="Continual Goals" [number]="counts.continualGoals" src="assets/img/Continual-goals.svg"
-        alt="Continual goals photo"></app-number-card>
+      <app-number-card [timeframe]="timeframeFormGroup" content="Active Children" [number]="counts.childrenNotArchive"
+        src="assets/img/girl.svg" alt="children photo"></app-number-card>
+      <app-number-card [timeframe]="timeframeFormGroup" content="Programs" [number]="counts.programs"
+        src="assets/img/Program.svg" alt="programs photo"></app-number-card>
+      <app-number-card [timeframe]="timeframeFormGroup" content="Fields" [number]="counts.fields"
+        src="assets/img/Field.svg" alt="fields photo"></app-number-card>
+      <app-number-card [timeframe]="timeframeFormGroup" content="Accounts" [number]="counts.accounts"
+        src="assets/img/Account.svg" alt="accounts photo"></app-number-card>
+      <app-number-card [timeframe]="timeframeFormGroup" content="Completed Goals" [number]="counts.completedGoals"
+        src="assets/img/Completed-goals.svg" alt="Completed goals photo"></app-number-card>
+      <app-number-card [timeframe]="timeframeFormGroup" content="Continual Goals" [number]="counts.continualGoals"
+        src="assets/img/Continual-goals.svg" alt="Continual goals photo"></app-number-card>
 
     </div>
   </app-card>
@@ -32,6 +32,55 @@
         [xAxisLabel]="'Registration Date' | translate" [yAxisLabel]="'Number of Children' | translate"
         [timeline]="true">
       </ngx-charts-area-chart>
+    </div>
+  </app-card>
+
+  <app-card cardTitle="Report" *ngIf="pr.canUser('dashboard') && (dashboard$|async) as dash" class="printable">
+    <app-timeframe class="unprintable" [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+    <button (click)="printHandle()" class="position-absolute end-0 top-0 m-4 unprintable" mat-stroked-button
+      color="primary">
+      <mat-icon>print</mat-icon>{{ "Print" | translate }}
+    </button>
+
+    <p class="text-center font-highlight">Between: {{timeframeFormGroup.get('from')!.value|toDateTimeWeek}}&nbsp;&nbsp; &minus;
+      &nbsp;&nbsp;
+      {{timeframeFormGroup.get('to')!.value|toDateTimeWeek}}</p>
+    <div class="mx-3">
+      <p><span class="fw-bold">{{'Total Children'|translate}}:</span>&nbsp;{{dash.counts.childrenNotArchive +
+        dash.counts.childrenArchive}}</p>
+      <p><span class="fw-bold">{{'Active Children'|translate}}:</span>&nbsp;{{dash.counts.childrenNotArchive}}</p>
+      <p><span class="fw-bold">{{'Archive Children'|translate}}:</span>&nbsp;{{dash.counts.childrenArchive}}</p>
+      <p><span class="fw-bold">{{'Fields'|translate}}:</span>&nbsp;{{dash.counts.fields}}</p>
+      <p><span class="fw-bold">{{'Programs'|translate}}:</span>&nbsp;{{dash.counts.programs}}</p>
+      <p><span class="fw-bold">{{'Accounts'|translate}}:</span>&nbsp;{{dash.counts.accounts}}</p>
+      <p><span class="fw-bold">{{'Total Goals'|translate}}:</span>&nbsp;{{dash.counts.completedGoals +
+        dash.counts.continualGoals}}</p>
+      <p><span class="fw-bold">{{'Completed Goals'|translate}}:</span>&nbsp;{{dash.counts.completedGoals}}</p>
+      <p><span class="fw-bold">{{'Continual Goals'|translate}}:</span>&nbsp;{{dash.counts.continualGoals}}</p>
+      <p><span class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.counts.strengths}}</p>
+      <p><span class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.counts.activities}}</p>
+      <p><span class="fw-bold">{{'Special Activities'|translate}}:</span>&nbsp;{{dash.counts.specialActivities}}</p>
+      <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.counts.evaluations}}</p>
+
+      <p class="text-center font-highlight">All Time Information</p>
+      <p><span class="fw-bold">{{'Total Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount +
+        dash.childrenArchiveCount}}</p>
+      <p><span class="fw-bold">{{'Active Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount}}</p>
+      <p><span class="fw-bold">{{'Archive Children'|translate}}:</span>&nbsp;{{dash.childrenArchiveCount}}</p>
+      <p><span class="fw-bold">{{'Fields'|translate}}:</span>&nbsp;{{dash.fieldsCount}}</p>
+      <p><span class="fw-bold">{{'Programs'|translate}}:</span>&nbsp;{{dash.programsCount}}</p>
+      <p><span class="fw-bold">{{'Accounts'|translate}}:</span>&nbsp;{{dash.accountsCount}}</p>
+      <p><span class="fw-bold">{{'Total Goals'|translate}}:</span>&nbsp;{{dash.completedGoalsCount +
+        dash.continualGoalsCount}}</p>
+      <p><span class="fw-bold">{{'Completed Goals'|translate}}:</span>&nbsp;{{dash.completedGoalsCount}}</p>
+      <p><span class="fw-bold">{{'Continual Goals'|translate}}:</span>&nbsp;{{dash.continualGoalsCount}}</p>
+      <p><span class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.strengthsCount}}</p>
+      <p><span class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.activitiesCount}}</p>
+      <p><span class="fw-bold">{{'Special Activities'|translate}}:</span>&nbsp;{{dash.specialActivitiesCount}}</p>
+      <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.evaluationsCount}}</p>
+
+
+
     </div>
   </app-card>
 </div>

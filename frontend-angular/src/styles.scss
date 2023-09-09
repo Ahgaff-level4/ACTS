@@ -361,3 +361,15 @@ a.my-accent-text,
     visibility: hidden;
   }
 }
+
+@media print{
+  body.print{
+    visibility: hidden;
+  }
+  .printable{
+    visibility: visible;
+  }
+  .unprintable{
+    visibility: hidden;
+  }
+}

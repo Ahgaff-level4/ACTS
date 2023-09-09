@@ -6,6 +6,7 @@ import { ReportService } from 'src/app/services/report.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { FormControl, FormGroup } from '@angular/forms';
 import { NotificationService } from 'src/app/services/notification.service';
+import { PrivilegeService } from 'src/app/services/privilege.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -18,7 +19,7 @@ export class DashboardComponent extends UnsubOnDestroy {
     return [{
       name: this.display.translate('Number of Children'), series: v!.children
         .sort((a, b) => a.person.createdDatetime < b.person.createdDatetime ? 1 : (a.person.createdDatetime > b.person.createdDatetime ? -1 : 0))
-        .map((c, i) => ({ value: v!.childrenCount - i, name: new Date(c.person.createdDatetime) }))
+        .map((c, i) => ({ value: v!.childrenArchiveCount + v!.childrenNotArchiveCount - i, name: new Date(c.person.createdDatetime) }))
     }];
   }));
 
@@ -31,7 +32,7 @@ export class DashboardComponent extends UnsubOnDestroy {
     to: new FormControl<Date>(new Date()),
   });
   constructor(public service: ReportService, private display: DisplayService,
-    private nt: NotificationService,) { super(); }
+    private nt: NotificationService, public pr: PrivilegeService) { super(); }
 
   ngOnInit() {
     this.sub.add(this.service.fetchDashboard({
@@ -62,5 +63,12 @@ export class DashboardComponent extends UnsubOnDestroy {
 
   xAxisTickFormatting = (v?: any) => {
     return this.display.fromNowPipe.transform(v)
+  }
+
+  printHandle() {
+    //apply a css @media print that will hide everything in <body> unless it has `.printable` class
+    document.body.classList.add('print');
+    print()
+    document.body.classList.remove('print')
   }
 }

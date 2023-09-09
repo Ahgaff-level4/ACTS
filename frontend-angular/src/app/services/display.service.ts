@@ -159,6 +159,13 @@ export const PAGES: IPage[] = [
     privilege: 'notLoggedIn'
   },
   {
+    title: 'Dashboard',
+    link: '/dashboard',
+    img: 'assets/img/Continual-goals.svg',
+    desc: 'Report & Dashboard',
+    privilege: 'dashboard',
+  },
+  {
     title: 'Settings',
     link: '/settings',
     img: 'assets/img/Setting.svg',

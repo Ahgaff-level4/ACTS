@@ -1,7 +1,7 @@
 /* eslint-disable prefer-const */
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
-import { Between, DataSource, Not } from 'typeorm';
+import { Between, DataSource, IsNull, MoreThan, Not } from 'typeorm';
 import { IChildReport, IDashboard } from '../../../../interfaces';
 import { ChildEntity } from '../child/child.entity';
 import { ProgramEntity } from '../program/program.entity';
@@ -10,40 +10,63 @@ import { AccountEntity } from '../account/account.entity';
 import { GoalEntity } from '../goal/goal.entity';
 import { PersonEntity } from '../person/person.entity';
 import { EvaluationEntity } from '../evaluation/evaluation.entity';
+import { ActivityEntity } from '../activity/activity.entity';
 
 @Injectable()
 export class ReportService {
 	constructor(@InjectDataSource() private dataSource: DataSource) { }
 
 	public async dashboard(from: Date | string, to: Date | string): Promise<IDashboard> {
-
+		const range = Between(new Date(from), new Date(to));
 		const children = (await this.dataSource.getRepository(ChildEntity)
-			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: Between(new Date(from), new Date(to)) } } })
+			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: range } } })
 		);
 
-		const childrenCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false }))
-
+		const childrenNotArchiveCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false }));
+		const childrenArchiveCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: true }));
+		const programsCount = (await this.dataSource.getRepository(ProgramEntity).count());
+		const fieldsCount = (await this.dataSource.getRepository(FieldEntity).count());
+		const accountsCount = (await this.dataSource.getRepository(AccountEntity).count());
+		const completedGoalsCount = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', }));
+		const continualGoalsCount = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', }));
+		const strengthsCount = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', }));
+		const activitiesCount = (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: MoreThan(0) }));
+		const evaluationsCount = (await this.dataSource.getRepository(EvaluationEntity).count());
+		const specialActivitiesCount = (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull() }));
 		//counts
-		const numOfChildren = (await this.dataSource.getRepository(ChildEntity).count({
-			relations: ['person'], where: { person: { createdDatetime: Between(new Date(from), new Date(to)) } }
-		}));
-		const numOfPrograms = (await this.dataSource.getRepository(ProgramEntity).countBy({ createdDatetime: Between(new Date(from), new Date(to)) }));
-		const numOfFields = (await this.dataSource.getRepository(FieldEntity).countBy({ createdDatetime: Between(new Date(from), new Date(to)) }));
-		const numOfAccounts = (await this.dataSource.getRepository(AccountEntity).count({
-			relations: ['person'], where: { person: { createdDatetime: Between(new Date(from), new Date(to)) } }
-		}));
-		const numOfCompletedGoals = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', assignDatetime: Between(new Date(from), new Date(to)) }));
-		const numOfContinualGoals = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', assignDatetime: Between(new Date(from), new Date(to)) }));
-
+		const counts: IDashboard['counts'] = {
+			childrenNotArchive: (await this.dataSource.getRepository(ChildEntity).count({
+				relations: ['person'], where: { isArchive: false, person: { createdDatetime: range } }
+			})),
+			childrenArchive: (await this.dataSource.getRepository(ChildEntity).count({
+				relations: ['person'], where: { isArchive: true, person: { createdDatetime: range } }
+			})),
+			programs: (await this.dataSource.getRepository(ProgramEntity).countBy({ createdDatetime: range })),
+			fields: (await this.dataSource.getRepository(FieldEntity).countBy({ createdDatetime: range })),
+			accounts: (await this.dataSource.getRepository(AccountEntity).count({
+				relations: ['person'], where: { person: { createdDatetime: range } }
+			})),
+			completedGoals: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', assignDatetime: range })),
+			continualGoals: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', assignDatetime: range })),
+			strengths: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', assignDatetime: range })),
+			activities: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: MoreThan(0), createdDatetime: range })),
+			evaluations: (await this.dataSource.getRepository(EvaluationEntity).countBy({ evaluationDatetime: range })),
+			specialActivities: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull(), createdDatetime: range })),
+		};
 		return {
-			children, childrenCount, counts: {
-				programs: numOfPrograms,
-				accounts: numOfAccounts,
-				children: numOfChildren,
-				fields: numOfFields,
-				completedGoals: numOfCompletedGoals,
-				continualGoals: numOfContinualGoals,
-			}
+			children,
+			childrenNotArchiveCount,
+			childrenArchiveCount,
+			programsCount,
+			fieldsCount,
+			accountsCount,
+			completedGoalsCount,
+			continualGoalsCount,
+			strengthsCount,
+			activitiesCount,
+			evaluationsCount,
+			specialActivitiesCount,
+			counts,
 		}
 	}
 
@@ -132,12 +155,12 @@ export class ReportService {
 
 		const completedCount = goalsNEW.filter(v => v.state == 'completed').length;
 		const continualCount = goalsNEW.filter(v => v.state == 'continual').length;
-		
+
 		//to reduce payload weight
-		const evaluations = evaluationsNEW.map(v=>({evaluationDatetime:v.evaluationDatetime,rate:v.rate}))
+		const evaluations = evaluationsNEW.map(v => ({ evaluationDatetime: v.evaluationDatetime, rate: v.rate }))
 		return {
 			child,
-			evaluation:{
+			evaluation: {
 				evaluationsCount,
 				oldEvaluationsCount,
 				avgEvaluationsRate,

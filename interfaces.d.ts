@@ -348,15 +348,30 @@ export interface IChildReport {
 
 export interface IDashboard {
 	children: IChildEntity[],//depends on the timeframe.
-	childrenCount: number;//the number of children in the system despite the timeframe
+	childrenNotArchiveCount: number;//the number of children in the system despite the timeframe.
+	childrenArchiveCount:number;///the number of archived children in the system despite the timeframe.
+	programsCount:number;
+	fieldsCount:number;
+	accountsCount:number;
+	completedGoalsCount:number;
+	continualGoalsCount:number;
+	strengthsCount:number;
+	activitiesCount:number;
+	evaluationsCount:number;
+	specialActivitiesCount:number;
 	/**All counts depends on the timeframe */
 	counts: {
-		children: number;
+		childrenNotArchive: number;
+		childrenArchive: number;
 		fields: number;
 		programs: number;
 		accounts: number;
 		completedGoals: number;
 		continualGoals: number;
+		strengths:number;
+		activities:number;
+		evaluations:number;
+		specialActivities:number;
 	}
 }
 
