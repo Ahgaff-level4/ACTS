@@ -36,13 +36,16 @@
   </app-card>
 
   <app-card cardTitle="Report" *ngIf="pr.canUser('dashboard') && (dashboard$|async) as dash" class="printable">
-    <app-timeframe class="unprintable" [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
-    <button (click)="printHandle()" class="position-absolute end-0 top-0 m-4 unprintable" mat-stroked-button
-      color="primary">
-      <mat-icon>print</mat-icon>{{ "Print" | translate }}
-    </button>
+    <div class="d-flex flex-wrap justify-content-between unprintable mb-3">
+      <app-timeframe [timeframeFormGroup]="timeframeFormGroup"></app-timeframe>
+      <button (click)="printHandle()" class="m-2 mt-md-2 mt-4"
+        [ngClass]="display.getDirection()=='rtl'?'start-0':'end-0'" mat-stroked-button color="primary">
+        <mat-icon>print</mat-icon>{{ "Print" | translate }}
+      </button>
+    </div>
 
-    <p class="text-center font-highlight">Between: {{timeframeFormGroup.get('from')!.value|toDateTimeWeek}}&nbsp;&nbsp; &minus;
+    <p class="text-center font-highlight">{{'Number of Data made between'|translate}}:
+      {{timeframeFormGroup.get('from')!.value|toDateTimeWeek}}&nbsp;&nbsp; &minus;
       &nbsp;&nbsp;
       {{timeframeFormGroup.get('to')!.value|toDateTimeWeek}}</p>
     <div class="mx-3">
@@ -62,7 +65,7 @@
       <p><span class="fw-bold">{{'Special Activities'|translate}}:</span>&nbsp;{{dash.counts.specialActivities}}</p>
       <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.counts.evaluations}}</p>
 
-      <p class="text-center font-highlight">All Time Information</p>
+      <p class="text-center font-highlight">{{'Number of Data in the System'|translate}}</p>
       <p><span class="fw-bold">{{'Total Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount +
         dash.childrenArchiveCount}}</p>
       <p><span class="fw-bold">{{'Active Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount}}</p>

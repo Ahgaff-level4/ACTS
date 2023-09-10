@@ -828,5 +828,12 @@
   "?":"؟",
   "Be careful, selecting a child with an existed parent will change its parent permanently. Child has only one parent!":"كن حذرًا، فاختيار طفل لديه ولي امر سيغير ولي امره. الطفل لديه ولي امر واحد فقط!",
   "Continue":"استمر",
-  "You are not logged in! Please login then try again":"انت غير مسجل الدخول! الرجاء تسجيل الدخول ثم المحاولة مرة اخرى"
+  "You are not logged in! Please login then try again":"انت غير مسجل الدخول! الرجاء تسجيل الدخول ثم المحاولة مرة اخرى",
+  "Number of Data in the System":"عدد البيانات في النظام",
+  "Total Children":"جميع الأطفال",
+  "Active Children":"الأطفال النشطين",
+  "Archive Children":"الأطفال المؤرشفين",
+  "Total Goals":"جميع الأهداف",
+  "Number of Data made between":"عدد البيانات التي أُنشِئت بين",
+  "Report & Dashboard":"إحصائيات عامة وتقرير"
 }

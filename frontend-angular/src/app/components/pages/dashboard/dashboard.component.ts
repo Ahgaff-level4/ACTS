@@ -31,7 +31,7 @@ export class DashboardComponent extends UnsubOnDestroy {
     from: new FormControl<Date>(new Date(new Date().getFullYear() - 1, new Date().getMonth(), new Date().getDate())),//Default Yearly
     to: new FormControl<Date>(new Date()),
   });
-  constructor(public service: ReportService, private display: DisplayService,
+  constructor(public service: ReportService, public display: DisplayService,
     private nt: NotificationService, public pr: PrivilegeService) { super(); }
 
   ngOnInit() {

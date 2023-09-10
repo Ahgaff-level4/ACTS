@@ -10,13 +10,11 @@ import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { Router } from '@angular/router';
-import { CalcAgePipe } from 'src/app/pipes/date/calc-age.pipe';
 
 @Component({
   selector: 'app-children',
   templateUrl: './children.component.html',
   styleUrls: ['./children.component.scss'],
-  providers: [CalcAgePipe]
 })
 export class ChildrenComponent extends UnsubOnDestroy {
   public selectedItem?: IChildEntity;
@@ -45,7 +43,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
       colId: 'Age',//assigned `colId` because there are multiple columns with same field.
       field: 'person.birthDate',
       headerName: 'Age',
-      valueGetter: (v) => this.calcAgePipe.transform(v.data?.person.birthDate),//set the under the hood value
+      valueGetter: (v) => this.display.calcAgePipe.transform(v.data?.person.birthDate),//set the under the hood value
       type: 'fromNowNoAgo',
       valueFormatter: (v) => this.display.fromNowPipe.transform(v.data?.person.birthDate, true),
       filter: 'agNumberColumnFilter',
@@ -201,7 +199,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
     private display: DisplayService, public pr: PrivilegeService, private nt: NotificationService,
-    private programService: ProgramService, private router: Router, private calcAgePipe: CalcAgePipe) {
+    private programService: ProgramService, private router: Router,) {
     super();
   }
 

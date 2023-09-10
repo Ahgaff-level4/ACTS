@@ -21,18 +21,6 @@ export class ReportService {
 		const children = (await this.dataSource.getRepository(ChildEntity)
 			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: range } } })
 		);
-
-		const childrenNotArchiveCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false }));
-		const childrenArchiveCount = (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: true }));
-		const programsCount = (await this.dataSource.getRepository(ProgramEntity).count());
-		const fieldsCount = (await this.dataSource.getRepository(FieldEntity).count());
-		const accountsCount = (await this.dataSource.getRepository(AccountEntity).count());
-		const completedGoalsCount = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', }));
-		const continualGoalsCount = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', }));
-		const strengthsCount = (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', }));
-		const activitiesCount = (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: MoreThan(0) }));
-		const evaluationsCount = (await this.dataSource.getRepository(EvaluationEntity).count());
-		const specialActivitiesCount = (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull() }));
 		//counts
 		const counts: IDashboard['counts'] = {
 			childrenNotArchive: (await this.dataSource.getRepository(ChildEntity).count({
@@ -53,21 +41,26 @@ export class ReportService {
 			evaluations: (await this.dataSource.getRepository(EvaluationEntity).countBy({ evaluationDatetime: range })),
 			specialActivities: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull(), createdDatetime: range })),
 		};
-		return {
+
+
+		const dashboard: IDashboard = {
 			children,
-			childrenNotArchiveCount,
-			childrenArchiveCount,
-			programsCount,
-			fieldsCount,
-			accountsCount,
-			completedGoalsCount,
-			continualGoalsCount,
-			strengthsCount,
-			activitiesCount,
-			evaluationsCount,
-			specialActivitiesCount,
 			counts,
+			childrenNotArchiveCount: (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false })),
+			childrenArchiveCount: (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: true })),
+			programsCount: (await this.dataSource.getRepository(ProgramEntity).count()),
+			fieldsCount: (await this.dataSource.getRepository(FieldEntity).count()),
+			accountsCount: (await this.dataSource.getRepository(AccountEntity).count()),
+			completedGoalsCount: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', })),
+			continualGoalsCount: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', })),
+			strengthsCount: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', })),
+			activitiesCount: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: MoreThan(0) })),
+			evaluationsCount: (await this.dataSource.getRepository(EvaluationEntity).count()),
+			specialActivitiesCount: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull() })),
+
 		}
+
+		return dashboard;
 	}
 
 	public async childReport(id: number, from: Date | string, to: Date | string): Promise<IChildReport> {
