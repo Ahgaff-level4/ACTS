@@ -346,33 +346,55 @@ export interface IChildReport {
 	},
 }
 
+//private used below
+interface ACCOUNTS {
+	all: number;
+	admin: number;
+	headOfDepartment: number;
+	teacher: number;
+	parent: number;
+}
+//private used below
+interface CHILDREN {
+	children: IChildEntity[];
+	childrenNotArchive: number;
+	childrenArchive: number;
+}
+
+//private used below
+interface COUNT {
+	programs: number;
+	fields: number;
+	accounts: ACCOUNTS;
+	completedGoals: number;
+	continualGoals: number;
+	strengths: number;
+	activities: number;
+	evaluations: number;
+	specialActivities: number;
+}
+interface COUNT_TIMEFRAME {
+	children: CHILDREN;
+	programs: number;
+	fields: number;
+	accounts: ACCOUNTS;
+	completedGoals: number;
+	continualGoals: number;
+	strengths: number;
+	activities: number;
+	evaluations: number;
+	specialActivities: number;
+
+}
+//private used below
+interface COUNT_ALL_TIME extends COUNT {
+	children: Omit<CHILDREN, 'children'>
+}
+
+/**all time is all time and timeframe is number of entities within the timeframe */
 export interface IDashboard {
-	children: IChildEntity[],//depends on the timeframe.
-	childrenNotArchiveCount: number;//the number of children in the system despite the timeframe.
-	childrenArchiveCount:number;///the number of archived children in the system despite the timeframe.
-	programsCount:number;
-	fieldsCount:number;
-	accountsCount:number;
-	completedGoalsCount:number;
-	continualGoalsCount:number;
-	strengthsCount:number;
-	activitiesCount:number;
-	evaluationsCount:number;
-	specialActivitiesCount:number;
-	/**All counts depends on the timeframe */
-	counts: {
-		childrenNotArchive: number;
-		childrenArchive: number;
-		fields: number;
-		programs: number;
-		accounts: number;
-		completedGoals: number;
-		continualGoals: number;
-		strengths:number;
-		activities:number;
-		evaluations:number;
-		specialActivities:number;
-	}
+	allTime: COUNT_ALL_TIME;
+	timeframe: COUNT_TIMEFRAME;
 }
 
 export interface NotificationMessage {
@@ -394,7 +416,7 @@ export type ITimelineEvent = {
 	} | {
 		state: 'evaluation';
 		evaluation: IEvaluationEntity;
-	}|{
-		state:'strength';
-		strength:IStrengthEntity;
+	} | {
+		state: 'strength';
+		strength: IStrengthEntity;
 	})

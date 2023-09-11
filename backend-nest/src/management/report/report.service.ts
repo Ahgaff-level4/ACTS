@@ -21,19 +21,38 @@ export class ReportService {
 		const children = (await this.dataSource.getRepository(ChildEntity)
 			.find({ relations: ['person'], where: { isArchive: false, person: { createdDatetime: range } } })
 		);
-		//counts
-		const counts: IDashboard['counts'] = {
-			childrenNotArchive: (await this.dataSource.getRepository(ChildEntity).count({
-				relations: ['person'], where: { isArchive: false, person: { createdDatetime: range } }
-			})),
-			childrenArchive: (await this.dataSource.getRepository(ChildEntity).count({
-				relations: ['person'], where: { isArchive: true, person: { createdDatetime: range } }
-			})),
-			programs: (await this.dataSource.getRepository(ProgramEntity).countBy({ createdDatetime: range })),
-			fields: (await this.dataSource.getRepository(FieldEntity).countBy({ createdDatetime: range })),
-			accounts: (await this.dataSource.getRepository(AccountEntity).count({
+
+		const accounts: IDashboard['timeframe']['accounts'] = {
+			all: (await this.dataSource.getRepository(AccountEntity).count({
 				relations: ['person'], where: { person: { createdDatetime: range } }
 			})),
+			admin: (await this.dataSource.getRepository(AccountEntity).count({
+				relations: ['person', 'rolesEntities'], where: { rolesEntities: { name: 'Admin' }, person: { createdDatetime: range } }
+			})),
+			headOfDepartment: (await this.dataSource.getRepository(AccountEntity).count({
+				relations: ['person', 'rolesEntities'], where: { rolesEntities: { name: 'HeadOfDepartment' }, person: { createdDatetime: range } }
+			})),
+			teacher: (await this.dataSource.getRepository(AccountEntity).count({
+				relations: ['person', 'rolesEntities'], where: { rolesEntities: { name: 'Teacher' }, person: { createdDatetime: range } }
+			})),
+			parent: (await this.dataSource.getRepository(AccountEntity).count({
+				relations: ['person', 'rolesEntities'], where: { rolesEntities: { name: 'Parent' }, person: { createdDatetime: range } }
+			})),
+		};
+
+		const timeframe: IDashboard['timeframe'] = {
+			children: {
+				children,
+				childrenNotArchive: (await this.dataSource.getRepository(ChildEntity).count({
+					relations: ['person'], where: { isArchive: false, person: { createdDatetime: range } }
+				})),
+				childrenArchive: (await this.dataSource.getRepository(ChildEntity).count({
+					relations: ['person'], where: { isArchive: true, person: { createdDatetime: range } }
+				})),
+			},
+			programs: (await this.dataSource.getRepository(ProgramEntity).countBy({ createdDatetime: range })),
+			fields: (await this.dataSource.getRepository(FieldEntity).countBy({ createdDatetime: range })),
+			accounts,
 			completedGoals: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', assignDatetime: range })),
 			continualGoals: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', assignDatetime: range })),
 			strengths: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', assignDatetime: range })),
@@ -43,24 +62,40 @@ export class ReportService {
 		};
 
 
-		const dashboard: IDashboard = {
-			children,
-			counts,
-			childrenNotArchiveCount: (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false })),
-			childrenArchiveCount: (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: true })),
-			programsCount: (await this.dataSource.getRepository(ProgramEntity).count()),
-			fieldsCount: (await this.dataSource.getRepository(FieldEntity).count()),
-			accountsCount: (await this.dataSource.getRepository(AccountEntity).count()),
-			completedGoalsCount: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', })),
-			continualGoalsCount: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', })),
-			strengthsCount: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', })),
-			activitiesCount: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: MoreThan(0) })),
-			evaluationsCount: (await this.dataSource.getRepository(EvaluationEntity).count()),
-			specialActivitiesCount: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull() })),
-
+		const allTime: IDashboard['allTime'] = {
+			children: {
+				childrenNotArchive: (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: false })),
+				childrenArchive: (await this.dataSource.getRepository(ChildEntity).countBy({ isArchive: true })),
+			},
+			programs: (await this.dataSource.getRepository(ProgramEntity).count()),
+			fields: (await this.dataSource.getRepository(FieldEntity).count()),
+			accounts: {
+				all: (await this.dataSource.getRepository(AccountEntity).count()),
+				admin: (await this.dataSource.getRepository(AccountEntity).count({
+					relations:['rolesEntities'], where:{rolesEntities:{name:'Admin'}}
+				})),
+				headOfDepartment: (await this.dataSource.getRepository(AccountEntity).count({
+					relations:['rolesEntities'], where:{rolesEntities:{name:'HeadOfDepartment'}}
+				})),
+				teacher: (await this.dataSource.getRepository(AccountEntity).count({
+					relations:['rolesEntities'], where:{rolesEntities:{name:'Teacher'}}
+				})),
+				parent: (await this.dataSource.getRepository(AccountEntity).count({
+					relations:['rolesEntities'], where:{rolesEntities:{name:'Parent'}}
+				})),
+			},
+			completedGoals: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'completed', })),
+			continualGoals: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'continual', })),
+			strengths: (await this.dataSource.getRepository(GoalEntity).countBy({ state: 'strength', })),
+			activities: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: MoreThan(0) })),
+			evaluations: (await this.dataSource.getRepository(EvaluationEntity).count()),
+			specialActivities: (await this.dataSource.getRepository(ActivityEntity).countBy({ programId: IsNull() })),
 		}
 
-		return dashboard;
+		return {
+			allTime,
+			timeframe,
+		};
 	}
 
 	public async childReport(id: number, from: Date | string, to: Date | string): Promise<IChildReport> {

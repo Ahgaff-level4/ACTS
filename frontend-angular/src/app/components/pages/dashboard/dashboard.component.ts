@@ -17,14 +17,14 @@ export class DashboardComponent extends UnsubOnDestroy {
   public dashboard$ = new BehaviorSubject<IDashboard | null>(null);
   public childrenRegisterData$: Observable<[{ name: string, series: { value: number, name: Date | string }[] }]> = this.dashboard$.pipe(filter(v => v != null), map(v => {
     return [{
-      name: this.display.translate('Number of Children'), series: v!.children
+      name: this.display.translate('Number of Children'), series: v!.timeframe.children.children
         .sort((a, b) => a.person.createdDatetime < b.person.createdDatetime ? 1 : (a.person.createdDatetime > b.person.createdDatetime ? -1 : 0))
-        .map((c, i) => ({ value: v!.childrenArchiveCount + v!.childrenNotArchiveCount - i, name: new Date(c.person.createdDatetime) }))
+        .map((c, i) => ({ value: v!.timeframe.children.childrenArchive + v!.timeframe.children.childrenNotArchive - i, name: new Date(c.person.createdDatetime) }))
     }];
   }));
 
-  public numberCardsData$: Observable<IDashboard['counts']> = this.dashboard$.pipe(filter(v => v != null), map(dashboard => {
-    return dashboard!.counts;
+  public numberCardsData$: Observable<IDashboard['timeframe']> = this.dashboard$.pipe(filter(v => v != null), map(dashboard => {
+    return dashboard!.timeframe;
   }));
 
   public timeframeFormGroup = new FormGroup({

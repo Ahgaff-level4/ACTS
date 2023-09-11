@@ -835,5 +835,11 @@
   "Archive Children":"الأطفال المؤرشفين",
   "Total Goals":"جميع الأهداف",
   "Number of Data made between":"عدد البيانات التي أُنشِئت بين",
-  "Report & Dashboard":"إحصائيات عامة وتقرير"
+  "Report & Dashboard":"إحصائيات عامة وتقرير",
+  "Account may have multiple roles!":"يمكن للحساب الواحد ان يكون لديه اكثر من دور",
+  "Total Accounts":"مجموع الحسابات",
+  "Accounts with Head of Department Role":"حسابات بدور رئيس القسم",
+  "Accounts with Admin Role":"حسابات بدور مشرف",
+  "Accounts with Teacher Role":"حسابات بدور مدرس",
+  "Accounts with Parent Role":"حسابات بدور ولي امر"
 }
