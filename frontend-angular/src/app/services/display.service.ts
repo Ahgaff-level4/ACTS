@@ -98,7 +98,13 @@ export class DisplayService {
   }
 
   getActivePage(): IPage | undefined {
-    const path = this.ngLocation.path(false);
+    let path = this.ngLocation.path(false);
+    if (path.includes('?'))
+      path = path.substring(0, path.indexOf('?'));
+    if (path.includes('#'))
+      path = path.substring(0, path.indexOf('#'))
+    if (path[path.length - 1] == '/')
+      path = path.substring(0, path.length - 1);
     let lastSegment = path.split('/')[path.split('/').length - 1];
     return PAGES.find(v => v.link.replace('/', '') == lastSegment)
   }
