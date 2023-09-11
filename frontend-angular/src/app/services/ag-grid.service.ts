@@ -6,6 +6,7 @@ import { Clipboard } from '@angular/cdk/clipboard';
 import * as moment from 'moment';
 import { PrivilegeService } from './privilege.service';
 import { NotificationService } from './notification.service';
+import { Params } from '@angular/router';
 @Injectable({
   providedIn: 'root',
 })
@@ -61,6 +62,24 @@ export class AgGridService {
     } else this.nt.notify(undefined);
   }
 
+  /*url param should has columnDef.filed as key and value is JSON object that will be assigned as filter model
+  Example: url/path/then?isArchive={values:['false']}
+  Note it won't looks like that it will be encoded so something like this `url/path/then?isArchive=%eavalues%fs%f%4rfalse%f3%3f` :)
+*/
+  public filterBaseOnURL(colDef: ColDef[], routeParams: Params, gridApi: GridApi<any>) {
+    let keys = Object.keys(routeParams);
+    for (let k of keys) {
+      let col = colDef.find(c => c.field == k);
+      if (col == null) continue;
+
+      gridApi.getFilterInstance(k)!.setModel(null);
+      gridApi.getFilterInstance(k)!.setModel(JSON.parse(routeParams[k]));
+    }
+
+    gridApi.onFilterChanged()
+    gridApi.redrawRows();
+  }
+  
   private gridOptionsProperties: GridOptions = {
     pagination: true,
     paginationPageSize: 10,
@@ -399,6 +418,8 @@ export class AgGridService {
       });
     return tableMenu;
   }
+
+
 }
 
 export interface MyMenuItem<IEntity> {

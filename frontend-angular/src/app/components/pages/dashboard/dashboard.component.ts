@@ -61,6 +61,10 @@ export class DashboardComponent extends UnsubOnDestroy {
     }
   }
 
+  stringify(obj: object) {
+    return JSON.stringify(obj);
+  }
+
   xAxisTickFormatting = (v?: any) => {
     return this.display.fromNowPipe.transform(v)
   }

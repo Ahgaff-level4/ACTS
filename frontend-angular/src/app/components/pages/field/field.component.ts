@@ -3,11 +3,12 @@ import { IFieldEntity } from '../../../../../../interfaces';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { AddEditFieldComponent } from '../../dialogs/add-edit/add-edit-field/add-edit-field.component';
-import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-field',
@@ -62,7 +63,7 @@ export class FieldComponent extends UnsubOnDestroy {
   ];
 
   constructor(private service: FieldService, private display: DisplayService, private nt: NotificationService,
-    public agGrid: AgGridService, public pr: PrivilegeService) {
+    public agGrid: AgGridService, public pr: PrivilegeService, private route:ActivatedRoute) {
     super();
   }
 
@@ -82,7 +83,11 @@ export class FieldComponent extends UnsubOnDestroy {
   public gridOptions: GridOptions<IFieldEntity> = {
     ...this.agGrid.commonGridOptions('fields table', this.columnDefs, this.pr.canUser('editField'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
-      (e) => e.api.sizeColumnsToFit()
+      (e) => {
+        e.api.sizeColumnsToFit();
+        this.agGrid.filterBaseOnURL(this.columnDefs, this.route.snapshot.queryParams, this.gridOptions.api as GridApi<any>)
+
+      }
     ),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }

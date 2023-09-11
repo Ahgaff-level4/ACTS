@@ -14,7 +14,5 @@ Warning: bundle initial exceeded maximum budget. Budget 500.00 kB was not met by
 
 - show Teacher/Admin 's evaluations & goals in view-account. NOTE: evaluations are very a lot, pagination?
 
-- add child from view-account.
-- add teacher from view-child.
 - HeadOfDepartment can view Accounts with Teacher/Parent privilege.
   

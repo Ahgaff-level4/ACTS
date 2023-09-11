@@ -54,7 +54,12 @@ export class TitleComponent extends UnsubOnDestroy implements OnInit {
   ) { super() }
 
   ngOnInit(): void {
-    const path = this.location.path();
+    // '/url/path/only?other=shift&remove=it'
+    const path = this.location.path().includes('?') ?
+      this.location.path().substring(0, this.location.path().indexOf('?'))
+      :
+      this.location.path();
+
     if (this.link) this.link.link = path;
     this.calcLinks(path);
 

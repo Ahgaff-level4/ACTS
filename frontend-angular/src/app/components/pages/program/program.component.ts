@@ -3,13 +3,13 @@ import { IProgramEntity } from '../../../../../../interfaces';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { AddEditProgramComponent } from '../../dialogs/add-edit/add-edit-program/add-edit-program.component';
-import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { Observable, Subscription, first } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-program',
@@ -77,13 +77,16 @@ export class ProgramComponent extends UnsubOnDestroy {
   public gridOptions: GridOptions<IProgramEntity> = {
     ...this.agGrid.commonGridOptions('programs table', this.columnDefs, this.pr.canUser('editProgram'),
       this.menuItems, this.printTable, (item) => { this.addEdit(item) },
-      (e) => e.api.sizeColumnsToFit()
+      (e) => {
+        e.api.sizeColumnsToFit();
+        this.agGrid.filterBaseOnURL(this.columnDefs, this.route.snapshot.queryParams, this.gridOptions.api as GridApi<any>)
+      }
     ),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 
   constructor(private service: ProgramService, private display: DisplayService, private nt: NotificationService,
-    public agGrid: AgGridService, public pr: PrivilegeService, private router:Router,) {
+    public agGrid: AgGridService, public pr: PrivilegeService, private router: Router,private route:ActivatedRoute) {
     super();
   }
 

@@ -49,38 +49,89 @@
       &nbsp;&nbsp;
       {{timeframeFormGroup.get('to')!.value|toDateTimeWeek}}</p>
     <div class="mx-3">
-      <p><span class="fw-bold">{{'Total Children'|translate}}:</span>&nbsp;{{dash.counts.childrenNotArchive +
-        dash.counts.childrenArchive}}</p>
-      <p><span class="fw-bold">{{'Active Children'|translate}}:</span>&nbsp;{{dash.counts.childrenNotArchive}}</p>
-      <p><span class="fw-bold">{{'Archive Children'|translate}}:</span>&nbsp;{{dash.counts.childrenArchive}}</p>
-      <p><span class="fw-bold">{{'Fields'|translate}}:</span>&nbsp;{{dash.counts.fields}}</p>
-      <p><span class="fw-bold">{{'Programs'|translate}}:</span>&nbsp;{{dash.counts.programs}}</p>
-      <p><span class="fw-bold">{{'Accounts'|translate}}:</span>&nbsp;{{dash.counts.accounts}}</p>
-      <p><span class="fw-bold">{{'Total Goals'|translate}}:</span>&nbsp;{{dash.counts.completedGoals +
-        dash.counts.continualGoals}}</p>
-      <p><span class="fw-bold">{{'Completed Goals'|translate}}:</span>&nbsp;{{dash.counts.completedGoals}}</p>
-      <p><span class="fw-bold">{{'Continual Goals'|translate}}:</span>&nbsp;{{dash.counts.continualGoals}}</p>
-      <p><span class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.counts.strengths}}</p>
-      <p><span class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.counts.activities}}</p>
-      <p><span class="fw-bold">{{'Special Activities'|translate}}:</span>&nbsp;{{dash.counts.specialActivities}}</p>
-      <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.counts.evaluations}}</p>
+      <p><a [routerLink]="['/children']" [queryParams]="{'person.createdDatetime':  stringify({
+            dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
+            dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
+            filterType: 'date',
+            type: 'inRange'
+        }),'isArchive':stringify({})}"><span class="fw-bold">{{'Total
+            Children'|translate}}:</span>&nbsp;{{dash.counts.childrenNotArchive +
+          dash.counts.childrenArchive}}</a></p>
+      <p><a [routerLink]="['/children']" [queryParams]="{'person.createdDatetime':  stringify({
+            dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
+            dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
+            filterType: 'date',
+            type: 'inRange'
+        }),'isArchive':stringify({values:['false'],filterType:'set'})}"><span class="fw-bold">{{'Active
+            Children'|translate}}:</span>&nbsp;{{dash.counts.childrenNotArchive}}</a></p>
+      <p><a [routerLink]="['/children']" [queryParams]="{'person.createdDatetime':  stringify({
+            dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
+            dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
+            filterType: 'date',
+            type: 'inRange'
+        }),'isArchive':stringify({values:['true'],filterType:'set'})}"><span class="fw-bold">{{'Archive
+            Children'|translate}}:</span>&nbsp;{{dash.counts.childrenArchive}}</a></p>
+      <p><a [routerLink]="['/fields']" [queryParams]="{'createdDatetime':  stringify({
+            dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
+            dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
+            filterType: 'date',
+            type: 'inRange'
+        })}"><span
+            class="fw-bold">{{'Fields'|translate}}:</span>&nbsp;{{dash.counts.fields}}</a></p>
+      <p><a [routerLink]="['/programs']" [queryParams]="{'createdDatetime':  stringify({
+            dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
+            dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
+            filterType: 'date',
+            type: 'inRange'
+        })}"><span
+            class="fw-bold">{{'Programs'|translate}}:</span>&nbsp;{{dash.counts.programs}}</a></p>
+      <p><a [routerLink]="['/accounts']" [queryParams]="{}"><span
+            class="fw-bold">{{'Accounts'|translate}}:</span>&nbsp;{{dash.counts.accounts}}</a></p>
+      <p><span class="fw-bold">{{'Total
+            Goals'|translate}}:</span>&nbsp;{{dash.counts.completedGoals +
+          dash.counts.continualGoals}}</p>
+      <p><span class="fw-bold">{{'Completed
+            Goals'|translate}}:</span>&nbsp;{{dash.counts.completedGoals}}</p>
+      <p><span class="fw-bold">{{'Continual
+            Goals'|translate}}:</span>&nbsp;{{dash.counts.continualGoals}}</p>
+      <p><span
+            class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.counts.strengths}}</p>
+      <p><span
+            class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.counts.activities}}</p>
+      <p><span class="fw-bold">{{'Special
+            Activities'|translate}}:</span>&nbsp;{{dash.counts.specialActivities}}</p>
+      <p><span
+            class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.counts.evaluations}}</p>
 
       <p class="text-center font-highlight">{{'Number of Data in the System'|translate}}</p>
-      <p><span class="fw-bold">{{'Total Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount +
-        dash.childrenArchiveCount}}</p>
-      <p><span class="fw-bold">{{'Active Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount}}</p>
-      <p><span class="fw-bold">{{'Archive Children'|translate}}:</span>&nbsp;{{dash.childrenArchiveCount}}</p>
-      <p><span class="fw-bold">{{'Fields'|translate}}:</span>&nbsp;{{dash.fieldsCount}}</p>
-      <p><span class="fw-bold">{{'Programs'|translate}}:</span>&nbsp;{{dash.programsCount}}</p>
-      <p><span class="fw-bold">{{'Accounts'|translate}}:</span>&nbsp;{{dash.accountsCount}}</p>
-      <p><span class="fw-bold">{{'Total Goals'|translate}}:</span>&nbsp;{{dash.completedGoalsCount +
-        dash.continualGoalsCount}}</p>
-      <p><span class="fw-bold">{{'Completed Goals'|translate}}:</span>&nbsp;{{dash.completedGoalsCount}}</p>
-      <p><span class="fw-bold">{{'Continual Goals'|translate}}:</span>&nbsp;{{dash.continualGoalsCount}}</p>
-      <p><span class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.strengthsCount}}</p>
-      <p><span class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.activitiesCount}}</p>
-      <p><span class="fw-bold">{{'Special Activities'|translate}}:</span>&nbsp;{{dash.specialActivitiesCount}}</p>
-      <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.evaluationsCount}}</p>
+      <p><a [routerLink]="['/children']" [queryParams]="{'isArchive':stringify({})}"><span class="fw-bold">{{'Total
+            Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount +
+          dash.childrenArchiveCount}}</a></p>
+      <p><a [routerLink]="['/children']" [queryParams]="{'isArchive':stringify({values:['false']})}"><span class="fw-bold">{{'Active
+            Children'|translate}}:</span>&nbsp;{{dash.childrenNotArchiveCount}}</a></p>
+      <p><a [routerLink]="['/children']" [queryParams]="{'isArchive':stringify({values:['true']})}"><span class="fw-bold">{{'Archive
+            Children'|translate}}:</span>&nbsp;{{dash.childrenArchiveCount}}</a></p>
+      <p><a [routerLink]="['/fields']"><span
+            class="fw-bold">{{'Fields'|translate}}:</span>&nbsp;{{dash.fieldsCount}}</a></p>
+      <p><a [routerLink]="['/programs']"><span
+            class="fw-bold">{{'Programs'|translate}}:</span>&nbsp;{{dash.programsCount}}</a></p>
+      <p><a [routerLink]="['/accounts']"><span
+            class="fw-bold">{{'Accounts'|translate}}:</span>&nbsp;{{dash.accountsCount}}</a></p>
+      <p><span class="fw-bold">{{'Total
+            Goals'|translate}}:</span>&nbsp;{{dash.completedGoalsCount +
+          dash.continualGoalsCount}}</p>
+      <p><span class="fw-bold">{{'Completed
+            Goals'|translate}}:</span>&nbsp;{{dash.completedGoalsCount}}</p>
+      <p><span class="fw-bold">{{'Continual
+            Goals'|translate}}:</span>&nbsp;{{dash.continualGoalsCount}}</p>
+      <p><span
+            class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.strengthsCount}}</p>
+      <p><span
+            class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.activitiesCount}}</p>
+      <p><span class="fw-bold">{{'Special
+            Activities'|translate}}:</span>&nbsp;{{dash.specialActivitiesCount}}</p>
+      <p><span
+            class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.evaluationsCount}}</p>
 
 
 

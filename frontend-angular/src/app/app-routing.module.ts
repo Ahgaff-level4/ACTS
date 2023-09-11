@@ -162,7 +162,7 @@ export const routes: Routes = [
   { path: 'settings', component: SettingsComponent, title: titlePrefix + 'Settings', data: { animation: 'settingsPage' } },
   { path: 'children/child/:id/report', component: ReportChildComponent, title: titlePrefix + 'Child Report', canActivate: [RoleGuard], data: { allowRoles: PRIVILEGES['childReportPage'], animation: 'childReportPage' } },
   { path: 'about', component: AboutUsComponent, title: titlePrefix + 'About Us', data: { animation: 'AboutUsPage' } },
-  { path: 'dashboard', component: DashboardComponent, title: titlePrefix + 'Dashboard', data: { animation: 'Dashboard' } },
+  { path: 'dashboard', component: DashboardComponent, title: titlePrefix + 'Dashboard', data: { animation: 'Dashboard', allowRoles:PRIVILEGES['dashboard'] }, canActivate: [RoleGuard] },
   { path: '**', component: Page404Component, title: 'Page Not Found', data: { animation: 'pageNotFoundPage' } },
 ];
 

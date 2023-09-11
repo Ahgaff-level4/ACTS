@@ -3,10 +3,10 @@ import { IAccountEntity } from '../../../../../../../interfaces';
 import { AccountService } from 'src/app/services/CRUD/account.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
-import { ColDef, GridOptions } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions } from 'ag-grid-community';
 import { NotificationService } from 'src/app/services/notification.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AccountRolesPipe } from 'src/app/pipes/account-roles.pipe';
 import { CalcAgePipe } from 'src/app/pipes/date/calc-age.pipe';
 
@@ -104,7 +104,7 @@ export class AccountComponent extends UnsubOnDestroy {
   constructor(public accountService: AccountService, private display: DisplayService,
     public nt: NotificationService, public router:Router,
     public agGrid: AgGridService,private accountRolesPipe:AccountRolesPipe,
-    private calcAgePipe:CalcAgePipe) {
+    private calcAgePipe:CalcAgePipe,private route:ActivatedRoute) {
     super()
   }
 
@@ -129,7 +129,10 @@ export class AccountComponent extends UnsubOnDestroy {
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IAccountEntity> = {
     ...this.agGrid.commonGridOptions('accounts table', this.columnDefs, true,
-      this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.router.navigate(['accounts','edit-account'], { state: { data: item } }): this.nt.notify(null) }),
+    this.menuItems, { isPrintingNext: v => this.isPrinting = v }, (item) => { item ? this.router.navigate(['accounts','edit-account'], { state: { data: item } }): this.nt.notify(null) },
+    e=>{
+      this.agGrid.filterBaseOnURL(this.columnDefs, this.route.snapshot.queryParams, this.gridOptions.api as GridApi<any>)
+    }),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }
 

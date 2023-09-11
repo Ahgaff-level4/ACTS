@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ChildService } from 'src/app/services/CRUD/child.service';
 import { IChildEntity } from '../../../../../../../interfaces';
-import { ColDef, GridOptions, ISetFilterParams, NewValueParams, } from 'ag-grid-enterprise';
+import { ColDef, GridApi, GridOptions, ISetFilterParams, NewValueParams, } from 'ag-grid-enterprise';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { map } from 'rxjs';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
@@ -9,7 +9,7 @@ import { PrivilegeService } from 'src/app/services/privilege.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { NotificationService } from 'src/app/services/notification.service';
 import { ProgramService } from 'src/app/services/CRUD/program.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-children',
@@ -192,14 +192,14 @@ export class ChildrenComponent extends UnsubOnDestroy {
   // Data that gets displayed in the grid
   public rowData = this.childService.children$.pipe(map(v => {
     if (this.pr.canUser('archiveChild'))
-      return  JSON.parse(JSON.stringify(v));
-    else return  JSON.parse(JSON.stringify(v.filter(v => v.isArchive == false)));//Parent with archived child can not be viewed
+      return JSON.parse(JSON.stringify(v));
+    else return JSON.parse(JSON.stringify(v.filter(v => v.isArchive == false)));//Parent with archived child can not be viewed
   }));
 
 
   constructor(private childService: ChildService, public agGrid: AgGridService,
     private display: DisplayService, public pr: PrivilegeService, private nt: NotificationService,
-    private programService: ProgramService, private router: Router,) {
+    private programService: ProgramService, private router: Router, private route: ActivatedRoute) {
     super();
   }
 
@@ -218,7 +218,7 @@ export class ChildrenComponent extends UnsubOnDestroy {
 
   edit(child: IChildEntity | undefined) {
     if (child || this.selectedItem)
-      this.router.navigate(['children', 'edit-child'], { state: { data: child ?? this.selectedItem } });
+      this.router.navigate(['children', 'edit-child'], { state: { data: child || this.selectedItem } });
   }
 
   printTable() {
@@ -255,14 +255,16 @@ export class ChildrenComponent extends UnsubOnDestroy {
   /**Before adding any attribute. Check if it exist in commonGridOptions. So, no overwrite happen!  */
   public gridOptions: GridOptions<IChildEntity> = {
     ...this.agGrid.commonGridOptions('children table', this.columnDefs, this.pr.canUser('editChildPage'),
-      this.goalsStrengthsMenuItems, this.printTable, (item) => { this.edit(item) },
+      this.goalsStrengthsMenuItems, this.printTable, (item) => {
+        this.edit(item);
+      },
       (e) => {
         e.api.getFilterInstance('isArchive')?.setModel({ values: ['false', false, 'Not Archive'] });
         if (!this.pr.canUser('archiveChild')) {
           this.columnDefs.splice(this.columnDefs.map(v => v.field).indexOf('isArchive'), 1);
           this.gridOptions.api?.setColumnDefs(this.columnDefs);
         }
-        this.gridOptions.api?.redrawRows();
+        this.agGrid.filterBaseOnURL(this.columnDefs, this.route.snapshot.queryParams, this.gridOptions.api as GridApi<any>)
       }
     ),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
