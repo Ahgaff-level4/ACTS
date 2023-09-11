@@ -3,12 +3,13 @@ import { IActivityEntity } from '../../../../../../interfaces';
 import { ActivityService } from 'src/app/services/CRUD/activity.service';
 import { DisplayService } from 'src/app/services/display.service';
 import { AddEditActivityComponent } from '../../dialogs/add-edit/add-edit-activity/add-edit-activity.component';
-import { ColDef, GridOptions, NewValueParams } from 'ag-grid-community';
+import { ColDef, GridApi, GridOptions, NewValueParams } from 'ag-grid-community';
 import { AgGridService, MyMenuItem } from 'src/app/services/ag-grid.service';
 import { FieldService } from 'src/app/services/CRUD/field.service';
 import { UnsubOnDestroy } from 'src/app/unsub-on-destroy';
 import { PrivilegeService } from 'src/app/services/privilege.service';
 import { NotificationService } from 'src/app/services/notification.service';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-special-activity',
@@ -73,7 +74,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
 
   constructor(public service: ActivityService, private display: DisplayService,
     public agGrid: AgGridService, private fieldService: FieldService,
-    public pr: PrivilegeService, private nt: NotificationService,) {
+    public pr: PrivilegeService, private nt: NotificationService, private route: ActivatedRoute) {
     super();
   }
 
@@ -86,7 +87,7 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
     this.service.fetchSpecialActivities(true);
     this.sub.add(this.service.specialActivities$.subscribe(v => {
       if (v)
-        this.rowData =  JSON.parse(JSON.stringify(v));
+        this.rowData = JSON.parse(JSON.stringify(v));
     }))
   }
 
@@ -102,7 +103,10 @@ export class SpecialActivityComponent extends UnsubOnDestroy implements OnDestro
   public gridOptions: GridOptions<IActivityEntity> = {
     ...this.agGrid.commonGridOptions('special activities table', this.columnDefs, this.pr.canUser('editActivity'),
       this.menuItems, this.printTable, (item) => { this.edit(item) },
-      (e) => e.api.sizeColumnsToFit()
+      (e) => {
+        e.api.sizeColumnsToFit();
+        this.agGrid.filterBaseOnURL(this.columnDefs, this.route.snapshot.queryParams, this.gridOptions.api as GridApi<any>)
+      }
     ),
     onSelectionChanged: (e) => this.selectedItem = e.api.getSelectedRows()[0] ?? undefined,
   }

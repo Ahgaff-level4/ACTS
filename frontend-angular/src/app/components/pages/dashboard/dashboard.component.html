@@ -97,7 +97,7 @@
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
           filterType:'text',
           type:'contains',
-          filter:'Admin'
+          filter:('Admin'|translate),
         }),'person.createdDatetime':  stringify({
             dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
             dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
@@ -108,7 +108,7 @@
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
           filterType:'text',
           type:'contains',
-          filter:'Head of Department'
+          filter:('Head of Department'|translate),
         }),'person.createdDatetime':  stringify({
           dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
           dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
@@ -119,7 +119,7 @@
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
           filterType:'text',
           type:'contains',
-          filter:'Teacher'
+          filter:('Teacher'|translate),
         }),'person.createdDatetime':  stringify({
           dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
           dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
@@ -130,7 +130,7 @@
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
           filterType:'text',
           type:'contains',
-          filter:'Parent'
+          filter:('Parent'|translate),
         }),'person.createdDatetime':  stringify({
           dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
           dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
@@ -147,11 +147,22 @@
           Goals'|translate}}:</span>&nbsp;{{dash.timeframe.continualGoals}}</p>
       <p><span class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.timeframe.strengths}}</p>
       <p><span class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.timeframe.activities}}</p>
-      <p><span class="fw-bold">{{'Special
-          Activities'|translate}}:</span>&nbsp;{{dash.timeframe.specialActivities}}</p>
+      <p><a [routerLink]="['/special-activities']" [queryParams]="{'createdDatetime':  stringify({
+        dateFrom: timeframeFormGroup.get('from')!.value?.toISOString(),
+        dateTo: timeframeFormGroup.get('to')!.value?.toISOString(),
+        filterType: 'date',
+        type: 'inRange'
+    })}"><span class="fw-bold">{{'Special
+          Activities'|translate}}:</span>&nbsp;{{dash.timeframe.specialActivities}}</a></p>
       <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.timeframe.evaluations}}</p>
 
+
+
       <p class="text-center font-highlight">{{'Number of Data in the System'|translate}}</p>
+
+
+
+
       <p><a [routerLink]="['/children']" [queryParams]="{'isArchive':stringify({})}"><span class="fw-bold">{{'Total
             Children'|translate}}:</span>&nbsp;{{dash.allTime.children.childrenNotArchive +
           dash.allTime.children.childrenArchive}}</a></p>
@@ -174,25 +185,25 @@
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
         filterType:'text',
         type:'contains',
-        filter:'Admin'
+        filter:('Admin'|translate),
       })}"><span class="fw-bold">{{'Accounts with Admin
             Role'|translate}}:</span>&nbsp;{{dash.allTime.accounts.admin}}</a></p>
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
         filterType:'text',
         type:'contains',
-        filter:'Head of Department'
+        filter:('Head of Department'|translate),
       })}"><span class="fw-bold">{{'Accounts with Head of Department
             Role'|translate}}:</span>&nbsp;{{dash.allTime.accounts.headOfDepartment}}</a></p>
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
         filterType:'text',
         type:'contains',
-        filter:'Teacher'
+        filter:('Teacher'|translate),
       })}"><span class="fw-bold">{{'Accounts with Teacher
             Role'|translate}}:</span>&nbsp;{{dash.allTime.accounts.teacher}}</a></p>
       <p><a [routerLink]="['/accounts']" [queryParams]="{'roles':stringify({
         filterType:'text',
         type:'contains',
-        filter:'Parent'
+        filter:('Parent'|translate),
       })}"><span class="fw-bold">{{'Accounts with Parent
             Role'|translate}}:</span>&nbsp;{{dash.allTime.accounts.parent}}</a></p>
       <p><span class="fw-bold">{{'Total
@@ -204,8 +215,8 @@
           Goals'|translate}}:</span>&nbsp;{{dash.allTime.continualGoals}}</p>
       <p><span class="fw-bold">{{'Strengths'|translate}}:</span>&nbsp;{{dash.allTime.strengths}}</p>
       <p><span class="fw-bold">{{'Activities'|translate}}:</span>&nbsp;{{dash.allTime.activities}}</p>
-      <p><span class="fw-bold">{{'Special
-          Activities'|translate}}:</span>&nbsp;{{dash.allTime.specialActivities}}</p>
+      <p><a [routerLink]="['/special-activities']"><span class="fw-bold">{{'Special
+            Activities'|translate}}:</span>&nbsp;{{dash.allTime.specialActivities}}</a></p>
       <p><span class="fw-bold">{{'Evaluations'|translate}}:</span>&nbsp;{{dash.allTime.evaluations}}</p>
 
 
